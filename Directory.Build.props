@@ -1,0 +1,23 @@
+﻿<Project>
+
+  <PropertyGroup>
+    <LangVersion>9</LangVersion>
+    <Authors>Amadeusz Sadowski and contributors</Authors>
+    <Company>BSData</Company>
+    <Copyright>Copyright © $(Authors)</Copyright>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <IsTestProject>$(MSBuildProjectName.Contains('Test'))</IsTestProject>
+    <!-- Put stuff into a common directory ./.build (bin,obj) -->
+    <BaseOutputPath>$(MSBuildThisFileDirectory).build/bin/$(MSBuildProjectName)/</BaseOutputPath>
+    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory).build/obj/$(MSBuildProjectName)/</BaseIntermediateOutputPath>
+    <!-- Due to https://github.com/dotnet/aspnetcore/issues/25959 we need it relative -->
+    <BaseIntermediateOutputPath>$([MSBuild]::MakeRelative($(MSBuildProjectDirectory), $(BaseIntermediateOutputPath)))</BaseIntermediateOutputPath>
+    <!-- Don't warn on API docs -->
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+</Project>

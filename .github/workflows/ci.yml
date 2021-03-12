@@ -1,0 +1,20 @@
+name: CI
+on: [push, pull_request]
+env:
+  DOTNET_NOLOGO: 1
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  Configuration: Release
+defaults:
+  run:
+    shell: pwsh
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
+      - run: dotnet --info
+      - run: dotnet tool restore
+      - run: dotnet restore
+      - run: dotnet build --no-restore
+      - run: dotnet test --no-build
