@@ -15,6 +15,9 @@
 [Ll]og/
 [Ll]ogs/
 
+# Test and coverage
+TestResults/
+
 # Visual Studio 2015/2017 cache/options directory
 .vs/
 
