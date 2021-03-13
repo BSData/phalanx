@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <LangVersion>9</LangVersion>
+    <Nullable>enable</Nullable>
     <Authors>Amadeusz Sadowski and contributors</Authors>
     <Company>BSData</Company>
     <Copyright>Copyright © $(Authors)</Copyright>
@@ -18,6 +19,8 @@
     <BaseIntermediateOutputPath>$([MSBuild]::MakeRelative($(MSBuildProjectDirectory), $(BaseIntermediateOutputPath)))</BaseIntermediateOutputPath>
     <!-- Don't warn on API docs -->
     <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <!-- Error out on warnings when releasing -->
+    <MSBuildTreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</MSBuildTreatWarningsAsErrors>
   </PropertyGroup>
 
 </Project>

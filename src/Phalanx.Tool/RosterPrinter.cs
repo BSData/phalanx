@@ -7,7 +7,6 @@ namespace Phalanx.Tool
     class RosterPrinter : SourceWalker
     {
         private int Depth { get; set; } = 0;
-        private string Indent => Depth > 0 ? new(' ', Depth * 2) : string.Empty;
         public override void VisitRoster(RosterNode node)
         {
             Depth = 0;
