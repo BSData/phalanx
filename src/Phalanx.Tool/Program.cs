@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Immutable;
 using Phalanx.Tool.Editor;
 using WarHub.ArmouryModel.Source;
