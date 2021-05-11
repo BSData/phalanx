@@ -25,12 +25,24 @@ namespace Phalanx.Tool
             // add selection to system force
             ChangeAndPrint("Selection added to system force:",
                 change: x => x.AddSelection(x.Catalogues[0].SelectionEntries[0]).To(x.Roster.Forces[0]));
+            // change count of first selection to 5
+            ChangeAndPrint("Change selection count to 5:",
+                change: x => x.ChangeCountOf(x.Roster.Forces[0].Selections[0]).To(5));
+            // add second selection to system force
+            ChangeAndPrint("Selection added to system force:",
+                change: x => x.AddSelection(x.Catalogues[0].SelectionEntries[0]).To(x.Roster.Forces[0]));
+            // remove second selection from system force
+            ChangeAndPrint("Selection removed from system force:",
+                change: x => x.RemoveSelection(x.Roster.Forces[0].Selections[1]));
             // add marine force
             ChangeAndPrint("Marine force added:",
                 change: x => x.AddForce(x.Catalogues[0].ForceEntries[0]).ToRoot());
             // add selection to marine force
             ChangeAndPrint("Selection added to Marine force:",
-                change: x => x.AddSelection(x.Catalogues[0].SelectionEntries[0]).To(x.Roster.Forces[1]));
+                change: x => x.AddSelection(x.Catalogues[0].SelectionEntries[1]).To(x.Roster.Forces[1]));
+            // remove marine force
+            ChangeAndPrint("System force removed:",
+                change: x => x.RemoveForce(x.Roster.Forces[0]));
             // done
             Console.WriteLine(">>> Finished.");
 
@@ -39,6 +51,7 @@ namespace Phalanx.Tool
                 Change(change);
                 Console.WriteLine($">>>>>>>>>> {documentationText} <<<<<<<<<<");
                 PrintRoster();
+                Console.WriteLine();
             }
 
             void PrintRoster() => printer.Visit(rosterEditor.Roster);
@@ -64,9 +77,17 @@ namespace Phalanx.Tool
                     .AddCategoryLinks(
                         CategoryLink(teamsCategory)))
                 .AddSelectionEntries(
-                    SelectionEntry("Basic Team")
+                    SelectionEntry("Drone")
                     .AddCosts(
-                        Cost(gamesystem.CostTypes[0], 10)));
+                        Cost(gamesystem.CostTypes[0], 15)),
+                    SelectionEntry("Basic Team")
+                    .AddSelectionEntries(
+                        SelectionEntry("Marine Guy")
+                        .AddCosts(
+                            Cost(gamesystem.CostTypes[0], 10))
+                        .AddConstraints(
+                            Constraint(type: ConstraintKind.Minimum, value: 5),
+                            Constraint(type: ConstraintKind.Maximum, value: 10))));
             return new(gamesystem, ImmutableArray.Create(marineCatalogue));
         }
     }

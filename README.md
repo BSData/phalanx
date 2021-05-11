@@ -1,12 +1,19 @@
 # phalanx
 Project Phalanx
 
+## TODO
+- symbol layer?
+- add default subselections:
+  - for entries with constraints min > 0 (constraints need symbols?)
+  - entry groups
+- support links (requires symbols)
+- category links of two types (force entry child and selection entry child)
 
 ## Symbols
 
 The symbols are the basis of semantic model object graph. `ISymbol` is the root type.
 
-- ICatalogueSymbol
+- ICatalogueSymbol (+ catalogue links?)
 - ICatalogueItemSymbol
   - IEntrySymbol
     - IResourceEntryOrContainerSymbol
@@ -17,14 +24,16 @@ The symbols are the basis of semantic model object graph. `ISymbol` is the root 
       - ICostSymbol
       - IProfileSymbol
       - IRuleSymbol
+      - info links ?
     - IContainerEntrySymbol
       - IResourceContainerSymbol
       - ICoreEntrySymbol
-        - ICategoryEntry
+        - ICategoryEntry (+ category links?)
         - IForceEntry
         - ISelectionEntryOrGroupSymbol
           - ISelectionEntrySymbol
           - ISelectionEntryGroupSymbol
+          - ? IEntryLink
   - IResourceTypeSymbol
     - ICharacteristicTypeSymbol
     - ICostTypeSymbol
@@ -42,6 +51,7 @@ The symbols are the basis of semantic model object graph. `ISymbol` is the root 
 - IForceOrSelectionSymbol
   - IForceSymbol
   - ISelectionSymbol
+- roster category ?
 - Undecided:
   - Publication (IResourceTypeSymbol?)
   - Links
