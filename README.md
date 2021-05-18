@@ -3,11 +3,17 @@ Project Phalanx
 
 ## TODO
 - symbol layer?
+  - consider phases of building the symbols
+  - symbolinfo that might be an error
+  - late-bound links?
+  - indexes - resolving targets/ids for links, constraints, modifiers, conditions
+  - references/back-references
 - add default subselections:
   - for entries with constraints min > 0 (constraints need symbols?)
   - entry groups
 - support links (requires symbols)
 - category links of two types (force entry child and selection entry child)
+- nested forces
 
 ## Symbols
 
@@ -15,7 +21,7 @@ The symbols are the basis of semantic model object graph. `ISymbol` is the root 
 
 - ICatalogueSymbol (+ catalogue links?)
 - ICatalogueItemSymbol
-  - IEntrySymbol
+  - IEntrySymbol //contains IEffectSymbol
     - IResourceEntryOrContainerSymbol
       - IResourceEntrySymbol (below)
       - IResourceContainerSymbol (below)
@@ -26,34 +32,35 @@ The symbols are the basis of semantic model object graph. `ISymbol` is the root 
       - IRuleSymbol
       - info links ?
     - IContainerEntrySymbol
-      - IResourceContainerSymbol
-      - ICoreEntrySymbol
+      - IResourceContainerSymbol // contain IResourceEntrySymbols
+      - ICoreEntrySymbol // contains IConstraintSymbols
         - ICategoryEntry (+ category links?)
         - IForceEntry
-        - ISelectionEntryOrGroupSymbol
+        - ISelectionEntryContainerSymbol // contains other SelectionEntry-like stuff
           - ISelectionEntrySymbol
           - ISelectionEntryGroupSymbol
-          - ? IEntryLink
+          - ISelectionEntryLinkSymbol
   - IResourceTypeSymbol
     - ICharacteristicTypeSymbol
     - ICostTypeSymbol
     - IProfileTypeSymbol
+    - IPublicationSymbol
   - ILogicSymbol
-    - IConstraintSymbol (???)
+    - IConstraintSymbol
     - IEffectSymbol
-      - IModifierSymbol
-      - IModifierGroupSymbol
-    - ITriggerSymbol
-      - IConditionSymbol
-      - IConditionGroupSymbol
-      - IRepeatSymbol
+      - IConditionalEffectSymbol
+      - ILoopEffectSymbol
+      - IModifyingEffectSymbol
+    - IConditionSymbol
+      - IQueryConditionSymbol // condition/constaint/repeat "query" part
+      - ITupleOperationConditionSymbol // condition groups
+    - IQuerySymbol
 - IRosterSymbol
 - IForceOrSelectionSymbol
   - IForceSymbol
   - ISelectionSymbol
 - roster category ?
 - Undecided:
-  - Publication (IResourceTypeSymbol?)
   - Links
     - CatalogueLink
     - CategoryLink
