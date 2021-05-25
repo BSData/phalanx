@@ -7,6 +7,11 @@ namespace Phalanx.DataModel.Symbols
     /// </summary>
     public interface ISelectionSymbol : IForceOrSelectionSymbol
     {
+        /// <summary>
+        /// Selection count, or the number of times that selection is "taken".
+        /// </summary>
+        int Count { get; }
+
         new ISelectionEntrySymbol SourceEntry { get; }
 
         IForceOrSelectionSymbol Parent { get; }
