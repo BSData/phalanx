@@ -1,5 +1,12 @@
 namespace Phalanx.DataModel.Symbols
 {
-    public interface ICategoryEntrySymbol : ICoreEntrySymbol
-    { }
+    /// <summary>
+    /// Category entry.
+    /// BS CategoryEntry.
+    /// WHAM <see cref="WarHub.ArmouryModel.Source.CategoryEntryNode" />.
+    /// </summary>
+    public interface ICategoryEntrySymbol : IContainerEntrySymbol
+    {
+        new ICategoryEntrySymbol? ReferencedEntry { get; }
+    }
 }

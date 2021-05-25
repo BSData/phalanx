@@ -2,7 +2,8 @@ namespace Phalanx.DataModel.Symbols
 {
     /// <summary>
     /// Calculates the number of times a <see cref="ILoopEffectSymbol"/> should be applied.
-    /// BS Repeat
+    /// BS Repeat.
+    /// WHAM <see cref="WarHub.ArmouryModel.Source.RepeatNode" />.
     /// </summary>
     public interface ILoopCountSymbol : ILogicSymbol
     {

@@ -2,8 +2,15 @@ using System.Collections.Immutable;
 
 namespace Phalanx.DataModel.Symbols
 {
-    public interface IForceEntrySymbol : ICoreEntrySymbol
+    /// <summary>
+    /// Defines force entry.
+    /// BS ForceEntry.
+    /// WHAM <see cref="WarHub.ArmouryModel.Source.ForceEntryNode" />.
+    /// </summary>
+    public interface IForceEntrySymbol : IContainerEntrySymbol
     {
-        ImmutableArray<IForceEntrySymbol> NestedForces { get; }
+        ImmutableArray<IForceEntrySymbol> ChildForces { get; }
+        
+        ImmutableArray<ICategoryEntrySymbol> Categories { get; }
     }
 }

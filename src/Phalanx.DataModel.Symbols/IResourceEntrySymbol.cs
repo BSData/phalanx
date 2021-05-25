@@ -1,7 +1,11 @@
 namespace Phalanx.DataModel.Symbols
 {
-    public interface IResourceEntrySymbol : IEntrySymbol, IResourceEntryOrContainerSymbol
+    /// <summary>
+    /// A non-selectable resource entry.
+    /// No WHAM analogue.
+    /// </summary>
+    public interface IResourceEntrySymbol : IEntrySymbol
     {
-        IResourceTypeSymbol Type { get; }
+        IResourceDefinitionSymbol? Type { get; }
     }
 }

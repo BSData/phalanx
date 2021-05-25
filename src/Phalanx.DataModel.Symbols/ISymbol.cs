@@ -6,7 +6,16 @@ namespace Phalanx.DataModel.Symbols
     public interface ISymbol
     {
         SymbolKind Kind { get; }
+
+        /// <summary>
+        /// Name of given symbol, or empty string if the symbol has no name.
+        /// </summary>
         string Name { get; }
+
+        /// <summary>
+        /// Data author comment.
+        /// </summary>
+        string? Comment { get; }
 
         /// <summary>
         /// The parent symbol.

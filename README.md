@@ -17,36 +17,40 @@ Project Phalanx
 
 ## Symbols
 
-The symbols are the basis of semantic model object graph. `ISymbol` is the root type.
+The symbols are the basis of semantic model object graph.
+
+### Symbol notes
+
+- `ISymbol` is the root type.
+- Links (BS EntryLink/InfoLink/CategoryLink) are represented as the symbol type
+that the link points to, its `IsReference` is `true` and `ReferencedEntry` points
+to the link target.
+
+### Symbol list
 
 - ICatalogueSymbol (+ catalogue links?)
-- ICatalogueItemSymbol
-  - IEntrySymbol //contains IEffectSymbol
-    - IResourceEntryOrContainerSymbol
-      - IResourceEntrySymbol (below)
-      - IResourceContainerSymbol (below)
-    - IResourceEntrySymbol
-      - ICharacteristicSymbol
-      - ICostSymbol
-      - IProfileSymbol
-      - IRuleSymbol
-      - info links ?
-    - IContainerEntrySymbol
-      - IResourceContainerSymbol // contain IResourceEntrySymbols
-      - ICoreEntrySymbol // contains IConstraintSymbols
-        - ICategoryEntry (+ category links?)
-        - IForceEntry
-        - ISelectionEntryContainerSymbol // contains other SelectionEntry-like stuff
-          - ISelectionEntrySymbol
-          - ISelectionEntryGroupSymbol
-          - ISelectionEntryLinkSymbol
-  - IResourceTypeSymbol
+- ICatalogueItemSymbol // has catalogue ref
+  - ICatalogueReferenceSymbol // catalogue link
+  - IResourceDefinitionSymbol
     - ICharacteristicTypeSymbol
     - ICostTypeSymbol
     - IProfileTypeSymbol
     - IPublicationSymbol
+  - IEntrySymbol // contains effects
+    - IResourceEntrySymbol
+      - ICharacteristicSymbol
+      - ICostSymbol
+      - IProfileSymbol (can be a link)
+      - IRuleSymbol (can be a link)
+      - IResourceGroupSymbol (can be a link)
+    - IContainerEntrySymbol // contains constraints, resources
+      - ICategoryEntry (can be a link)
+      - IForceEntry
+      - ISelectionEntryContainerSymbol // contains other SelectionEntry-like stuff
+        - ISelectionEntrySymbol (can be a link)
+        - ISelectionEntryGroupSymbol (can be a link)
   - ILogicSymbol
-    - IConstraintSymbol
+    - IConstraintSymbol // contains effects
     - IEffectSymbol
       - IConditionalEffectSymbol
       - ILoopEffectSymbol
@@ -56,14 +60,9 @@ The symbols are the basis of semantic model object graph. `ISymbol` is the root 
       - ITupleOperationConditionSymbol // condition groups
     - IQuerySymbol
 - IRosterSymbol
-- IForceOrSelectionSymbol
-  - IForceSymbol
-  - ISelectionSymbol
-- roster category ?
-- Undecided:
-  - Links
-    - CatalogueLink
-    - CategoryLink
-    - EntryLink
-    - InfoLink
-  - Category
+- IRosterItemSymbol // has roster ref
+  - IRosterCostSymbol
+  - IRosterEntrySymbol // has SourceEntry
+    - IForceOrSelectionSymbol // has selections
+      - IForceSymbol
+      - ISelectionSymbol

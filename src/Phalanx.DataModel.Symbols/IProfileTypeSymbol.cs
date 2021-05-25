@@ -1,5 +1,14 @@
+using System.Collections.Immutable;
+
 namespace Phalanx.DataModel.Symbols
 {
-    public interface IProfileTypeSymbol : IResourceTypeSymbol
-    { }
+    /// <summary>
+    /// Defines profile type.
+    /// BS ProfileType.
+    /// WHAM <see cref="WarHub.ArmouryModel.Source.ProfileTypeNode" />.
+    /// </summary>
+    public interface IProfileTypeSymbol : IResourceDefinitionSymbol
+    {
+        ImmutableArray<ICharacteristicTypeSymbol> CharacteristicTypes { get; }
+    }
 }

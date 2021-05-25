@@ -2,7 +2,8 @@ namespace Phalanx.DataModel.Symbols
 {
     /// <summary>
     /// Boolean condition based on query results.
-    /// BS Condition
+    /// BS Condition.
+    /// WHAM <see cref="WarHub.ArmouryModel.Source.ConditionNode" />.
     /// </summary>
     public interface IQueryConditionSymbol : IConditionSymbol
     {

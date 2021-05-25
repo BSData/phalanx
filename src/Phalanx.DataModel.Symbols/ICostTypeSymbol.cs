@@ -1,5 +1,10 @@
 namespace Phalanx.DataModel.Symbols
 {
-    public interface ICostTypeSymbol : IResourceTypeSymbol
+    /// <summary>
+    /// Defines cost type.
+    /// BS CostType.
+    /// WHAM <see cref="WarHub.ArmouryModel.Source.CostTypeNode" />.
+    /// </summary>
+    public interface ICostTypeSymbol : IResourceDefinitionSymbol
     { }
 }

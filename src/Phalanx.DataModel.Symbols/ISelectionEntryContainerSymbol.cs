@@ -5,9 +5,14 @@ namespace Phalanx.DataModel.Symbols
     /// <summary>
     /// Recursive selection container.
     /// BS SelectionEntry/SelectionEntryGroup/EntryLink
+    /// WHAM <see cref="WarHub.ArmouryModel.Source.SelectionEntryNode" />.
     /// </summary>
-    public interface ISelectionEntryContainerSymbol : ICoreEntrySymbol
+    public interface ISelectionEntryContainerSymbol : IContainerEntrySymbol
     {
-        ImmutableArray<ISelectionEntryContainerSymbol> Children { get; }
+        ICategoryEntrySymbol? PrimaryCategory { get; }
+
+        ImmutableArray<ICategoryEntrySymbol> Categories { get; }
+
+        ImmutableArray<ISelectionEntryContainerSymbol> ChildSelectionEntries { get; }
     }
 }
