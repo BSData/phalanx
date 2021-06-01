@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using WarHub.ArmouryModel.Source;
+using WarHub.ArmouryModel.SourceAnalysis;
 
 namespace Phalanx.Tool.Editor
 {
@@ -9,18 +10,10 @@ namespace Phalanx.Tool.Editor
     ///  In future, I expect this to contain a semantic model as well
     ///  (symbol layer, with a resolved object graph - links, references, etc.).
     /// </summary>
-    public record Dataset(GamesystemNode Gamesystem, ImmutableArray<CatalogueNode> Catalogues)
+    public record Dataset(GamesystemContext Context)
     {
-        public IEnumerable<CatalogueBaseNode> Nodes
-        {
-            get
-            {
-                yield return Gamesystem;
-                foreach (var catalogue in Catalogues)
-                {
-                    yield return catalogue;
-                }
-            }
-        }
+        public GamesystemNode Gamesystem => Context.Gamesystem!;
+        public ImmutableArray<CatalogueNode> Catalogues => Context.Catalogues;
+        public IEnumerable<CatalogueBaseNode> Nodes => Context.Roots;
     }
 }

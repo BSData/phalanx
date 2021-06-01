@@ -15,6 +15,9 @@ namespace Phalanx.DataModel.Symbols
 
         ICatalogueSymbol Gamesystem { get; }
 
+        /// <summary>
+        /// Represents catalogues linked using CatalogueLink syntax.
+        /// </summary>
         ImmutableArray<ICatalogueReferenceSymbol> Imports { get; }
 
         ImmutableArray<ICatalogueItemSymbol> AllItems { get; }

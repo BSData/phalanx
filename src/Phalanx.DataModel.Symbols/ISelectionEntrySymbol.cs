@@ -5,7 +5,7 @@ namespace Phalanx.DataModel.Symbols
     /// <summary>
     /// Selection entry.
     /// BS SelectionEntry/EntryLink@type=entry.
-    /// WHAM <see cref="WarHub.ArmouryModel.Source.SelectionEntryNode" />.
+    /// WHAM <see cref="SelectionEntryNode" />.
     /// </summary>
     public interface ISelectionEntrySymbol : ISelectionEntryContainerSymbol
     {

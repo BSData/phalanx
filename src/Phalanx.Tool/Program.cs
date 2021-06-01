@@ -2,6 +2,7 @@
 using System.Collections.Immutable;
 using Phalanx.Tool.Editor;
 using WarHub.ArmouryModel.Source;
+using WarHub.ArmouryModel.SourceAnalysis;
 using static WarHub.ArmouryModel.Source.NodeFactory;
 
 namespace Phalanx.Tool
@@ -88,7 +89,8 @@ namespace Phalanx.Tool
                         .AddConstraints(
                             Constraint(type: ConstraintKind.Minimum, value: 5),
                             Constraint(type: ConstraintKind.Maximum, value: 10))));
-            return new(gamesystem, ImmutableArray.Create(marineCatalogue));
+            var ctx = GamesystemContext.CreateSingle(gamesystem, marineCatalogue);
+            return new(ctx);
         }
     }
 }
