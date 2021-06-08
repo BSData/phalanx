@@ -1,28 +1,22 @@
+using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
-using WarHub.ArmouryModel.SourceAnalysis;
 
 namespace Phalanx.DataModel.Symbols.Implementation
 {
-    public class CostTypeSymbol : Symbol, ICostTypeSymbol
+    public class CostTypeSymbol : CatalogueItemSymbol, ICostTypeSymbol
     {
-        private readonly CostTypeNode node;
+        private readonly CostTypeNode declaration;
 
-        public CostTypeSymbol(ICatalogueSymbol containingSymbol, CostTypeNode node, GamesystemContext context, BindingDiagnosticContext diagnostics)
+        public CostTypeSymbol(ICatalogueSymbol containingSymbol, CostTypeNode declaration, BindingDiagnosticContext diagnostics)
+            : base(containingSymbol, declaration, diagnostics)
         {
-            this.node = node;
-            ContainingCatalogue = containingSymbol;
+            this.declaration = declaration;
         }
 
         public override SymbolKind Kind => SymbolKind.ResourceType;
 
-        public override string Name => node.Name ?? "";
+        public override string Name => declaration.Name ?? "";
 
-        public override string? Comment => node.Comment;
-
-        public override ISymbol ContainingSymbol => ContainingCatalogue;
-
-        public string? Id => node.Id;
-
-        public ICatalogueSymbol ContainingCatalogue { get; }
+        public string? Id => declaration.Id;
     }
 }

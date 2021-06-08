@@ -1,4 +1,4 @@
-namespace Phalanx.DataModel.Symbols.Implementation
+namespace Phalanx.DataModel.Symbols.Binding
 {
     public class BindingDiagnosticContext
     {

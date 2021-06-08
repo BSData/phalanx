@@ -1,37 +1,31 @@
 using System;
+using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
-using WarHub.ArmouryModel.SourceAnalysis;
 
 namespace Phalanx.DataModel.Symbols.Implementation
 {
-    public class PublicationSymbol : Symbol, IPublicationSymbol
+    public class PublicationSymbol : CatalogueItemSymbol, IPublicationSymbol
     {
-        private readonly PublicationNode node;
+        private readonly PublicationNode declaration;
 
-        public PublicationSymbol(ICatalogueSymbol containingSymbol, PublicationNode node, GamesystemContext context, BindingDiagnosticContext diagnostics)
+        public PublicationSymbol(ICatalogueSymbol containingSymbol, PublicationNode declaration, BindingDiagnosticContext diagnostics)
+            : base(containingSymbol, declaration, diagnostics)
         {
-            this.node = node;
-            ContainingCatalogue = containingSymbol;
+            this.declaration = declaration;
         }
 
         public override SymbolKind Kind => SymbolKind.ResourceType;
 
-        public override string Name => node.Name ?? "";
+        public override string Name => declaration.Name ?? "";
 
-        public override string? Comment => node.Comment;
+        public string? Id => declaration.Id;
 
-        public override ISymbol ContainingSymbol => ContainingCatalogue;
+        public string? ShortName => declaration.ShortName;
 
-        public string? Id => node.Id;
+        public string? Publisher => declaration.Publisher;
 
-        public ICatalogueSymbol ContainingCatalogue { get; }
+        public DateTime? PublicationDate => DateTime.TryParse(declaration.PublicationDate, out var result) ? result : null;
 
-        public string? ShortName => node.ShortName;
-
-        public string? Publisher => node.Publisher;
-
-        public DateTime? PublicationDate => DateTime.TryParse(node.PublicationDate, out var result) ? result : null;
-
-        public Uri? PublicationUrl => Uri.TryCreate(node.PublisherUrl, UriKind.Absolute, out var result) ? result : null;
+        public Uri? PublicationUrl => Uri.TryCreate(declaration.PublisherUrl, UriKind.Absolute, out var result) ? result : null;
     }
 }

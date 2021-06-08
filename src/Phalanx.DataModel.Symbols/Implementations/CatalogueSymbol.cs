@@ -1,36 +1,28 @@
 using System.Collections.Immutable;
+using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 using WarHub.ArmouryModel.SourceAnalysis;
 
 namespace Phalanx.DataModel.Symbols.Implementation
 {
-    public class CatalogueSymbol : Symbol, ICatalogueSymbol
+    public class CatalogueSymbol : CatalogueBaseSymbol
     {
-        public CatalogueSymbol(GamesystemContext context, CatalogueNode node)
+        private readonly CatalogueNode node;
+
+        public CatalogueSymbol(CatalogueNode node, GamesystemContext context, BindingDiagnosticContext diagnostics)
+            : base(node, context, diagnostics)
         {
+            this.node = node;
+            // TODO bind GamesystemSymbol
+            // TODO bind Imports
         }
 
-        public override SymbolKind Kind => SymbolKind.Catalogue;
+        public override bool IsLibrary => node.IsLibrary;
 
-        public override string Name { get; }
+        public override bool IsGamesystem => false;
 
-        public override string? Comment { get; }
+        public override ICatalogueSymbol Gamesystem => throw new System.NotImplementedException();
 
-        public override ISymbol ContainingSymbol { get; }
-
-        public bool IsLibrary { get; }
-
-        public bool IsGamesystem { get; }
-
-        public ICatalogueSymbol Gamesystem { get; }
-        public ImmutableArray<ICatalogueReferenceSymbol> Imports => throw new System.NotImplementedException();
-
-        public ImmutableArray<ICatalogueItemSymbol> AllItems => throw new System.NotImplementedException();
-
-        public ImmutableArray<IResourceDefinitionSymbol> ResourceDefinitions => throw new System.NotImplementedException();
-
-        public ImmutableArray<ISelectionEntrySymbol> RootEntries => throw new System.NotImplementedException();
-
-        public ImmutableArray<IEntrySymbol> SharedEntries => throw new System.NotImplementedException();
+        public override ImmutableArray<ICatalogueReferenceSymbol> Imports { get; }
     }
 }

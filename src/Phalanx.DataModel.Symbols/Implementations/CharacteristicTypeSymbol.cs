@@ -1,34 +1,28 @@
+using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
-using WarHub.ArmouryModel.SourceAnalysis;
 
 namespace Phalanx.DataModel.Symbols.Implementation
 {
-    public class CharacteristicTypeSymbol : Symbol, ICharacteristicTypeSymbol
+    public class CharacteristicTypeSymbol : CatalogueItemSymbol, ICharacteristicTypeSymbol
     {
-        private readonly CharacteristicTypeNode node;
+        private readonly CharacteristicTypeNode declaration;
 
         public CharacteristicTypeSymbol(
             IProfileTypeSymbol containingSymbol,
-            CharacteristicTypeNode node,
-            GamesystemContext context,
+            CharacteristicTypeNode declaration,
             BindingDiagnosticContext diagnostics)
+            : base(containingSymbol, declaration, diagnostics)
         {
-            this.node = node;
+            this.declaration = declaration;
             ContainingProfileType = containingSymbol;
         }
 
         public override SymbolKind Kind => SymbolKind.ResourceType;
 
-        public override string Name => node.Name ?? "";
-
-        public override string? Comment => node.Comment;
-
-        public override ISymbol ContainingSymbol => ContainingProfileType;
+        public override string Name => declaration.Name ?? "";
 
         public IProfileTypeSymbol ContainingProfileType { get; }
 
-        public string? Id => node.Id;
-
-        public ICatalogueSymbol ContainingCatalogue => ContainingProfileType.ContainingCatalogue;
+        public string? Id => declaration.Id;
     }
 }

@@ -7,6 +7,7 @@ namespace Phalanx.DataModel.Symbols
     /// </summary>
     public interface IRuleSymbol : IResourceEntrySymbol
     {
+        string DescriptionText { get; }
         new IRuleSymbol? ReferencedEntry { get; }
     }
 }
