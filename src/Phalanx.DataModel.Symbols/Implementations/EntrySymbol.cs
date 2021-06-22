@@ -6,28 +6,37 @@ namespace Phalanx.DataModel.Symbols.Implementation
 {
     public abstract class EntrySymbol : CatalogueItemSymbol, IEntrySymbol
     {
-        protected EntryBaseNode entryDeclaration;
+        internal EntryBaseNode Declaration { get; }
 
-        protected EntrySymbol(ISymbol containingSymbol, EntryBaseNode declaration, BindingDiagnosticContext diagnostics)
+        protected EntrySymbol(
+            ISymbol containingSymbol,
+            EntryBaseNode declaration,
+            Binder binder,
+            BindingDiagnosticContext diagnostics)
             : base(containingSymbol, declaration, diagnostics)
         {
-            entryDeclaration = declaration;
+            Declaration = declaration;
+            // consider binding at later stage
+            var publication = binder.BindPublicationSymbol(declaration);
+            if (publication is not null)
+            {
+                PublicationReference = new EntryPublicationReferenceSymbol(this, publication);
+            }
+            Effects = LogicSymbol.CreateEffects(this, binder, diagnostics);
         }
 
-        public string? Id => entryDeclaration.Id;
+        public string? Id => Declaration.Id;
 
-        public override string Name => entryDeclaration.Name ?? "";
+        public override string Name => Declaration.Name ?? "";
 
-        public bool IsHidden => entryDeclaration.Hidden;
+        public bool IsHidden => Declaration.Hidden;
 
         public bool IsReference => false;
 
         public IEntrySymbol? ReferencedEntry => null;
 
-        // TODO bind publication
-        public IPublicationSymbol? Publication => throw new System.NotImplementedException();
+        public IPublicationReferenceSymbol? PublicationReference { get; }
 
-        // TODO bind modifiers
-        public ImmutableArray<IEffectSymbol> Effects => throw new System.NotImplementedException();
+        public ImmutableArray<IEffectSymbol> Effects { get; }
     }
 }

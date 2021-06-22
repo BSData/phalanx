@@ -11,8 +11,9 @@ namespace Phalanx.DataModel.Symbols.Implementation
         public SelectionEntrySymbol(
             ICatalogueItemSymbol containingSymbol,
             SelectionEntryNode declaration,
+            Binder binder,
             BindingDiagnosticContext diagnostics)
-            : base(containingSymbol, declaration, diagnostics)
+            : base(containingSymbol, declaration, binder, diagnostics)
         {
             this.declaration = declaration;
         }

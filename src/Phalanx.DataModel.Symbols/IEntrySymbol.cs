@@ -22,7 +22,7 @@ namespace Phalanx.DataModel.Symbols
         /// </summary>
         IEntrySymbol? ReferencedEntry { get; }
 
-        IPublicationSymbol? Publication { get; }
+        IPublicationReferenceSymbol? PublicationReference { get; }
         ImmutableArray<IEffectSymbol> Effects { get; }
     }
 }

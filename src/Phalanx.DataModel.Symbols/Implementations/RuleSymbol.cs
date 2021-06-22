@@ -7,8 +7,8 @@ namespace Phalanx.DataModel.Symbols.Implementation
     {
         private readonly RuleNode declaration;
 
-        public RuleSymbol(ISymbol containingSymbol, RuleNode declaration, BindingDiagnosticContext diagnostics)
-            : base(containingSymbol, declaration, diagnostics)
+        public RuleSymbol(ISymbol containingSymbol, RuleNode declaration, Binder binder, BindingDiagnosticContext diagnostics)
+            : base(containingSymbol, declaration, binder, diagnostics)
         {
             this.declaration = declaration;
         }
