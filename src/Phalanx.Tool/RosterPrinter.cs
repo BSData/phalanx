@@ -10,7 +10,12 @@ namespace Phalanx.Tool
         public override void VisitRoster(RosterNode node)
         {
             Depth = 0;
-            Print($"Roster '{node.Name}' ({node.GameSystemName} v{node.GameSystemRevision})");
+
+            static string FormatCost((CostNode cost, CostLimitNode limit) x) =>
+                $"{x.cost.Value}/{x.limit.Value}{x.cost.Name}";
+            var limitedCosts = node.Costs.Zip(node.CostLimits).Where(x => x.Second.Value >= 0);
+            var costs = $"[{string.Join(", ", limitedCosts.Select(FormatCost))}]";
+            Print($"Roster '{node.Name}' ({node.GameSystemName} v{node.GameSystemRevision}) {costs}");
             Depth++;
             base.VisitRoster(node);
             Depth--;

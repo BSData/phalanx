@@ -1,40 +1,59 @@
-using System;
+﻿using System;
 using System.Collections.Immutable;
 using Phalanx.Tool.Editor;
 using WarHub.ArmouryModel.Source;
+using WarHub.ArmouryModel.SourceAnalysis;
 using static WarHub.ArmouryModel.Source.NodeFactory;
 
 namespace Phalanx.Tool
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             Console.WriteLine("Hello World!");
             var printer = new RosterPrinter();
-            var rosterEditor = new RosterEditor(new RosterState(GetDataset()));
             // create
-            Change(x => x.Create().WithName("Test Marine Strike Force"));
+            var rosterEditor = RosterEditor.Create(GetDataset()).WithName("Test Marine Strike Force");
             Console.WriteLine(">>> New roster created:");
             PrintRoster();
+            // change cost limit to 1000 pts
+            ChangeAndPrint("Point cost changed:",
+                change: x => x.ChangeCostLimit(x.Roster.CostLimits[0]).To(1000));
             // add system force
-            Change(x => x.AddForce(x.Gamesystem.ForceEntries[0]).ToRoot());
-            Console.WriteLine(">>> System force added:");
-            PrintRoster();
+            ChangeAndPrint("System force added:",
+                change: x => x.AddForce(x.Gamesystem.ForceEntries[0]).ToRoot());
             // add selection to system force
-            Change(x => x.AddSelection(x.Catalogues[0].SelectionEntries[0]).To(x.Roster.Forces[0]));
-            Console.WriteLine(">>> Selection added to system force:");
-            PrintRoster();
+            ChangeAndPrint("Selection added to system force:",
+                change: x => x.AddSelection(x.Catalogues[0].SelectionEntries[0]).To(x.Roster.Forces[0]));
+            // change count of first selection to 5
+            ChangeAndPrint("Change selection count to 5:",
+                change: x => x.ChangeCountOf(x.Roster.Forces[0].Selections[0]).To(5));
+            // add second selection to system force
+            ChangeAndPrint("Selection added to system force:",
+                change: x => x.AddSelection(x.Catalogues[0].SelectionEntries[0]).To(x.Roster.Forces[0]));
+            // remove second selection from system force
+            ChangeAndPrint("Selection removed from system force:",
+                change: x => x.RemoveSelection(x.Roster.Forces[0].Selections[1]));
             // add marine force
-            Change(x => x.AddForce(x.Catalogues[0].ForceEntries[0]).ToRoot());
-            Console.WriteLine(">>> Marine force added:");
-            PrintRoster();
+            ChangeAndPrint("Marine force added:",
+                change: x => x.AddForce(x.Catalogues[0].ForceEntries[0]).ToRoot());
             // add selection to marine force
-            Change(x => x.AddSelection(x.Catalogues[0].SelectionEntries[0]).To(x.Roster.Forces[1]));
-            Console.WriteLine(">>> Selection added to Marine force:");
-            PrintRoster();
+            ChangeAndPrint("Selection added to Marine force:",
+                change: x => x.AddSelection(x.Catalogues[0].SelectionEntries[1]).To(x.Roster.Forces[1]));
+            // remove marine force
+            ChangeAndPrint("System force removed:",
+                change: x => x.RemoveForce(x.Roster.Forces[0]));
             // done
             Console.WriteLine(">>> Finished.");
+
+            void ChangeAndPrint(string documentationText, Func<RosterEditor, IRosterOperation> change)
+            {
+                Change(change);
+                Console.WriteLine($">>>>>>>>>> {documentationText} <<<<<<<<<<");
+                PrintRoster();
+                Console.WriteLine();
+            }
 
             void PrintRoster() => printer.Visit(rosterEditor.Roster);
 
@@ -59,10 +78,19 @@ namespace Phalanx.Tool
                     .AddCategoryLinks(
                         CategoryLink(teamsCategory)))
                 .AddSelectionEntries(
-                    SelectionEntry("Basic Team")
+                    SelectionEntry("Drone")
                     .AddCosts(
-                        Cost(gamesystem.CostTypes[0], 10)));
-            return new(gamesystem, ImmutableArray.Create(marineCatalogue));
+                        Cost(gamesystem.CostTypes[0], 15)),
+                    SelectionEntry("Basic Team")
+                    .AddSelectionEntries(
+                        SelectionEntry("Marine Guy")
+                        .AddCosts(
+                            Cost(gamesystem.CostTypes[0], 10))
+                        .AddConstraints(
+                            Constraint(type: ConstraintKind.Minimum, value: 5),
+                            Constraint(type: ConstraintKind.Maximum, value: 10))));
+            var ctx = GamesystemContext.CreateSingle(gamesystem, marineCatalogue);
+            return new(ctx);
         }
     }
 }
