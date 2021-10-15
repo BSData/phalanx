@@ -9,14 +9,8 @@ namespace Phalanx.DataModel.Symbols
     /// </summary>
     public interface ITupleOperationConditionSymbol : IConditionSymbol
     {
-        OperationType Type { get; }
+        TupleOperation Operation { get; }
 
         ImmutableArray<IConditionSymbol> Conditions { get; }
-
-        enum OperationType
-        {
-            And, // conjuction
-            Or, // disjunction
-        }
     }
 }

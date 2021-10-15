@@ -7,16 +7,10 @@ namespace Phalanx.DataModel.Symbols
     /// </summary>
     public interface IQueryConditionSymbol : IConditionSymbol
     {
-        ComparisonKind Comparison { get; }
-        int ComparisonValue { get; }
+        QueryComparisonType Comparison { get; }
+
+        decimal ComparisonValue { get; }
+
         IQuerySymbol Query { get; }
-        enum ComparisonKind
-        {
-            Equals,
-            NotEquals,
-            LessThan,
-            GreaterThan,
-            // etc
-        }
     }
 }
