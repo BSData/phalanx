@@ -5,36 +5,26 @@ namespace Phalanx.DataModel.Symbols.Implementation
 {
     public abstract class CatalogueItemSymbol : Symbol, ICatalogueItemSymbol
     {
-        private readonly CommentableNode declaration;
-        private readonly BindingDiagnosticContext diagnostics;
-
-        public CatalogueItemSymbol(
+        protected CatalogueItemSymbol(
             ISymbol containingSymbol,
-            CommentableNode declaration,
-            BindingDiagnosticContext diagnostics)
-            : this(
-                containingSymbol,
-                containingSymbol is ICatalogueSymbol c ? c : ((ICatalogueItemSymbol)containingSymbol).ContainingCatalogue,
-                declaration,
-                diagnostics)
-        {
-        }
-
-        private CatalogueItemSymbol(
-            ISymbol containingSymbol,
-            ICatalogueSymbol containingCatalogue,
-            CommentableNode declaration,
+            SourceNode declaration,
             BindingDiagnosticContext diagnostics)
         {
             ContainingSymbol = containingSymbol;
-            ContainingCatalogue = containingCatalogue;
-            this.declaration = declaration;
-            this.diagnostics = diagnostics;
+            ContainingCatalogue = (containingSymbol as ICatalogueSymbol)
+                ?? ((ICatalogueItemSymbol)containingSymbol).ContainingCatalogue;
+            Id = (declaration as IIdentifiableNode)?.Id;
+            Name = (declaration as INameableNode)?.Name ?? string.Empty;
+            Comment = (declaration as CommentableNode)?.Comment;
         }
 
-        public override string? Comment => declaration.Comment;
+        public string? Id { get; }
 
-        public override ISymbol ContainingSymbol { get; }
+        public sealed override string Name { get; }
+
+        public sealed override string? Comment { get; }
+
+        public sealed override ISymbol ContainingSymbol { get; }
 
         public ICatalogueSymbol ContainingCatalogue { get; }
     }

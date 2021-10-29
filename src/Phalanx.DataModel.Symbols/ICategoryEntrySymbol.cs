@@ -7,6 +7,8 @@ namespace Phalanx.DataModel.Symbols
     /// </summary>
     public interface ICategoryEntrySymbol : IContainerEntrySymbol
     {
+        bool IsPrimaryCategory { get; }
+
         new ICategoryEntrySymbol? ReferencedEntry { get; }
     }
 }

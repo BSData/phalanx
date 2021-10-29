@@ -7,6 +7,8 @@ namespace Phalanx.DataModel.Symbols
     /// </summary>
     public interface ICharacteristicSymbol : IResourceEntrySymbol
     {
+        string Value { get; }
+
         new ICharacteristicTypeSymbol Type { get; }
     }
 }

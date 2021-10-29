@@ -10,6 +10,5 @@ namespace Phalanx.DataModel.Symbols
     public interface ISelectionEntrySymbol : ISelectionEntryContainerSymbol
     {
         SelectionEntryKind EntryKind { get; }
-        new ISelectionEntrySymbol? ReferencedEntry { get; }
     }
 }

@@ -14,5 +14,7 @@ namespace Phalanx.DataModel.Symbols
         ImmutableArray<ICategoryEntrySymbol> Categories { get; }
 
         ImmutableArray<ISelectionEntryContainerSymbol> ChildSelectionEntries { get; }
+
+        new ISelectionEntryContainerSymbol? ReferencedEntry { get; }
     }
 }

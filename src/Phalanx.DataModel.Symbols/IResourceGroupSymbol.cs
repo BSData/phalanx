@@ -10,6 +10,5 @@ namespace Phalanx.DataModel.Symbols
     public interface IResourceGroupSymbol : IResourceEntrySymbol
     {
         ImmutableArray<IResourceEntrySymbol> Resources { get; }
-        new IResourceGroupSymbol? ReferencedEntry { get; }
     }
 }

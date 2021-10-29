@@ -3,22 +3,23 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation
 {
-    public class SelectionEntrySymbol : SelectionEntryBaseSymbol, ISelectionEntrySymbol
+    public class SelectionEntryLinkSymbol : SelectionEntryBaseSymbol
     {
-        private readonly SelectionEntryNode declaration;
+        private readonly EntryLinkNode declaration;
 
-        public SelectionEntrySymbol(
+        public SelectionEntryLinkSymbol(
             ICatalogueItemSymbol containingSymbol,
-            SelectionEntryNode declaration,
+            EntryLinkNode declaration,
             Binder binder,
             BindingDiagnosticContext diagnostics)
             : base(containingSymbol, declaration, binder, diagnostics)
         {
             this.declaration = declaration;
+            ReferencedEntry = null; // TODO bind
         }
 
-        public override SymbolKind Kind => SymbolKind.Entry;
+        public override SymbolKind Kind => SymbolKind.Link;
 
-        public SelectionEntryKind EntryKind => declaration.Type;
+        public override ISelectionEntryContainerSymbol? ReferencedEntry { get; }
     }
 }

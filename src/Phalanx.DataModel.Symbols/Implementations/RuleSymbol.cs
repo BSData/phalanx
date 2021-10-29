@@ -13,12 +13,12 @@ namespace Phalanx.DataModel.Symbols.Implementation
             this.declaration = declaration;
         }
 
-        public IResourceDefinitionSymbol? Type => null;
-
         public override SymbolKind Kind => SymbolKind.Resource;
 
-        public string DescriptionText => declaration.Description ?? "";
+        public string DescriptionText => declaration.Description ?? string.Empty;
 
-        IRuleSymbol? IRuleSymbol.ReferencedEntry => null;
+        IResourceDefinitionSymbol? IResourceEntrySymbol.Type => null;
+
+        IResourceEntrySymbol? IResourceEntrySymbol.ReferencedEntry => null;
     }
 }

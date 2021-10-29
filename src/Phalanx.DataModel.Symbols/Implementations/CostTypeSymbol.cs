@@ -14,9 +14,5 @@ namespace Phalanx.DataModel.Symbols.Implementation
         }
 
         public override SymbolKind Kind => SymbolKind.ResourceType;
-
-        public override string Name => declaration.Name ?? "";
-
-        public string? Id => declaration.Id;
     }
 }

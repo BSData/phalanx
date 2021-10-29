@@ -7,6 +7,8 @@ namespace Phalanx.DataModel.Symbols
     /// </summary>
     public interface ICostSymbol : IResourceEntrySymbol
     {
+        decimal Value { get; }
+
         new ICostTypeSymbol Type { get; }
     }
 }

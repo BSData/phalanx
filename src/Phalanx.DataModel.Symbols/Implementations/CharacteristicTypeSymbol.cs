@@ -19,10 +19,6 @@ namespace Phalanx.DataModel.Symbols.Implementation
 
         public override SymbolKind Kind => SymbolKind.ResourceType;
 
-        public override string Name => declaration.Name ?? "";
-
         public IProfileTypeSymbol ContainingProfileType { get; }
-
-        public string? Id => declaration.Id;
     }
 }

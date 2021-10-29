@@ -7,5 +7,7 @@ namespace Phalanx.DataModel.Symbols
     public interface IResourceEntrySymbol : IEntrySymbol
     {
         IResourceDefinitionSymbol? Type { get; }
+
+        new IResourceEntrySymbol? ReferencedEntry { get; }
     }
 }

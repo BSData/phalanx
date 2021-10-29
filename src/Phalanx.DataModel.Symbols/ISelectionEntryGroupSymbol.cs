@@ -8,6 +8,5 @@ namespace Phalanx.DataModel.Symbols
     public interface ISelectionEntryGroupSymbol : ISelectionEntryContainerSymbol
     {
         ISelectionEntrySymbol? DefaultSelectionEntry { get; }
-        new ISelectionEntryGroupSymbol? ReferencedEntry { get; }
     }
 }

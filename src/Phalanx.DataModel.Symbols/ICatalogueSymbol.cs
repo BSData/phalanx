@@ -24,7 +24,7 @@ namespace Phalanx.DataModel.Symbols
 
         ImmutableArray<IResourceDefinitionSymbol> ResourceDefinitions { get; }
 
-        ImmutableArray<ISelectionEntrySymbol> RootEntries { get; }
+        ImmutableArray<IEntrySymbol> RootEntries { get; }
 
         ImmutableArray<IEntrySymbol> SharedEntries { get; }
     }

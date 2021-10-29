@@ -1,3 +1,5 @@
+using System.Collections.Immutable;
+
 namespace Phalanx.DataModel.Symbols
 {
     /// <summary>
@@ -12,6 +14,6 @@ namespace Phalanx.DataModel.Symbols
         /// </summary>
         new IProfileTypeSymbol Type { get; }
 
-        new IProfileSymbol? ReferencedEntry { get; }
+        ImmutableArray<ICharacteristicSymbol> Characteristics { get; }
     }
 }

@@ -44,9 +44,9 @@ namespace Phalanx.DataModel.Symbols.Implementation
             .AddRange(profileTypes)
             .AddRange(publications);
 
-        public ImmutableArray<ISelectionEntrySymbol> RootEntries => throw new System.NotImplementedException();
+        public ImmutableArray<IEntrySymbol> RootEntries { get; }
 
-        public ImmutableArray<IEntrySymbol> SharedEntries => throw new System.NotImplementedException();
+        public ImmutableArray<IEntrySymbol> SharedEntries { get; }
 
         public override SymbolKind Kind => SymbolKind.Catalogue;
 
