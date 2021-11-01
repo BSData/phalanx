@@ -8,7 +8,7 @@ namespace Phalanx.DataModel.Symbols.Implementation
         private readonly CostNode declaration;
 
         public CostSymbol(
-            ISymbol containingSymbol,
+            ICatalogueItemSymbol containingSymbol,
             CostNode declaration,
             Binder binder,
             BindingDiagnosticContext diagnostics)

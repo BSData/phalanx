@@ -5,8 +5,6 @@ namespace Phalanx.DataModel.Symbols.Implementation
 {
     public class CategoryLinkSymbol : ContainerEntryBaseSymbol, ICategoryEntrySymbol
     {
-        internal new CategoryLinkNode Declaration { get; }
-
         public CategoryLinkSymbol(
             ICatalogueItemSymbol containingSymbol,
             CategoryLinkNode declaration,
@@ -20,8 +18,10 @@ namespace Phalanx.DataModel.Symbols.Implementation
 
         public override SymbolKind Kind => SymbolKind.Link;
 
+        public bool IsPrimaryCategory => Declaration.Primary;
+
         public ICategoryEntrySymbol? ReferencedEntry { get; }
 
-        public bool IsPrimaryCategory => Declaration.Primary;
+        internal new CategoryLinkNode Declaration { get; }
     }
 }

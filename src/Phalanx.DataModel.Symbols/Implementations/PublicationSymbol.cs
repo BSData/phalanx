@@ -8,7 +8,10 @@ namespace Phalanx.DataModel.Symbols.Implementation
     {
         private readonly PublicationNode declaration;
 
-        public PublicationSymbol(ICatalogueSymbol containingSymbol, PublicationNode declaration, BindingDiagnosticContext diagnostics)
+        public PublicationSymbol(
+            ICatalogueSymbol containingSymbol,
+            PublicationNode declaration,
+            BindingDiagnosticContext diagnostics)
             : base(containingSymbol, declaration, diagnostics)
         {
             this.declaration = declaration;

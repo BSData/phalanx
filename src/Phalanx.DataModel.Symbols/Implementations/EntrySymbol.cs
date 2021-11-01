@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using Phalanx.DataModel.Symbols.Binding;
@@ -11,7 +10,7 @@ namespace Phalanx.DataModel.Symbols.Implementation
         internal EntryBaseNode Declaration { get; }
 
         protected EntrySymbol(
-            ISymbol containingSymbol,
+            ICatalogueItemSymbol containingSymbol,
             EntryBaseNode declaration,
             Binder binder,
             BindingDiagnosticContext diagnostics)
@@ -39,117 +38,7 @@ namespace Phalanx.DataModel.Symbols.Implementation
 
         IEntrySymbol? IEntrySymbol.ReferencedEntry => BaseReferencedEntry;
 
-        public static ImmutableArray<IResourceEntrySymbol> CreateResourceEntries(
-            ICatalogueItemSymbol containingSymbol,
-            ContainerEntryBaseNode node,
-            Binder binder,
-            BindingDiagnosticContext diagnostics)
-        {
-            return Core().ToImmutableArray();
-
-            IEnumerable<IResourceEntrySymbol> Core()
-            {
-                var costs = node switch
-                {
-                    SelectionEntryNode entry => entry.Costs.NodeList,
-                    EntryLinkNode link => link.Costs.NodeList,
-                    _ => default,
-                };
-                foreach (var item in costs)
-                {
-                    yield return CreateEntry(containingSymbol, item, binder, diagnostics);
-                }
-                foreach (var item in node.InfoGroups)
-                {
-                    yield return CreateEntry(containingSymbol, item, binder, diagnostics);
-                }
-                foreach (var item in node.InfoLinks)
-                {
-                    yield return CreateEntry(containingSymbol, item, binder, diagnostics);
-                }
-                foreach (var item in node.Profiles)
-                {
-                    yield return CreateEntry(containingSymbol, item, binder, diagnostics);
-                }
-                foreach (var item in node.Rules)
-                {
-                    yield return CreateEntry(containingSymbol, item, binder, diagnostics);
-                }
-            }
-        }
-
-        public static ImmutableArray<IResourceEntrySymbol> CreateResourceEntries(
-            ICatalogueItemSymbol containingSymbol,
-            InfoGroupNode node,
-            Binder binder,
-            BindingDiagnosticContext diagnostics)
-        {
-            return Core().ToImmutableArray();
-
-            IEnumerable<IResourceEntrySymbol> Core()
-            {
-                foreach (var item in node.InfoGroups)
-                {
-                    yield return CreateEntry(containingSymbol, item, binder, diagnostics);
-                }
-                foreach (var item in node.InfoLinks)
-                {
-                    yield return CreateEntry(containingSymbol, item, binder, diagnostics);
-                }
-                foreach (var item in node.Profiles)
-                {
-                    yield return CreateEntry(containingSymbol, item, binder, diagnostics);
-                }
-                foreach (var item in node.Rules)
-                {
-                    yield return CreateEntry(containingSymbol, item, binder, diagnostics);
-                }
-            }
-        }
-
-        public static ImmutableArray<ICategoryEntrySymbol> CreateCategoryEntries(
-            ICatalogueItemSymbol containingSymbol,
-            SelectionEntryBaseNode node,
-            Binder binder,
-            BindingDiagnosticContext diagnostics)
-        {
-            return Core().ToImmutableArray();
-
-            IEnumerable<ICategoryEntrySymbol> Core()
-            {
-                foreach (var item in node.CategoryLinks)
-                {
-                    yield return CreateEntry(containingSymbol, item, binder, diagnostics);
-                }
-            }
-        }
-
-        public static ImmutableArray<ISelectionEntryContainerSymbol> CreateSelectionEntryContainers(
-            ICatalogueItemSymbol containingSymbol,
-            SelectionEntryBaseNode node,
-            Binder binder,
-            BindingDiagnosticContext diagnostics)
-        {
-            return Core().ToImmutableArray();
-
-            IEnumerable<ISelectionEntryContainerSymbol> Core()
-            {
-                foreach (var item in node.EntryLinks)
-                {
-                    yield return CreateEntry(containingSymbol, item, binder, diagnostics);
-                }
-                foreach (var item in node.SelectionEntries)
-                {
-                    yield return CreateEntry(containingSymbol, item, binder, diagnostics);
-                }
-                foreach (var item in node.SelectionEntryGroups)
-                {
-                    yield return CreateEntry(containingSymbol, item, binder, diagnostics);
-                }
-            }
-        }
-
-        private static ISelectionEntryContainerSymbol CreateEntry(
+        public static ISelectionEntryContainerSymbol CreateEntry(
             ICatalogueItemSymbol containingSymbol,
             EntryLinkNode item,
             Binder binder,
@@ -158,7 +47,7 @@ namespace Phalanx.DataModel.Symbols.Implementation
             return new SelectionEntryLinkSymbol(containingSymbol, item, binder, diagnostics);
         }
 
-        private static IRuleSymbol CreateEntry(
+        public static IRuleSymbol CreateEntry(
             ICatalogueItemSymbol containingSymbol,
             RuleNode item,
             Binder binder,
@@ -167,7 +56,7 @@ namespace Phalanx.DataModel.Symbols.Implementation
             return new RuleSymbol(containingSymbol, item, binder, diagnostics);
         }
 
-        private static IProfileSymbol CreateEntry(
+        public static IProfileSymbol CreateEntry(
             ICatalogueItemSymbol containingSymbol,
             ProfileNode item,
             Binder binder,
@@ -176,7 +65,7 @@ namespace Phalanx.DataModel.Symbols.Implementation
             return new ProfileSymbol(containingSymbol, item, binder, diagnostics);
         }
 
-        private static IResourceEntrySymbol CreateEntry(
+        public static IResourceEntrySymbol CreateEntry(
             ICatalogueItemSymbol containingSymbol,
             InfoLinkNode item,
             Binder binder,
@@ -185,7 +74,7 @@ namespace Phalanx.DataModel.Symbols.Implementation
             return new ResourceLinkSymbol(containingSymbol, item, binder, diagnostics);
         }
 
-        private static IResourceGroupSymbol CreateEntry(
+        public static IResourceGroupSymbol CreateEntry(
             ICatalogueItemSymbol containingSymbol,
             InfoGroupNode item,
             Binder binder,
@@ -194,7 +83,7 @@ namespace Phalanx.DataModel.Symbols.Implementation
             return new ResourceGroupSymbol(containingSymbol, item, binder, diagnostics);
         }
 
-        private static ICostSymbol CreateEntry(
+        public static ICostSymbol CreateEntry(
             ICatalogueItemSymbol containingSymbol,
             CostNode item,
             Binder binder,
@@ -203,13 +92,31 @@ namespace Phalanx.DataModel.Symbols.Implementation
             return new CostSymbol(containingSymbol, item, binder, diagnostics);
         }
 
-        private static ICategoryEntrySymbol CreateEntry(
+        public static ICategoryEntrySymbol CreateEntry(
+            ICatalogueItemSymbol containingSymbol,
+            CategoryEntryNode item,
+            Binder binder,
+            BindingDiagnosticContext diagnostics)
+        {
+            return new CategoryEntrySymbol(containingSymbol, item, binder, diagnostics);
+        }
+
+        public static ICategoryEntrySymbol CreateEntry(
             ICatalogueItemSymbol containingSymbol,
             CategoryLinkNode item,
             Binder binder,
             BindingDiagnosticContext diagnostics)
         {
             return new CategoryLinkSymbol(containingSymbol, item, binder, diagnostics);
+        }
+
+        public static IForceEntrySymbol CreateEntry(
+            ICatalogueItemSymbol containingSymbol,
+            ForceEntryNode item,
+            Binder binder,
+            BindingDiagnosticContext diagnostics)
+        {
+            return new ForceEntrySymbol(containingSymbol, item, binder, diagnostics);
         }
 
         public static ISelectionEntryContainerSymbol CreateEntry(

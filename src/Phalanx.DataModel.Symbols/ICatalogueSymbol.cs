@@ -7,7 +7,7 @@ namespace Phalanx.DataModel.Symbols
     /// BS catalogue/gamesystem.
     /// WHAM <see cref="WarHub.ArmouryModel.Source.CatalogueBaseNode" />.
     /// </summary>
-    public interface ICatalogueSymbol : ISymbol
+    public interface ICatalogueSymbol : ISymbol, ICatalogueItemSymbol
     {
         bool IsLibrary { get; }
 
@@ -24,8 +24,12 @@ namespace Phalanx.DataModel.Symbols
 
         ImmutableArray<IResourceDefinitionSymbol> ResourceDefinitions { get; }
 
-        ImmutableArray<IEntrySymbol> RootEntries { get; }
+        ImmutableArray<IContainerEntrySymbol> RootContainerEntries { get; }
 
-        ImmutableArray<IEntrySymbol> SharedEntries { get; }
+        ImmutableArray<IResourceEntrySymbol> RootResourceEntries { get; }
+
+        ImmutableArray<ISelectionEntryContainerSymbol> SharedSelectionEntryContainers { get; }
+
+        ImmutableArray<IResourceEntrySymbol> SharedResourceEntries { get; }
     }
 }

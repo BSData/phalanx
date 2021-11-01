@@ -23,41 +23,41 @@ namespace Phalanx.DataModel.Symbols.Implementation
         public override ICatalogueItemSymbol ContainingSymbol { get; }
 
         public static ImmutableArray<IEffectSymbol> CreateEffects(
-            EntrySymbol entry,
-            Binder parentBinder,
+            EntrySymbol containingSymbol,
+            Binder binder,
             BindingDiagnosticContext diagnostics)
         {
             return CreateChildEffects().ToImmutableArray();
 
             IEnumerable<IEffectSymbol> CreateChildEffects()
             {
-                foreach (var item in entry.Declaration.Modifiers)
+                foreach (var item in containingSymbol.Declaration.Modifiers)
                 {
-                    yield return CreateEffect(entry, item, parentBinder, diagnostics);
+                    yield return CreateEffect(containingSymbol, item, binder, diagnostics);
                 }
-                foreach (var item in entry.Declaration.ModifierGroups)
+                foreach (var item in containingSymbol.Declaration.ModifierGroups)
                 {
-                    yield return CreateEffect(entry, item, parentBinder, diagnostics);
+                    yield return CreateEffect(containingSymbol, item, binder, diagnostics);
                 }
             }
         }
 
         public static IEffectSymbol CreateEffect(
-            ICatalogueItemSymbol parentSymbol,
+            ICatalogueItemSymbol containingSymbol,
             ModifierNode declaration,
-            Binder parentBinder,
+            Binder binder,
             BindingDiagnosticContext diagnostics)
         {
-            return new ModifierEffectSymbol(parentSymbol, declaration, diagnostics);
+            return new ModifierEffectSymbol(containingSymbol, declaration, diagnostics);
         }
 
         public static IEffectSymbol CreateEffect(
-            ICatalogueItemSymbol parentSymbol,
+            ICatalogueItemSymbol containingSymbol,
             ModifierGroupNode declaration,
-            Binder parentBinder,
+            Binder binder,
             BindingDiagnosticContext diagnostics)
         {
-            return new ModifierGroupEffectSymbol(parentSymbol, declaration, parentBinder, diagnostics);
+            return new ModifierGroupEffectSymbol(containingSymbol, declaration, binder, diagnostics);
         }
     }
 }

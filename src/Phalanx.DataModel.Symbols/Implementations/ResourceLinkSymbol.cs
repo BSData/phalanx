@@ -6,7 +6,7 @@ namespace Phalanx.DataModel.Symbols.Implementation
     public class ResourceLinkSymbol : EntrySymbol, IResourceEntrySymbol
     {
         public ResourceLinkSymbol(
-            ISymbol containingSymbol,
+            ICatalogueItemSymbol containingSymbol,
             InfoLinkNode declaration,
             Binder binder,
             BindingDiagnosticContext diagnostics)

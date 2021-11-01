@@ -7,7 +7,7 @@ namespace Phalanx.DataModel.Symbols.Implementation
     {
         public QuerySymbol(
             ICatalogueItemSymbol containingSymbol,
-            QueryBaseNode query,
+            QueryBaseNode declaration,
             BindingDiagnosticContext diagnostics)
             : base(containingSymbol)
         {

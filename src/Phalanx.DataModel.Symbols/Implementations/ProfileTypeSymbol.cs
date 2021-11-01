@@ -9,7 +9,10 @@ namespace Phalanx.DataModel.Symbols.Implementation
     {
         private readonly ProfileTypeNode declaration;
 
-        public ProfileTypeSymbol(ICatalogueSymbol containingSymbol, ProfileTypeNode declaration, BindingDiagnosticContext diagnostics)
+        public ProfileTypeSymbol(
+            ICatalogueSymbol containingSymbol,
+            ProfileTypeNode declaration,
+            BindingDiagnosticContext diagnostics)
             : base(containingSymbol, declaration, diagnostics)
         {
             this.declaration = declaration;

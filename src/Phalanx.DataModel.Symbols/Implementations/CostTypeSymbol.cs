@@ -7,7 +7,10 @@ namespace Phalanx.DataModel.Symbols.Implementation
     {
         private readonly CostTypeNode declaration;
 
-        public CostTypeSymbol(ICatalogueSymbol containingSymbol, CostTypeNode declaration, BindingDiagnosticContext diagnostics)
+        public CostTypeSymbol(
+            ICatalogueSymbol containingSymbol,
+            CostTypeNode declaration,
+            BindingDiagnosticContext diagnostics)
             : base(containingSymbol, declaration, diagnostics)
         {
             this.declaration = declaration;

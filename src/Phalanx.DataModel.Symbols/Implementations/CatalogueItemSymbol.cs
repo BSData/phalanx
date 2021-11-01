@@ -6,13 +6,11 @@ namespace Phalanx.DataModel.Symbols.Implementation
     public abstract class CatalogueItemSymbol : Symbol, ICatalogueItemSymbol
     {
         protected CatalogueItemSymbol(
-            ISymbol containingSymbol,
+            ICatalogueItemSymbol containingSymbol,
             SourceNode declaration,
             BindingDiagnosticContext diagnostics)
         {
-            ContainingSymbol = containingSymbol;
-            ContainingCatalogue = (containingSymbol as ICatalogueSymbol)
-                ?? ((ICatalogueItemSymbol)containingSymbol).ContainingCatalogue;
+            ContainingSymbolCore = containingSymbol;
             Id = (declaration as IIdentifiableNode)?.Id;
             Name = (declaration as INameableNode)?.Name ?? string.Empty;
             Comment = (declaration as CommentableNode)?.Comment;
@@ -24,8 +22,10 @@ namespace Phalanx.DataModel.Symbols.Implementation
 
         public sealed override string? Comment { get; }
 
-        public sealed override ISymbol ContainingSymbol { get; }
+        public sealed override ISymbol ContainingSymbol => ContainingSymbolCore;
 
-        public ICatalogueSymbol ContainingCatalogue { get; }
+        protected ICatalogueItemSymbol ContainingSymbolCore { get; }
+
+        public ICatalogueSymbol ContainingCatalogue => ContainingSymbolCore.ContainingCatalogue;
     }
 }

@@ -7,7 +7,7 @@ namespace Phalanx.DataModel.Symbols.Implementation
     public abstract class SimpleResourceEntrySymbol : CatalogueItemSymbol, IResourceEntrySymbol
     {
         public SimpleResourceEntrySymbol(
-            ISymbol containingSymbol,
+            ICatalogueItemSymbol containingSymbol,
             SourceNode declaration,
             BindingDiagnosticContext diagnostics)
             : base(containingSymbol, declaration, diagnostics)

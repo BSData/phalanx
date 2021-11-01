@@ -1,28 +1,40 @@
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
-using WarHub.ArmouryModel.SourceAnalysis;
 
 namespace Phalanx.DataModel.Symbols.Implementation
 {
     public class CatalogueSymbol : CatalogueBaseSymbol
     {
-        private readonly CatalogueNode node;
-
-        public CatalogueSymbol(CatalogueNode node, GamesystemContext context, BindingDiagnosticContext diagnostics)
-            : base(node, context, diagnostics)
+        public CatalogueSymbol(
+            IDatasetSymbol containingSymbol,
+            CatalogueNode declaration,
+            Binder binder,
+            BindingDiagnosticContext diagnostics)
+            : base(containingSymbol, declaration, binder, diagnostics)
         {
-            this.node = node;
-            // TODO bind GamesystemSymbol
-            // TODO bind Imports
+            Declaration = declaration;
+            Gamesystem = null!; // TODO bind
+            Imports = CreateLinks().ToImmutableArray();
+
+            IEnumerable<ICatalogueReferenceSymbol> CreateLinks()
+            {
+                foreach (var item in declaration.CatalogueLinks)
+                {
+                    yield return new CatalogueReferenceSymbol(this, item, binder, diagnostics);
+                }
+            }
         }
 
-        public override bool IsLibrary => node.IsLibrary;
+        public override bool IsLibrary => Declaration.IsLibrary;
 
         public override bool IsGamesystem => false;
 
-        public override ICatalogueSymbol Gamesystem => throw new System.NotImplementedException();
+        public override ICatalogueSymbol Gamesystem { get; }
 
         public override ImmutableArray<ICatalogueReferenceSymbol> Imports { get; }
+
+        internal CatalogueNode Declaration { get; }
     }
 }

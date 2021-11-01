@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Phalanx.DataModel.Symbols.Binding;
@@ -14,9 +15,32 @@ namespace Phalanx.DataModel.Symbols.Implementation
             BindingDiagnosticContext diagnostics)
             : base(containingSymbol, declaration, binder, diagnostics)
         {
-            Categories = CreateCategoryEntries(this, declaration, binder, diagnostics);
+            Categories = CreateCategoryEntries().ToImmutableArray();
             PrimaryCategory = Categories.FirstOrDefault(x => x.IsPrimaryCategory);
-            ChildSelectionEntries = CreateSelectionEntryContainers(this, declaration, binder, diagnostics);
+            ChildSelectionEntries = CreateSelectionEntryContainers().ToImmutableArray();
+
+            IEnumerable<ICategoryEntrySymbol> CreateCategoryEntries()
+            {
+                foreach (var item in declaration.CategoryLinks)
+                {
+                    yield return CreateEntry(this, item, binder, diagnostics);
+                }
+            }
+            IEnumerable<ISelectionEntryContainerSymbol> CreateSelectionEntryContainers()
+            {
+                foreach (var item in declaration.EntryLinks)
+                {
+                    yield return CreateEntry(this, item, binder, diagnostics);
+                }
+                foreach (var item in declaration.SelectionEntries)
+                {
+                    yield return CreateEntry(this, item, binder, diagnostics);
+                }
+                foreach (var item in declaration.SelectionEntryGroups)
+                {
+                    yield return CreateEntry(this, item, binder, diagnostics);
+                }
+            }
         }
 
         public virtual ISelectionEntryContainerSymbol? ReferencedEntry => null;
