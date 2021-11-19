@@ -1,25 +1,24 @@
-namespace Phalanx.DataModel.Symbols
+namespace Phalanx.DataModel.Symbols;
+
+/// <summary>
+/// The general interface for all symbols to derive from.
+/// </summary>
+public interface ISymbol
 {
+    SymbolKind Kind { get; }
+
     /// <summary>
-    /// The general interface for all symbols to derive from.
+    /// Name of given symbol, or empty string if the symbol has no name.
     /// </summary>
-    public interface ISymbol
-    {
-        SymbolKind Kind { get; }
+    string Name { get; }
 
-        /// <summary>
-        /// Name of given symbol, or empty string if the symbol has no name.
-        /// </summary>
-        string Name { get; }
+    /// <summary>
+    /// Data author comment.
+    /// </summary>
+    string? Comment { get; }
 
-        /// <summary>
-        /// Data author comment.
-        /// </summary>
-        string? Comment { get; }
-
-        /// <summary>
-        /// The parent symbol.
-        /// </summary>
-        ISymbol ContainingSymbol { get; }
-    }
+    /// <summary>
+    /// The parent symbol.
+    /// </summary>
+    ISymbol ContainingSymbol { get; }
 }

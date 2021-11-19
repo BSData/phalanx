@@ -1,33 +1,32 @@
-namespace Phalanx.DataModel.Symbols
+namespace Phalanx.DataModel.Symbols;
+
+public enum SymbolKind
 {
-    public enum SymbolKind
-    {
-        // catalogue, gamesystem (special kind of catalogue)
-        Catalogue,
+    // catalogue, gamesystem (special kind of catalogue)
+    Catalogue,
 
-        // selection entry, selection entry group, force entry?, category entry?
-        Entry,
+    // selection entry, selection entry group, force entry?, category entry?
+    Entry,
 
-        // condition, constraint, modifier, modifier group, repeat
-        Logic,
+    // condition, constraint, modifier, modifier group, repeat
+    Logic,
 
-        // characteristic type, cost type, profile type, category entry?
-        ResourceType,
+    // characteristic type, cost type, profile type, category entry?
+    ResourceType,
 
-        // characteristics, costs, profiles, rules, info groups?, categories?, publications?
-        Resource,
+    // characteristics, costs, profiles, rules, info groups?, categories?, publications?
+    Resource,
 
-        // all kinds of links
-        Link,
+    // all kinds of links
+    Link,
 
-        // roster
-        Roster,
+    // roster
+    Roster,
 
-        // force in roster
-        Force,
+    // force in roster
+    Force,
 
-        // roster selection
-        Selection,
+    // roster selection
+    Selection,
 
-    }
 }

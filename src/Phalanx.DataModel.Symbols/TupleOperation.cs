@@ -1,9 +1,8 @@
-namespace Phalanx.DataModel.Symbols
+namespace Phalanx.DataModel.Symbols;
+
+public enum TupleOperation
 {
-    public enum TupleOperation
-    {
-        Unknown,
-        And, // conjuction
-        Or, // disjunction
-    }
+    Unknown,
+    And, // conjuction
+    Or, // disjunction
 }

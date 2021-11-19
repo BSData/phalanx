@@ -1,14 +1,13 @@
 using System.Collections.Immutable;
 
-namespace Phalanx.DataModel.Symbols
+namespace Phalanx.DataModel.Symbols;
+
+/// <summary>
+/// Defines profile type.
+/// BS ProfileType.
+/// WHAM <see cref="WarHub.ArmouryModel.Source.ProfileTypeNode" />.
+/// </summary>
+public interface IProfileTypeSymbol : IResourceDefinitionSymbol
 {
-    /// <summary>
-    /// Defines profile type.
-    /// BS ProfileType.
-    /// WHAM <see cref="WarHub.ArmouryModel.Source.ProfileTypeNode" />.
-    /// </summary>
-    public interface IProfileTypeSymbol : IResourceDefinitionSymbol
-    {
-        ImmutableArray<ICharacteristicTypeSymbol> CharacteristicTypes { get; }
-    }
+    ImmutableArray<ICharacteristicTypeSymbol> CharacteristicTypes { get; }
 }

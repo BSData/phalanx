@@ -1,6 +1,5 @@
-﻿namespace WarHub.ArmouryModel.SourceAnalysis
+﻿namespace WarHub.ArmouryModel.SourceAnalysis;
+
+public abstract class ReferenceErrorInfo : Diagnostic
 {
-    public abstract class ReferenceErrorInfo : Diagnostic
-    {
-    }
 }

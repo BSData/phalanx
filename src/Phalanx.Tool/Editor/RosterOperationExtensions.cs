@@ -1,8 +1,7 @@
-namespace Phalanx.Tool.Editor
+namespace Phalanx.Tool.Editor;
+
+public static class RosterOperationExtensions
 {
-    public static class RosterOperationExtensions
-    {
-        public static ChainedRosterOperation With(this IRosterOperation @this, IRosterOperation operation) =>
-            ChainedRosterOperation.Create(@this, operation);
-    }
+    public static ChainedRosterOperation With(this IRosterOperation @this, IRosterOperation operation) =>
+        ChainedRosterOperation.Create(@this, operation);
 }

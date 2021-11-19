@@ -1,12 +1,11 @@
-namespace Phalanx.DataModel.Symbols
+namespace Phalanx.DataModel.Symbols;
+
+/// <summary>
+/// Selection entry group.
+/// BS SelectionEntryGroup/EntryLink@type=group.
+/// WHAM <see cref="WarHub.ArmouryModel.Source.SelectionEntryGroupNode" />.
+/// </summary>
+public interface ISelectionEntryGroupSymbol : ISelectionEntryContainerSymbol
 {
-    /// <summary>
-    /// Selection entry group.
-    /// BS SelectionEntryGroup/EntryLink@type=group.
-    /// WHAM <see cref="WarHub.ArmouryModel.Source.SelectionEntryGroupNode" />.
-    /// </summary>
-    public interface ISelectionEntryGroupSymbol : ISelectionEntryContainerSymbol
-    {
-        ISelectionEntrySymbol? DefaultSelectionEntry { get; }
-    }
+    ISelectionEntrySymbol? DefaultSelectionEntry { get; }
 }

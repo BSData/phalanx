@@ -1,11 +1,10 @@
 ﻿using WarHub.ArmouryModel.Source;
 
-namespace WarHub.ArmouryModel.SourceAnalysis
+namespace WarHub.ArmouryModel.SourceAnalysis;
+
+public interface IReferenceTargetInfo
 {
-    public interface IReferenceTargetInfo
-    {
-        bool IsResolved { get; }
-        SourceNode? TargetNode { get; }
-        ReferenceErrorInfo? ErrorInfo { get; }
-    }
+    bool IsResolved { get; }
+    SourceNode? TargetNode { get; }
+    ReferenceErrorInfo? ErrorInfo { get; }
 }

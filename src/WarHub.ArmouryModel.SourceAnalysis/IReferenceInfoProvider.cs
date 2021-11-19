@@ -1,9 +1,8 @@
 ﻿using WarHub.ArmouryModel.Source;
 
-namespace WarHub.ArmouryModel.SourceAnalysis
+namespace WarHub.ArmouryModel.SourceAnalysis;
+
+public interface IReferenceInfoProvider
 {
-    public interface IReferenceInfoProvider
-    {
-        IReferenceSourceIndex GetReferences(SourceNode node);
-    }
+    IReferenceSourceIndex GetReferences(SourceNode node);
 }

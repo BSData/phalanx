@@ -1,9 +1,8 @@
-namespace Phalanx.DataModel.Symbols.Implementation
+namespace Phalanx.DataModel.Symbols.Implementation;
+
+public abstract class EffectSymbol : LogicSymbol, IEffectSymbol
 {
-    public abstract class EffectSymbol : LogicSymbol, IEffectSymbol
+    public EffectSymbol(ICatalogueItemSymbol containingSymbol) : base(containingSymbol)
     {
-        public EffectSymbol(ICatalogueItemSymbol containingSymbol) : base(containingSymbol)
-        {
-        }
     }
 }

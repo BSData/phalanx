@@ -1,14 +1,13 @@
-namespace Phalanx.DataModel.Symbols
+namespace Phalanx.DataModel.Symbols;
+
+public enum QueryComparisonType
 {
-    public enum QueryComparisonType
-    {
-        Unknown,
-        Equal,
-        NotEqual,
-        LessThan,
-        LessThanOrEqual,
-        GreaterThan,
-        GreaterThanOrEqual
-        // etc
-    }
+    Unknown,
+    Equal,
+    NotEqual,
+    LessThan,
+    LessThanOrEqual,
+    GreaterThan,
+    GreaterThanOrEqual
+    // etc
 }

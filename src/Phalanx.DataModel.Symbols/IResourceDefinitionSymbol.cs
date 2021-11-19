@@ -1,10 +1,9 @@
-namespace Phalanx.DataModel.Symbols
+namespace Phalanx.DataModel.Symbols;
+
+/// <summary>
+/// Umbrella type for all statically defined resources used in other entries.
+/// </summary>
+public interface IResourceDefinitionSymbol : ICatalogueItemSymbol
 {
-    /// <summary>
-    /// Umbrella type for all statically defined resources used in other entries.
-    /// </summary>
-    public interface IResourceDefinitionSymbol : ICatalogueItemSymbol
-    {
-        string? Id { get; }
-    }
+    string? Id { get; }
 }

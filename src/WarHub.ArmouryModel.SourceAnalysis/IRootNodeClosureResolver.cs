@@ -1,9 +1,8 @@
 ﻿using WarHub.ArmouryModel.Source;
 
-namespace WarHub.ArmouryModel.SourceAnalysis
+namespace WarHub.ArmouryModel.SourceAnalysis;
+
+public interface IRootNodeClosureResolver
 {
-    public interface IRootNodeClosureResolver
-    {
-        IRootNodeClosure? GetRootClosure(SourceNode node);
-    }
+    IRootNodeClosure? GetRootClosure(SourceNode node);
 }

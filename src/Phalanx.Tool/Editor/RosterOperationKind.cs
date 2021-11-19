@@ -1,18 +1,17 @@
-namespace Phalanx.Tool.Editor
+namespace Phalanx.Tool.Editor;
+
+/// <summary>
+/// A type of single, atomic change in roster.
+/// </summary>
+public enum RosterOperationKind
 {
-    /// <summary>
-    /// A type of single, atomic change in roster.
-    /// </summary>
-    public enum RosterOperationKind
-    {
-        Unknown,
-        CreateRoster,
-        AddSelection,
-        RemoveSelection,
-        ModifySelectionCount,
-        AddForce,
-        RemoveForce,
-        ModifyCostLimits,
-        ModifyTextField,
-    }
+    Unknown,
+    CreateRoster,
+    AddSelection,
+    RemoveSelection,
+    ModifySelectionCount,
+    AddForce,
+    RemoveForce,
+    ModifyCostLimits,
+    ModifyTextField,
 }
