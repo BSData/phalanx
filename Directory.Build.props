@@ -1,12 +1,14 @@
 <Project>
 
   <PropertyGroup>
-    <LangVersion>9</LangVersion>
+    <LangVersion>10</LangVersion>
     <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
     <Authors>Amadeusz Sadowski and contributors</Authors>
     <Company>BSData</Company>
     <Copyright>Copyright © $(Authors)</Copyright>
     <IsPackable>false</IsPackable>
+    <CommonTargetFramework>net6.0</CommonTargetFramework>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -22,5 +24,9 @@
     <!-- Error out on warnings when releasing -->
     <MSBuildTreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</MSBuildTreatWarningsAsErrors>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="System.Collections.Immutable" />
+  </ItemGroup>
 
 </Project>
