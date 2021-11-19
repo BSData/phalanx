@@ -1,5 +1,3 @@
-using System.Collections.Immutable;
-
 namespace Phalanx.DataModel.Symbols.Implementation;
 
 public abstract class TupleOperationConditionSymbol : EffectSymbol, ITupleOperationConditionSymbol

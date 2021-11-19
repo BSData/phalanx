@@ -1,4 +1,3 @@
-using System;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Binding;

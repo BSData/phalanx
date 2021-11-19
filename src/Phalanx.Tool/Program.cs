@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Immutable;
-using Phalanx.Tool.Editor;
+﻿using Phalanx.Tool.Editor;
 using WarHub.ArmouryModel.Source;
 using WarHub.ArmouryModel.SourceAnalysis;
 using static WarHub.ArmouryModel.Source.NodeFactory;

@@ -1,5 +1,3 @@
-using System;
-
 namespace Phalanx.Tool.Editor;
 
 /// <summary>
