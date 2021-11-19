@@ -5,7 +5,7 @@ namespace Phalanx.DataModel.Symbols
     /// BS Selection.
     /// WHAM <see cref="WarHub.ArmouryModel.Source.SelectionNode" />.
     /// </summary>
-    public interface ISelectionSymbol : IForceOrSelectionSymbol
+    public interface ISelectionSymbol : IRosterSelectionTreeElementSymbol
     {
         /// <summary>
         /// Selection count, or the number of times that selection is "taken".
@@ -14,6 +14,6 @@ namespace Phalanx.DataModel.Symbols
 
         new ISelectionEntrySymbol SourceEntry { get; }
 
-        IForceOrSelectionSymbol Parent { get; }
+        IRosterSelectionTreeElementSymbol Parent { get; }
     }
 }

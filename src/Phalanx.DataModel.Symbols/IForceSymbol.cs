@@ -7,7 +7,7 @@ namespace Phalanx.DataModel.Symbols
     /// BS Force.
     /// WHAM <see cref="WarHub.ArmouryModel.Source.ForceNode" />.
     /// </summary>
-    public interface IForceSymbol : IForceOrSelectionSymbol
+    public interface IForceSymbol : IRosterSelectionTreeElementSymbol
     {
         new IForceEntrySymbol SourceEntry { get; }
 
