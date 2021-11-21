@@ -4,10 +4,9 @@ public class EntryPublicationReferenceSymbol : Symbol, IPublicationReferenceSymb
 {
     private readonly EntrySymbol containingSymbol;
 
-    public EntryPublicationReferenceSymbol(EntrySymbol containingSymbol, IPublicationSymbol publication)
+    public EntryPublicationReferenceSymbol(EntrySymbol containingSymbol)
     {
         this.containingSymbol = containingSymbol;
-        Publication = publication;
     }
 
     public override SymbolKind Kind => SymbolKind.Link;
@@ -20,7 +19,9 @@ public class EntryPublicationReferenceSymbol : Symbol, IPublicationReferenceSymb
 
     public IEntrySymbol ContainingEntrySymbol => containingSymbol;
 
-    public IPublicationSymbol Publication { get; }
+    public IPublicationSymbol Publication { get; } = null!; // TODO bind
 
     public string Page => containingSymbol.Declaration.Page ?? "";
+
+    internal override Compilation DeclaringCompilation => containingSymbol.DeclaringCompilation;
 }

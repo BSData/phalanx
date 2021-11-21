@@ -8,5 +8,7 @@ public abstract class Symbol : ISymbol
 
     public abstract string? Comment { get; }
 
-    public abstract ISymbol ContainingSymbol { get; }
+    public abstract ISymbol? ContainingSymbol { get; }
+
+    internal abstract Compilation DeclaringCompilation { get; }
 }

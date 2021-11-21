@@ -1,4 +1,3 @@
-using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
@@ -8,8 +7,7 @@ public class ModifierGroupEffectSymbol : EffectSymbol, IConditionalEffectSymbol
     public ModifierGroupEffectSymbol(
         ICatalogueItemSymbol containingSymbol,
         ModifierGroupNode declaration,
-        Binder parentBinder,
-        BindingDiagnosticContext diagnostics)
+        DiagnosticBag diagnostics)
         : base(containingSymbol)
     {
         // BS_SPEC: modifier group creates a scope: all modifiers (and sub groups)
@@ -19,6 +17,7 @@ public class ModifierGroupEffectSymbol : EffectSymbol, IConditionalEffectSymbol
         // is satisfied, emulating the AND behavior.
         if (declaration.Repeats.Count > 0)
         {
+            // TODO implement repeats
             // TODO consider what happens when there are both repeats and conditions
             // create a loop effect
             diagnostics.Add("Repeats not implemented, ignoring");
@@ -30,11 +29,11 @@ public class ModifierGroupEffectSymbol : EffectSymbol, IConditionalEffectSymbol
         {
             foreach (var item in declaration.Modifiers)
             {
-                yield return CreateEffect(this, item, parentBinder, diagnostics);
+                yield return CreateEffect(this, item, diagnostics);
             }
             foreach (var item in declaration.ModifierGroups)
             {
-                yield return CreateEffect(this, item, parentBinder, diagnostics);
+                yield return CreateEffect(this, item, diagnostics);
             }
         }
     }

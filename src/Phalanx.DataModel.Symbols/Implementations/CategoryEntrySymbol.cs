@@ -1,4 +1,3 @@
-using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
@@ -8,9 +7,8 @@ public class CategoryEntrySymbol : ContainerEntryBaseSymbol, ICategoryEntrySymbo
     public CategoryEntrySymbol(
         ICatalogueItemSymbol containingSymbol,
         CategoryEntryNode declaration,
-        Binder binder,
-        BindingDiagnosticContext diagnostics)
-        : base(containingSymbol, declaration, binder, diagnostics)
+        DiagnosticBag diagnostics)
+        : base(containingSymbol, declaration, diagnostics)
     {
         Declaration = declaration;
     }

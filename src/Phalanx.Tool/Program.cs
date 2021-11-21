@@ -49,6 +49,7 @@ class Program
         {
             Change(change);
             Console.WriteLine($">>>>>>>>>> {documentationText} <<<<<<<<<<");
+            Console.WriteLine();
             PrintRoster();
             Console.WriteLine();
         }

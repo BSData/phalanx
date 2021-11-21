@@ -1,27 +1,23 @@
-using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public abstract class EntrySymbol : CatalogueItemSymbol, IEntrySymbol
+public abstract class EntrySymbol : SourceCatalogueItemSymbol, IEntrySymbol
 {
     internal EntryBaseNode Declaration { get; }
 
     protected EntrySymbol(
         ICatalogueItemSymbol containingSymbol,
         EntryBaseNode declaration,
-        Binder binder,
-        BindingDiagnosticContext diagnostics)
-        : base(containingSymbol, declaration, diagnostics)
+        DiagnosticBag diagnostics)
+        : base(containingSymbol, declaration)
     {
         Declaration = declaration;
-        // consider binding at later stage
-        var publication = binder.BindPublicationSymbol(declaration);
-        if (publication is not null)
+        if (declaration.PublicationId is not null)
         {
-            PublicationReference = new EntryPublicationReferenceSymbol(this, publication);
+            PublicationReference = new EntryPublicationReferenceSymbol(this);
         }
-        Effects = LogicSymbol.CreateEffects(this, binder, diagnostics);
+        Effects = LogicSymbol.CreateEffects(this, diagnostics);
     }
 
     public bool IsHidden => Declaration.Hidden;
@@ -39,99 +35,88 @@ public abstract class EntrySymbol : CatalogueItemSymbol, IEntrySymbol
     public static ISelectionEntryContainerSymbol CreateEntry(
         ICatalogueItemSymbol containingSymbol,
         EntryLinkNode item,
-        Binder binder,
-        BindingDiagnosticContext diagnostics)
+        DiagnosticBag diagnostics)
     {
-        return new SelectionEntryLinkSymbol(containingSymbol, item, binder, diagnostics);
+        return new SelectionEntryLinkSymbol(containingSymbol, item, diagnostics);
     }
 
     public static IRuleSymbol CreateEntry(
         ICatalogueItemSymbol containingSymbol,
         RuleNode item,
-        Binder binder,
-        BindingDiagnosticContext diagnostics)
+        DiagnosticBag diagnostics)
     {
-        return new RuleSymbol(containingSymbol, item, binder, diagnostics);
+        return new RuleSymbol(containingSymbol, item, diagnostics);
     }
 
     public static IProfileSymbol CreateEntry(
         ICatalogueItemSymbol containingSymbol,
         ProfileNode item,
-        Binder binder,
-        BindingDiagnosticContext diagnostics)
+        DiagnosticBag diagnostics)
     {
-        return new ProfileSymbol(containingSymbol, item, binder, diagnostics);
+        return new ProfileSymbol(containingSymbol, item, diagnostics);
     }
 
     public static IResourceEntrySymbol CreateEntry(
         ICatalogueItemSymbol containingSymbol,
         InfoLinkNode item,
-        Binder binder,
-        BindingDiagnosticContext diagnostics)
+        DiagnosticBag diagnostics)
     {
-        return new ResourceLinkSymbol(containingSymbol, item, binder, diagnostics);
+        return new ResourceLinkSymbol(containingSymbol, item, diagnostics);
     }
 
     public static IResourceGroupSymbol CreateEntry(
         ICatalogueItemSymbol containingSymbol,
         InfoGroupNode item,
-        Binder binder,
-        BindingDiagnosticContext diagnostics)
+        DiagnosticBag diagnostics)
     {
-        return new ResourceGroupSymbol(containingSymbol, item, binder, diagnostics);
+        return new ResourceGroupSymbol(containingSymbol, item, diagnostics);
     }
 
     public static ICostSymbol CreateEntry(
         ICatalogueItemSymbol containingSymbol,
         CostNode item,
-        Binder binder,
-        BindingDiagnosticContext diagnostics)
+        DiagnosticBag diagnostics)
     {
-        return new CostSymbol(containingSymbol, item, binder, diagnostics);
+        return new CostSymbol(containingSymbol, item, diagnostics);
     }
 
     public static ICategoryEntrySymbol CreateEntry(
         ICatalogueItemSymbol containingSymbol,
         CategoryEntryNode item,
-        Binder binder,
-        BindingDiagnosticContext diagnostics)
+        DiagnosticBag diagnostics)
     {
-        return new CategoryEntrySymbol(containingSymbol, item, binder, diagnostics);
+        return new CategoryEntrySymbol(containingSymbol, item, diagnostics);
     }
 
     public static ICategoryEntrySymbol CreateEntry(
         ICatalogueItemSymbol containingSymbol,
         CategoryLinkNode item,
-        Binder binder,
-        BindingDiagnosticContext diagnostics)
+        DiagnosticBag diagnostics)
     {
-        return new CategoryLinkSymbol(containingSymbol, item, binder, diagnostics);
+        return new CategoryLinkSymbol(containingSymbol, item, diagnostics);
     }
 
     public static IForceEntrySymbol CreateEntry(
         ICatalogueItemSymbol containingSymbol,
         ForceEntryNode item,
-        Binder binder,
-        BindingDiagnosticContext diagnostics)
+        DiagnosticBag diagnostics)
     {
-        return new ForceEntrySymbol(containingSymbol, item, binder, diagnostics);
+        return new ForceEntrySymbol(containingSymbol, item, diagnostics);
     }
 
     public static ISelectionEntryContainerSymbol CreateEntry(
         ICatalogueItemSymbol containingSymbol,
         SelectionEntryNode node,
-        Binder binder,
-        BindingDiagnosticContext diagnostics)
+        DiagnosticBag diagnostics)
     {
-        return new SelectionEntrySymbol(containingSymbol, node, binder, diagnostics);
+        return new SelectionEntrySymbol(containingSymbol, node, diagnostics);
     }
 
     public static ISelectionEntryContainerSymbol CreateEntry(
         ICatalogueItemSymbol containingSymbol,
         SelectionEntryGroupNode node,
-        Binder binder,
-        BindingDiagnosticContext diagnostics)
+        DiagnosticBag diagnostics)
     {
-        return new SelectionEntryGroupSymbol(containingSymbol, node, binder, diagnostics);
+        return new SelectionEntryGroupSymbol(containingSymbol, node, diagnostics);
     }
 }

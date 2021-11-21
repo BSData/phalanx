@@ -20,5 +20,5 @@ public interface ISymbol
     /// <summary>
     /// The parent symbol.
     /// </summary>
-    ISymbol ContainingSymbol { get; }
+    ISymbol? ContainingSymbol { get; }
 }

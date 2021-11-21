@@ -1,16 +1,11 @@
-using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public class CatalogueReferenceSymbol : CatalogueItemSymbol, ICatalogueReferenceSymbol
+public class CatalogueReferenceSymbol : SourceCatalogueItemSymbol, ICatalogueReferenceSymbol
 {
-    public CatalogueReferenceSymbol(
-        ICatalogueSymbol containingSymbol,
-        CatalogueLinkNode declaration,
-        Binder binder,
-        BindingDiagnosticContext diagnostics)
-        : base(containingSymbol, declaration, diagnostics)
+    public CatalogueReferenceSymbol(ICatalogueSymbol containingSymbol, CatalogueLinkNode declaration)
+        : base(containingSymbol, declaration)
     {
         Declaration = declaration;
         Catalogue = null!; // TODO bind

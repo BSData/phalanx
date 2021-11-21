@@ -1,17 +1,16 @@
-using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public class PublicationSymbol : CatalogueItemSymbol, IPublicationSymbol
+public class PublicationSymbol : SourceCatalogueItemSymbol, IPublicationSymbol
 {
     private readonly PublicationNode declaration;
 
     public PublicationSymbol(
         ICatalogueSymbol containingSymbol,
         PublicationNode declaration,
-        BindingDiagnosticContext diagnostics)
-        : base(containingSymbol, declaration, diagnostics)
+        DiagnosticBag diagnostics)
+        : base(containingSymbol, declaration)
     {
         this.declaration = declaration;
     }

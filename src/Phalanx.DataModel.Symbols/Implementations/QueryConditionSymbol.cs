@@ -10,7 +10,7 @@ public class QueryConditionSymbol : EffectSymbol, IQueryConditionSymbol
     public QueryConditionSymbol(
         ICatalogueItemSymbol containingSymbol,
         ConditionNode declaration,
-        BindingDiagnosticContext diagnostics)
+        DiagnosticBag diagnostics)
         : base(containingSymbol)
     {
         this.declaration = declaration;

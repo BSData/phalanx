@@ -1,4 +1,3 @@
-using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
@@ -10,9 +9,8 @@ public class ProfileSymbol : EntrySymbol, IProfileSymbol
     public ProfileSymbol(
         ICatalogueItemSymbol containingSymbol,
         ProfileNode declaration,
-        Binder binder,
-        BindingDiagnosticContext diagnostics)
-        : base(containingSymbol, declaration, binder, diagnostics)
+        DiagnosticBag diagnostics)
+        : base(containingSymbol, declaration, diagnostics)
     {
         this.declaration = declaration;
         Type = null!; // TODO bind
@@ -22,7 +20,7 @@ public class ProfileSymbol : EntrySymbol, IProfileSymbol
         {
             foreach (var item in declaration.Characteristics)
             {
-                yield return new CharacteristicSymbol(this, item, binder, diagnostics);
+                yield return new CharacteristicSymbol(this, item, diagnostics);
             }
         }
     }

@@ -1,13 +1,12 @@
-using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public abstract class LogicSymbol : Symbol, IConditionSymbol
+public abstract class LogicSymbol : CatalogueItemSymbol, IConditionSymbol
 {
     public LogicSymbol(ICatalogueItemSymbol containingSymbol)
+        : base(containingSymbol)
     {
-        ContainingSymbol = containingSymbol;
     }
 
     public override string Name => "";
@@ -16,14 +15,9 @@ public abstract class LogicSymbol : Symbol, IConditionSymbol
 
     public override SymbolKind Kind => SymbolKind.Logic;
 
-    public ICatalogueSymbol ContainingCatalogue => ContainingSymbol.ContainingCatalogue;
-
-    public override ICatalogueItemSymbol ContainingSymbol { get; }
-
     public static ImmutableArray<IEffectSymbol> CreateEffects(
         EntrySymbol containingSymbol,
-        Binder binder,
-        BindingDiagnosticContext diagnostics)
+        DiagnosticBag diagnostics)
     {
         return CreateChildEffects().ToImmutableArray();
 
@@ -31,11 +25,11 @@ public abstract class LogicSymbol : Symbol, IConditionSymbol
         {
             foreach (var item in containingSymbol.Declaration.Modifiers)
             {
-                yield return CreateEffect(containingSymbol, item, binder, diagnostics);
+                yield return CreateEffect(containingSymbol, item, diagnostics);
             }
             foreach (var item in containingSymbol.Declaration.ModifierGroups)
             {
-                yield return CreateEffect(containingSymbol, item, binder, diagnostics);
+                yield return CreateEffect(containingSymbol, item, diagnostics);
             }
         }
     }
@@ -43,8 +37,7 @@ public abstract class LogicSymbol : Symbol, IConditionSymbol
     public static IEffectSymbol CreateEffect(
         ICatalogueItemSymbol containingSymbol,
         ModifierNode declaration,
-        Binder binder,
-        BindingDiagnosticContext diagnostics)
+        DiagnosticBag diagnostics)
     {
         return new ModifierEffectSymbol(containingSymbol, declaration, diagnostics);
     }
@@ -52,9 +45,8 @@ public abstract class LogicSymbol : Symbol, IConditionSymbol
     public static IEffectSymbol CreateEffect(
         ICatalogueItemSymbol containingSymbol,
         ModifierGroupNode declaration,
-        Binder binder,
-        BindingDiagnosticContext diagnostics)
+        DiagnosticBag diagnostics)
     {
-        return new ModifierGroupEffectSymbol(containingSymbol, declaration, binder, diagnostics);
+        return new ModifierGroupEffectSymbol(containingSymbol, declaration, diagnostics);
     }
 }

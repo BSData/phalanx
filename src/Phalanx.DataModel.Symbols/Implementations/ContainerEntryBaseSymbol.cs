@@ -1,4 +1,3 @@
-using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
@@ -8,9 +7,8 @@ public abstract class ContainerEntryBaseSymbol : EntrySymbol, IContainerEntrySym
     protected ContainerEntryBaseSymbol(
         ICatalogueItemSymbol containingSymbol,
         ContainerEntryBaseNode declaration,
-        Binder binder,
-        BindingDiagnosticContext diagnostics)
-        : base(containingSymbol, declaration, binder, diagnostics)
+        DiagnosticBag diagnostics)
+        : base(containingSymbol, declaration, diagnostics)
     {
         Constraints = ImmutableArray<IConstraintSymbol>.Empty; // TODO map
         Resources = CreateResourceEntries().ToImmutableArray();
@@ -25,23 +23,23 @@ public abstract class ContainerEntryBaseSymbol : EntrySymbol, IContainerEntrySym
             };
             foreach (var item in costs)
             {
-                yield return CreateEntry(this, item, binder, diagnostics);
+                yield return CreateEntry(this, item, diagnostics);
             }
             foreach (var item in declaration.InfoGroups)
             {
-                yield return CreateEntry(this, item, binder, diagnostics);
+                yield return CreateEntry(this, item, diagnostics);
             }
             foreach (var item in declaration.InfoLinks)
             {
-                yield return CreateEntry(this, item, binder, diagnostics);
+                yield return CreateEntry(this, item, diagnostics);
             }
             foreach (var item in declaration.Profiles)
             {
-                yield return CreateEntry(this, item, binder, diagnostics);
+                yield return CreateEntry(this, item, diagnostics);
             }
             foreach (var item in declaration.Rules)
             {
-                yield return CreateEntry(this, item, binder, diagnostics);
+                yield return CreateEntry(this, item, diagnostics);
             }
         }
     }

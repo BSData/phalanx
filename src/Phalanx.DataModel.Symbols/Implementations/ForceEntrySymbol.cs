@@ -1,4 +1,3 @@
-using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
@@ -8,9 +7,8 @@ public class ForceEntrySymbol : ContainerEntryBaseSymbol, IForceEntrySymbol
     public ForceEntrySymbol(
         ICatalogueItemSymbol containingSymbol,
         ForceEntryNode declaration,
-        Binder binder,
-        BindingDiagnosticContext diagnostics)
-        : base(containingSymbol, declaration, binder, diagnostics)
+        DiagnosticBag diagnostics)
+        : base(containingSymbol, declaration, diagnostics)
     {
         Declaration = declaration;
 
@@ -21,14 +19,14 @@ public class ForceEntrySymbol : ContainerEntryBaseSymbol, IForceEntrySymbol
         {
             foreach (var item in declaration.ForceEntries)
             {
-                yield return CreateEntry(this, item, binder, diagnostics);
+                yield return CreateEntry(this, item, diagnostics);
             }
         }
         IEnumerable<ICategoryEntrySymbol> CreateCategories()
         {
             foreach (var item in declaration.CategoryLinks)
             {
-                yield return CreateEntry(this, item, binder, diagnostics);
+                yield return CreateEntry(this, item, diagnostics);
             }
         }
     }

@@ -1,15 +1,14 @@
-using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public abstract class SimpleResourceEntrySymbol : CatalogueItemSymbol, IResourceEntrySymbol
+public abstract class SimpleResourceEntrySymbol : SourceCatalogueItemSymbol, IResourceEntrySymbol
 {
     public SimpleResourceEntrySymbol(
         ICatalogueItemSymbol containingSymbol,
         SourceNode declaration,
-        BindingDiagnosticContext diagnostics)
-        : base(containingSymbol, declaration, diagnostics)
+        DiagnosticBag diagnostics)
+        : base(containingSymbol, declaration)
     {
     }
 

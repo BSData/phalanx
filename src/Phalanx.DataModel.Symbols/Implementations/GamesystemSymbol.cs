@@ -1,16 +1,11 @@
-using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
 public class GamesystemSymbol : CatalogueBaseSymbol
 {
-    public GamesystemSymbol(
-        IDatasetSymbol containingSymbol,
-        GamesystemNode declaration,
-        Binder binder,
-        BindingDiagnosticContext diagnostics)
-        : base(containingSymbol, declaration, binder, diagnostics)
+    public GamesystemSymbol(Compilation declaringCompilation, GamesystemNode declaration)
+        : base(declaringCompilation, declaration)
     {
     }
 

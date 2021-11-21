@@ -1,17 +1,16 @@
-using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public class ProfileTypeSymbol : CatalogueItemSymbol, IProfileTypeSymbol
+public class ProfileTypeSymbol : SourceCatalogueItemSymbol, IProfileTypeSymbol
 {
     private readonly ProfileTypeNode declaration;
 
     public ProfileTypeSymbol(
         ICatalogueSymbol containingSymbol,
         ProfileTypeNode declaration,
-        BindingDiagnosticContext diagnostics)
-        : base(containingSymbol, declaration, diagnostics)
+        DiagnosticBag diagnostics)
+        : base(containingSymbol, declaration)
     {
         this.declaration = declaration;
         CharacteristicTypes = declaration.CharacteristicTypes

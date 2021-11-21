@@ -1,4 +1,3 @@
-using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
@@ -11,13 +10,12 @@ public abstract class CatalogueBaseSymbol : Symbol, ICatalogueSymbol
     private readonly ImmutableArray<PublicationSymbol> publications;
 
     protected CatalogueBaseSymbol(
-        IDatasetSymbol containingSymbol,
-        CatalogueBaseNode declaration,
-        Binder binder,
-        BindingDiagnosticContext diagnostics)
+        Compilation declaringCompilation,
+        CatalogueBaseNode declaration)
     {
-        ContainingDataset = containingSymbol;
-        this.node = declaration;
+        DeclaringCompilation = declaringCompilation;
+        node = declaration;
+        var diagnostics = DiagnosticBag.GetInstance();
         costTypes = declaration.CostTypes.Select(x => new CostTypeSymbol(this, x, diagnostics)).ToImmutableArray();
         profileTypes = declaration.ProfileTypes.Select(x => new ProfileTypeSymbol(this, x, diagnostics)).ToImmutableArray();
         publications = declaration.Publications.Select(x => new PublicationSymbol(this, x, diagnostics)).ToImmutableArray();
@@ -30,64 +28,61 @@ public abstract class CatalogueBaseSymbol : Symbol, ICatalogueSymbol
         {
             foreach (var item in declaration.SelectionEntries)
             {
-                yield return EntrySymbol.CreateEntry(this, item, binder, diagnostics);
+                yield return EntrySymbol.CreateEntry(this, item, diagnostics);
             }
             foreach (var item in declaration.EntryLinks)
             {
-                yield return EntrySymbol.CreateEntry(this, item, binder, diagnostics);
+                yield return EntrySymbol.CreateEntry(this, item, diagnostics);
             }
             foreach (var item in declaration.ForceEntries)
             {
-                yield return EntrySymbol.CreateEntry(this, item, binder, diagnostics);
+                yield return EntrySymbol.CreateEntry(this, item, diagnostics);
             }
             foreach (var item in declaration.CategoryEntries)
             {
-                yield return EntrySymbol.CreateEntry(this, item, binder, diagnostics);
+                yield return EntrySymbol.CreateEntry(this, item, diagnostics);
             }
         }
         IEnumerable<IResourceEntrySymbol> CreateRootResourceEntries()
         {
             foreach (var item in declaration.Rules)
             {
-                yield return EntrySymbol.CreateEntry(this, item, binder, diagnostics);
+                yield return EntrySymbol.CreateEntry(this, item, diagnostics);
             }
         }
         IEnumerable<ISelectionEntryContainerSymbol> CreateSharedContainerEntries()
         {
             foreach (var item in declaration.SharedSelectionEntries)
             {
-                yield return EntrySymbol.CreateEntry(this, item, binder, diagnostics);
+                yield return EntrySymbol.CreateEntry(this, item, diagnostics);
             }
             foreach (var item in declaration.SharedSelectionEntryGroups)
             {
-                yield return EntrySymbol.CreateEntry(this, item, binder, diagnostics);
+                yield return EntrySymbol.CreateEntry(this, item, diagnostics);
             }
         }
         IEnumerable<IResourceEntrySymbol> CreateSharedResourceEntries()
         {
             foreach (var item in declaration.SharedInfoGroups)
             {
-                yield return EntrySymbol.CreateEntry(this, item, binder, diagnostics);
+                yield return EntrySymbol.CreateEntry(this, item, diagnostics);
             }
             foreach (var item in declaration.SharedProfiles)
             {
-                yield return EntrySymbol.CreateEntry(this, item, binder, diagnostics);
+                yield return EntrySymbol.CreateEntry(this, item, diagnostics);
             }
             foreach (var item in declaration.SharedRules)
             {
-                yield return EntrySymbol.CreateEntry(this, item, binder, diagnostics);
+                yield return EntrySymbol.CreateEntry(this, item, diagnostics);
             }
         }
     }
-
-    internal IDatasetSymbol ContainingDataset { get; }
 
     public override SymbolKind Kind => SymbolKind.Catalogue;
 
     public ICatalogueSymbol ContainingCatalogue => this;
 
-    // TODO consider compilation/root symbol?
-    public override ISymbol ContainingSymbol => ContainingDataset;
+    public override ISymbol? ContainingSymbol => null;
 
     public override string Name => node.Name ?? "";
 
@@ -123,4 +118,6 @@ public abstract class CatalogueBaseSymbol : Symbol, ICatalogueSymbol
     public ImmutableArray<ISelectionEntryContainerSymbol> SharedSelectionEntryContainers { get; }
 
     public ImmutableArray<IResourceEntrySymbol> SharedResourceEntries { get; }
+
+    internal override Compilation DeclaringCompilation { get; }
 }

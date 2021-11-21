@@ -1,4 +1,3 @@
-using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
@@ -10,8 +9,7 @@ public class CostSymbol : SimpleResourceEntrySymbol, ICostSymbol
     public CostSymbol(
         ICatalogueItemSymbol containingSymbol,
         CostNode declaration,
-        Binder binder,
-        BindingDiagnosticContext diagnostics)
+        DiagnosticBag diagnostics)
         : base(containingSymbol, declaration, diagnostics)
     {
         this.declaration = declaration;

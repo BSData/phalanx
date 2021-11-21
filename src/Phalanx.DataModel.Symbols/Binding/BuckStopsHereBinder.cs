@@ -1,8 +1,8 @@
 namespace Phalanx.DataModel.Symbols.Binding;
 
-public class BuckStopsHereBinder : Binder
+internal class BuckStopsHereBinder : Binder
 {
-    protected BuckStopsHereBinder(Compilation compilation) : base(compilation)
+    internal BuckStopsHereBinder(Compilation compilation) : base(compilation)
     {
     }
 }

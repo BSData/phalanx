@@ -1,4 +1,3 @@
-using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
@@ -10,9 +9,8 @@ public class SelectionEntryGroupSymbol : SelectionEntryBaseSymbol, ISelectionEnt
     public SelectionEntryGroupSymbol(
         ICatalogueItemSymbol containingSymbol,
         SelectionEntryGroupNode declaration,
-        Binder binder,
-        BindingDiagnosticContext diagnostics)
-        : base(containingSymbol, declaration, binder, diagnostics)
+        DiagnosticBag diagnostics)
+        : base(containingSymbol, declaration, diagnostics)
     {
         this.declaration = declaration;
         DefaultSelectionEntry = null; // TODO bind

@@ -1,4 +1,3 @@
-using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
@@ -8,9 +7,8 @@ public abstract class SelectionEntryBaseSymbol : ContainerEntryBaseSymbol, ISele
     protected SelectionEntryBaseSymbol(
         ICatalogueItemSymbol containingSymbol,
         SelectionEntryBaseNode declaration,
-        Binder binder,
-        BindingDiagnosticContext diagnostics)
-        : base(containingSymbol, declaration, binder, diagnostics)
+        DiagnosticBag diagnostics)
+        : base(containingSymbol, declaration, diagnostics)
     {
         Categories = CreateCategoryEntries().ToImmutableArray();
         PrimaryCategory = Categories.FirstOrDefault(x => x.IsPrimaryCategory);
@@ -20,22 +18,22 @@ public abstract class SelectionEntryBaseSymbol : ContainerEntryBaseSymbol, ISele
         {
             foreach (var item in declaration.CategoryLinks)
             {
-                yield return CreateEntry(this, item, binder, diagnostics);
+                yield return CreateEntry(this, item, diagnostics);
             }
         }
         IEnumerable<ISelectionEntryContainerSymbol> CreateSelectionEntryContainers()
         {
             foreach (var item in declaration.EntryLinks)
             {
-                yield return CreateEntry(this, item, binder, diagnostics);
+                yield return CreateEntry(this, item, diagnostics);
             }
             foreach (var item in declaration.SelectionEntries)
             {
-                yield return CreateEntry(this, item, binder, diagnostics);
+                yield return CreateEntry(this, item, diagnostics);
             }
             foreach (var item in declaration.SelectionEntryGroups)
             {
-                yield return CreateEntry(this, item, binder, diagnostics);
+                yield return CreateEntry(this, item, diagnostics);
             }
         }
     }

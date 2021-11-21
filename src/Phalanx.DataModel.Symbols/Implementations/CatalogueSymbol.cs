@@ -1,26 +1,20 @@
-using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
 public class CatalogueSymbol : CatalogueBaseSymbol
 {
-    public CatalogueSymbol(
-        IDatasetSymbol containingSymbol,
-        CatalogueNode declaration,
-        Binder binder,
-        BindingDiagnosticContext diagnostics)
-        : base(containingSymbol, declaration, binder, diagnostics)
+    public CatalogueSymbol(Compilation declaringCompilation, CatalogueNode declaration)
+        : base(declaringCompilation, declaration)
     {
         Declaration = declaration;
-        Gamesystem = null!; // TODO bind
         Imports = CreateLinks().ToImmutableArray();
 
         IEnumerable<ICatalogueReferenceSymbol> CreateLinks()
         {
             foreach (var item in declaration.CatalogueLinks)
             {
-                yield return new CatalogueReferenceSymbol(this, item, binder, diagnostics);
+                yield return new CatalogueReferenceSymbol(this, item);
             }
         }
     }
@@ -29,7 +23,7 @@ public class CatalogueSymbol : CatalogueBaseSymbol
 
     public override bool IsGamesystem => false;
 
-    public override ICatalogueSymbol Gamesystem { get; }
+    public override ICatalogueSymbol Gamesystem { get; } = null!; // TODO bind
 
     public override ImmutableArray<ICatalogueReferenceSymbol> Imports { get; }
 

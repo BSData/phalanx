@@ -1,4 +1,3 @@
-using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
@@ -8,7 +7,7 @@ public class ConditionGroupConditionSymbol : TupleOperationConditionSymbol
     public ConditionGroupConditionSymbol(
         ICatalogueItemSymbol containingSymbol,
         ConditionGroupNode declaration,
-        BindingDiagnosticContext diagnostics)
+        DiagnosticBag diagnostics)
         : base(containingSymbol)
     {
         Operation = declaration.Type switch

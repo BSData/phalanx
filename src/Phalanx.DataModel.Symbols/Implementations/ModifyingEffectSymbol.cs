@@ -18,7 +18,7 @@ public class ModifyingEffectSymbol : EffectSymbol, IModifyingEffectSymbol
 
     public override string? Comment => declaration.Comment;
 
-    public string? TargetField => declaration.Field; // TODO resolve modifier target
+    public string? TargetField => declaration.Field; // TODO bind
 
     public ModifierKind Type => declaration.Type; // TODO other enum or different approach (DU?)
 

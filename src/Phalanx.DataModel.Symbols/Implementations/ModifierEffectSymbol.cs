@@ -1,4 +1,3 @@
-using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
@@ -8,11 +7,12 @@ public class ModifierEffectSymbol : EffectSymbol, IConditionalEffectSymbol
     public ModifierEffectSymbol(
         ICatalogueItemSymbol containingSymbol,
         ModifierNode declaration,
-        BindingDiagnosticContext diagnostics)
+        DiagnosticBag diagnostics)
         : base(containingSymbol)
     {
         if (declaration.Repeats.Count > 0)
         {
+            // TODO implement repeats
             // TODO consider what happens when there are both repeats and conditions
             // create a loop effect
             diagnostics.Add("Repeats not implemented, ignoring");
