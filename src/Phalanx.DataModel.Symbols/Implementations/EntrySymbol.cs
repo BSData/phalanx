@@ -1,10 +1,11 @@
+using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
 public abstract class EntrySymbol : SourceCatalogueItemSymbol, IEntrySymbol
 {
-    internal EntryBaseNode Declaration { get; }
+    internal new EntryBaseNode Declaration { get; }
 
     protected EntrySymbol(
         ICatalogueItemSymbol containingSymbol,
@@ -13,10 +14,7 @@ public abstract class EntrySymbol : SourceCatalogueItemSymbol, IEntrySymbol
         : base(containingSymbol, declaration)
     {
         Declaration = declaration;
-        if (declaration.PublicationId is not null)
-        {
-            PublicationReference = new EntryPublicationReferenceSymbol(this);
-        }
+        PublicationReference = new EntryPublicationReferenceSymbol(this);
         Effects = LogicSymbol.CreateEffects(this, diagnostics);
     }
 
@@ -24,13 +22,30 @@ public abstract class EntrySymbol : SourceCatalogueItemSymbol, IEntrySymbol
 
     protected virtual IEntrySymbol? BaseReferencedEntry => null;
 
-    public IPublicationReferenceSymbol? PublicationReference { get; }
+    public EntryPublicationReferenceSymbol PublicationReference { get; }
+
+    IPublicationReferenceSymbol IEntrySymbol.PublicationReference => PublicationReference;
 
     public ImmutableArray<IEffectSymbol> Effects { get; }
 
     public bool IsReference => BaseReferencedEntry is not null;
 
     IEntrySymbol? IEntrySymbol.ReferencedEntry => BaseReferencedEntry;
+
+    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
+    {
+        base.BindReferencesCore(binder, diagnosticBag);
+
+        PublicationReference.ForceComplete();
+
+        foreach (var effect in Effects)
+        {
+            if (effect is Symbol { RequiresCompletion: true } toComplete)
+            {
+                toComplete.ForceComplete();
+            }
+        }
+    }
 
     public static ISelectionEntryContainerSymbol CreateEntry(
         ICatalogueItemSymbol containingSymbol,

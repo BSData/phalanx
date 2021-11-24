@@ -4,7 +4,10 @@ namespace Phalanx.DataModel.Symbols.Implementation;
 
 public class CharacteristicSymbol : SimpleResourceEntrySymbol, ICharacteristicSymbol
 {
-    private readonly CharacteristicNode declaration;
+    private ICharacteristicTypeSymbol? lazyType;
+    private readonly IProfileSymbol profileSymbol;
+
+    internal new CharacteristicNode Declaration { get; }
 
     public CharacteristicSymbol(
         IProfileSymbol containingSymbol,
@@ -12,13 +15,25 @@ public class CharacteristicSymbol : SimpleResourceEntrySymbol, ICharacteristicSy
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration, diagnostics)
     {
-        this.declaration = declaration;
-        Type = null!; // TODO bind
+        profileSymbol = containingSymbol;
+        Declaration = declaration;
     }
 
-    public ICharacteristicTypeSymbol Type { get; }
+    public ICharacteristicTypeSymbol Type
+    {
+        get
+        {
+            ForceComplete();
+            return lazyType ?? throw new InvalidOperationException("Binding failed.");
+        }
+    }
 
-    public string Value => declaration.Value ?? string.Empty;
+    public string Value => Declaration.Value ?? string.Empty;
 
     protected override IResourceDefinitionSymbol? BaseType => Type;
+
+    protected override void BindReferencesCore(Binding.Binder binder, DiagnosticBag diagnosticBag)
+    {
+        lazyType = binder.BindCharacteristicTypeSymbol(profileSymbol.Type, Declaration);
+    }
 }

@@ -4,7 +4,8 @@ namespace Phalanx.DataModel.Symbols.Implementation;
 
 public class ProfileSymbol : EntrySymbol, IProfileSymbol
 {
-    private readonly ProfileNode declaration;
+    private IProfileTypeSymbol? lazyType;
+    internal new ProfileNode Declaration { get; }
 
     public ProfileSymbol(
         ICatalogueItemSymbol containingSymbol,
@@ -12,8 +13,7 @@ public class ProfileSymbol : EntrySymbol, IProfileSymbol
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration, diagnostics)
     {
-        this.declaration = declaration;
-        Type = null!; // TODO bind
+        Declaration = declaration;
         Characteristics = CreateCharacteristics().ToImmutableArray();
 
         IEnumerable<ICharacteristicSymbol> CreateCharacteristics()
@@ -25,7 +25,14 @@ public class ProfileSymbol : EntrySymbol, IProfileSymbol
         }
     }
 
-    public IProfileTypeSymbol Type { get; }
+    public IProfileTypeSymbol Type
+    {
+        get
+        {
+            ForceComplete();
+            return lazyType ?? throw new InvalidOperationException("Binding failed.");
+        }
+    }
 
     public override SymbolKind Kind => SymbolKind.Resource;
 
@@ -34,4 +41,15 @@ public class ProfileSymbol : EntrySymbol, IProfileSymbol
     IResourceDefinitionSymbol? IResourceEntrySymbol.Type => Type;
 
     IResourceEntrySymbol? IResourceEntrySymbol.ReferencedEntry => null;
+
+    protected override void BindReferencesCore(Binding.Binder binder, DiagnosticBag diagnosticBag)
+    {
+        lazyType = binder.BindProfileTypeSymbol(Declaration.TypeId);
+
+        foreach (var child in Characteristics)
+        {
+            if (child is Symbol { RequiresCompletion: true } toComplete)
+                toComplete.ForceComplete();
+        }
+    }
 }

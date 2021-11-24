@@ -1,21 +1,33 @@
+using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
 public class ResourceLinkSymbol : EntrySymbol, IResourceEntrySymbol
 {
+    private IResourceEntrySymbol? lazyReferencedEntry;
+
     public ResourceLinkSymbol(
         ICatalogueItemSymbol containingSymbol,
         InfoLinkNode declaration,
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration, diagnostics)
     {
-        ReferencedEntry = null; // TODO bind
+        Declaration = declaration;
     }
 
     public override SymbolKind Kind => SymbolKind.Link;
 
     public IResourceDefinitionSymbol? Type => null;
 
-    public IResourceEntrySymbol? ReferencedEntry { get; }
+    internal new InfoLinkNode Declaration { get; }
+
+    public IResourceEntrySymbol? ReferencedEntry => lazyReferencedEntry;
+
+    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
+    {
+        base.BindReferencesCore(binder, diagnosticBag);
+
+        lazyReferencedEntry = binder.BindResourceEntrySymbol(Declaration.TargetId, Declaration.Type);
+    }
 }

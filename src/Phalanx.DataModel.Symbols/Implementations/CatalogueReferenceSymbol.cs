@@ -17,5 +17,5 @@ public class CatalogueReferenceSymbol : SourceCatalogueItemSymbol, ICatalogueRef
 
     public ICatalogueSymbol Catalogue { get; }
 
-    internal CatalogueLinkNode Declaration { get; }
+    internal new CatalogueLinkNode Declaration { get; }
 }

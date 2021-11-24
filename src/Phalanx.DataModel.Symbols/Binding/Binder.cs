@@ -21,8 +21,22 @@ public class Binder
 
     protected Binder? Next { get; }
 
-    public virtual IPublicationSymbol? BindPublicationSymbol(IPublicationReferencingNode node)
+    protected Binder NextRequired => Next ?? throw new InvalidOperationException("Must have Next!");
+
+    internal virtual IPublicationSymbol BindPublicationSymbol(string? publicationId) =>
+        NextRequired.BindPublicationSymbol(publicationId);
+
+    internal virtual IResourceEntrySymbol? BindResourceEntrySymbol(string? targetId, InfoLinkKind type) =>
+        NextRequired.BindResourceEntrySymbol(targetId, type);
+
+    internal virtual ICostTypeSymbol? BindCostTypeSymbol(string? typeId) =>
+        NextRequired.BindCostTypeSymbol(typeId);
+
+    internal virtual ICharacteristicTypeSymbol? BindCharacteristicTypeSymbol(IProfileTypeSymbol type, CharacteristicNode declaration)
     {
-        return Next!.BindPublicationSymbol(node);
+        return type.CharacteristicTypes.Where(x => x.Id == declaration.TypeId).SingleOrDefault();
     }
+
+    internal virtual IProfileTypeSymbol? BindProfileTypeSymbol(string? typeId) =>
+        NextRequired.BindProfileTypeSymbol(typeId);
 }

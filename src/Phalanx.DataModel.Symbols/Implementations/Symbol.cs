@@ -11,4 +11,8 @@ public abstract class Symbol : ISymbol
     public abstract ISymbol? ContainingSymbol { get; }
 
     internal abstract Compilation DeclaringCompilation { get; }
+
+    internal virtual bool RequiresCompletion => false;
+
+    internal virtual void ForceComplete() { }
 }

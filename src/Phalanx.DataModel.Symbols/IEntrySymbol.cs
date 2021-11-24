@@ -21,5 +21,6 @@ public interface IEntrySymbol : ICatalogueItemSymbol
     IEntrySymbol? ReferencedEntry { get; }
 
     IPublicationReferenceSymbol? PublicationReference { get; }
+
     ImmutableArray<IEffectSymbol> Effects { get; }
 }
