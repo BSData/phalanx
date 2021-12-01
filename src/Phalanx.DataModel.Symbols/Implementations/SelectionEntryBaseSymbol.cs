@@ -46,5 +46,9 @@ public abstract class SelectionEntryBaseSymbol : ContainerEntryBaseSymbol, ISele
 
     public ImmutableArray<ISelectionEntryContainerSymbol> ChildSelectionEntries { get; }
 
+    public virtual bool IsSelectionEntry => false;
+
+    public virtual bool IsSelectionGroup => false;
+
     protected sealed override IEntrySymbol? BaseReferencedEntry => ReferencedEntry;
 }

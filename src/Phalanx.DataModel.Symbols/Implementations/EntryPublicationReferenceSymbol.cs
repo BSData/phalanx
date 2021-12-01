@@ -1,8 +1,13 @@
 namespace Phalanx.DataModel.Symbols.Implementation;
 
+/// <summary>
+/// Separate symbol that is essentially a child of <see cref="EntrySymbol"/>.
+/// TODO consider merging with the parent, or deriving from <see cref="SourceDeclaredSymbol"/>.
+/// </summary>
 public class EntryPublicationReferenceSymbol : Symbol, IPublicationReferenceSymbol
 {
     private readonly EntrySymbol containingSymbol;
+
     private IPublicationSymbol? lazyPublication;
 
     public EntryPublicationReferenceSymbol(EntrySymbol containingSymbol)
@@ -11,6 +16,8 @@ public class EntryPublicationReferenceSymbol : Symbol, IPublicationReferenceSymb
     }
 
     public override SymbolKind Kind => SymbolKind.Link;
+
+    public override string? Id => null;
 
     public override string Name => Publication.Name;
 

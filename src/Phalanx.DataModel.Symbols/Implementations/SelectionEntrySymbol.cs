@@ -4,7 +4,7 @@ namespace Phalanx.DataModel.Symbols.Implementation;
 
 public class SelectionEntrySymbol : SelectionEntryBaseSymbol, ISelectionEntrySymbol
 {
-    private readonly SelectionEntryNode declaration;
+    internal new SelectionEntryNode Declaration { get; }
 
     public SelectionEntrySymbol(
         ICatalogueItemSymbol containingSymbol,
@@ -12,10 +12,12 @@ public class SelectionEntrySymbol : SelectionEntryBaseSymbol, ISelectionEntrySym
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration, diagnostics)
     {
-        this.declaration = declaration;
+        Declaration = declaration;
     }
 
     public override SymbolKind Kind => SymbolKind.Entry;
 
-    public SelectionEntryKind EntryKind => declaration.Type;
+    public override bool IsSelectionEntry => true;
+
+    public SelectionEntryKind EntryKind => Declaration.Type;
 }

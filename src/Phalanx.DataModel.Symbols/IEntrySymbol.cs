@@ -6,7 +6,6 @@ namespace Phalanx.DataModel.Symbols;
 /// </summary>
 public interface IEntrySymbol : ICatalogueItemSymbol
 {
-    string? Id { get; }
     bool IsHidden { get; }
 
     /// <summary>

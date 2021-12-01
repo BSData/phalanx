@@ -2,12 +2,22 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public abstract class LogicSymbol : CatalogueItemSymbol, IConditionSymbol
+public abstract class LogicSymbol : Symbol, IConditionSymbol
 {
     public LogicSymbol(ICatalogueItemSymbol containingSymbol)
-        : base(containingSymbol)
     {
+        ContainingSymbolCore = containingSymbol;
     }
+
+    public sealed override ISymbol ContainingSymbol => ContainingSymbolCore;
+
+    protected ICatalogueItemSymbol ContainingSymbolCore { get; }
+
+    public ICatalogueSymbol ContainingCatalogue => ContainingSymbolCore.ContainingCatalogue;
+
+    internal override Compilation DeclaringCompilation => ((CatalogueBaseSymbol)ContainingCatalogue).DeclaringCompilation;
+
+    public override string? Id => null;
 
     public override string Name => "";
 

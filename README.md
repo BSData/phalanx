@@ -1,19 +1,18 @@
 # phalanx
+
 Project Phalanx
 
 ## TODO
-- symbol layer?
-  - consider phases of building the symbols
+
+- symbol layer:
   - symbolinfo that might be an error
-  - late-bound links?
-  - indexes - resolving targets/ids for links, constraints, modifiers, conditions
-  - references/back-references
+  - implementation for: constraints, logic (conditions, modifiers), roster entitites
+  - binder factory
+  - binders for sub-catalogue levels
 - add default subselections:
   - for entries with constraints min > 0 (constraints need symbols?)
   - entry groups
-- support links (requires symbols)
-- category links of two types (force entry child and selection entry child)
-- nested forces
+- category links of two types (force entry child and selection entry child)?
 
 ## Symbols
 

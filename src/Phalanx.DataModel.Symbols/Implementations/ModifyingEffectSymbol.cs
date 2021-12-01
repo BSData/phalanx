@@ -4,23 +4,23 @@ namespace Phalanx.DataModel.Symbols.Implementation;
 
 public class ModifyingEffectSymbol : EffectSymbol, IModifyingEffectSymbol
 {
-    private readonly ModifierNode declaration;
+    internal ModifierNode Declaration { get; }
 
     public ModifyingEffectSymbol(
         ICatalogueItemSymbol containingSymbol,
         ModifierNode declaration)
         : base(containingSymbol)
     {
-        this.declaration = declaration;
+        Declaration = declaration;
     }
 
     public override string Name => "";
 
-    public override string? Comment => declaration.Comment;
+    public override string? Comment => Declaration.Comment;
 
-    public string? TargetField => declaration.Field; // TODO bind
+    public string? TargetField => Declaration.Field; // TODO bind, but how?
 
-    public ModifierKind Type => declaration.Type; // TODO other enum or different approach (DU?)
+    public ModifierKind Type => Declaration.Type; // TODO other enum or different approach (DU?)
 
-    public string? ModificationValue => declaration.Value;
+    public string? ModificationValue => Declaration.Value;
 }

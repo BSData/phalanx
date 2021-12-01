@@ -9,6 +9,10 @@ public interface ISelectionEntryContainerSymbol : IContainerEntrySymbol
 {
     ICategoryEntrySymbol? PrimaryCategory { get; }
 
+    bool IsSelectionEntry { get; }
+
+    bool IsSelectionGroup { get; }
+
     ImmutableArray<ICategoryEntrySymbol> Categories { get; }
 
     ImmutableArray<ISelectionEntryContainerSymbol> ChildSelectionEntries { get; }

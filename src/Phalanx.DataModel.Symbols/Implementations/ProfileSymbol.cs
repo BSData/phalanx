@@ -44,6 +44,8 @@ public class ProfileSymbol : EntrySymbol, IProfileSymbol
 
     protected override void BindReferencesCore(Binding.Binder binder, DiagnosticBag diagnosticBag)
     {
+        base.BindReferencesCore(binder, diagnosticBag);
+
         lazyType = binder.BindProfileTypeSymbol(Declaration.TypeId);
 
         foreach (var child in Characteristics)

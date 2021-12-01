@@ -4,7 +4,7 @@ namespace Phalanx.DataModel.Symbols.Implementation;
 
 public class ProfileTypeSymbol : SourceCatalogueItemSymbol, IProfileTypeSymbol
 {
-    private readonly ProfileTypeNode declaration;
+    internal new ProfileTypeNode Declaration { get; }
 
     public ProfileTypeSymbol(
         ICatalogueSymbol containingSymbol,
@@ -12,7 +12,7 @@ public class ProfileTypeSymbol : SourceCatalogueItemSymbol, IProfileTypeSymbol
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration)
     {
-        this.declaration = declaration;
+        Declaration = declaration;
         CharacteristicTypes = declaration.CharacteristicTypes
             .Select(x => new CharacteristicTypeSymbol(this, x, diagnostics))
             .ToImmutableArray<ICharacteristicTypeSymbol>();

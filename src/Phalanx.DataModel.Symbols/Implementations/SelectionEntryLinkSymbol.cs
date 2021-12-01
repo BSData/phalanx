@@ -1,10 +1,13 @@
+using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
 public class SelectionEntryLinkSymbol : SelectionEntryBaseSymbol
 {
-    private readonly EntryLinkNode declaration;
+    private ISelectionEntryContainerSymbol? lazyReference;
+
+    internal new EntryLinkNode Declaration { get; }
 
     public SelectionEntryLinkSymbol(
         ICatalogueItemSymbol containingSymbol,
@@ -12,11 +15,24 @@ public class SelectionEntryLinkSymbol : SelectionEntryBaseSymbol
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration, diagnostics)
     {
-        this.declaration = declaration;
-        ReferencedEntry = null; // TODO bind
+        Declaration = declaration;
     }
 
     public override SymbolKind Kind => SymbolKind.Link;
 
-    public override ISelectionEntryContainerSymbol? ReferencedEntry { get; }
+    public override ISelectionEntryContainerSymbol? ReferencedEntry
+    {
+        get
+        {
+            ForceComplete();
+            return lazyReference ?? throw new InvalidOperationException("Binding failed");
+        }
+    }
+
+    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
+    {
+        base.BindReferencesCore(binder, diagnosticBag);
+
+        lazyReference = binder.BindSharedSelectionEntrySymbol(Declaration.TargetId, Declaration.Type);
+    }
 }

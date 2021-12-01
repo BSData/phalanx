@@ -1,10 +1,13 @@
+using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
 public class SelectionEntryGroupSymbol : SelectionEntryBaseSymbol, ISelectionEntryGroupSymbol
 {
-    private readonly SelectionEntryGroupNode declaration;
+    private ISelectionEntrySymbol? lazyDefaultEntry;
+
+    internal new SelectionEntryGroupNode Declaration { get; }
 
     public SelectionEntryGroupSymbol(
         ICatalogueItemSymbol containingSymbol,
@@ -12,11 +15,26 @@ public class SelectionEntryGroupSymbol : SelectionEntryBaseSymbol, ISelectionEnt
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration, diagnostics)
     {
-        this.declaration = declaration;
-        DefaultSelectionEntry = null; // TODO bind
+        Declaration = declaration;
     }
 
     public override SymbolKind Kind => SymbolKind.Entry;
 
-    public ISelectionEntrySymbol? DefaultSelectionEntry { get; }
+    public override bool IsSelectionGroup => true;
+
+    public ISelectionEntrySymbol? DefaultSelectionEntry
+    {
+        get
+        {
+            ForceComplete();
+            return lazyDefaultEntry;
+        }
+    }
+
+    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
+    {
+        base.BindReferencesCore(binder, diagnosticBag);
+
+        lazyDefaultEntry = binder.BindSelectionEntrySymbol(Declaration.DefaultSelectionEntryId);
+    }
 }

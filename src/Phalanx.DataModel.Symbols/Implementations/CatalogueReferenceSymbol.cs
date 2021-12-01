@@ -1,21 +1,37 @@
+using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
 public class CatalogueReferenceSymbol : SourceCatalogueItemSymbol, ICatalogueReferenceSymbol
 {
+    private ICatalogueSymbol? lazyCatalogue;
+
     public CatalogueReferenceSymbol(ICatalogueSymbol containingSymbol, CatalogueLinkNode declaration)
         : base(containingSymbol, declaration)
     {
         Declaration = declaration;
-        Catalogue = null!; // TODO bind
     }
 
     public override SymbolKind Kind => SymbolKind.Link;
 
     public bool ImportsRootEntries => Declaration.ImportRootEntries;
 
-    public ICatalogueSymbol Catalogue { get; }
+    public ICatalogueSymbol Catalogue
+    {
+        get
+        {
+            ForceComplete();
+            return lazyCatalogue ?? throw new InvalidOperationException("Binding failed.");
+        }
+    }
 
     internal new CatalogueLinkNode Declaration { get; }
+
+    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
+    {
+        base.BindReferencesCore(binder, diagnosticBag);
+
+        lazyCatalogue = binder.BindCatalogueSymbol(Declaration.TargetId, Declaration.Type);
+    }
 }

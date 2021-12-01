@@ -4,7 +4,7 @@ namespace Phalanx.DataModel.Symbols.Implementation;
 
 public class CostTypeSymbol : SourceCatalogueItemSymbol, ICostTypeSymbol
 {
-    private readonly CostTypeNode declaration;
+    internal new CostTypeNode Declaration { get; }
 
     public CostTypeSymbol(
         ICatalogueSymbol containingSymbol,
@@ -12,7 +12,7 @@ public class CostTypeSymbol : SourceCatalogueItemSymbol, ICostTypeSymbol
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration)
     {
-        this.declaration = declaration;
+        Declaration = declaration;
     }
 
     public override SymbolKind Kind => SymbolKind.ResourceType;

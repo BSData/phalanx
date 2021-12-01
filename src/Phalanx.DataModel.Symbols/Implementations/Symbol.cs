@@ -4,6 +4,8 @@ public abstract class Symbol : ISymbol
 {
     public abstract SymbolKind Kind { get; }
 
+    public abstract string? Id { get; }
+
     public abstract string Name { get; }
 
     public abstract string? Comment { get; }

@@ -4,7 +4,7 @@ namespace Phalanx.DataModel.Symbols.Implementation;
 
 public class RuleSymbol : EntrySymbol, IRuleSymbol
 {
-    private readonly RuleNode declaration;
+    internal new RuleNode Declaration { get; }
 
     public RuleSymbol(
         ICatalogueItemSymbol containingSymbol,
@@ -12,12 +12,12 @@ public class RuleSymbol : EntrySymbol, IRuleSymbol
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration, diagnostics)
     {
-        this.declaration = declaration;
+        Declaration = declaration;
     }
 
     public override SymbolKind Kind => SymbolKind.Resource;
 
-    public string DescriptionText => declaration.Description ?? string.Empty;
+    public string DescriptionText => Declaration.Description ?? string.Empty;
 
     IResourceDefinitionSymbol? IResourceEntrySymbol.Type => null;
 

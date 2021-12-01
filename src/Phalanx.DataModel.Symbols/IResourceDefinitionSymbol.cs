@@ -5,5 +5,4 @@ namespace Phalanx.DataModel.Symbols;
 /// </summary>
 public interface IResourceDefinitionSymbol : ICatalogueItemSymbol
 {
-    string? Id { get; }
 }

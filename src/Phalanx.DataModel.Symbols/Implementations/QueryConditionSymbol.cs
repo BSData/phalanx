@@ -1,11 +1,10 @@
-using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
 public class QueryConditionSymbol : EffectSymbol, IQueryConditionSymbol
 {
-    private readonly ConditionNode declaration;
+    internal ConditionNode Declaration { get; }
 
     public QueryConditionSymbol(
         ICatalogueItemSymbol containingSymbol,
@@ -13,8 +12,8 @@ public class QueryConditionSymbol : EffectSymbol, IQueryConditionSymbol
         DiagnosticBag diagnostics)
         : base(containingSymbol)
     {
-        this.declaration = declaration;
-        Comparison = this.declaration.Type switch
+        Declaration = declaration;
+        Comparison = Declaration.Type switch
         {
             ConditionKind.EqualTo => QueryComparisonType.Equal,
             ConditionKind.LessThan => QueryComparisonType.LessThan,
@@ -28,12 +27,12 @@ public class QueryConditionSymbol : EffectSymbol, IQueryConditionSymbol
         };
         if (Comparison is QueryComparisonType.Unknown)
             diagnostics.Add("Unknown comparison type for this condition");
-        Query = new QuerySymbol(containingSymbol, this.declaration, diagnostics);
+        Query = new QuerySymbol(containingSymbol, Declaration, diagnostics);
     }
 
     public QueryComparisonType Comparison { get; }
 
-    public decimal ComparisonValue => declaration.Value; // TODO what about percentage?
+    public decimal ComparisonValue => Declaration.Value; // TODO what about percentage?
 
     public IQuerySymbol Query { get; }
 }

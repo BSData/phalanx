@@ -2,9 +2,8 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public abstract class CatalogueBaseSymbol : Symbol, ICatalogueSymbol
+public abstract class CatalogueBaseSymbol : SourceDeclaredSymbol, ICatalogueSymbol
 {
-    private readonly CatalogueBaseNode node;
     private readonly ImmutableArray<CostTypeSymbol> costTypes;
     private readonly ImmutableArray<ProfileTypeSymbol> profileTypes;
     private readonly ImmutableArray<PublicationSymbol> publications;
@@ -12,9 +11,10 @@ public abstract class CatalogueBaseSymbol : Symbol, ICatalogueSymbol
     protected CatalogueBaseSymbol(
         Compilation declaringCompilation,
         CatalogueBaseNode declaration)
+        : base(declaration)
     {
         DeclaringCompilation = declaringCompilation;
-        node = declaration;
+        Declaration = declaration;
         var diagnostics = DiagnosticBag.GetInstance();
         costTypes = declaration.CostTypes.Select(x => new CostTypeSymbol(this, x, diagnostics)).ToImmutableArray();
         profileTypes = declaration.ProfileTypes.Select(x => new ProfileTypeSymbol(this, x, diagnostics)).ToImmutableArray();
@@ -78,15 +78,13 @@ public abstract class CatalogueBaseSymbol : Symbol, ICatalogueSymbol
         }
     }
 
+    internal new CatalogueBaseNode Declaration { get; }
+
     public override SymbolKind Kind => SymbolKind.Catalogue;
 
     public ICatalogueSymbol ContainingCatalogue => this;
 
     public override ISymbol? ContainingSymbol => null;
-
-    public override string Name => node.Name ?? "";
-
-    public override string? Comment => node.Comment;
 
     public abstract bool IsLibrary { get; }
 

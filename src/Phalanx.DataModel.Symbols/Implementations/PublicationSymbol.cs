@@ -4,7 +4,7 @@ namespace Phalanx.DataModel.Symbols.Implementation;
 
 public class PublicationSymbol : SourceCatalogueItemSymbol, IPublicationSymbol
 {
-    private readonly PublicationNode declaration;
+    internal new PublicationNode Declaration { get; }
 
     public PublicationSymbol(
         ICatalogueSymbol containingSymbol,
@@ -12,16 +12,16 @@ public class PublicationSymbol : SourceCatalogueItemSymbol, IPublicationSymbol
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration)
     {
-        this.declaration = declaration;
+        Declaration = declaration;
     }
 
     public override SymbolKind Kind => SymbolKind.ResourceType;
 
-    public string? ShortName => declaration.ShortName;
+    public string? ShortName => Declaration.ShortName;
 
-    public string? Publisher => declaration.Publisher;
+    public string? Publisher => Declaration.Publisher;
 
-    public DateTime? PublicationDate => DateTime.TryParse(declaration.PublicationDate, out var result) ? result : null;
+    public DateTime? PublicationDate => DateTime.TryParse(Declaration.PublicationDate, out var result) ? result : null;
 
-    public Uri? PublicationUrl => Uri.TryCreate(declaration.PublisherUrl, UriKind.Absolute, out var result) ? result : null;
+    public Uri? PublicationUrl => Uri.TryCreate(Declaration.PublisherUrl, UriKind.Absolute, out var result) ? result : null;
 }

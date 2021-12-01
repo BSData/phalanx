@@ -1,9 +1,14 @@
+using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
 public class CatalogueSymbol : CatalogueBaseSymbol
 {
+    private ICatalogueSymbol? lazyGamesystem;
+
+    internal new CatalogueNode Declaration { get; }
+
     public CatalogueSymbol(Compilation declaringCompilation, CatalogueNode declaration)
         : base(declaringCompilation, declaration)
     {
@@ -23,9 +28,21 @@ public class CatalogueSymbol : CatalogueBaseSymbol
 
     public override bool IsGamesystem => false;
 
-    public override ICatalogueSymbol Gamesystem { get; } = null!; // TODO bind
+    public override ICatalogueSymbol Gamesystem
+    {
+        get
+        {
+            ForceComplete();
+            return lazyGamesystem ?? throw new InvalidOperationException("Binding failed.");
+        }
+    }
 
     public override ImmutableArray<ICatalogueReferenceSymbol> Imports { get; }
 
-    internal CatalogueNode Declaration { get; }
+    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
+    {
+        base.BindReferencesCore(binder, diagnosticBag);
+
+        lazyGamesystem = binder.BindGamesystemSymbol(Declaration.GamesystemId);
+    }
 }

@@ -24,6 +24,8 @@ public class ResourceLinkSymbol : EntrySymbol, IResourceEntrySymbol
 
     public IResourceEntrySymbol? ReferencedEntry => lazyReferencedEntry;
 
+    protected override IEntrySymbol? BaseReferencedEntry => ReferencedEntry;
+
     protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
     {
         base.BindReferencesCore(binder, diagnosticBag);

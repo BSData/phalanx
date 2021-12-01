@@ -1,9 +1,12 @@
+using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
 public class CategoryLinkSymbol : ContainerEntryBaseSymbol, ICategoryEntrySymbol
 {
+    private ICategoryEntrySymbol? lazyReference;
+
     public CategoryLinkSymbol(
         ICatalogueItemSymbol containingSymbol,
         CategoryLinkNode declaration,
@@ -11,14 +14,29 @@ public class CategoryLinkSymbol : ContainerEntryBaseSymbol, ICategoryEntrySymbol
         : base(containingSymbol, declaration, diagnostics)
     {
         Declaration = declaration;
-        ReferencedEntry = null; // TODO bind
     }
 
     public override SymbolKind Kind => SymbolKind.Link;
 
     public bool IsPrimaryCategory => Declaration.Primary;
 
-    public ICategoryEntrySymbol? ReferencedEntry { get; }
+    public ICategoryEntrySymbol? ReferencedEntry
+    {
+        get
+        {
+            ForceComplete();
+            return lazyReference ?? throw new InvalidOperationException("Binding failed.");
+        }
+    }
 
     internal new CategoryLinkNode Declaration { get; }
+
+    protected override IEntrySymbol? BaseReferencedEntry => ReferencedEntry;
+
+    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
+    {
+        base.BindReferencesCore(binder, diagnosticBag);
+
+        lazyReference = binder.BindCategoryEntrySymbol(Declaration.TargetId);
+    }
 }

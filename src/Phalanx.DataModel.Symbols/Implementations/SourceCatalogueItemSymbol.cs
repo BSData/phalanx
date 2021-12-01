@@ -2,47 +2,21 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public abstract class SourceCatalogueItemSymbol : CatalogueItemSymbol
+public abstract class SourceCatalogueItemSymbol : SourceDeclaredSymbol, ICatalogueItemSymbol
 {
-    internal SourceNode Declaration { get; }
-
     protected SourceCatalogueItemSymbol(
         ICatalogueItemSymbol containingSymbol,
         SourceNode declaration)
-        : base(containingSymbol)
+        : base(declaration)
     {
-        Id = (declaration as IIdentifiableNode)?.Id;
-        Name = (declaration as INameableNode)?.Name ?? string.Empty;
-        Comment = (declaration as CommentableNode)?.Comment;
-        this.Declaration = declaration;
+        ContainingSymbolCore = containingSymbol;
     }
 
-    public string? Id { get; }
+    public sealed override ISymbol ContainingSymbol => ContainingSymbolCore;
 
-    public sealed override string Name { get; }
+    protected ICatalogueItemSymbol ContainingSymbolCore { get; }
 
-    public sealed override string? Comment { get; }
+    public ICatalogueSymbol ContainingCatalogue => ContainingSymbolCore.ContainingCatalogue;
 
-    internal override bool RequiresCompletion => true;
-
-    private bool BindingDone { get; set; }
-
-    internal override void ForceComplete()
-    {
-        if (!BindingDone)
-        {
-            BindReferences();
-        }
-    }
-
-    protected void BindReferences()
-    {
-        if (BindingDone)
-            throw new InvalidOperationException("Already bound!");
-        BindReferencesCore(DeclaringCompilation.GetBinder(Declaration), DiagnosticBag.GetInstance());
-    }
-
-    protected virtual void BindReferencesCore(Binding.Binder binder, DiagnosticBag diagnosticBag)
-    {
-    }
+    internal override Compilation DeclaringCompilation => ((CatalogueBaseSymbol)ContainingCatalogue).DeclaringCompilation;
 }

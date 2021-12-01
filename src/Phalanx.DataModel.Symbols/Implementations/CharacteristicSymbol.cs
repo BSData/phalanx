@@ -34,6 +34,8 @@ public class CharacteristicSymbol : SimpleResourceEntrySymbol, ICharacteristicSy
 
     protected override void BindReferencesCore(Binding.Binder binder, DiagnosticBag diagnosticBag)
     {
+        base.BindReferencesCore(binder, diagnosticBag);
+
         lazyType = binder.BindCharacteristicTypeSymbol(profileSymbol.Type, Declaration);
     }
 }
