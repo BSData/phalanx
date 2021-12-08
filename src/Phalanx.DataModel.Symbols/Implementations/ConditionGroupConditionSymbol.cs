@@ -5,7 +5,7 @@ namespace Phalanx.DataModel.Symbols.Implementation;
 public class ConditionGroupConditionSymbol : TupleOperationConditionSymbol
 {
     public ConditionGroupConditionSymbol(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         ConditionGroupNode declaration,
         DiagnosticBag diagnostics)
         : base(containingSymbol)

@@ -5,7 +5,7 @@ namespace Phalanx.DataModel.Symbols.Implementation;
 public class ForceEntrySymbol : ContainerEntryBaseSymbol, IForceEntrySymbol
 {
     public ForceEntrySymbol(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         ForceEntryNode declaration,
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration, diagnostics)

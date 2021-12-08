@@ -3,19 +3,19 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Binding;
 
-public class CatalogueSetBinder : Binder
+public class GamesystemNamespaceBinder : Binder
 {
-    internal CatalogueSetBinder(Binder next, ImmutableArray<CatalogueSymbol> catalogues)
+    internal GamesystemNamespaceBinder(Binder next, SourceGlobalNamespaceSymbol namespaceSymbol)
         : base(next)
     {
-        Catalogues = catalogues;
+        NamespaceSymbol = namespaceSymbol;
     }
 
-    public ImmutableArray<CatalogueSymbol> Catalogues { get; }
+    public SourceGlobalNamespaceSymbol NamespaceSymbol { get; }
 
     internal override ICatalogueSymbol? BindCatalogueSymbol(string? targetId, CatalogueLinkKind type)
     {
-        foreach (var catalogue in Catalogues)
+        foreach (var catalogue in NamespaceSymbol.Catalogues)
         {
             if (catalogue.Id == targetId)
                 return catalogue;
@@ -25,7 +25,7 @@ public class CatalogueSetBinder : Binder
 
     internal override ICatalogueSymbol? BindGamesystemSymbol(string? gamesystemId)
     {
-        foreach (var catalogue in Catalogues)
+        foreach (var catalogue in NamespaceSymbol.Catalogues)
         {
             if (catalogue.IsGamesystem && catalogue.Id == gamesystemId)
                 return catalogue;

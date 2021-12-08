@@ -27,6 +27,8 @@ public class EntryPublicationReferenceSymbol : Symbol, IPublicationReferenceSymb
 
     public IEntrySymbol ContainingEntrySymbol => containingSymbol;
 
+    internal override Compilation DeclaringCompilation => containingSymbol.DeclaringCompilation;
+
     public IPublicationSymbol Publication
     {
         get
@@ -37,8 +39,6 @@ public class EntryPublicationReferenceSymbol : Symbol, IPublicationReferenceSymb
     }
 
     public string Page => containingSymbol.Declaration.Page ?? "";
-
-    internal override Compilation DeclaringCompilation => containingSymbol.DeclaringCompilation;
 
     internal override bool RequiresCompletion => true;
 

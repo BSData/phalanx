@@ -10,7 +10,7 @@ public class CostSymbol : SimpleResourceEntrySymbol, ICostSymbol
     internal new CostNode Declaration { get; }
 
     public CostSymbol(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         CostNode declaration,
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration, diagnostics)

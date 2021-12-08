@@ -7,22 +7,43 @@ public class CatalogueBinder : Binder
 {
     public CatalogueSymbol Catalogue { get; }
 
+    private ImmutableArray<ICatalogueSymbol> lazyRootClosure;
+
     internal CatalogueBinder(Binder next, CatalogueSymbol catalogue) : base(next)
     {
         Catalogue = catalogue;
     }
 
-    internal IEnumerable<ICatalogueSymbol> GetImportedCatalogues()
+    public ImmutableArray<ICatalogueSymbol> RootClosure =>
+        lazyRootClosure.IsDefault ? (lazyRootClosure = CalculateRootClosure()) : lazyRootClosure;
+
+    internal ImmutableArray<ICatalogueSymbol> CalculateRootClosure()
     {
-        // TODO imports of imports?
-        return Catalogue.Imports.Select(x => x.Catalogue).Append(Catalogue.Gamesystem);
+        var processed = new HashSet<ICatalogueSymbol>();
+        var closureItems = new List<ICatalogueSymbol>();
+        var queuedForProcessing = new Queue<ICatalogueSymbol>();
+        queuedForProcessing.Enqueue(Catalogue);
+        while (queuedForProcessing.TryDequeue(out var item))
+        {
+            if (processed.Add(item))
+            {
+                closureItems.Add(item);
+                foreach (var import in item.Imports)
+                {
+                    queuedForProcessing.Enqueue(import.Catalogue);
+                }
+            }
+        }
+        closureItems.Add(Catalogue.Gamesystem);
+        // TODO consider filtering out "missing" items
+        return closureItems.ToImmutableArray();
     }
 
     internal ImmutableArray<T> GetWithId<T>(Func<ICatalogueSymbol, IEnumerable<T>> getItems, string? id) where T : ISymbol
     {
         if (id is null)
             return ImmutableArray<T>.Empty;
-        return GetImportedCatalogues()
+        return RootClosure
             .SelectMany(x => getItems(x))
             .Where(x => x.Id == id)
             .ToImmutableArray();

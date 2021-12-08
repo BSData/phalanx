@@ -4,8 +4,10 @@ namespace Phalanx.DataModel.Symbols.Implementation;
 
 public class GamesystemSymbol : CatalogueBaseSymbol
 {
-    public GamesystemSymbol(Compilation declaringCompilation, GamesystemNode declaration)
-        : base(declaringCompilation, declaration)
+    public GamesystemSymbol(
+        SourceGlobalNamespaceSymbol containingSymbol,
+        GamesystemNode declaration)
+        : base(containingSymbol, declaration)
     {
     }
 

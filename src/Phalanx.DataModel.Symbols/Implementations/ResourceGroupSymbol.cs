@@ -5,7 +5,7 @@ namespace Phalanx.DataModel.Symbols.Implementation;
 public class ResourceGroupSymbol : EntrySymbol, IResourceGroupSymbol
 {
     public ResourceGroupSymbol(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         InfoGroupNode declaration,
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration, diagnostics)

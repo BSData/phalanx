@@ -5,7 +5,7 @@ namespace Phalanx.DataModel.Symbols.Implementation;
 public class ModifierEffectSymbol : EffectSymbol, IConditionalEffectSymbol
 {
     public ModifierEffectSymbol(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         ModifierNode declaration,
         DiagnosticBag diagnostics)
         : base(containingSymbol)

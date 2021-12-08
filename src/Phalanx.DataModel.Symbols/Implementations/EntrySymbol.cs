@@ -3,12 +3,12 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public abstract class EntrySymbol : SourceCatalogueItemSymbol, IEntrySymbol
+public abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol
 {
     internal new EntryBaseNode Declaration { get; }
 
     protected EntrySymbol(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         EntryBaseNode declaration,
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration)
@@ -48,7 +48,7 @@ public abstract class EntrySymbol : SourceCatalogueItemSymbol, IEntrySymbol
     }
 
     public static ISelectionEntryContainerSymbol CreateEntry(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         EntryLinkNode item,
         DiagnosticBag diagnostics)
     {
@@ -56,7 +56,7 @@ public abstract class EntrySymbol : SourceCatalogueItemSymbol, IEntrySymbol
     }
 
     public static IRuleSymbol CreateEntry(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         RuleNode item,
         DiagnosticBag diagnostics)
     {
@@ -64,7 +64,7 @@ public abstract class EntrySymbol : SourceCatalogueItemSymbol, IEntrySymbol
     }
 
     public static IProfileSymbol CreateEntry(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         ProfileNode item,
         DiagnosticBag diagnostics)
     {
@@ -72,7 +72,7 @@ public abstract class EntrySymbol : SourceCatalogueItemSymbol, IEntrySymbol
     }
 
     public static IResourceEntrySymbol CreateEntry(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         InfoLinkNode item,
         DiagnosticBag diagnostics)
     {
@@ -80,7 +80,7 @@ public abstract class EntrySymbol : SourceCatalogueItemSymbol, IEntrySymbol
     }
 
     public static IResourceGroupSymbol CreateEntry(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         InfoGroupNode item,
         DiagnosticBag diagnostics)
     {
@@ -88,7 +88,7 @@ public abstract class EntrySymbol : SourceCatalogueItemSymbol, IEntrySymbol
     }
 
     public static ICostSymbol CreateEntry(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         CostNode item,
         DiagnosticBag diagnostics)
     {
@@ -96,7 +96,7 @@ public abstract class EntrySymbol : SourceCatalogueItemSymbol, IEntrySymbol
     }
 
     public static ICategoryEntrySymbol CreateEntry(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         CategoryEntryNode item,
         DiagnosticBag diagnostics)
     {
@@ -104,7 +104,7 @@ public abstract class EntrySymbol : SourceCatalogueItemSymbol, IEntrySymbol
     }
 
     public static ICategoryEntrySymbol CreateEntry(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         CategoryLinkNode item,
         DiagnosticBag diagnostics)
     {
@@ -112,7 +112,7 @@ public abstract class EntrySymbol : SourceCatalogueItemSymbol, IEntrySymbol
     }
 
     public static IForceEntrySymbol CreateEntry(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         ForceEntryNode item,
         DiagnosticBag diagnostics)
     {
@@ -120,7 +120,7 @@ public abstract class EntrySymbol : SourceCatalogueItemSymbol, IEntrySymbol
     }
 
     public static ISelectionEntryContainerSymbol CreateEntry(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         SelectionEntryNode node,
         DiagnosticBag diagnostics)
     {
@@ -128,7 +128,7 @@ public abstract class EntrySymbol : SourceCatalogueItemSymbol, IEntrySymbol
     }
 
     public static ISelectionEntryContainerSymbol CreateEntry(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         SelectionEntryGroupNode node,
         DiagnosticBag diagnostics)
     {

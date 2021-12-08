@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public class CostTypeSymbol : SourceCatalogueItemSymbol, ICostTypeSymbol
+public class CostTypeSymbol : SourceDeclaredSymbol, ICostTypeSymbol
 {
     internal new CostTypeNode Declaration { get; }
 

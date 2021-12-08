@@ -8,7 +8,7 @@ public class ResourceLinkSymbol : EntrySymbol, IResourceEntrySymbol
     private IResourceEntrySymbol? lazyReferencedEntry;
 
     public ResourceLinkSymbol(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         InfoLinkNode declaration,
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration, diagnostics)

@@ -7,7 +7,7 @@ public class ModifyingEffectSymbol : EffectSymbol, IModifyingEffectSymbol
     internal ModifierNode Declaration { get; }
 
     public ModifyingEffectSymbol(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         ModifierNode declaration)
         : base(containingSymbol)
     {

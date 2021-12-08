@@ -10,7 +10,7 @@ public class SelectionEntryGroupSymbol : SelectionEntryBaseSymbol, ISelectionEnt
     internal new SelectionEntryGroupNode Declaration { get; }
 
     public SelectionEntryGroupSymbol(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         SelectionEntryGroupNode declaration,
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration, diagnostics)

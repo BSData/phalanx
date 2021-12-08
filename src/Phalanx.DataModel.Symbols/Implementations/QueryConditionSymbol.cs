@@ -7,7 +7,7 @@ public class QueryConditionSymbol : EffectSymbol, IQueryConditionSymbol
     internal ConditionNode Declaration { get; }
 
     public QueryConditionSymbol(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         ConditionNode declaration,
         DiagnosticBag diagnostics)
         : base(containingSymbol)

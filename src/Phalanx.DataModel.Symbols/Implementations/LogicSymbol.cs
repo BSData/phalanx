@@ -4,18 +4,14 @@ namespace Phalanx.DataModel.Symbols.Implementation;
 
 public abstract class LogicSymbol : Symbol, IConditionSymbol
 {
-    public LogicSymbol(ICatalogueItemSymbol containingSymbol)
+    public LogicSymbol(ISymbol containingSymbol)
     {
         ContainingSymbolCore = containingSymbol;
     }
 
     public sealed override ISymbol ContainingSymbol => ContainingSymbolCore;
 
-    protected ICatalogueItemSymbol ContainingSymbolCore { get; }
-
-    public ICatalogueSymbol ContainingCatalogue => ContainingSymbolCore.ContainingCatalogue;
-
-    internal override Compilation DeclaringCompilation => ((CatalogueBaseSymbol)ContainingCatalogue).DeclaringCompilation;
+    protected ISymbol ContainingSymbolCore { get; }
 
     public override string? Id => null;
 
@@ -45,7 +41,7 @@ public abstract class LogicSymbol : Symbol, IConditionSymbol
     }
 
     public static IEffectSymbol CreateEffect(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         ModifierNode declaration,
         DiagnosticBag diagnostics)
     {
@@ -53,7 +49,7 @@ public abstract class LogicSymbol : Symbol, IConditionSymbol
     }
 
     public static IEffectSymbol CreateEffect(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         ModifierGroupNode declaration,
         DiagnosticBag diagnostics)
     {

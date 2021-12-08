@@ -10,7 +10,7 @@ public class SelectionEntryLinkSymbol : SelectionEntryBaseSymbol
     internal new EntryLinkNode Declaration { get; }
 
     public SelectionEntryLinkSymbol(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         EntryLinkNode declaration,
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration, diagnostics)

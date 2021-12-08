@@ -5,7 +5,7 @@ namespace Phalanx.DataModel.Symbols;
 /// BS catalogue/gamesystem.
 /// WHAM <see cref="WarHub.ArmouryModel.Source.CatalogueBaseNode" />.
 /// </summary>
-public interface ICatalogueSymbol : ISymbol, ICatalogueItemSymbol
+public interface ICatalogueSymbol : ISymbol
 {
     bool IsLibrary { get; }
 
@@ -18,7 +18,7 @@ public interface ICatalogueSymbol : ISymbol, ICatalogueItemSymbol
     /// </summary>
     ImmutableArray<ICatalogueReferenceSymbol> Imports { get; }
 
-    ImmutableArray<ICatalogueItemSymbol> AllItems { get; }
+    ImmutableArray<ISymbol> AllItems { get; }
 
     ImmutableArray<IResourceDefinitionSymbol> ResourceDefinitions { get; }
 
@@ -29,4 +29,15 @@ public interface ICatalogueSymbol : ISymbol, ICatalogueItemSymbol
     ImmutableArray<ISelectionEntryContainerSymbol> SharedSelectionEntryContainers { get; }
 
     ImmutableArray<IResourceEntrySymbol> SharedResourceEntries { get; }
+}
+
+/// <summary>
+/// Gamesystem Namespace is a container for all entities
+/// that belong to a single GameSystem ID (gamesystem, catalogues, roster(s)).
+/// </summary>
+public interface IGamesystemNamespaceSymbol : ISymbol
+{
+    ICatalogueSymbol RootCatalogue { get; }
+
+    ImmutableArray<ICatalogueSymbol> Catalogues { get; }
 }

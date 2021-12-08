@@ -2,7 +2,7 @@ namespace Phalanx.DataModel.Symbols.Implementation;
 
 public abstract class TupleOperationConditionSymbol : EffectSymbol, ITupleOperationConditionSymbol
 {
-    protected TupleOperationConditionSymbol(ICatalogueItemSymbol containingSymbol)
+    protected TupleOperationConditionSymbol(ISymbol containingSymbol)
         : base(containingSymbol)
     {
     }

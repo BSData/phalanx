@@ -1,3 +1,4 @@
+using Phalanx.DataModel.Symbols;
 using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
@@ -21,14 +22,19 @@ public abstract class Compilation
 
     public CompilationOptions Options { get; }
 
+    public abstract IGamesystemNamespaceSymbol GlobalNamespace { get; }
+
     public abstract SemanticModel GetSemanticModel(SourceTree tree);
 
     internal Binder GetBinder(SourceNode node)
     {
         // TODO node has to have SourceTree property...
         // return GetBinderFactory(node.SourceTree).GetBinder(node);
-        return GetBinderFactory(SourceTrees.First(x => x.GetRoot() == node)).GetBinder(node);
+        var rootNode = node.AncestorsAndSelf().Last();
+        return GetBinderFactory(SourceTrees.First(x => x.GetRoot() == rootNode)).GetBinder(node);
     }
+
+    internal abstract ICatalogueSymbol CreateMissingGamesystemSymbol();
 
     internal abstract BinderFactory GetBinderFactory(SourceTree tree);
 }

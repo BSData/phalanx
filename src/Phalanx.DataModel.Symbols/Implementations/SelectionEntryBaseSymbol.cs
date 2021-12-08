@@ -5,7 +5,7 @@ namespace Phalanx.DataModel.Symbols.Implementation;
 public abstract class SelectionEntryBaseSymbol : ContainerEntryBaseSymbol, ISelectionEntryContainerSymbol
 {
     protected SelectionEntryBaseSymbol(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         SelectionEntryBaseNode declaration,
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration, diagnostics)

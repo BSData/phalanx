@@ -2,6 +2,9 @@ namespace Phalanx.DataModel.Symbols;
 
 public enum SymbolKind
 {
+    // grouping of the same-gamesystem-id elements
+    Namespace,
+
     // catalogue, gamesystem (special kind of catalogue)
     Catalogue,
 
@@ -28,5 +31,4 @@ public enum SymbolKind
 
     // roster selection
     Selection,
-
 }

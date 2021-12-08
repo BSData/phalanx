@@ -5,7 +5,7 @@ namespace Phalanx.DataModel.Symbols.Implementation;
 public class CategoryEntrySymbol : ContainerEntryBaseSymbol, ICategoryEntrySymbol
 {
     public CategoryEntrySymbol(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         CategoryEntryNode declaration,
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration, diagnostics)

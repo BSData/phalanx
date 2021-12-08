@@ -5,7 +5,7 @@ namespace Phalanx.DataModel.Symbols.Implementation;
 public class ModifierRootConditionSymbol : TupleOperationConditionSymbol
 {
     public ModifierRootConditionSymbol(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         ModifierBaseNode declaration,
         DiagnosticBag diagnostics)
         : base(containingSymbol)

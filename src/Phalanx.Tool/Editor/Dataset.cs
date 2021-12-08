@@ -1,3 +1,4 @@
+using Phalanx.DataModel;
 using WarHub.ArmouryModel.Source;
 using WarHub.ArmouryModel.SourceAnalysis;
 
@@ -13,4 +14,10 @@ public record Dataset(GamesystemContext Context)
     public GamesystemNode Gamesystem => Context.Gamesystem!;
     public ImmutableArray<CatalogueNode> Catalogues => Context.Catalogues;
     public IEnumerable<CatalogueBaseNode> Nodes => Context.Roots;
+
+    public DatasetCompilation Compile()
+    {
+        var sourceTrees = Context.Roots.Select(SourceTree.CreateForRoot).ToImmutableArray();
+        return DatasetCompilation.Create(sourceTrees);
+    }
 }

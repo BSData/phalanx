@@ -8,7 +8,7 @@ public class CategoryLinkSymbol : ContainerEntryBaseSymbol, ICategoryEntrySymbol
     private ICategoryEntrySymbol? lazyReference;
 
     public CategoryLinkSymbol(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         CategoryLinkNode declaration,
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration, diagnostics)

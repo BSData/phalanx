@@ -8,7 +8,7 @@ public class ProfileSymbol : EntrySymbol, IProfileSymbol
     internal new ProfileNode Declaration { get; }
 
     public ProfileSymbol(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         ProfileNode declaration,
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration, diagnostics)

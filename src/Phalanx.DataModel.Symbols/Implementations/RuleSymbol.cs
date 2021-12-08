@@ -7,7 +7,7 @@ public class RuleSymbol : EntrySymbol, IRuleSymbol
     internal new RuleNode Declaration { get; }
 
     public RuleSymbol(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         RuleNode declaration,
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration, diagnostics)

@@ -4,7 +4,7 @@ namespace Phalanx.DataModel.Symbols;
 /// A roster-visible entry that has publication reference and might have some effects associated with it.
 /// WHAM <see cref="WarHub.ArmouryModel.Source.EntryBaseCore" />.
 /// </summary>
-public interface IEntrySymbol : ICatalogueItemSymbol
+public interface IEntrySymbol : ISymbol
 {
     bool IsHidden { get; }
 

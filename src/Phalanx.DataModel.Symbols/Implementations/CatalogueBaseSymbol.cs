@@ -9,11 +9,11 @@ public abstract class CatalogueBaseSymbol : SourceDeclaredSymbol, ICatalogueSymb
     private readonly ImmutableArray<PublicationSymbol> publications;
 
     protected CatalogueBaseSymbol(
-        Compilation declaringCompilation,
+        SourceGlobalNamespaceSymbol containingSymbol,
         CatalogueBaseNode declaration)
-        : base(declaration)
+        : base(containingSymbol, declaration)
     {
-        DeclaringCompilation = declaringCompilation;
+        ContainingNamespace = containingSymbol;
         Declaration = declaration;
         var diagnostics = DiagnosticBag.GetInstance();
         costTypes = declaration.CostTypes.Select(x => new CostTypeSymbol(this, x, diagnostics)).ToImmutableArray();
@@ -82,9 +82,9 @@ public abstract class CatalogueBaseSymbol : SourceDeclaredSymbol, ICatalogueSymb
 
     public override SymbolKind Kind => SymbolKind.Catalogue;
 
-    public ICatalogueSymbol ContainingCatalogue => this;
+    public override ICatalogueSymbol? ContainingCatalogue => null;
 
-    public override ISymbol? ContainingSymbol => null;
+    public override SourceGlobalNamespaceSymbol ContainingNamespace { get; }
 
     public abstract bool IsLibrary { get; }
 
@@ -94,8 +94,8 @@ public abstract class CatalogueBaseSymbol : SourceDeclaredSymbol, ICatalogueSymb
 
     public abstract ImmutableArray<ICatalogueReferenceSymbol> Imports { get; }
 
-    public ImmutableArray<ICatalogueItemSymbol> AllItems =>
-        ImmutableArray<ICatalogueItemSymbol>.Empty
+    public ImmutableArray<ISymbol> AllItems =>
+        ImmutableArray<ISymbol>.Empty
         .AddRange(Imports)
         .AddRange(ResourceDefinitions)
         .AddRange(RootContainerEntries)
@@ -116,6 +116,4 @@ public abstract class CatalogueBaseSymbol : SourceDeclaredSymbol, ICatalogueSymb
     public ImmutableArray<ISelectionEntryContainerSymbol> SharedSelectionEntryContainers { get; }
 
     public ImmutableArray<IResourceEntrySymbol> SharedResourceEntries { get; }
-
-    internal override Compilation DeclaringCompilation { get; }
 }

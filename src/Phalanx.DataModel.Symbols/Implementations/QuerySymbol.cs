@@ -5,7 +5,7 @@ namespace Phalanx.DataModel.Symbols.Implementation;
 public class QuerySymbol : LogicSymbol, IQuerySymbol
 {
     public QuerySymbol(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         QueryBaseNode declaration,
         DiagnosticBag diagnostics)
         : base(containingSymbol)

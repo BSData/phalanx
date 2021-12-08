@@ -9,8 +9,10 @@ public class CatalogueSymbol : CatalogueBaseSymbol
 
     internal new CatalogueNode Declaration { get; }
 
-    public CatalogueSymbol(Compilation declaringCompilation, CatalogueNode declaration)
-        : base(declaringCompilation, declaration)
+    public CatalogueSymbol(
+        SourceGlobalNamespaceSymbol containingSymbol,
+        CatalogueNode declaration)
+        : base(containingSymbol, declaration)
     {
         Declaration = declaration;
         Imports = CreateLinks().ToImmutableArray();

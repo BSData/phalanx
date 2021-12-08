@@ -9,10 +9,18 @@ class Program
 {
     static void Main()
     {
-        Console.WriteLine("Hello World!");
-        var printer = new RosterPrinter();
+        Console.WriteLine("Building dataset.");
         // create
-        var rosterEditor = RosterEditor.Create(GetDataset()).WithName("Test Marine Strike Force");
+        var dataset = GetDataset();
+        Console.WriteLine("Compiling dataset.");
+        var compilation = dataset.Compile();
+        Console.WriteLine("Compiling dataset finished, creating global namespace.");
+        var globalNamespace = compilation.GlobalNamespace;
+        Console.WriteLine("Global namespace retrieved.");
+
+        // roster modifications
+        var printer = new RosterPrinter();
+        var rosterEditor = RosterEditor.Create(dataset).WithName("Test Marine Strike Force");
         Console.WriteLine(">>> New roster created:");
         PrintRoster();
         // change cost limit to 1000 pts

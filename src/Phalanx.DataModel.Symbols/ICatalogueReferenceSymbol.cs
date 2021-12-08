@@ -4,7 +4,7 @@ namespace Phalanx.DataModel.Symbols;
 /// A reference of an imported catalogue.
 /// WHAM <see cref="WarHub.ArmouryModel.Source.CatalogueLinkNode" />.
 /// </summary>
-public interface ICatalogueReferenceSymbol : ICatalogueItemSymbol
+public interface ICatalogueReferenceSymbol : ISymbol
 {
     bool ImportsRootEntries { get; }
 

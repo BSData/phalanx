@@ -6,13 +6,18 @@ public abstract class SourceDeclaredSymbol : Symbol
 {
     internal SourceNode Declaration { get; }
 
-    protected SourceDeclaredSymbol(SourceNode declaration)
+    protected SourceDeclaredSymbol(
+        ISymbol? containingSymbol,
+        SourceNode declaration)
     {
         Id = (declaration as IIdentifiableNode)?.Id;
         Name = (declaration as INameableNode)?.Name ?? string.Empty;
         Comment = (declaration as CommentableNode)?.Comment;
         Declaration = declaration;
+        ContainingSymbol = containingSymbol;
     }
+
+    public sealed override ISymbol? ContainingSymbol { get; }
 
     public override string? Id { get; }
 
@@ -29,6 +34,15 @@ public abstract class SourceDeclaredSymbol : Symbol
         if (!BindingDone)
         {
             BindReferences();
+        }
+    }
+
+    internal override Compilation DeclaringCompilation
+    {
+        get
+        {
+            return base.DeclaringCompilation
+                ?? throw new InvalidOperationException("Source symbols must have a declaring compilation set.");
         }
     }
 

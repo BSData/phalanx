@@ -2,10 +2,10 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public abstract class SimpleResourceEntrySymbol : SourceCatalogueItemSymbol, IResourceEntrySymbol
+public abstract class SimpleResourceEntrySymbol : SourceDeclaredSymbol, IResourceEntrySymbol
 {
     public SimpleResourceEntrySymbol(
-        ICatalogueItemSymbol containingSymbol,
+        ISymbol containingSymbol,
         SourceNode declaration,
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration)
