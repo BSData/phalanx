@@ -3,13 +3,13 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Binding;
 
-public class CatalogueBinder : Binder
+public class CatalogueBaseBinder : Binder
 {
-    public CatalogueSymbol Catalogue { get; }
+    public CatalogueBaseSymbol Catalogue { get; }
 
     private ImmutableArray<ICatalogueSymbol> lazyRootClosure;
 
-    internal CatalogueBinder(Binder next, CatalogueSymbol catalogue) : base(next)
+    internal CatalogueBaseBinder(Binder next, CatalogueBaseSymbol catalogue) : base(next)
     {
         Catalogue = catalogue;
     }

@@ -17,6 +17,9 @@ class Program
         Console.WriteLine("Compiling dataset finished, creating global namespace.");
         var globalNamespace = compilation.GlobalNamespace;
         Console.WriteLine("Global namespace retrieved.");
+        Console.WriteLine("Testing gamesystem binding in Catalogue symbol.");
+        var gamesystem = globalNamespace.Catalogues.Where(x => !x.IsGamesystem).First().Gamesystem;
+        Console.WriteLine("Catalogue symbol has bound to gamesystem symbol: " + gamesystem.Name);
 
         // roster modifications
         var printer = new RosterPrinter();
