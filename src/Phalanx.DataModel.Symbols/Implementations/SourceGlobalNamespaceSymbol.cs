@@ -20,6 +20,8 @@ internal class SourceGlobalNamespaceSymbol : Symbol, IGamesystemNamespaceSymbol
                 DeclarationDiagnostics.Add(ErrorCode.ERR_MultipleGamesystems, candidate.Declaration);
         }
 
+        // TODO more diagnostics, e.g. all catalogues are from the same game system?
+
         CatalogueBaseSymbol? CreateSymbol(CatalogueBaseNode node)
         {
             if (node is CatalogueNode catalogueNode)
