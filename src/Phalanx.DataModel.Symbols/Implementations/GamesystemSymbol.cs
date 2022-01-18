@@ -2,12 +2,13 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public class GamesystemSymbol : CatalogueBaseSymbol
+internal class GamesystemSymbol : CatalogueBaseSymbol
 {
     public GamesystemSymbol(
         SourceGlobalNamespaceSymbol containingSymbol,
-        GamesystemNode declaration)
-        : base(containingSymbol, declaration)
+        GamesystemNode declaration,
+        DiagnosticBag diagnostics)
+        : base(containingSymbol, declaration, diagnostics)
     {
     }
 

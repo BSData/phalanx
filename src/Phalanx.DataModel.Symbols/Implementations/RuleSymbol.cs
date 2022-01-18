@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public class RuleSymbol : EntrySymbol, IRuleSymbol
+internal class RuleSymbol : EntrySymbol, IRuleSymbol
 {
     internal new RuleNode Declaration { get; }
 

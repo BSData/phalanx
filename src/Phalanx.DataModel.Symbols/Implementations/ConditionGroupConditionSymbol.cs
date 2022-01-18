@@ -2,14 +2,17 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public class ConditionGroupConditionSymbol : TupleOperationConditionSymbol
+internal class ConditionGroupConditionSymbol : TupleOperationConditionSymbol
 {
+    internal ConditionGroupNode Declaration { get; }
+
     public ConditionGroupConditionSymbol(
         ISymbol containingSymbol,
         ConditionGroupNode declaration,
         DiagnosticBag diagnostics)
         : base(containingSymbol)
     {
+        Declaration = declaration;
         Operation = declaration.Type switch
         {
             ConditionGroupKind.And => TupleOperation.And,
@@ -18,7 +21,7 @@ public class ConditionGroupConditionSymbol : TupleOperationConditionSymbol
         };
         if (Operation is TupleOperation.Unknown)
         {
-            diagnostics.Add("Unknown condition group type");
+            diagnostics.Add(ErrorCode.ERR_UnknownEnumerationValue, Declaration);
         }
         Conditions = GetChildSymbols().ToImmutableArray();
 

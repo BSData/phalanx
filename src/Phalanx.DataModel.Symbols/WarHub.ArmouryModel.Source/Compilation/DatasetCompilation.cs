@@ -1,21 +1,23 @@
 using Phalanx.DataModel.Symbols;
 using Phalanx.DataModel.Symbols.Binding;
 using Phalanx.DataModel.Symbols.Implementation;
-using WarHub.ArmouryModel.Source;
 
-namespace Phalanx.DataModel;
+namespace WarHub.ArmouryModel.Source;
 
 public class DatasetCompilation : Compilation
 {
     private SourceGlobalNamespaceSymbol? lazyGlobalNamespace;
     private Binder? lazyGlobalNamespaceBinder;
+    private DiagnosticBag? lazyBindingDiagnostics;
 
     internal DatasetCompilation(string? name, ImmutableArray<SourceTree> sourceTrees, CompilationOptions options)
         : base(name, sourceTrees, options)
     {
     }
 
-    public override SourceGlobalNamespaceSymbol GlobalNamespace => GetGlobalNamespace();
+    public override IGamesystemNamespaceSymbol GlobalNamespace => SourceGlobalNamespace;
+
+    internal SourceGlobalNamespaceSymbol SourceGlobalNamespace => GetGlobalNamespace();
 
     public static DatasetCompilation Create()
     {
@@ -34,9 +36,21 @@ public class DatasetCompilation : Compilation
         throw new NotImplementedException();
     }
 
-    internal override ICatalogueSymbol CreateMissingGamesystemSymbol()
+    public override ImmutableArray<Diagnostic> GetDiagnostics(CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var declarationDiagnostics = SourceGlobalNamespace.DeclarationDiagnostics;
+        SourceGlobalNamespace.ForceComplete();
+        var bindingDiagnostics = BindingDiagnostics;
+        var builder = ImmutableArray.CreateBuilder<Diagnostic>(declarationDiagnostics.Count + bindingDiagnostics.Count);
+        builder.AddRange(declarationDiagnostics.AsEnumerable());
+        builder.AddRange(bindingDiagnostics.AsEnumerable());
+        return builder.MoveToImmutable();
+    }
+
+    internal override ICatalogueSymbol CreateMissingGamesystemSymbol(DiagnosticBag diagnostics)
+    {
+        diagnostics.Add(ErrorCode.ERR_MissingGamesystem, Location.None);
+        return new ErrorSymbols.InvalidGamesystemSymbol();
     }
 
     internal override BinderFactory GetBinderFactory(SourceTree tree)
@@ -52,7 +66,7 @@ public class DatasetCompilation : Compilation
         {
             return lazyGlobalNamespaceBinder;
         }
-        var binder = new GamesystemNamespaceBinder(new BuckStopsHereBinder(this), GlobalNamespace);
+        var binder = new GamesystemNamespaceBinder(new BuckStopsHereBinder(this), SourceGlobalNamespace);
         Interlocked.CompareExchange(ref lazyGlobalNamespaceBinder, binder, null);
         return lazyGlobalNamespaceBinder;
     }
@@ -72,5 +86,28 @@ public class DatasetCompilation : Compilation
     {
         var nodes = SourceTrees.Select(x => (CatalogueBaseNode)x.GetRoot()).ToImmutableArray();
         return new SourceGlobalNamespaceSymbol(nodes, this);
+    }
+
+    private DiagnosticBag BindingDiagnostics
+    {
+        get
+        {
+            var bag = DiagnosticBag.GetInstance();
+            var oldBag = Interlocked.CompareExchange(ref lazyBindingDiagnostics, bag, null);
+            if (oldBag is not null)
+            {
+                bag.Free();
+                return oldBag;
+            }
+            else
+            {
+                return bag;
+            }
+        }
+    }
+
+    internal override void AddBindingDiagnostics(DiagnosticBag toAdd)
+    {
+        BindingDiagnostics.AddRange(toAdd);
     }
 }

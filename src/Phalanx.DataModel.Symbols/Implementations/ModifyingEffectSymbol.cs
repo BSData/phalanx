@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public class ModifyingEffectSymbol : EffectSymbol, IModifyingEffectSymbol
+internal class ModifyingEffectSymbol : EffectSymbol, IModifyingEffectSymbol
 {
     internal ModifierNode Declaration { get; }
 

@@ -1,4 +1,4 @@
-namespace Phalanx.DataModel;
+namespace WarHub.ArmouryModel.Source;
 
 public abstract class SemanticModel
 {

@@ -3,7 +3,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public class ResourceLinkSymbol : EntrySymbol, IResourceEntrySymbol
+internal class ResourceLinkSymbol : EntrySymbol, IResourceEntrySymbol
 {
     private IResourceEntrySymbol? lazyReferencedEntry;
 

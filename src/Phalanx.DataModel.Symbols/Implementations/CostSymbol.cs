@@ -3,7 +3,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public class CostSymbol : SimpleResourceEntrySymbol, ICostSymbol
+internal class CostSymbol : SimpleResourceEntrySymbol, ICostSymbol
 {
     private ICostTypeSymbol? lazyCostTypeSymbol;
 

@@ -1,6 +1,6 @@
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public abstract class TupleOperationConditionSymbol : EffectSymbol, ITupleOperationConditionSymbol
+internal abstract class TupleOperationConditionSymbol : EffectSymbol, ITupleOperationConditionSymbol
 {
     protected TupleOperationConditionSymbol(ISymbol containingSymbol)
         : base(containingSymbol)

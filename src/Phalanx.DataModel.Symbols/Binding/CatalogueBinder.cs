@@ -3,7 +3,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Binding;
 
-public class CatalogueBaseBinder : Binder
+internal class CatalogueBaseBinder : Binder
 {
     public CatalogueBaseSymbol Catalogue { get; }
 

@@ -3,7 +3,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Binding;
 
-public class GamesystemNamespaceBinder : Binder
+internal class GamesystemNamespaceBinder : Binder
 {
     internal GamesystemNamespaceBinder(Binder next, SourceGlobalNamespaceSymbol namespaceSymbol)
         : base(next)

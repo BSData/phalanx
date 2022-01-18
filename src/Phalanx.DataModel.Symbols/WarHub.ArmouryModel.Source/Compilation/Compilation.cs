@@ -1,8 +1,7 @@
 using Phalanx.DataModel.Symbols;
 using Phalanx.DataModel.Symbols.Binding;
-using WarHub.ArmouryModel.Source;
 
-namespace Phalanx.DataModel;
+namespace WarHub.ArmouryModel.Source;
 
 public abstract class Compilation
 {
@@ -26,6 +25,8 @@ public abstract class Compilation
 
     public abstract SemanticModel GetSemanticModel(SourceTree tree);
 
+    public abstract ImmutableArray<Diagnostic> GetDiagnostics(CancellationToken cancellationToken = default);
+
     internal Binder GetBinder(SourceNode node)
     {
         // TODO node has to have SourceTree property...
@@ -34,7 +35,9 @@ public abstract class Compilation
         return GetBinderFactory(SourceTrees.First(x => x.GetRoot() == rootNode)).GetBinder(node);
     }
 
-    internal abstract ICatalogueSymbol CreateMissingGamesystemSymbol();
+    internal abstract ICatalogueSymbol CreateMissingGamesystemSymbol(DiagnosticBag diagnostics);
 
     internal abstract BinderFactory GetBinderFactory(SourceTree tree);
+
+    internal abstract void AddBindingDiagnostics(DiagnosticBag toAdd);
 }

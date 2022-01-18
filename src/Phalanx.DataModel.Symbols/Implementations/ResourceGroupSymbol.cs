@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public class ResourceGroupSymbol : EntrySymbol, IResourceGroupSymbol
+internal class ResourceGroupSymbol : EntrySymbol, IResourceGroupSymbol
 {
     public ResourceGroupSymbol(
         ISymbol containingSymbol,

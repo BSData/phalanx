@@ -2,36 +2,38 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public class SourceGlobalNamespaceSymbol : Symbol, IGamesystemNamespaceSymbol
+internal class SourceGlobalNamespaceSymbol : Symbol, IGamesystemNamespaceSymbol
 {
     public SourceGlobalNamespaceSymbol(
         ImmutableArray<CatalogueBaseNode> catalogues,
         Compilation declaringCompilation)
     {
         DeclaringCompilation = declaringCompilation;
-        Catalogues = catalogues.Select(CreateSymbol).ToImmutableArray();
+        DeclarationDiagnostics = DiagnosticBag.GetInstance();
+        Catalogues = catalogues.Select(CreateSymbol).Where(x => x is not null).ToImmutableArray()!;
         var rootCandidates = Catalogues.Where(x => x.IsGamesystem).ToImmutableArray();
         RootCatalogue = rootCandidates.FirstOrDefault()
-            ?? DeclaringCompilation.CreateMissingGamesystemSymbol();
-        if (rootCandidates.Length != 1)
+            ?? DeclaringCompilation.CreateMissingGamesystemSymbol(DeclarationDiagnostics);
+        if (rootCandidates.Length > 1)
         {
-            // TODO add diagnostic
+            foreach (var candidate in rootCandidates)
+                DeclarationDiagnostics.Add(ErrorCode.ERR_MultipleGamesystems, candidate.Declaration);
         }
 
-        CatalogueBaseSymbol CreateSymbol(CatalogueBaseNode node)
+        CatalogueBaseSymbol? CreateSymbol(CatalogueBaseNode node)
         {
             if (node is CatalogueNode catalogueNode)
             {
-                return new CatalogueSymbol(this, catalogueNode);
+                return new CatalogueSymbol(this, catalogueNode, DeclarationDiagnostics);
             }
             else if (node is GamesystemNode gamesystemNode)
             {
-                return new GamesystemSymbol(this, gamesystemNode);
+                return new GamesystemSymbol(this, gamesystemNode, DeclarationDiagnostics);
             }
             else
             {
-                // TODO consider adding diagnostic and returning an ErrorSymbol?
-                throw new ArgumentException("Unrecognized root node type.", nameof(node));
+                DeclarationDiagnostics.Add(ErrorCode.ERR_UnknownCatalogueType, node);
+                return null;
             }
         }
     }
@@ -58,4 +60,6 @@ public class SourceGlobalNamespaceSymbol : Symbol, IGamesystemNamespaceSymbol
     public override ICatalogueSymbol? ContainingCatalogue => null;
 
     internal override Compilation DeclaringCompilation { get; }
+
+    internal DiagnosticBag DeclarationDiagnostics { get; }
 }

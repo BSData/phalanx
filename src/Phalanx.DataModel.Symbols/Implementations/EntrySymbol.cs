@@ -3,7 +3,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol
+internal abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol
 {
     internal new EntryBaseNode Declaration { get; }
 

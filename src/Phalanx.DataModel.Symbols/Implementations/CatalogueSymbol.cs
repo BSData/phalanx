@@ -3,7 +3,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public class CatalogueSymbol : CatalogueBaseSymbol
+internal class CatalogueSymbol : CatalogueBaseSymbol
 {
     private ICatalogueSymbol? lazyGamesystem;
 
@@ -11,8 +11,9 @@ public class CatalogueSymbol : CatalogueBaseSymbol
 
     public CatalogueSymbol(
         SourceGlobalNamespaceSymbol containingSymbol,
-        CatalogueNode declaration)
-        : base(containingSymbol, declaration)
+        CatalogueNode declaration,
+        DiagnosticBag diagnostics)
+        : base(containingSymbol, declaration, diagnostics)
     {
         Declaration = declaration;
         Imports = CreateLinks().ToImmutableArray();

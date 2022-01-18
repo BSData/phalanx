@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public class ModifierRootConditionSymbol : TupleOperationConditionSymbol
+internal class ModifierRootConditionSymbol : TupleOperationConditionSymbol
 {
     public ModifierRootConditionSymbol(
         ISymbol containingSymbol,

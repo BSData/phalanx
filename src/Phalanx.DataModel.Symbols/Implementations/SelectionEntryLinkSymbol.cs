@@ -3,7 +3,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public class SelectionEntryLinkSymbol : SelectionEntryBaseSymbol
+internal class SelectionEntryLinkSymbol : SelectionEntryBaseSymbol
 {
     private ISelectionEntryContainerSymbol? lazyReference;
 

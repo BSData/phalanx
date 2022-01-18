@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public class PublicationSymbol : SourceDeclaredSymbol, IPublicationSymbol
+internal class PublicationSymbol : SourceDeclaredSymbol, IPublicationSymbol
 {
     internal new PublicationNode Declaration { get; }
 

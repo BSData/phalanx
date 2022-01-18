@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public class CharacteristicTypeSymbol : SourceDeclaredSymbol, ICharacteristicTypeSymbol
+internal class CharacteristicTypeSymbol : SourceDeclaredSymbol, ICharacteristicTypeSymbol
 {
     internal new CharacteristicTypeNode Declaration { get; }
 

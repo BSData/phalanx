@@ -3,7 +3,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public class CategoryLinkSymbol : ContainerEntryBaseSymbol, ICategoryEntrySymbol
+internal class CategoryLinkSymbol : ContainerEntryBaseSymbol, ICategoryEntrySymbol
 {
     private ICategoryEntrySymbol? lazyReference;
 

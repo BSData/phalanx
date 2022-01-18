@@ -4,6 +4,8 @@ Project Phalanx
 
 ## TODO
 
+- binding when fails return invalid/missing symbols, not null
+- drop GamesystemContext and Dataset types
 - symbol layer:
   - symbolinfo that might be an error
   - implementation for: constraints, logic (conditions, modifiers), roster entitites

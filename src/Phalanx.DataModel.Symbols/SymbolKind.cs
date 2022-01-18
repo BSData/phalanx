@@ -2,6 +2,8 @@ namespace Phalanx.DataModel.Symbols;
 
 public enum SymbolKind
 {
+    Error,
+
     // grouping of the same-gamesystem-id elements
     Namespace,
 

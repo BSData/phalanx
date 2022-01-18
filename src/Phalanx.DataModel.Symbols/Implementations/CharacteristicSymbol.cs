@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public class CharacteristicSymbol : SimpleResourceEntrySymbol, ICharacteristicSymbol
+internal class CharacteristicSymbol : SimpleResourceEntrySymbol, ICharacteristicSymbol
 {
     private ICharacteristicTypeSymbol? lazyType;
     private readonly IProfileSymbol profileSymbol;

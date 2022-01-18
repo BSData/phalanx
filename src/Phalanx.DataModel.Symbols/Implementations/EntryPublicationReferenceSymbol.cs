@@ -1,10 +1,12 @@
+using WarHub.ArmouryModel.Source;
+
 namespace Phalanx.DataModel.Symbols.Implementation;
 
 /// <summary>
 /// Separate symbol that is essentially a child of <see cref="EntrySymbol"/>.
 /// TODO consider merging with the parent, or deriving from <see cref="SourceDeclaredSymbol"/>.
 /// </summary>
-public class EntryPublicationReferenceSymbol : Symbol, IPublicationReferenceSymbol
+internal class EntryPublicationReferenceSymbol : Symbol, IPublicationReferenceSymbol
 {
     private readonly EntrySymbol containingSymbol;
 
@@ -42,26 +44,11 @@ public class EntryPublicationReferenceSymbol : Symbol, IPublicationReferenceSymb
 
     internal override bool RequiresCompletion => true;
 
-    private bool BindingDone { get; set; }
-
-    internal override void ForceComplete()
+    protected override void BindReferences(Compilation compilation, DiagnosticBag diagnostics)
     {
-        if (!BindingDone)
-        {
-            BindReferences();
-        }
-    }
+        base.BindReferences(compilation, diagnostics);
 
-    protected void BindReferences()
-    {
-        if (BindingDone)
-            throw new InvalidOperationException("Already bound!");
-        BindReferencesCore(DeclaringCompilation.GetBinder(containingSymbol.Declaration), DiagnosticBag.GetInstance());
-        BindingDone = true;
-    }
-
-    protected virtual void BindReferencesCore(Binding.Binder binder, DiagnosticBag diagnosticBag)
-    {
+        var binder = compilation.GetBinder(containingSymbol.Declaration);
         lazyPublication = binder.BindPublicationSymbol(containingSymbol.Declaration.PublicationId);
     }
 }

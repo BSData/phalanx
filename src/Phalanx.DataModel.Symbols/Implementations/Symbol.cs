@@ -1,6 +1,8 @@
+using WarHub.ArmouryModel.Source;
+
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public abstract class Symbol : ISymbol
+internal abstract class Symbol : ISymbol
 {
     public abstract SymbolKind Kind { get; }
 
@@ -43,5 +45,21 @@ public abstract class Symbol : ISymbol
 
     internal virtual bool RequiresCompletion => false;
 
-    internal virtual void ForceComplete() { }
+    private int bindingDone = 0;
+
+    private bool BindingDone => bindingDone > 0;
+
+    internal void ForceComplete()
+    {
+        if (RequiresCompletion && !BindingDone)
+        {
+            var compilation = DeclaringCompilation ?? throw new InvalidOperationException("Binding requires declaring compilation.");
+            var diagnostics = DiagnosticBag.GetInstance();
+            BindReferences(compilation, diagnostics);
+            if (Interlocked.CompareExchange(ref bindingDone, 1, 0) == 0)
+                compilation.AddBindingDiagnostics(diagnostics);
+        }
+    }
+
+    protected virtual void BindReferences(Compilation compilation, DiagnosticBag diagnostics) { }
 }

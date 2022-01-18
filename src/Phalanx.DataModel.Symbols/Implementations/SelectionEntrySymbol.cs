@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public class SelectionEntrySymbol : SelectionEntryBaseSymbol, ISelectionEntrySymbol
+internal class SelectionEntrySymbol : SelectionEntryBaseSymbol, ISelectionEntrySymbol
 {
     internal new SelectionEntryNode Declaration { get; }
 

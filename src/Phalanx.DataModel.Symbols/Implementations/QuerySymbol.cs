@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public class QuerySymbol : LogicSymbol, IQuerySymbol
+internal class QuerySymbol : LogicSymbol, IQuerySymbol
 {
     public QuerySymbol(
         ISymbol containingSymbol,

@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public abstract class CatalogueBaseSymbol : SourceDeclaredSymbol, ICatalogueSymbol
+internal abstract class CatalogueBaseSymbol : SourceDeclaredSymbol, ICatalogueSymbol
 {
     private readonly ImmutableArray<CostTypeSymbol> costTypes;
     private readonly ImmutableArray<ProfileTypeSymbol> profileTypes;
@@ -10,12 +10,12 @@ public abstract class CatalogueBaseSymbol : SourceDeclaredSymbol, ICatalogueSymb
 
     protected CatalogueBaseSymbol(
         SourceGlobalNamespaceSymbol containingSymbol,
-        CatalogueBaseNode declaration)
+        CatalogueBaseNode declaration,
+        DiagnosticBag diagnostics)
         : base(containingSymbol, declaration)
     {
         ContainingNamespace = containingSymbol;
         Declaration = declaration;
-        var diagnostics = DiagnosticBag.GetInstance();
         costTypes = declaration.CostTypes.Select(x => new CostTypeSymbol(this, x, diagnostics)).ToImmutableArray();
         profileTypes = declaration.ProfileTypes.Select(x => new ProfileTypeSymbol(this, x, diagnostics)).ToImmutableArray();
         publications = declaration.Publications.Select(x => new PublicationSymbol(this, x, diagnostics)).ToImmutableArray();

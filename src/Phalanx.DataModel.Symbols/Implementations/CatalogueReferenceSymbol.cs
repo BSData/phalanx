@@ -3,7 +3,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public class CatalogueReferenceSymbol : SourceDeclaredSymbol, ICatalogueReferenceSymbol
+internal class CatalogueReferenceSymbol : SourceDeclaredSymbol, ICatalogueReferenceSymbol
 {
     private ICatalogueSymbol? lazyCatalogue;
 

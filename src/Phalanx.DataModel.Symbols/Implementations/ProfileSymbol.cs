@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public class ProfileSymbol : EntrySymbol, IProfileSymbol
+internal class ProfileSymbol : EntrySymbol, IProfileSymbol
 {
     private IProfileTypeSymbol? lazyType;
     internal new ProfileNode Declaration { get; }

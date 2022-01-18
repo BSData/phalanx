@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public class QueryConditionSymbol : EffectSymbol, IQueryConditionSymbol
+internal class QueryConditionSymbol : EffectSymbol, IQueryConditionSymbol
 {
     internal ConditionNode Declaration { get; }
 
@@ -26,7 +26,7 @@ public class QueryConditionSymbol : EffectSymbol, IQueryConditionSymbol
             _ => QueryComparisonType.Unknown
         };
         if (Comparison is QueryComparisonType.Unknown)
-            diagnostics.Add("Unknown comparison type for this condition");
+            diagnostics.Add(ErrorCode.ERR_UnknownEnumerationValue, Declaration);
         Query = new QuerySymbol(containingSymbol, Declaration, diagnostics);
     }
 

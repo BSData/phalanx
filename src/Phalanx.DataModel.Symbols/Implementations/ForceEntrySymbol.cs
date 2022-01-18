@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public class ForceEntrySymbol : ContainerEntryBaseSymbol, IForceEntrySymbol
+internal class ForceEntrySymbol : ContainerEntryBaseSymbol, IForceEntrySymbol
 {
     public ForceEntrySymbol(
         ISymbol containingSymbol,

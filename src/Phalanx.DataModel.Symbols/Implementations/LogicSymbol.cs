@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public abstract class LogicSymbol : Symbol, IConditionSymbol
+internal abstract class LogicSymbol : Symbol, IConditionSymbol
 {
     public LogicSymbol(ISymbol containingSymbol)
     {

@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
 
-public abstract class SourceDeclaredSymbol : Symbol
+internal abstract class SourceDeclaredSymbol : Symbol
 {
     internal SourceNode Declaration { get; }
 
@@ -27,16 +27,6 @@ public abstract class SourceDeclaredSymbol : Symbol
 
     internal override bool RequiresCompletion => true;
 
-    private bool BindingDone { get; set; }
-
-    internal override void ForceComplete()
-    {
-        if (!BindingDone)
-        {
-            BindReferences();
-        }
-    }
-
     internal override Compilation DeclaringCompilation
     {
         get
@@ -46,11 +36,11 @@ public abstract class SourceDeclaredSymbol : Symbol
         }
     }
 
-    protected void BindReferences()
+    protected sealed override void BindReferences(Compilation compilation, DiagnosticBag diagnostics)
     {
-        if (BindingDone)
-            throw new InvalidOperationException("Already bound!");
-        BindReferencesCore(DeclaringCompilation.GetBinder(Declaration), DiagnosticBag.GetInstance());
+        base.BindReferences(compilation, diagnostics);
+
+        BindReferencesCore(compilation.GetBinder(Declaration), diagnostics);
     }
 
     protected virtual void BindReferencesCore(Binding.Binder binder, DiagnosticBag diagnosticBag)

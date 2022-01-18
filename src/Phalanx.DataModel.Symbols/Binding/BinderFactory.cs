@@ -64,7 +64,8 @@ public class BinderFactory
 
         private CatalogueBaseSymbol GetCatalogueSymbol(CatalogueBaseNode node)
         {
-            return Compilation.GlobalNamespace.Catalogues.First(x => x.Declaration == node);
+            return Compilation.SourceGlobalNamespace.Catalogues
+                .First(x => x.Declaration == node);
         }
     }
 }
