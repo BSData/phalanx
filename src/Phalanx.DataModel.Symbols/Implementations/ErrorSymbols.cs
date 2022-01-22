@@ -1,8 +1,11 @@
+using Phalanx.DataModel.Symbols.Binding;
+using WarHub.ArmouryModel.Source;
+
 namespace Phalanx.DataModel.Symbols.Implementation;
 
 internal static class ErrorSymbols
 {
-    internal class InvalidIdSymbolBase : ISymbol
+    internal class InvalidIdSymbolBase : ISymbol, IErrorSymbol
     {
         public SymbolKind Kind => SymbolKind.Error;
 
@@ -17,6 +20,18 @@ internal static class ErrorSymbols
         public ICatalogueSymbol? ContainingCatalogue => null;
 
         public IGamesystemNamespaceSymbol? ContainingNamespace => null;
+
+        public ImmutableArray<ISymbol> CandidateSymbols { get; init; } = ImmutableArray<ISymbol>.Empty;
+
+        public CandidateReason CandidateReason => CandidateSymbols.IsEmpty
+            ? CandidateReason.None
+            : ResultKind.ToCandidateReason();
+
+        public LookupResultKind ResultKind { get; init; }
+
+        public DiagnosticInfo? ErrorInfo { get; init; }
+
+        public bool ErrorUnreported { get; init; }
     }
 
     internal class InvalidIdCharacteristicTypeSymbol : InvalidIdSymbolBase, ICharacteristicTypeSymbol
