@@ -17,6 +17,8 @@ internal class PublicationSymbol : SourceDeclaredSymbol, IPublicationSymbol
 
     public override SymbolKind Kind => SymbolKind.ResourceType;
 
+    public ResourceKind ResourceKind => ResourceKind.Publication;
+
     public string? ShortName => Declaration.ShortName;
 
     public string? Publisher => Declaration.Publisher;

@@ -19,6 +19,8 @@ internal class CharacteristicSymbol : SimpleResourceEntrySymbol, ICharacteristic
         Declaration = declaration;
     }
 
+    public override ResourceKind ResourceKind => ResourceKind.Characteristic;
+
     public ICharacteristicTypeSymbol Type
     {
         get

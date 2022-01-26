@@ -20,5 +20,7 @@ internal class ProfileTypeSymbol : SourceDeclaredSymbol, IProfileTypeSymbol
 
     public override SymbolKind Kind => SymbolKind.ResourceType;
 
+    public ResourceKind ResourceKind => ResourceKind.Profile;
+
     public ImmutableArray<ICharacteristicTypeSymbol> CharacteristicTypes { get; }
 }

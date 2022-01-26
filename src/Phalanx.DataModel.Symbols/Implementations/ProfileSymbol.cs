@@ -36,6 +36,8 @@ internal class ProfileSymbol : EntrySymbol, IProfileSymbol
 
     public override SymbolKind Kind => SymbolKind.Resource;
 
+    public ResourceKind ResourceKind => ResourceKind.Profile;
+
     public ImmutableArray<ICharacteristicSymbol> Characteristics { get; }
 
     IResourceDefinitionSymbol? IResourceEntrySymbol.Type => Type;

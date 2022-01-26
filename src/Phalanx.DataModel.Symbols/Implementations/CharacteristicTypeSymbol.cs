@@ -18,5 +18,7 @@ internal class CharacteristicTypeSymbol : SourceDeclaredSymbol, ICharacteristicT
 
     public override SymbolKind Kind => SymbolKind.ResourceType;
 
+    public ResourceKind ResourceKind => ResourceKind.Characteristic;
+
     public IProfileTypeSymbol ContainingProfileType { get; }
 }

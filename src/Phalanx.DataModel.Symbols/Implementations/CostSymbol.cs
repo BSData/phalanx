@@ -18,6 +18,8 @@ internal class CostSymbol : SimpleResourceEntrySymbol, ICostSymbol
         Declaration = declaration;
     }
 
+    public override ResourceKind ResourceKind => ResourceKind.Cost;
+
     public ICostTypeSymbol Type
     {
         get

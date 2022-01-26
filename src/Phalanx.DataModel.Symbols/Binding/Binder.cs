@@ -95,14 +95,14 @@ public class Binder
                 // TODO multi-result analysis
                 // TODO report possible warnings or errors
                 // TODO candidate-containing result
-                return new ErrorSymbols.InvalidIdSymbolBase();
+                return new ErrorSymbols.ErrorSymbolBase();
             }
         }
         wasError = true;
         if (result.Kind is LookupResultKind.Empty)
         {
             // TODO diagnostics, specific type?
-            return new ErrorSymbols.InvalidIdSymbolBase();
+            return new ErrorSymbols.ErrorSymbolBase();
         }
 
         Debug.Assert(symbols.Count > 0);
@@ -121,7 +121,7 @@ public class Binder
         {
             // multiple - package up
             // TODO candidate-containing result
-            return new ErrorSymbols.InvalidIdSymbolBase();
+            return new ErrorSymbols.ErrorSymbolBase();
         }
     }
 

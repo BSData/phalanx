@@ -50,7 +50,7 @@ public class DatasetCompilation : Compilation
     internal override ICatalogueSymbol CreateMissingGamesystemSymbol(DiagnosticBag diagnostics)
     {
         diagnostics.Add(ErrorCode.ERR_MissingGamesystem, Location.None);
-        return new ErrorSymbols.InvalidGamesystemSymbol();
+        return new ErrorSymbols.ErrorGamesystemSymbol();
     }
 
     internal override BinderFactory GetBinderFactory(SourceTree tree)

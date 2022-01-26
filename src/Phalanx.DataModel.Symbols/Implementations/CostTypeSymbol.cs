@@ -16,4 +16,6 @@ internal class CostTypeSymbol : SourceDeclaredSymbol, ICostTypeSymbol
     }
 
     public override SymbolKind Kind => SymbolKind.ResourceType;
+
+    public ResourceKind ResourceKind => ResourceKind.Cost;
 }

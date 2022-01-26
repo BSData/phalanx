@@ -6,6 +6,11 @@ namespace Phalanx.DataModel.Symbols;
 /// </summary>
 public interface IResourceEntrySymbol : IEntrySymbol
 {
+    /// <summary>
+    /// Describes what kind of resource this is.
+    /// </summary>
+    ResourceKind ResourceKind { get; }
+
     IResourceDefinitionSymbol? Type { get; }
 
     new IResourceEntrySymbol? ReferencedEntry { get; }

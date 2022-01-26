@@ -35,6 +35,8 @@ internal class ResourceGroupSymbol : EntrySymbol, IResourceGroupSymbol
 
     public override SymbolKind Kind => SymbolKind.Resource;
 
+    public ResourceKind ResourceKind => ResourceKind.Group;
+
     public ImmutableArray<IResourceEntrySymbol> Resources { get; }
 
     public IResourceDefinitionSymbol? Type => null;

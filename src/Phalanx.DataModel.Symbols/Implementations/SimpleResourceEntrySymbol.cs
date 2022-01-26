@@ -14,6 +14,8 @@ internal abstract class SimpleResourceEntrySymbol : SourceDeclaredSymbol, IResou
 
     public sealed override SymbolKind Kind => SymbolKind.Resource;
 
+    public abstract ResourceKind ResourceKind { get; }
+
     public bool IsHidden => false;
 
     public bool IsReference => false;

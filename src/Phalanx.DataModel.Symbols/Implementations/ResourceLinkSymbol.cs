@@ -18,6 +18,14 @@ internal class ResourceLinkSymbol : EntrySymbol, IResourceEntrySymbol
 
     public override SymbolKind Kind => SymbolKind.Link;
 
+    public ResourceKind ResourceKind => Declaration.Type switch
+    {
+        InfoLinkKind.InfoGroup => ResourceKind.Group,
+        InfoLinkKind.Profile => ResourceKind.Profile,
+        InfoLinkKind.Rule => ResourceKind.Rule,
+        _ => throw new NotSupportedException($"Unknown value '{Declaration.Type}'"),
+    };
+
     public IResourceDefinitionSymbol? Type => null;
 
     internal new InfoLinkNode Declaration { get; }

@@ -17,6 +17,8 @@ internal class RuleSymbol : EntrySymbol, IRuleSymbol
 
     public override SymbolKind Kind => SymbolKind.Resource;
 
+    public ResourceKind ResourceKind => ResourceKind.Rule;
+
     public string DescriptionText => Declaration.Description ?? string.Empty;
 
     IResourceDefinitionSymbol? IResourceEntrySymbol.Type => null;
