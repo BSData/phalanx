@@ -18,9 +18,7 @@ internal class SelectionEntryGroupSymbol : SelectionEntryBaseSymbol, ISelectionE
         Declaration = declaration;
     }
 
-    public override SymbolKind Kind => SymbolKind.Entry;
-
-    public override bool IsSelectionGroup => true;
+    public override ContainerEntryKind ContainerKind => ContainerEntryKind.SelectionGroup;
 
     public ISelectionEntrySymbol? DefaultSelectionEntry
     {

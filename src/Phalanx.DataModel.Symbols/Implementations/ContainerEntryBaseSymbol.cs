@@ -44,7 +44,9 @@ internal abstract class ContainerEntryBaseSymbol : EntrySymbol, IContainerEntryS
         }
     }
 
-    public override SymbolKind Kind => SymbolKind.Entry;
+    public sealed override SymbolKind Kind => SymbolKind.ContainerEntry;
+
+    public abstract ContainerEntryKind ContainerKind { get; }
 
     public ImmutableArray<IConstraintSymbol> Constraints { get; }
 

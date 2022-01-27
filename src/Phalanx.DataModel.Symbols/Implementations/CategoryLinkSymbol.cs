@@ -16,7 +16,7 @@ internal class CategoryLinkSymbol : ContainerEntryBaseSymbol, ICategoryEntrySymb
         Declaration = declaration;
     }
 
-    public override SymbolKind Kind => SymbolKind.Link;
+    public override ContainerEntryKind ContainerKind => ContainerEntryKind.Category;
 
     public bool IsPrimaryCategory => Declaration.Primary;
 

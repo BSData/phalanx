@@ -7,19 +7,19 @@ public enum SymbolKind
     // grouping of the same-gamesystem-id elements
     Namespace,
 
-    // catalogue, gamesystem (special kind of catalogue)
+    // catalogue, gamesystem ("root" catalogue)
     Catalogue,
 
-    // selection entry, selection entry group, force entry?, category entry?
-    Entry,
+    // selection entry, selection entry group, force entry, category entry
+    ContainerEntry,
 
     // condition, constraint, modifier, modifier group, repeat
     Logic,
 
-    // characteristic type, cost type, profile type, category entry?
+    // characteristic type, cost type, profile type
     ResourceType,
 
-    // characteristics, costs, profiles, rules, info groups?, categories?, publications?
+    // characteristics, costs, profiles, rules, info groups, publications
     Resource,
 
     // all kinds of links

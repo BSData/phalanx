@@ -98,9 +98,9 @@ internal class CatalogueBaseBinder : Binder
         var candidates = type switch
         {
             EntryLinkKind.SelectionEntry =>
-                GetWithId(x => x.SharedSelectionEntryContainers.Where(x => x.IsSelectionEntry), targetId),
+                GetWithId(x => x.SharedSelectionEntryContainers.Where(x => x.ContainerKind == ContainerEntryKind.Selection), targetId),
             EntryLinkKind.SelectionEntryGroup =>
-                GetWithId(x => x.SharedSelectionEntryContainers.Where(x => x.IsSelectionGroup), targetId),
+                GetWithId(x => x.SharedSelectionEntryContainers.Where(x => x.ContainerKind == ContainerEntryKind.SelectionGroup), targetId),
             _ => ImmutableArray<ISelectionEntryContainerSymbol>.Empty
         };
         if (candidates.Length > 0)

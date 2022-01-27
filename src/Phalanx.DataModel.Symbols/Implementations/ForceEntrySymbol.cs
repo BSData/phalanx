@@ -31,6 +31,8 @@ internal class ForceEntrySymbol : ContainerEntryBaseSymbol, IForceEntrySymbol
         }
     }
 
+    public override ContainerEntryKind ContainerKind => ContainerEntryKind.Force;
+
     public ImmutableArray<IForceEntrySymbol> ChildForces { get; }
 
     public ImmutableArray<ICategoryEntrySymbol> Categories { get; }

@@ -16,7 +16,7 @@ internal class ResourceLinkSymbol : EntrySymbol, IResourceEntrySymbol
         Declaration = declaration;
     }
 
-    public override SymbolKind Kind => SymbolKind.Link;
+    public override SymbolKind Kind => SymbolKind.Resource;
 
     public ResourceKind ResourceKind => Declaration.Type switch
     {

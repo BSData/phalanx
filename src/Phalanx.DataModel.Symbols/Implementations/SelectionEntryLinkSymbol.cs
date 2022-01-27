@@ -18,7 +18,12 @@ internal class SelectionEntryLinkSymbol : SelectionEntryBaseSymbol
         Declaration = declaration;
     }
 
-    public override SymbolKind Kind => SymbolKind.Link;
+    public override ContainerEntryKind ContainerKind => Declaration.Type switch
+    {
+        EntryLinkKind.SelectionEntry => ContainerEntryKind.Selection,
+        EntryLinkKind.SelectionEntryGroup => ContainerEntryKind.SelectionGroup,
+        _ => throw new NotSupportedException($"Unknown value '{Declaration.Type}'"),
+    };
 
     public override ISelectionEntryContainerSymbol? ReferencedEntry
     {

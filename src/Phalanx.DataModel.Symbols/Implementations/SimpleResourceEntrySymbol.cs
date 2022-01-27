@@ -32,3 +32,4 @@ internal abstract class SimpleResourceEntrySymbol : SourceDeclaredSymbol, IResou
 
     IResourceEntrySymbol? IResourceEntrySymbol.ReferencedEntry => null;
 }
+ 
