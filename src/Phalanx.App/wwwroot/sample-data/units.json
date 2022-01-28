@@ -1,0 +1,20 @@
+[
+  {
+    "SubfactionId": 4,
+    "name": "Primaris Captain",
+    "orgSlotId": 1,
+    "pointsPerModel": 150
+  },
+  {
+    "SubfactionId": 4,
+    "name": "Primaris Chaplain on bike",
+    "orgSlotId": 1,
+    "pointsPerModel": 180
+  },
+  {
+    "SubfactionId": 4,
+    "name": "Primaris Psyker",
+    "orgSlotId": 1,
+    "pointsPerModel": 180
+  }
+]

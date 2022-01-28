@@ -1,0 +1,107 @@
+﻿@page "/rosterselect"
+@implements IDisposable
+@inject ILogger<RosterSelect> Logger
+@inject NavigationManager NavigationManager
+@inject HttpClient Http
+@inject IJSRuntime JS
+@using Newtonsoft.Json
+@using Models
+
+<div hidden="@IsSelectFormHidden">
+    <fast-select id="gameSystemDropDown" @onchange="PopulateData" style="min-width:100%">
+        <fast-option value="0">Select game system</fast-option>
+        <fast-option value="1">40k</fast-option>
+        <fast-option value="2">AOS</fast-option>
+    </fast-select>
+    <br />
+    @if (rosters == null)
+    {
+        <p><em>No rosters found</em></p>
+    }
+    else
+    {
+        <br />
+        <div>
+            <fast-listbox id="rostersList" style="min-width:100%">
+                @foreach (var roster in rosters)
+                {
+                    <fast-option value="@roster.Id">@roster.Name @roster.Points</fast-option>
+                }
+            </fast-listbox>
+        </div>
+    }
+    <br />
+    <fast-toolbar style="min-width:100%">
+        <fast-button href="#" appearance="accent"><i class="fas fa-copy"></i></fast-button>
+        <fast-button href="#" appearance="accent" @onclick="RemoveSelectedRoster"><i class="fas fa-trash"></i></fast-button>
+        <fast-button href="#" appearance="accent" @onclick="EditSelectedRoster"><i class="fas fa-edit"></i></fast-button>
+        <div style="text-align:right">
+            <fast-button href="#" @onclick="NavigateToRosterCreateComponent" appearance="accent"><i class="fas fa-plus-circle"></i></fast-button>
+        </div>
+    </fast-toolbar>
+</div>
+
+
+<div id="rosterEditContainer" hidden="@IsEditRosterHidden">
+    <RosterEdit roster="@roster" />
+</div>
+
+@code {
+    private Roster[]? rosters;
+    private Roster? roster = new Roster();
+    private bool IsSelectFormHidden { get; set; } = false;
+    private bool IsEditRosterHidden { get; set; } = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        rosters = await Http.GetFromJsonAsync<Roster[]>("sample-data/armyRosters.json");
+    }
+
+    private async Task PopulateData()
+    {
+        var rosterId = int.Parse(await JS.InvokeAsync<string>("getSelectedDropDownItem", "getSelectedDropDownItem"));
+        if (rosterId != 0 && rosters != null)
+        {
+            var filteredRosters = rosters.Where(x => x.GameSystemId == rosterId).ToArray();
+            await JS.InvokeAsync<string>("setFilteredDropDownItems", JsonConvert.SerializeObject(filteredRosters));
+        }
+    }
+
+    private void NavigateToRosterCreateComponent()
+    {
+        NavigationManager.NavigateTo("rostercreate");
+    }
+
+    protected override void OnInitialized()
+    {
+        NavigationManager.LocationChanged += HandleLocationChanged;
+    }
+
+    private void HandleLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        Logger.LogInformation("URL of new location: {Location}", e.Location);
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= HandleLocationChanged;
+    }
+
+    private void OpenRoster(Roster roster)
+    {
+        NavigationManager.NavigateTo("rostercreate");
+    }
+
+    private async Task RemoveSelectedRoster(MouseEventArgs e)
+    {
+        var rosterId = await JS.InvokeAsync<string>("removeSelectedRoster", "removeSelectedRoster");
+    }
+
+    private async Task EditSelectedRoster()
+    {
+        var selectedRosterId = int.Parse(await JS.InvokeAsync<string>("getSelectedRoster", "getSelectedRoster"));
+        roster = rosters?.Where(x => x.Id == selectedRosterId).FirstOrDefault();
+        IsSelectFormHidden = true;
+        IsEditRosterHidden = false;
+    }
+}

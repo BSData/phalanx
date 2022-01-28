@@ -1,0 +1,46 @@
+﻿@page "/rosteredit/{roster}"
+@using Models
+@using System.Windows
+@if (@roster?.Points != 0)
+{
+    <h2>@roster?.Name - @roster?.Points - @roster?.Powerlevel</h2>
+}
+else
+{
+    <h2>@roster?.Name</h2>
+}
+<br />
+<fast-accordion>
+    <fast-accordion-item>
+        <span slot="heading">HQ</span>
+        <fast-listbox id="hqList" style="min-width:100%">
+            @foreach (var unit in roster?.Units?.Where(x => x.OrgSlotId == 1))
+            {
+                <div class="row">
+                    <div class="col-11">
+                        <fast-option style="display: block" @onclick="ListItemClick">@unit?.Name @unit?.PointsPerModel</fast-option>
+                    </div>
+                    <div class="col-1">
+                        <fast-button href="#" appearance="accent" style="float:right" @onclick="ButtonClick"><i class="fas fa-trash"></i></fast-button>
+                    </div>
+                </div>
+            }
+        </fast-listbox>
+    </fast-accordion-item>
+    <fast-accordion-item>
+        <span slot="heading">Troops</span>
+        Panel two content
+    </fast-accordion-item>
+    <fast-accordion-item>
+        <span slot="heading">Elites</span>
+
+    </fast-accordion-item>
+</fast-accordion>
+
+@code {
+    [Parameter]
+    public Roster? roster { get; set; } = new Roster();
+
+    private void ListItemClick() => roster.Name = "I clicked on list item";
+    private void ButtonClick() => roster.Name = "I clicked on button";
+}
