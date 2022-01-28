@@ -30,7 +30,7 @@ internal class ResourceLinkSymbol : EntrySymbol, IResourceEntrySymbol
 
     internal new InfoLinkNode Declaration { get; }
 
-    public IResourceEntrySymbol? ReferencedEntry => lazyReferencedEntry;
+    public IResourceEntrySymbol? ReferencedEntry => GetBoundField(ref lazyReferencedEntry);
 
     protected override IEntrySymbol? BaseReferencedEntry => ReferencedEntry;
 

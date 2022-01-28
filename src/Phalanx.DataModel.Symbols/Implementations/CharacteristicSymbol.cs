@@ -19,14 +19,7 @@ internal class CharacteristicSymbol : SimpleResourceEntrySymbol, ICharacteristic
 
     public override ResourceKind ResourceKind => ResourceKind.Characteristic;
 
-    public ICharacteristicTypeSymbol Type
-    {
-        get
-        {
-            ForceComplete();
-            return lazyType ?? throw new InvalidOperationException("Binding failed.");
-        }
-    }
+    public ICharacteristicTypeSymbol Type => GetBoundField(ref lazyType);
 
     public string Value => Declaration.Value ?? string.Empty;
 

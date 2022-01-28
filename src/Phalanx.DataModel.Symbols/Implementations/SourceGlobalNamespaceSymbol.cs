@@ -64,4 +64,17 @@ internal class SourceGlobalNamespaceSymbol : Symbol, IGamesystemNamespaceSymbol
     internal override Compilation DeclaringCompilation { get; }
 
     internal DiagnosticBag DeclarationDiagnostics { get; }
+
+    internal override bool RequiresCompletion => true;
+
+    protected override void BindReferences(Compilation compilation, DiagnosticBag diagnostics)
+    {
+        base.BindReferences(compilation, diagnostics);
+
+        foreach (var child in Catalogues)
+        {
+            if (child is Symbol { RequiresCompletion: true } toComplete)
+                toComplete.ForceComplete();
+        }
+    }
 }

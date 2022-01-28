@@ -25,14 +25,7 @@ internal class ProfileSymbol : EntrySymbol, IProfileSymbol
         }
     }
 
-    public IProfileTypeSymbol Type
-    {
-        get
-        {
-            ForceComplete();
-            return lazyType ?? throw new InvalidOperationException("Binding failed.");
-        }
-    }
+    public IProfileTypeSymbol Type => GetBoundField(ref lazyType);
 
     public override SymbolKind Kind => SymbolKind.Resource;
 

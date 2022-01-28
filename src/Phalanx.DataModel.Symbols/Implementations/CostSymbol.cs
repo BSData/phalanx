@@ -20,14 +20,7 @@ internal class CostSymbol : SimpleResourceEntrySymbol, ICostSymbol
 
     public override ResourceKind ResourceKind => ResourceKind.Cost;
 
-    public ICostTypeSymbol Type
-    {
-        get
-        {
-            ForceComplete();
-            return lazyCostTypeSymbol ?? throw new InvalidOperationException("Binding failed.");
-        }
-    }
+    public ICostTypeSymbol Type => GetBoundField(ref lazyCostTypeSymbol);
 
     public decimal Value => Declaration.Value;
 

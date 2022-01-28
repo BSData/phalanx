@@ -25,14 +25,7 @@ internal class SelectionEntryLinkSymbol : SelectionEntryBaseSymbol
         _ => throw new NotSupportedException($"Unknown value '{Declaration.Type}'"),
     };
 
-    public override ISelectionEntryContainerSymbol? ReferencedEntry
-    {
-        get
-        {
-            ForceComplete();
-            return lazyReference ?? throw new InvalidOperationException("Binding failed");
-        }
-    }
+    public override ISelectionEntryContainerSymbol? ReferencedEntry => GetBoundField(ref lazyReference);
 
     protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
     {

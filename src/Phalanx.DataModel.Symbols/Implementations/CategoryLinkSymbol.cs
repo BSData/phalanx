@@ -20,14 +20,7 @@ internal class CategoryLinkSymbol : ContainerEntryBaseSymbol, ICategoryEntrySymb
 
     public bool IsPrimaryCategory => Declaration.Primary;
 
-    public ICategoryEntrySymbol? ReferencedEntry
-    {
-        get
-        {
-            ForceComplete();
-            return lazyReference ?? throw new InvalidOperationException("Binding failed.");
-        }
-    }
+    public ICategoryEntrySymbol? ReferencedEntry => GetBoundField(ref lazyReference);
 
     internal new CategoryLinkNode Declaration { get; }
 

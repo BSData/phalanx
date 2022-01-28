@@ -60,9 +60,26 @@ internal abstract class Symbol : ISymbol
                 BindReferences(compilation, diagnostics);
                 compilation.AddBindingDiagnostics(diagnostics);
             }
-            // TODO consider a spin-wait in else?
+            else
+            {
+                // wait until another thread finished binding
+                // are we afraid of deadlock here?
+                SpinWait.SpinUntil(() => BindingDone);
+            }
         }
     }
 
     protected virtual void BindReferences(Compilation compilation, DiagnosticBag diagnostics) { }
+
+    protected TField GetBoundField<TField>(ref TField? field) where TField : class
+    {
+        ForceComplete();
+        return field ?? throw new InvalidOperationException("Bound field was null after binding.");
+    }
+
+    protected TField? GetOptionalBoundField<TField>(ref TField? field) where TField : class
+    {
+        ForceComplete();
+        return field;
+    }
 }

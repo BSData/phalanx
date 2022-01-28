@@ -20,14 +20,7 @@ internal class SelectionEntryGroupSymbol : SelectionEntryBaseSymbol, ISelectionE
 
     public override ContainerEntryKind ContainerKind => ContainerEntryKind.SelectionGroup;
 
-    public ISelectionEntrySymbol? DefaultSelectionEntry
-    {
-        get
-        {
-            ForceComplete();
-            return lazyDefaultEntry;
-        }
-    }
+    public ISelectionEntrySymbol? DefaultSelectionEntry => GetOptionalBoundField(ref lazyDefaultEntry);
 
     protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
     {

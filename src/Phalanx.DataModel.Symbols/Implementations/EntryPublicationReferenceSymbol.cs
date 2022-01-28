@@ -31,14 +31,7 @@ internal class EntryPublicationReferenceSymbol : Symbol, IPublicationReferenceSy
 
     internal override Compilation DeclaringCompilation => containingSymbol.DeclaringCompilation;
 
-    public IPublicationSymbol Publication
-    {
-        get
-        {
-            ForceComplete();
-            return lazyPublication ?? throw new InvalidOperationException("Binding failed.");
-        }
-    }
+    public IPublicationSymbol Publication => GetBoundField(ref lazyPublication);
 
     public string Page => containingSymbol.Declaration.Page ?? "";
 

@@ -31,14 +31,7 @@ internal class CatalogueSymbol : CatalogueBaseSymbol
 
     public override bool IsGamesystem => false;
 
-    public override ICatalogueSymbol Gamesystem
-    {
-        get
-        {
-            ForceComplete();
-            return lazyGamesystem ?? throw new InvalidOperationException("Binding failed.");
-        }
-    }
+    public override ICatalogueSymbol Gamesystem => GetBoundField(ref lazyGamesystem);
 
     public override ImmutableArray<ICatalogueReferenceSymbol> Imports { get; }
 

@@ -17,14 +17,7 @@ internal class CatalogueReferenceSymbol : SourceDeclaredSymbol, ICatalogueRefere
 
     public bool ImportsRootEntries => Declaration.ImportRootEntries;
 
-    public ICatalogueSymbol Catalogue
-    {
-        get
-        {
-            ForceComplete();
-            return lazyCatalogue ?? throw new InvalidOperationException("Binding failed.");
-        }
-    }
+    public ICatalogueSymbol Catalogue => GetBoundField(ref lazyCatalogue);
 
     internal new CatalogueLinkNode Declaration { get; }
 
