@@ -2,6 +2,9 @@ namespace Phalanx.DataModel.Symbols;
 
 public enum SymbolKind
 {
+    /// <summary>
+    /// The kind is not known, or invalid.
+    /// </summary>
     Error,
 
     // grouping of the same-gamesystem-id elements

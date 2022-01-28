@@ -14,23 +14,28 @@ internal class ResourceLinkSymbol : EntrySymbol, IResourceEntrySymbol
         : base(containingSymbol, declaration, diagnostics)
     {
         Declaration = declaration;
+        ResourceKind = Declaration.Type switch
+        {
+            InfoLinkKind.InfoGroup => ResourceKind.Group,
+            InfoLinkKind.Profile => ResourceKind.Profile,
+            InfoLinkKind.Rule => ResourceKind.Rule,
+            _ => ResourceKind.Error,
+        };
+        if (ResourceKind is ResourceKind.Error)
+        {
+            diagnostics.Add(ErrorCode.ERR_UnknownEnumerationValue, Declaration);
+        }
     }
 
     public override SymbolKind Kind => SymbolKind.Resource;
 
-    public ResourceKind ResourceKind => Declaration.Type switch
-    {
-        InfoLinkKind.InfoGroup => ResourceKind.Group,
-        InfoLinkKind.Profile => ResourceKind.Profile,
-        InfoLinkKind.Rule => ResourceKind.Rule,
-        _ => throw new NotSupportedException($"Unknown value '{Declaration.Type}'"),
-    };
+    public ResourceKind ResourceKind { get; }
 
     public IResourceDefinitionSymbol? Type => null;
 
     internal new InfoLinkNode Declaration { get; }
 
-    public IResourceEntrySymbol? ReferencedEntry => GetBoundField(ref lazyReferencedEntry);
+    public IResourceEntrySymbol ReferencedEntry => GetBoundField(ref lazyReferencedEntry);
 
     protected override IEntrySymbol? BaseReferencedEntry => ReferencedEntry;
 
@@ -38,6 +43,6 @@ internal class ResourceLinkSymbol : EntrySymbol, IResourceEntrySymbol
     {
         base.BindReferencesCore(binder, diagnosticBag);
 
-        lazyReferencedEntry = binder.BindResourceEntrySymbol(Declaration.TargetId, Declaration.Type);
+        lazyReferencedEntry = binder.BindSharedResourceEntrySymbol(Declaration, diagnosticBag);
     }
 }

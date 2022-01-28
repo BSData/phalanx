@@ -1,5 +1,4 @@
 using Phalanx.DataModel.Symbols.Implementation;
-using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Binding;
 
@@ -11,25 +10,15 @@ internal class GamesystemNamespaceBinder : Binder
         NamespaceSymbol = namespaceSymbol;
     }
 
+    internal override Symbol? ContainingSymbol => NamespaceSymbol;
+
     public SourceGlobalNamespaceSymbol NamespaceSymbol { get; }
 
-    internal override ICatalogueSymbol? BindCatalogueSymbol(string? targetId, CatalogueLinkKind type)
+    internal override void LookupSymbolsInSingleBinder(LookupResult result, string symbolId, LookupOptions options, Binder originalBinder, bool diagnose)
     {
-        foreach (var catalogue in NamespaceSymbol.Catalogues)
+        if (options.CanConsiderCatalogues())
         {
-            if (catalogue.Id == targetId)
-                return catalogue;
+            originalBinder.CheckViability(result, NamespaceSymbol.Catalogues, symbolId, options, diagnose);
         }
-        return NextRequired.BindCatalogueSymbol(targetId, type);
-    }
-
-    internal override ICatalogueSymbol? BindGamesystemSymbol(string? gamesystemId)
-    {
-        foreach (var catalogue in NamespaceSymbol.Catalogues)
-        {
-            if (catalogue.IsGamesystem && catalogue.Id == gamesystemId)
-                return catalogue;
-        }
-        return NextRequired.BindGamesystemSymbol(gamesystemId);
     }
 }

@@ -20,7 +20,7 @@ internal class CategoryLinkSymbol : ContainerEntryBaseSymbol, ICategoryEntrySymb
 
     public bool IsPrimaryCategory => Declaration.Primary;
 
-    public ICategoryEntrySymbol? ReferencedEntry => GetBoundField(ref lazyReference);
+    public ICategoryEntrySymbol ReferencedEntry => GetBoundField(ref lazyReference);
 
     internal new CategoryLinkNode Declaration { get; }
 
@@ -30,6 +30,6 @@ internal class CategoryLinkSymbol : ContainerEntryBaseSymbol, ICategoryEntrySymb
     {
         base.BindReferencesCore(binder, diagnosticBag);
 
-        lazyReference = binder.BindCategoryEntrySymbol(Declaration.TargetId);
+        lazyReference = binder.BindCategoryEntrySymbol(Declaration, diagnosticBag);
     }
 }

@@ -4,11 +4,7 @@ Project Phalanx
 
 ## TODO
 
-- Publication - what if id is null: set whole pub ref as null, or set pub property to null? what semantics to use?
-- Publication - resource entry, or resource definition?
-- test Characteristic binding
-- redo the other Binder.BindXYZ methods to use BindSimple
-- catalogue imports/closure re-fix/rethink in CatalogueBinder
+- test default group entry binding - how it works in BattleScribe (allowed selections), does it work same in Phalanx
 - consider removing "deeper" types than IResourceDefinition/IResourceEntry/IContainerEntry
   - simpler usage
   - requires moving their "custom" properties somewhere: "ContentFields" collection of custom name-value wrappers, maybe strongly typed?

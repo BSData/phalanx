@@ -34,5 +34,5 @@ internal sealed class WhamDiagnosticInfo : DiagnosticInfo
 
     internal new ErrorCode Code => (ErrorCode)base.Code;
 
-    internal static bool IsEmpty(DiagnosticInfo info) => (object)info == EmptyErrorInfo;
+    internal static bool IsEmpty(DiagnosticInfo info) => ReferenceEquals(info, EmptyErrorInfo);
 }

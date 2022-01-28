@@ -33,7 +33,7 @@ internal enum LookupOptions
     ProfileTypeOnly = (1 << 5) | ResoureDefinitionOnly,
     CharacteristicTypeOnly = (1 << 6) | ResoureDefinitionOnly,
     EntryOnly = 1 << 7,
-    ResourceEntryOnly = (1 << 8) | EntryOnly, // TODO separate resource group?
+    ResourceEntryOnly = (1 << 8) | EntryOnly,
     CostOnly = (1 << 9) | ResourceEntryOnly,
     RuleEntryOnly = (1 << 10) | ResourceEntryOnly,
     ProfileEntryOnly = (1 << 11) | ResourceEntryOnly,
@@ -45,10 +45,14 @@ internal enum LookupOptions
     SelectionGroupEntryOnly = (1 << 17) | ContainerEntryOnly,
     SharedEntryOnly = (1 << 18) | EntryOnly,
     RootEntryOnly = (1 << 19) | EntryOnly,
+    ResourceGroupEntryOnly = (1 << 20) | ResourceEntryOnly,
 }
 
 internal static class LookupOptionsExtensions
 {
+    internal static bool CanConsiderCatalogues(this LookupOptions options) =>
+        (options & (LookupOptions.ResoureDefinitionOnly | LookupOptions.EntryOnly)) == 0;
+
     internal static bool CanConsiderResourceDefinitions(this LookupOptions options) =>
         (options & (LookupOptions.CatalogueOnly | LookupOptions.EntryOnly)) == 0;
 

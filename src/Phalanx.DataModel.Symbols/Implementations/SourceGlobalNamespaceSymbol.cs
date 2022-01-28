@@ -67,14 +67,9 @@ internal class SourceGlobalNamespaceSymbol : Symbol, IGamesystemNamespaceSymbol
 
     internal override bool RequiresCompletion => true;
 
-    protected override void BindReferences(Compilation compilation, DiagnosticBag diagnostics)
+    protected override void InvokeForceCompleteOnChildren()
     {
-        base.BindReferences(compilation, diagnostics);
-
-        foreach (var child in Catalogues)
-        {
-            if (child is Symbol { RequiresCompletion: true } toComplete)
-                toComplete.ForceComplete();
-        }
+        base.InvokeForceCompleteOnChildren();
+        InvokeForceComplete(Catalogues);
     }
 }

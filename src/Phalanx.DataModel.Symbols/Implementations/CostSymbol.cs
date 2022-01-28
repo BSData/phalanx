@@ -30,6 +30,6 @@ internal class CostSymbol : SimpleResourceEntrySymbol, ICostSymbol
     {
         base.BindReferencesCore(binder, diagnosticBag);
 
-        lazyCostTypeSymbol = binder.BindCostTypeSymbol(Declaration.TypeId);
+        lazyCostTypeSymbol = binder.BindCostTypeSymbol(Declaration, diagnosticBag);
     }
 }

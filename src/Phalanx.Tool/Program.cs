@@ -100,7 +100,10 @@ class Program
                 .WithPublicationId(pub1.Id)
                 .AddCategoryLinks(
                     CategoryLink(teamsCategory)));
+        var dumbCatalogue = Catalogue(gamesystem, "Import me!");
         var marineCatalogue = Catalogue(gamesystem, "Marine Corps")
+            .AddCatalogueLinks(
+                CatalogueLink(dumbCatalogue))
             .AddForceEntries(
                 ForceEntry("Marine Detachment")
                 .AddCategoryLinks(
@@ -122,6 +125,6 @@ class Program
                         Constraint(type: ConstraintKind.Minimum, value: 5),
                         Constraint(type: ConstraintKind.Maximum, value: 10))));
 
-        return new(ImmutableArray.Create<CatalogueBaseNode>(gamesystem, marineCatalogue));
+        return new(ImmutableArray.Create<CatalogueBaseNode>(gamesystem, marineCatalogue, dumbCatalogue));
     }
 }

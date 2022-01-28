@@ -25,6 +25,6 @@ internal class CatalogueReferenceSymbol : SourceDeclaredSymbol, ICatalogueRefere
     {
         base.BindReferencesCore(binder, diagnosticBag);
 
-        lazyCatalogue = binder.BindCatalogueSymbol(Declaration.TargetId, Declaration.Type);
+        lazyCatalogue = binder.BindCatalogueSymbol(Declaration, diagnosticBag);
     }
 }

@@ -39,6 +39,12 @@ internal class CatalogueSymbol : CatalogueBaseSymbol
     {
         base.BindReferencesCore(binder, diagnosticBag);
 
-        lazyGamesystem = binder.BindGamesystemSymbol(Declaration.GamesystemId);
+        lazyGamesystem = binder.BindGamesystemSymbol(Declaration, diagnosticBag);
+    }
+
+    protected override void InvokeForceCompleteOnChildren()
+    {
+        base.InvokeForceCompleteOnChildren();
+        InvokeForceComplete(Imports);
     }
 }

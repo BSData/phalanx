@@ -84,6 +84,13 @@ internal class BinderFactory
             return container?.Resources.OfType<ProfileSymbol>().FirstOrDefault(x => x.Declaration == node);
         }
 
+        // TODO group binder
+        // public override Binder VisitSelectionEntryGroup(SelectionEntryGroupNode node)
+        // {
+        //     var next = DefaultVisit(node);
+        //     return new SelectionGroupBinder(next, node);
+        // }
+
         private static IContainerEntrySymbol? GetContainerEntry(Binder binder, SourceNode node)
         {
             if (binder.ContainingContainerSymbol is { } container)

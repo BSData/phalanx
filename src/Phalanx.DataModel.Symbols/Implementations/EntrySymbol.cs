@@ -14,7 +14,8 @@ internal abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol
         : base(containingSymbol, declaration)
     {
         Declaration = declaration;
-        PublicationReference = new EntryPublicationReferenceSymbol(this);
+        PublicationReference = declaration.PublicationId is not null
+            ? new EntryPublicationReferenceSymbol(this, diagnostics) : null;
         Effects = LogicSymbol.CreateEffects(this, diagnostics);
     }
 
@@ -22,9 +23,9 @@ internal abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol
 
     protected virtual IEntrySymbol? BaseReferencedEntry => null;
 
-    public EntryPublicationReferenceSymbol PublicationReference { get; }
+    public EntryPublicationReferenceSymbol? PublicationReference { get; }
 
-    IPublicationReferenceSymbol IEntrySymbol.PublicationReference => PublicationReference;
+    IPublicationReferenceSymbol? IEntrySymbol.PublicationReference => PublicationReference;
 
     public ImmutableArray<IEffectSymbol> Effects { get; }
 
@@ -32,19 +33,11 @@ internal abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol
 
     IEntrySymbol? IEntrySymbol.ReferencedEntry => BaseReferencedEntry;
 
-    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
+    protected override void InvokeForceCompleteOnChildren()
     {
-        base.BindReferencesCore(binder, diagnosticBag);
-
-        PublicationReference.ForceComplete();
-
-        foreach (var effect in Effects)
-        {
-            if (effect is Symbol { RequiresCompletion: true } toComplete)
-            {
-                toComplete.ForceComplete();
-            }
-        }
+        base.InvokeForceCompleteOnChildren();
+        PublicationReference?.ForceComplete();
+        InvokeForceComplete(Effects);
     }
 
     public static ISelectionEntryContainerSymbol CreateEntry(

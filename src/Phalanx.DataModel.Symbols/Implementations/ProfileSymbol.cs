@@ -42,11 +42,11 @@ internal class ProfileSymbol : EntrySymbol, IProfileSymbol
         base.BindReferencesCore(binder, diagnosticBag);
 
         lazyType = binder.BindProfileTypeSymbol(Declaration, diagnosticBag);
+    }
 
-        foreach (var child in Characteristics)
-        {
-            if (child is Symbol { RequiresCompletion: true } toComplete)
-                toComplete.ForceComplete();
-        }
+    protected override void InvokeForceCompleteOnChildren()
+    {
+        base.InvokeForceCompleteOnChildren();
+        InvokeForceComplete(Characteristics);
     }
 }

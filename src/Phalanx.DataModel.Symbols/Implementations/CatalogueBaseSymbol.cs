@@ -121,10 +121,11 @@ internal abstract class CatalogueBaseSymbol : SourceDeclaredSymbol, ICatalogueSy
     protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
     {
         base.BindReferencesCore(binder, diagnosticBag);
-        foreach (var child in AllItems)
-        {
-            if (child is Symbol { RequiresCompletion: true } toComplete)
-                toComplete.ForceComplete();
-        }
+    }
+
+    protected override void InvokeForceCompleteOnChildren()
+    {
+        base.InvokeForceCompleteOnChildren();
+        InvokeForceComplete(AllItems);
     }
 }

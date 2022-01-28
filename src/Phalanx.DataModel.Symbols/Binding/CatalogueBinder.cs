@@ -21,7 +21,11 @@ internal class CatalogueBaseBinder : Binder
     internal ImmutableArray<ICatalogueSymbol> CalculateRootClosure()
     {
         var processed = new HashSet<ICatalogueSymbol>();
-        var closureItems = new List<ICatalogueSymbol>();
+        var closureItems = new List<ICatalogueSymbol>
+        {
+            // this is required, it's the base catalogue
+            Catalogue,
+        };
         var queuedForProcessing = new Queue<ICatalogueSymbol>();
         queuedForProcessing.Enqueue(Catalogue);
         while (queuedForProcessing.TryDequeue(out var item))
@@ -36,38 +40,58 @@ internal class CatalogueBaseBinder : Binder
             }
         }
         closureItems.Add(Catalogue.Gamesystem);
-        // TODO consider filtering out "missing" items
+        // TODO consider filtering out "missing"/error items
         return closureItems.ToImmutableArray();
     }
 
     internal override void LookupSymbolsInSingleBinder(LookupResult result, string symbolId, LookupOptions options, Binder originalBinder, bool diagnose)
     {
+        if (options.HasFlag(LookupOptions.CatalogueOnly))
+        {
+            // no catalogues to bind here
+            return;
+        }
+        foreach (var catalogue in RootClosure)
+        {
+            LookupSymbolsInSingleCatalogue(catalogue, result, symbolId, options, originalBinder, diagnose);
+            if (result.IsMultiViable)
+                return;
+        }
+    }
+
+    private static void LookupSymbolsInSingleCatalogue(
+        ICatalogueSymbol catalogue,
+        LookupResult result,
+        string symbolId,
+        LookupOptions options,
+        Binder originalBinder,
+        bool diagnose)
+    {
         if (options.CanConsiderResourceDefinitions())
         {
-            originalBinder.CheckViability(result, Catalogue.ResourceDefinitions, symbolId, options, diagnose);
+            originalBinder.CheckViability(result, catalogue.ResourceDefinitions, symbolId, options, diagnose);
         }
         if (!options.HasFlag(LookupOptions.SharedEntryOnly))
         {
             if (options.CanConsiderContainerEntries())
             {
-                originalBinder.CheckViability(result, Catalogue.RootContainerEntries, symbolId, options, diagnose);
+                originalBinder.CheckViability(result, catalogue.RootContainerEntries, symbolId, options, diagnose);
             }
             if (options.CanConsiderResourceEntries())
             {
-                originalBinder.CheckViability(result, Catalogue.RootResourceEntries, symbolId, options, diagnose);
+                originalBinder.CheckViability(result, catalogue.RootResourceEntries, symbolId, options, diagnose);
             }
         }
         if (!options.HasFlag(LookupOptions.RootEntryOnly))
         {
             if (options.CanConsiderContainerEntries())
             {
-                originalBinder.CheckViability(result, Catalogue.SharedSelectionEntryContainers, symbolId, options, diagnose);
+                originalBinder.CheckViability(result, catalogue.SharedSelectionEntryContainers, symbolId, options, diagnose);
             }
             if (options.CanConsiderResourceEntries())
             {
-                originalBinder.CheckViability(result, Catalogue.SharedResourceEntries, symbolId, options, diagnose);
+                originalBinder.CheckViability(result, catalogue.SharedResourceEntries, symbolId, options, diagnose);
             }
         }
-        // TODO visit closure? or separate into binder?
     }
 }

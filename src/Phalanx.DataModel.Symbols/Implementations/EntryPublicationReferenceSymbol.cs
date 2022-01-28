@@ -12,8 +12,17 @@ internal class EntryPublicationReferenceSymbol : Symbol, IPublicationReferenceSy
 
     private IPublicationSymbol? lazyPublication;
 
-    public EntryPublicationReferenceSymbol(EntrySymbol containingSymbol)
+    public EntryPublicationReferenceSymbol(EntrySymbol containingSymbol, DiagnosticBag diagnostics)
     {
+        if (containingSymbol.Declaration.PublicationId is null)
+        {
+            // that's not what should happen, if publicationId is null,
+            // the containing symbol should set its IPublicationRefernceSymbol property to null
+            diagnostics.Add(
+                ErrorCode.ERR_GenericError,
+                containingSymbol.Declaration.GetLocation(),
+                ImmutableArray.Create<Symbol>(this));
+        }
         this.containingSymbol = containingSymbol;
     }
 
@@ -21,7 +30,7 @@ internal class EntryPublicationReferenceSymbol : Symbol, IPublicationReferenceSy
 
     public override string? Id => null;
 
-    public override string Name => Publication.Name;
+    public override string Name => string.Empty;
 
     public override string? Comment => null;
 

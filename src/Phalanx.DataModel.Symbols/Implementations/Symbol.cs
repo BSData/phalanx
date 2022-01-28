@@ -59,6 +59,7 @@ internal abstract class Symbol : ISymbol
                 var diagnostics = DiagnosticBag.GetInstance();
                 BindReferences(compilation, diagnostics);
                 compilation.AddBindingDiagnostics(diagnostics);
+                InvokeForceCompleteOnChildren();
             }
             else
             {
@@ -70,6 +71,17 @@ internal abstract class Symbol : ISymbol
     }
 
     protected virtual void BindReferences(Compilation compilation, DiagnosticBag diagnostics) { }
+
+    protected virtual void InvokeForceCompleteOnChildren() { }
+
+    protected static void InvokeForceComplete<TChild>(ImmutableArray<TChild> children)
+    {
+        foreach (var child in children)
+        {
+            if (child is Symbol { RequiresCompletion: true } toComplete)
+                toComplete.ForceComplete();
+        }
+    }
 
     protected TField GetBoundField<TField>(ref TField? field) where TField : class
     {

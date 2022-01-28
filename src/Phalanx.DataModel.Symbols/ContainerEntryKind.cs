@@ -6,6 +6,11 @@ namespace Phalanx.DataModel.Symbols;
 public enum ContainerEntryKind
 {
     /// <summary>
+    /// The kind is not known, or invalid.
+    /// </summary>
+    Error,
+
+    /// <summary>
     /// A selectable entry, <see cref="ISelectionEntrySymbol"/>.
     /// </summary>
     Selection,
