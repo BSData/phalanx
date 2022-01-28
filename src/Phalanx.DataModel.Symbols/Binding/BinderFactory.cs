@@ -3,22 +3,24 @@ using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Binding;
 
-public class BinderFactory
+internal class BinderFactory
 {
     public BinderFactory(DatasetCompilation compilation, SourceTree sourceTree)
     {
         Compilation = compilation;
         SourceTree = sourceTree;
+        BuckStopsHereBinder = new(compilation);
     }
 
     public DatasetCompilation Compilation { get; }
 
     public SourceTree SourceTree { get; }
 
+    public BuckStopsHereBinder BuckStopsHereBinder { get; }
+
     public Binder GetBinder(SourceNode node, ISymbol? containingSymbol = null)
     {
-        // TODO if containing symbol is provided, it can make finding appropriate symbols for binders much faster
-        var visitor = new BinderFactoryVisitor(this);
+        var visitor = new BinderFactoryVisitor(this, containingSymbol);
         var binder = visitor.Visit(node);
         return binder;
     }
@@ -26,10 +28,12 @@ public class BinderFactory
     private sealed class BinderFactoryVisitor : SourceVisitor<Binder>
     {
         private readonly BinderFactory factory;
+        private readonly ISymbol? containingSymbol;
 
-        public BinderFactoryVisitor(BinderFactory factory)
+        public BinderFactoryVisitor(BinderFactory factory, ISymbol? containingSymbol)
         {
             this.factory = factory;
+            this.containingSymbol = containingSymbol;
         }
 
         private DatasetCompilation Compilation => factory.Compilation;
@@ -60,6 +64,35 @@ public class BinderFactory
         {
             var next = Compilation.GlobalNamespaceBinder;
             return new CatalogueBaseBinder(next, GetCatalogueSymbol(node));
+        }
+
+        public override Binder VisitCharacteristic(CharacteristicNode node)
+        {
+            var next = DefaultVisit(node);
+            var profileSymbol = GetProfileSymbol(node.FirstAncestorOrSelf<ProfileNode>()!, next)
+                ?? throw new InvalidOperationException("Profile symbol required.");
+            return new CharacteristicBinder(next, profileSymbol);
+        }
+
+        private ProfileSymbol? GetProfileSymbol(ProfileNode node, Binder outerBinder)
+        {
+            if (containingSymbol is ProfileSymbol profileSymbol && profileSymbol.Declaration == node)
+            {
+                return profileSymbol;
+            }
+            var container = GetContainerEntry(outerBinder, node);
+            return container?.Resources.OfType<ProfileSymbol>().FirstOrDefault(x => x.Declaration == node);
+        }
+
+        private static IContainerEntrySymbol? GetContainerEntry(Binder binder, SourceNode node)
+        {
+            if (binder.ContainingContainerSymbol is { } container)
+            {
+                return container;
+            }
+            _ = node.FirstAncestorOrSelf<ContainerEntryBaseNode>();
+            // TODO not sure what to do here
+            return null;
         }
 
         private CatalogueBaseSymbol GetCatalogueSymbol(CatalogueBaseNode node)

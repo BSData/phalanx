@@ -1,3 +1,4 @@
+using Phalanx.DataModel.Symbols.Binding;
 using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Implementation;
@@ -116,4 +117,14 @@ internal abstract class CatalogueBaseSymbol : SourceDeclaredSymbol, ICatalogueSy
     public ImmutableArray<ISelectionEntryContainerSymbol> SharedSelectionEntryContainers { get; }
 
     public ImmutableArray<IResourceEntrySymbol> SharedResourceEntries { get; }
+
+    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
+    {
+        base.BindReferencesCore(binder, diagnosticBag);
+        foreach (var child in AllItems)
+        {
+            if (child is Symbol { RequiresCompletion: true } toComplete)
+                toComplete.ForceComplete();
+        }
+    }
 }

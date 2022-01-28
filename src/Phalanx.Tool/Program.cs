@@ -1,4 +1,5 @@
-﻿using Phalanx.Tool.Editor;
+﻿using Phalanx.DataModel.Symbols;
+using Phalanx.Tool.Editor;
 using WarHub.ArmouryModel.Source;
 using static WarHub.ArmouryModel.Source.NodeFactory;
 
@@ -20,6 +21,10 @@ class Program
         Console.WriteLine(">>> Testing gamesystem binding in Catalogue symbol.");
         var gamesystem = globalNamespace.Catalogues.Where(x => !x.IsGamesystem).First().Gamesystem;
         Console.WriteLine(">>> Catalogue symbol has bound to gamesystem symbol: " + gamesystem.Name);
+
+        Console.WriteLine(">>> Testing publication binding.");
+        var forceEntry1 = globalNamespace.RootCatalogue.AllItems.OfType<IForceEntrySymbol>().First();
+        Console.WriteLine($">>> Force '{forceEntry1.Name}' publication bound to '{forceEntry1.PublicationReference?.Publication.Name}'");
 
         Console.WriteLine(">>> Testing diagnostic listing.");
         var diagnostics = compilation.GetDiagnostics();
@@ -80,12 +85,19 @@ class Program
     static Dataset GetDataset()
     {
         var teamsCategory = CategoryEntry("team");
+        var pub1 = Publication("pub1");
         var gamesystem = Gamesystem("TestGst")
+            .AddPublications(pub1)
+            .AddProfileTypes(
+                ProfileType("Unit stats")
+                .AddCharacteristicTypes(
+                    CharacteristicType("Move")))
             .AddCostTypes(
                 CostType("pts"))
             .AddCategoryEntries(teamsCategory)
             .AddForceEntries(
                 ForceEntry("System Detachment")
+                .WithPublicationId(pub1.Id)
                 .AddCategoryLinks(
                     CategoryLink(teamsCategory)));
         var marineCatalogue = Catalogue(gamesystem, "Marine Corps")
@@ -93,6 +105,10 @@ class Program
                 ForceEntry("Marine Detachment")
                 .AddCategoryLinks(
                     CategoryLink(teamsCategory)))
+            .AddSharedProfiles(
+                Profile(gamesystem.ProfileTypes[0])
+                .AddCharacteristics(
+                    Characteristic(gamesystem.ProfileTypes[0].CharacteristicTypes[0], "10cm")))
             .AddSelectionEntries(
                 SelectionEntry("Drone")
                 .AddCosts(

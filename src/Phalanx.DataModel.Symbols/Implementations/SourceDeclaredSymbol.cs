@@ -40,7 +40,7 @@ internal abstract class SourceDeclaredSymbol : Symbol
     {
         base.BindReferences(compilation, diagnostics);
 
-        BindReferencesCore(compilation.GetBinder(Declaration), diagnostics);
+        BindReferencesCore(compilation.GetBinder(Declaration, ContainingSymbol), diagnostics);
     }
 
     protected virtual void BindReferencesCore(Binding.Binder binder, DiagnosticBag diagnosticBag)

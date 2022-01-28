@@ -5,7 +5,6 @@ namespace Phalanx.DataModel.Symbols.Implementation;
 internal class CharacteristicSymbol : SimpleResourceEntrySymbol, ICharacteristicSymbol
 {
     private ICharacteristicTypeSymbol? lazyType;
-    private readonly IProfileSymbol profileSymbol;
 
     internal new CharacteristicNode Declaration { get; }
 
@@ -15,7 +14,6 @@ internal class CharacteristicSymbol : SimpleResourceEntrySymbol, ICharacteristic
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration, diagnostics)
     {
-        profileSymbol = containingSymbol;
         Declaration = declaration;
     }
 
@@ -38,6 +36,6 @@ internal class CharacteristicSymbol : SimpleResourceEntrySymbol, ICharacteristic
     {
         base.BindReferencesCore(binder, diagnosticBag);
 
-        lazyType = binder.BindCharacteristicTypeSymbol(profileSymbol.Type, Declaration);
+        lazyType = binder.BindCharacteristicTypeSymbol(Declaration, diagnosticBag);
     }
 }

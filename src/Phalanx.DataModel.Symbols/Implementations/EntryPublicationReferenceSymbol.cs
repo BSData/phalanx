@@ -48,7 +48,7 @@ internal class EntryPublicationReferenceSymbol : Symbol, IPublicationReferenceSy
     {
         base.BindReferences(compilation, diagnostics);
 
-        var binder = compilation.GetBinder(containingSymbol.Declaration);
-        lazyPublication = binder.BindPublicationSymbol(containingSymbol.Declaration.PublicationId);
+        var binder = compilation.GetBinder(containingSymbol.Declaration, ContainingSymbol);
+        lazyPublication = binder.BindPublicationSymbol(containingSymbol.Declaration, diagnostics);
     }
 }

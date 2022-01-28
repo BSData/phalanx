@@ -1,5 +1,4 @@
 using Phalanx.DataModel.Symbols.Implementation;
-using WarHub.ArmouryModel.Source;
 
 namespace Phalanx.DataModel.Symbols.Binding;
 
@@ -13,6 +12,8 @@ internal class CatalogueBaseBinder : Binder
     {
         Catalogue = catalogue;
     }
+
+    internal override Symbol? ContainingSymbol => Catalogue;
 
     public ImmutableArray<ICatalogueSymbol> RootClosure =>
         lazyRootClosure.IsDefault ? (lazyRootClosure = CalculateRootClosure()) : lazyRootClosure;
@@ -39,75 +40,34 @@ internal class CatalogueBaseBinder : Binder
         return closureItems.ToImmutableArray();
     }
 
-    internal ImmutableArray<T> GetWithId<T>(Func<ICatalogueSymbol, IEnumerable<T>> getItems, string? id) where T : ISymbol
+    internal override void LookupSymbolsInSingleBinder(LookupResult result, string symbolId, LookupOptions options, Binder originalBinder, bool diagnose)
     {
-        if (id is null)
-            return ImmutableArray<T>.Empty;
-        return RootClosure
-            .SelectMany(x => getItems(x))
-            .Where(x => x.Id == id)
-            .ToImmutableArray();
-    }
-
-    internal override ICategoryEntrySymbol? BindCategoryEntrySymbol(string? targetId)
-    {
-        var candidates = GetWithId(x => x.RootContainerEntries.OfType<ICategoryEntrySymbol>(), targetId);
-        if (candidates.Length > 0)
+        if (options.CanConsiderResourceDefinitions())
         {
-            // TODO log diagnostic when >1
-            return candidates[0];
+            originalBinder.CheckViability(result, Catalogue.ResourceDefinitions, symbolId, options, diagnose);
         }
-        return NextRequired.BindCategoryEntrySymbol(targetId);
-    }
-
-    internal override ICostTypeSymbol? BindCostTypeSymbol(string? typeId)
-    {
-        var candidates = GetWithId(x => x.ResourceDefinitions.OfType<ICostTypeSymbol>(), typeId);
-        if (candidates.Length > 0)
+        if (!options.HasFlag(LookupOptions.SharedEntryOnly))
         {
-            // TODO log diagnostic when >1
-            return candidates[0];
+            if (options.CanConsiderContainerEntries())
+            {
+                originalBinder.CheckViability(result, Catalogue.RootContainerEntries, symbolId, options, diagnose);
+            }
+            if (options.CanConsiderResourceEntries())
+            {
+                originalBinder.CheckViability(result, Catalogue.RootResourceEntries, symbolId, options, diagnose);
+            }
         }
-        return NextRequired.BindCostTypeSymbol(typeId);
-    }
-
-    internal override IPublicationSymbol BindPublicationSymbol(string? publicationId)
-    {
-        var candidates = GetWithId(x => x.ResourceDefinitions.OfType<IPublicationSymbol>(), publicationId);
-        if (candidates.Length > 0)
+        if (!options.HasFlag(LookupOptions.RootEntryOnly))
         {
-            // TODO log diagnostic when >1
-            return candidates[0];
+            if (options.CanConsiderContainerEntries())
+            {
+                originalBinder.CheckViability(result, Catalogue.SharedSelectionEntryContainers, symbolId, options, diagnose);
+            }
+            if (options.CanConsiderResourceEntries())
+            {
+                originalBinder.CheckViability(result, Catalogue.SharedResourceEntries, symbolId, options, diagnose);
+            }
         }
-        return NextRequired.BindPublicationSymbol(publicationId);
-    }
-
-    internal override IProfileTypeSymbol? BindProfileTypeSymbol(string? typeId)
-    {
-        var candidates = GetWithId(x => x.ResourceDefinitions.OfType<IProfileTypeSymbol>(), typeId);
-        if (candidates.Length > 0)
-        {
-            // TODO log diagnostic when >1
-            return candidates[0];
-        }
-        return NextRequired.BindProfileTypeSymbol(typeId);
-    }
-
-    internal override ISelectionEntryContainerSymbol? BindSharedSelectionEntrySymbol(string? targetId, EntryLinkKind type)
-    {
-        var candidates = type switch
-        {
-            EntryLinkKind.SelectionEntry =>
-                GetWithId(x => x.SharedSelectionEntryContainers.Where(x => x.ContainerKind == ContainerEntryKind.Selection), targetId),
-            EntryLinkKind.SelectionEntryGroup =>
-                GetWithId(x => x.SharedSelectionEntryContainers.Where(x => x.ContainerKind == ContainerEntryKind.SelectionGroup), targetId),
-            _ => ImmutableArray<ISelectionEntryContainerSymbol>.Empty
-        };
-        if (candidates.Length > 0)
-        {
-            // TODO log diagnostic when >1
-            return candidates[0];
-        }
-        return NextRequired.BindSharedSelectionEntrySymbol(targetId, type);
+        // TODO visit closure? or separate into binder?
     }
 }

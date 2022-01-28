@@ -54,10 +54,13 @@ internal abstract class Symbol : ISymbol
         if (RequiresCompletion && !BindingDone)
         {
             var compilation = DeclaringCompilation ?? throw new InvalidOperationException("Binding requires declaring compilation.");
-            var diagnostics = DiagnosticBag.GetInstance();
-            BindReferences(compilation, diagnostics);
             if (Interlocked.CompareExchange(ref bindingDone, 1, 0) == 0)
+            {
+                var diagnostics = DiagnosticBag.GetInstance();
+                BindReferences(compilation, diagnostics);
                 compilation.AddBindingDiagnostics(diagnostics);
+            }
+            // TODO consider a spin-wait in else?
         }
     }
 

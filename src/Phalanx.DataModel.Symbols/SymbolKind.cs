@@ -17,7 +17,7 @@ public enum SymbolKind
     Logic,
 
     // characteristic type, cost type, profile type
-    ResourceType,
+    ResourceDefinition,
 
     // characteristics, costs, profiles, rules, info groups, publications
     Resource,

@@ -9,6 +9,6 @@ public interface IPublicationSymbol : IResourceDefinitionSymbol
 {
     string? ShortName { get; }
     string? Publisher { get; }
-    DateTime? PublicationDate { get; }
+    DateOnly? PublicationDate { get; }
     Uri? PublicationUrl { get; }
 }

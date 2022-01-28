@@ -13,9 +13,11 @@ internal class PublicationSymbol : SourceDeclaredSymbol, IPublicationSymbol
         : base(containingSymbol, declaration)
     {
         Declaration = declaration;
+        PublicationDate = DateOnly.TryParse(Declaration.PublicationDate, out var pubDate) ? pubDate : null;
+        PublicationUrl = Uri.TryCreate(Declaration.PublisherUrl, UriKind.Absolute, out var uri) ? uri : null;
     }
 
-    public override SymbolKind Kind => SymbolKind.ResourceType;
+    public override SymbolKind Kind => SymbolKind.ResourceDefinition;
 
     public ResourceKind ResourceKind => ResourceKind.Publication;
 
@@ -23,7 +25,7 @@ internal class PublicationSymbol : SourceDeclaredSymbol, IPublicationSymbol
 
     public string? Publisher => Declaration.Publisher;
 
-    public DateTime? PublicationDate => DateTime.TryParse(Declaration.PublicationDate, out var result) ? result : null;
+    public DateOnly? PublicationDate { get; }
 
-    public Uri? PublicationUrl => Uri.TryCreate(Declaration.PublisherUrl, UriKind.Absolute, out var result) ? result : null;
+    public Uri? PublicationUrl { get; }
 }

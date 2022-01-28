@@ -25,8 +25,25 @@ public class Binder
 
     protected Binder NextRequired => Next ?? throw new InvalidOperationException("Must have Next!");
 
-    internal virtual IPublicationSymbol BindPublicationSymbol(string? publicationId) =>
-        NextRequired.BindPublicationSymbol(publicationId);
+    internal virtual Symbol? ContainingSymbol => NextRequired.ContainingSymbol;
+
+    internal virtual ContainerEntryBaseSymbol? ContainingContainerSymbol =>
+        ContainingSymbol as ContainerEntryBaseSymbol ?? NextRequired.ContainingContainerSymbol;
+
+    internal virtual EntrySymbol? ContainingEntrySymbol =>
+        ContainingSymbol as EntrySymbol ?? NextRequired.ContainingEntrySymbol;
+
+    internal IPublicationSymbol BindPublicationSymbol(EntryBaseNode node, DiagnosticBag diagnostics) =>
+        BindSimple<IPublicationSymbol, ErrorSymbols.ErrorPublicationSymbol>(
+            node, diagnostics, node.PublicationId, LookupOptions.PublicationOnly);
+
+    internal ICharacteristicTypeSymbol BindCharacteristicTypeSymbol(CharacteristicNode node, DiagnosticBag diagnostics) =>
+        BindSimple<ICharacteristicTypeSymbol, ErrorSymbols.ErrorCharacteristicTypeSymbol>(
+            node, diagnostics, node.TypeId, LookupOptions.CharacteristicTypeOnly);
+
+    internal IProfileTypeSymbol BindProfileTypeSymbol(ProfileNode node, DiagnosticBag diagnostics) =>
+        BindSimple<IProfileTypeSymbol, ErrorSymbols.ErrorProfileTypeSymbol>(
+            node, diagnostics, node.TypeId, LookupOptions.ProfileTypeOnly);
 
     internal virtual IResourceEntrySymbol? BindResourceEntrySymbol(string? targetId, InfoLinkKind type) =>
         NextRequired.BindResourceEntrySymbol(targetId, type);
@@ -49,26 +66,105 @@ public class Binder
     internal virtual ICatalogueSymbol? BindGamesystemSymbol(string? gamesystemId) =>
         NextRequired.BindGamesystemSymbol(gamesystemId);
 
-    internal virtual ICharacteristicTypeSymbol? BindCharacteristicTypeSymbol(IProfileTypeSymbol type, CharacteristicNode declaration)
+    private TSymbol BindSimple<TSymbol, TErrorSymbol>(SourceNode node, DiagnosticBag diagnostics, string? symbolId, LookupOptions options)
+        where TSymbol : ISymbol
+        where TErrorSymbol : ErrorSymbols.ErrorSymbolBase, TSymbol, new()
     {
-        // TODO should this be done at the higher binder level (e.g. profile type binder?)
-        return type.CharacteristicTypes.Where(x => x.Id == declaration.TypeId).SingleOrDefault();
-    }
-
-    internal virtual IProfileTypeSymbol? BindProfileTypeSymbol(string? typeId) =>
-        NextRequired.BindProfileTypeSymbol(typeId);
-
-    internal IProfileTypeSymbol BindProfileTypeSymbol(ProfileNode node, DiagnosticBag diagnostics)
-    {
-        // TODO use this when ResultSymbol is ready (returns appropriate Symbol implementation for Error)
-        var symbolId = node.TypeId;
         Debug.Assert(symbolId is not null);
         var result = LookupResult.GetInstance();
-        var options = LookupOptions.Default;
         LookupSymbolsWithDelayedDiagnosing(result, symbolId, options);
         var bindingResult = ResultSymbol(result, symbolId, node, diagnostics, out _, options);
         result.Free();
-        return (IProfileTypeSymbol)bindingResult;
+        if (bindingResult is ErrorSymbols.ErrorSymbolBase error and not TSymbol)
+        {
+            return new TErrorSymbol().WithErrorDetailsFrom(error);
+        }
+        return (TSymbol)bindingResult;
+    }
+
+    internal SingleLookupResult CheckViability(
+        ISymbol symbol,
+        string symbolId,
+        LookupOptions options,
+        bool diagnose)
+    {
+        if (symbol.Id != symbolId)
+        {
+            return LookupResult.Empty();
+        }
+        if (options.HasFlag(LookupOptions.RootEntryOnly) && !IsRootEntry(symbol))
+        {
+            return LookupResult.Empty();
+        }
+        if (options.HasFlag(LookupOptions.SharedEntryOnly) && !IsSharedEntry(symbol))
+        {
+            return LookupResult.Empty();
+        }
+        if (options.HasFlag(LookupOptions.CatalogueOnly) && symbol.Kind != SymbolKind.Catalogue)
+        {
+            return LookupResult.Empty();
+        }
+        if (options.HasFlag(LookupOptions.ResoureDefinitionOnly))
+        {
+            if (symbol.Kind != SymbolKind.ResourceDefinition || symbol is not IResourceDefinitionSymbol rdSymbol)
+            {
+                return LookupResult.Empty();
+            }
+            var resourceKind = rdSymbol.ResourceKind;
+            if (options.HasFlag(LookupOptions.PublicationOnly) && resourceKind != ResourceKind.Publication)
+            {
+                return LookupResult.Empty();
+            }
+            if (options.HasFlag(LookupOptions.CostTypeOnly) && resourceKind != ResourceKind.Cost)
+            {
+                return LookupResult.Empty();
+            }
+            if (options.HasFlag(LookupOptions.ProfileTypeOnly) && resourceKind != ResourceKind.Profile)
+            {
+                return LookupResult.Empty();
+            }
+            if (options.HasFlag(LookupOptions.CharacteristicTypeOnly) && resourceKind != ResourceKind.Characteristic)
+            {
+                return LookupResult.Empty();
+            }
+        }
+        if (options.HasFlag(LookupOptions.ResourceEntryOnly) && symbol.Kind != SymbolKind.Resource)
+        {
+            return LookupResult.Empty();
+        }
+        if (options.HasFlag(LookupOptions.ContainerEntryOnly) && symbol.Kind != SymbolKind.ContainerEntry)
+        {
+            return LookupResult.Empty();
+        }
+        return LookupResult.Good(symbol);
+    }
+
+    private static bool IsRootEntry(ISymbol symbol) => symbol.ContainingCatalogue is { } catalogue && symbol.Kind switch
+    {
+        SymbolKind.ContainerEntry => catalogue.RootContainerEntries.Contains(symbol),
+        SymbolKind.Resource => catalogue.RootResourceEntries.Contains(symbol),
+        _ => false,
+    };
+
+    private static bool IsSharedEntry(ISymbol symbol) => symbol.ContainingCatalogue is { } catalogue && symbol.Kind switch
+    {
+        SymbolKind.ContainerEntry => catalogue.SharedSelectionEntryContainers.Contains(symbol),
+        SymbolKind.Resource => catalogue.SharedResourceEntries.Contains(symbol),
+        _ => false,
+    };
+
+    internal void CheckViability<TSymbol>(
+        LookupResult result,
+        ImmutableArray<TSymbol> symbols,
+        string symbolId,
+        LookupOptions options,
+        bool diagnose)
+        where TSymbol : ISymbol
+    {
+        foreach (var symbol in symbols)
+        {
+            result.MergeEqual(CheckViability(symbol, symbolId, options, diagnose));
+        }
     }
 
     internal ISymbol ResultSymbol(

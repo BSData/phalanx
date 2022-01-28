@@ -14,7 +14,7 @@ internal enum LookupOptions
     /// <summary>
     /// Look only for <see cref="ICatalogueSymbol"/>s.
     /// </summary>
-    CatalogueOrGamesystemOnly = 1 << 1,
+    CatalogueOnly = 1 << 1,
 
     /// <summary>
     /// Look only for <see cref="IResourceDefinitionSymbol"/>s.
@@ -31,18 +31,30 @@ internal enum LookupOptions
     /// </summary>
     CostTypeOnly = (1 << 4) | ResoureDefinitionOnly,
     ProfileTypeOnly = (1 << 5) | ResoureDefinitionOnly,
-    CharacteristicTypeOnly = (1 << 6) | ProfileTypeOnly,
+    CharacteristicTypeOnly = (1 << 6) | ResoureDefinitionOnly,
     EntryOnly = 1 << 7,
     ResourceEntryOnly = (1 << 8) | EntryOnly, // TODO separate resource group?
-    CostOnly = (1 << 9) | EntryOnly,
-    RuleEntryOnly = (1 << 10) | EntryOnly,
-    ProfileEntryOnly = (1 << 11) | EntryOnly,
-    CharacteristicEntryOnly = (1 << 12) | ProfileEntryOnly,
+    CostOnly = (1 << 9) | ResourceEntryOnly,
+    RuleEntryOnly = (1 << 10) | ResourceEntryOnly,
+    ProfileEntryOnly = (1 << 11) | ResourceEntryOnly,
+    CharacteristicEntryOnly = (1 << 12) | ResourceEntryOnly,
     ContainerEntryOnly = (1 << 13) | EntryOnly,
     ForceEntryOnly = (1 << 14) | ContainerEntryOnly,
     CategoryEntryOnly = (1 << 15) | ContainerEntryOnly,
     SelectionEntryOnly = (1 << 16) | ContainerEntryOnly,
     SelectionGroupEntryOnly = (1 << 17) | ContainerEntryOnly,
-    SharedEntryOnly = 1 << 18,
-    RootEntryOnly = 1 << 19,
+    SharedEntryOnly = (1 << 18) | EntryOnly,
+    RootEntryOnly = (1 << 19) | EntryOnly,
+}
+
+internal static class LookupOptionsExtensions
+{
+    internal static bool CanConsiderResourceDefinitions(this LookupOptions options) =>
+        (options & (LookupOptions.CatalogueOnly | LookupOptions.EntryOnly)) == 0;
+
+    internal static bool CanConsiderResourceEntries(this LookupOptions options) =>
+        (options & (LookupOptions.CatalogueOnly | LookupOptions.ResoureDefinitionOnly | LookupOptions.ContainerEntryOnly)) == 0;
+
+    internal static bool CanConsiderContainerEntries(this LookupOptions options) =>
+        (options & (LookupOptions.CatalogueOnly | LookupOptions.ResoureDefinitionOnly | LookupOptions.ResourceEntryOnly)) == 0;
 }

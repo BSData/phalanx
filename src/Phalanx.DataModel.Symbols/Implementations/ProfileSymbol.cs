@@ -48,7 +48,7 @@ internal class ProfileSymbol : EntrySymbol, IProfileSymbol
     {
         base.BindReferencesCore(binder, diagnosticBag);
 
-        lazyType = binder.BindProfileTypeSymbol(Declaration.TypeId);
+        lazyType = binder.BindProfileTypeSymbol(Declaration, diagnosticBag);
 
         foreach (var child in Characteristics)
         {

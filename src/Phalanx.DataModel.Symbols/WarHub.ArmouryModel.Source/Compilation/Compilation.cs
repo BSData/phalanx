@@ -27,12 +27,12 @@ public abstract class Compilation
 
     public abstract ImmutableArray<Diagnostic> GetDiagnostics(CancellationToken cancellationToken = default);
 
-    internal Binder GetBinder(SourceNode node)
+    internal Binder GetBinder(SourceNode node, ISymbol? containingSymbol)
     {
         // TODO node has to have SourceTree property...
         // return GetBinderFactory(node.SourceTree).GetBinder(node);
         var rootNode = node.AncestorsAndSelf().Last();
-        return GetBinderFactory(SourceTrees.First(x => x.GetRoot() == rootNode)).GetBinder(node);
+        return GetBinderFactory(SourceTrees.First(x => x.GetRoot() == rootNode)).GetBinder(node, containingSymbol);
     }
 
     internal abstract ICatalogueSymbol CreateMissingGamesystemSymbol(DiagnosticBag diagnostics);
