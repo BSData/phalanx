@@ -1,4 +1,5 @@
-﻿using Phalanx.Tool.Editor;
+using Phalanx.Tool.Editor;
+using Phalanx.DataModel.Symbols;
 using WarHub.ArmouryModel.Source;
 using static WarHub.ArmouryModel.Source.NodeFactory;
 
@@ -11,6 +12,26 @@ class Program
         Console.WriteLine(">>> Building dataset.");
         // create
         var dataset = GetDataset();
+        Console.WriteLine(">>> Compiling dataset.");
+        var compilation = dataset.Compile();
+        Console.WriteLine(">>> Compiling dataset finished, creating global namespace.");
+        var globalNamespace = compilation.GlobalNamespace;
+        Console.WriteLine(">>> Global namespace retrieved.");
+
+        Console.WriteLine(">>> Testing gamesystem binding in Catalogue symbol.");
+        var gamesystem = globalNamespace.Catalogues.Where(x => !x.IsGamesystem).First().Gamesystem;
+        Console.WriteLine(">>> Catalogue symbol has bound to gamesystem symbol: " + gamesystem.Name);
+
+        Console.WriteLine(">>> Testing publication binding.");
+        var forceEntry1 = globalNamespace.RootCatalogue.AllItems.OfType<IForceEntrySymbol>().First();
+        Console.WriteLine($">>> Force '{forceEntry1.Name}' publication bound to '{forceEntry1.PublicationReference?.Publication.Name}'");
+
+        Console.WriteLine(">>> Testing diagnostic listing.");
+        var diagnostics = compilation.GetDiagnostics();
+        foreach (var diag in diagnostics)
+            Console.WriteLine(diag.ToString());
+        Console.WriteLine($">>> Diagnostics printed (count: {diagnostics.Length}).");
+
         // roster modifications
         var printer = new RosterPrinter();
         var rosterEditor = RosterEditor.Create(dataset).WithName("Test Marine Strike Force");
