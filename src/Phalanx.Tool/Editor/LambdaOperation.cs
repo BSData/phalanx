@@ -1,15 +1,10 @@
-using System;
+namespace Phalanx.Tool.Editor;
 
-namespace Phalanx.Tool.Editor
+/// <summary>
+/// A roster operation that wraps a lambda transformation.
+/// </summary>
+public record LambdaOperation(Func<RosterState, RosterState> Transformation)
+    : IRosterOperation
 {
-    public delegate RosterState RosterStateTransformation(RosterState initialState);
-    public record LambdaOperation(
-        RosterOperationKind Kind,
-        RosterState InitialState,
-        Func<RosterState, RosterState> Transformation)
-        : IRosterOperation
-    {
-        private RosterState? transformed;
-        public RosterState Apply() => transformed ??= Transformation(InitialState);
-    }
+    public RosterState Apply(RosterState baseState) => Transformation(baseState);
 }

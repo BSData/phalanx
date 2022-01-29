@@ -1,9 +1,9 @@
-namespace Phalanx.Tool.Editor
-{
-    public interface IRosterOperation
-    {
-        RosterOperationKind Kind { get; }
+namespace Phalanx.Tool.Editor;
 
-        RosterState Apply();
-    }
+/// <summary>
+/// A mutation that can be applied to a roster.
+/// </summary>
+public interface IRosterOperation
+{
+    RosterState Apply(RosterState baseState);
 }
