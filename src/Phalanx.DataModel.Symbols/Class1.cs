@@ -1,8 +1,5 @@
-using System;
+namespace Phalanx.DataModel.Symbols;
 
-namespace Phalanx.DataModel.Symbols
+public class Class1
 {
-    public class Class1
-    {
-    }
 }
