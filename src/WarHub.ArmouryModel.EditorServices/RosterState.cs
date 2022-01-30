@@ -9,7 +9,4 @@ namespace WarHub.ArmouryModel.EditorServices;
 public record RosterState(Dataset Dataset)
 {
     public RosterNode Roster { get; init; } = RosterCore.Empty.ToNode();
-
-    public ImmutableArray<RosterDiagnostic> Diagnostics { get; init; } =
-        ImmutableArray<RosterDiagnostic>.Empty;
 }

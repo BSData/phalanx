@@ -1,17 +1,18 @@
+using System.Diagnostics.CodeAnalysis;
 using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
 internal class BinderFactory
 {
-    public BinderFactory(DatasetCompilation compilation, SourceTree sourceTree)
+    public BinderFactory(WhamCompilation compilation, SourceTree sourceTree)
     {
         Compilation = compilation;
         SourceTree = sourceTree;
         BuckStopsHereBinder = new(compilation);
     }
 
-    public DatasetCompilation Compilation { get; }
+    public WhamCompilation Compilation { get; }
 
     public SourceTree SourceTree { get; }
 
@@ -35,7 +36,7 @@ internal class BinderFactory
             this.containingSymbol = containingSymbol;
         }
 
-        private DatasetCompilation Compilation => factory.Compilation;
+        private WhamCompilation Compilation => factory.Compilation;
 
         public override Binder DefaultVisit(SourceNode node)
         {
@@ -51,6 +52,12 @@ internal class BinderFactory
         {
             // binding a null node is unexpected, can throw
             return node!.Accept(this);
+        }
+
+        public override Binder VisitRoster(RosterNode node)
+        {
+            // TODO custom roster binder
+            return Compilation.GlobalNamespaceBinder;
         }
 
         public override Binder VisitCatalogue(CatalogueNode node)

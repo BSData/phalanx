@@ -2,13 +2,13 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-public class DatasetCompilation : Compilation
+public class WhamCompilation : Compilation
 {
     private SourceGlobalNamespaceSymbol? lazyGlobalNamespace;
     private Binder? lazyGlobalNamespaceBinder;
     private DiagnosticBag? lazyBindingDiagnostics;
 
-    internal DatasetCompilation(string? name, ImmutableArray<SourceTree> sourceTrees, CompilationOptions options)
+    internal WhamCompilation(string? name, ImmutableArray<SourceTree> sourceTrees, CompilationOptions options)
         : base(name, sourceTrees, options)
     {
     }
@@ -17,16 +17,16 @@ public class DatasetCompilation : Compilation
 
     internal SourceGlobalNamespaceSymbol SourceGlobalNamespace => GetGlobalNamespace();
 
-    public static DatasetCompilation Create()
+    public static WhamCompilation Create()
     {
         return Create(ImmutableArray<SourceTree>.Empty);
     }
 
-    public static DatasetCompilation Create(
+    public static WhamCompilation Create(
         ImmutableArray<SourceTree> sourceTrees,
-        DatasetCompilationOptions? options = null)
+        WhamCompilationOptions? options = null)
     {
-        return new DatasetCompilation(null, sourceTrees, options ?? new DatasetCompilationOptions());
+        return new WhamCompilation(null, sourceTrees, options ?? new WhamCompilationOptions());
     }
 
     public override SemanticModel GetSemanticModel(SourceTree tree)
@@ -44,6 +44,9 @@ public class DatasetCompilation : Compilation
         builder.AddRange(bindingDiagnostics.AsEnumerable());
         return builder.MoveToImmutable();
     }
+
+    public override WhamCompilation AddSourceTrees(params SourceTree[] trees) =>
+        new(Name, SourceTrees.AddRange(trees), Options);
 
     internal override ICatalogueSymbol CreateMissingGamesystemSymbol(DiagnosticBag diagnostics)
     {
@@ -90,7 +93,7 @@ public class DatasetCompilation : Compilation
 
     private SourceGlobalNamespaceSymbol CreateGlobalNamespace()
     {
-        var nodes = SourceTrees.Select(x => (CatalogueBaseNode)x.GetRoot()).ToImmutableArray();
+        var nodes = SourceTrees.Select(x => x.GetRoot()).ToImmutableArray();
         return new SourceGlobalNamespaceSymbol(nodes, this);
     }
 

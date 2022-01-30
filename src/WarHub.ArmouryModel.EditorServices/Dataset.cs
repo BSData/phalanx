@@ -1,4 +1,3 @@
-using WarHub.ArmouryModel;
 using WarHub.ArmouryModel.Concrete;
 using WarHub.ArmouryModel.Source;
 
@@ -14,9 +13,9 @@ public record Dataset(ImmutableArray<CatalogueBaseNode> Nodes)
     public GamesystemNode Gamesystem => Nodes.OfType<GamesystemNode>().Single();
     public ImmutableArray<CatalogueNode> Catalogues => Nodes.OfType<CatalogueNode>().ToImmutableArray();
 
-    public DatasetCompilation Compile()
+    public WhamCompilation Compile()
     {
         var sourceTrees = Nodes.Select(SourceTree.CreateForRoot).ToImmutableArray();
-        return DatasetCompilation.Create(sourceTrees);
+        return WhamCompilation.Create(sourceTrees);
     }
 }

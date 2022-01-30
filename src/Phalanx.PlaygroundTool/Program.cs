@@ -34,7 +34,7 @@ class Program
 
         // roster modifications
         var printer = new RosterPrinter();
-        var rosterEditor = RosterEditor.Create(dataset).WithName("Test Marine Strike Force");
+        var rosterEditor = RosterOperationBuilder.Create(dataset).WithName("Test Marine Strike Force");
         Console.WriteLine(">>> New roster created:");
         PrintRoster();
         // change cost limit to 1000 pts
@@ -67,7 +67,7 @@ class Program
         // done
         Console.WriteLine(">>> Finished.");
 
-        void ChangeAndPrint(string documentationText, Func<RosterEditor, IRosterOperation> change)
+        void ChangeAndPrint(string documentationText, Func<RosterOperationBuilder, IRosterOperation> change)
         {
             Change(change);
             Console.WriteLine($">>>>>>>>>> {documentationText} <<<<<<<<<<");
@@ -78,7 +78,7 @@ class Program
 
         void PrintRoster() => printer.Visit(rosterEditor.Roster);
 
-        void Change(Func<RosterEditor, IRosterOperation> change) =>
+        void Change(Func<RosterOperationBuilder, IRosterOperation> change) =>
             rosterEditor = rosterEditor.Apply(change);
     }
 

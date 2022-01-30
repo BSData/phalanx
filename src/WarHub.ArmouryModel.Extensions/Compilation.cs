@@ -26,6 +26,8 @@ public abstract class Compilation
 
     public abstract ImmutableArray<Diagnostic> GetDiagnostics(CancellationToken cancellationToken = default);
 
+    public abstract Compilation AddSourceTrees(params SourceTree[] trees);
+
     internal abstract ICatalogueSymbol CreateMissingGamesystemSymbol(DiagnosticBag diagnostics);
 
     internal abstract void AddBindingDiagnostics(DiagnosticBag toAdd);

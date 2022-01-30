@@ -29,7 +29,7 @@ internal abstract class Symbol : ISymbol
     public virtual IGamesystemNamespaceSymbol? ContainingNamespace =>
         ContainingSymbol?.ContainingNamespace;
 
-    internal virtual DatasetCompilation? DeclaringCompilation
+    internal virtual WhamCompilation? DeclaringCompilation
     {
         get
         {
@@ -68,7 +68,7 @@ internal abstract class Symbol : ISymbol
         }
     }
 
-    protected virtual void BindReferences(DatasetCompilation compilation, DiagnosticBag diagnostics) { }
+    protected virtual void BindReferences(WhamCompilation compilation, DiagnosticBag diagnostics) { }
 
     protected virtual void InvokeForceCompleteOnChildren() { }
 

@@ -36,7 +36,7 @@ internal class EntryPublicationReferenceSymbol : Symbol, IPublicationReferenceSy
 
     public IEntrySymbol ContainingEntrySymbol => containingSymbol;
 
-    internal override DatasetCompilation DeclaringCompilation => containingSymbol.DeclaringCompilation;
+    internal override WhamCompilation DeclaringCompilation => containingSymbol.DeclaringCompilation;
 
     public IPublicationSymbol Publication => GetBoundField(ref lazyPublication);
 
@@ -44,7 +44,7 @@ internal class EntryPublicationReferenceSymbol : Symbol, IPublicationReferenceSy
 
     internal override bool RequiresCompletion => true;
 
-    protected override void BindReferences(DatasetCompilation compilation, DiagnosticBag diagnostics)
+    protected override void BindReferences(WhamCompilation compilation, DiagnosticBag diagnostics)
     {
         base.BindReferences(compilation, diagnostics);
 

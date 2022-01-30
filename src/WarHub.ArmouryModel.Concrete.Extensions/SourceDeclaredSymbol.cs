@@ -27,7 +27,7 @@ internal abstract class SourceDeclaredSymbol : Symbol
 
     internal override bool RequiresCompletion => true;
 
-    internal override DatasetCompilation DeclaringCompilation
+    internal override WhamCompilation DeclaringCompilation
     {
         get
         {
@@ -36,7 +36,7 @@ internal abstract class SourceDeclaredSymbol : Symbol
         }
     }
 
-    protected sealed override void BindReferences(DatasetCompilation compilation, DiagnosticBag diagnostics)
+    protected sealed override void BindReferences(WhamCompilation compilation, DiagnosticBag diagnostics)
     {
         base.BindReferences(compilation, diagnostics);
 

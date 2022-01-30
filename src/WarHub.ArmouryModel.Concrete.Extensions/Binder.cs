@@ -52,6 +52,10 @@ internal class Binder
         BindSimple<ICatalogueSymbol, ErrorSymbols.ErrorGamesystemSymbol>(
             node, diagnostics, node.GamesystemId, LookupOptions.CatalogueOnly);
 
+    internal ICatalogueSymbol BindGamesystemSymbol(RosterNode node, DiagnosticBag diagnostics) =>
+        BindSimple<ICatalogueSymbol, ErrorSymbols.ErrorGamesystemSymbol>(
+            node, diagnostics, node.GameSystemId, LookupOptions.CatalogueOnly);
+
     internal ICostTypeSymbol BindCostTypeSymbol(CostNode node, DiagnosticBag diagnostics) =>
         BindSimple<ICostTypeSymbol, ErrorSymbols.ErrorCostTypeSymbol>(
             node, diagnostics, node.TypeId, LookupOptions.CostTypeOnly);
