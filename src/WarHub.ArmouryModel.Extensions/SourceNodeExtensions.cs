@@ -26,6 +26,12 @@ public static class SourceNodeExtensions
         return new TextSpan(pos, node.GetWidth());
     }
 
+    public static SourceTree GetSourceTree(this SourceNode node, Compilation compilation)
+    {
+        // TODO this should not require compilation (a node knows it's tree)
+        return compilation.SourceTrees.Single(x => x.GetRoot() == node);
+    }
+
     public static int GetWidth(this SourceNode node)
     {
         // TODO remove this after SourceNode has this method itself

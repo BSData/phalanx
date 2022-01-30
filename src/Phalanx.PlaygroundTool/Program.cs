@@ -11,11 +11,9 @@ class Program
     {
         Console.WriteLine(">>> Building dataset.");
         // create
-        var dataset = GetDataset();
-        Console.WriteLine(">>> Compiling dataset.");
-        var compilation = dataset.Compile();
-        Console.WriteLine(">>> Compiling dataset finished, creating global namespace.");
-        var globalNamespace = compilation.GlobalNamespace;
+        var rosterState = RosterState.CreateFromNodes(GetDataset());
+        Console.WriteLine(">>> Compilation created, creating global namespace.");
+        var globalNamespace = rosterState.Compilation.GlobalNamespace;
         Console.WriteLine(">>> Global namespace retrieved.");
 
         Console.WriteLine(">>> Testing gamesystem binding in Catalogue symbol.");
@@ -27,62 +25,67 @@ class Program
         Console.WriteLine($">>> Force '{forceEntry1.Name}' publication bound to '{forceEntry1.PublicationReference?.Publication.Name}'");
 
         Console.WriteLine(">>> Testing diagnostic listing.");
-        var diagnostics = compilation.GetDiagnostics();
+        var diagnostics = rosterState.Compilation.GetDiagnostics();
         foreach (var diag in diagnostics)
             Console.WriteLine(diag.ToString());
         Console.WriteLine($">>> Diagnostics printed (count: {diagnostics.Length}).");
 
         // roster modifications
         var printer = new RosterPrinter();
-        var rosterEditor = RosterOperationBuilder.Create(dataset).WithName("Test Marine Strike Force");
+        var rosterEditor = new RosterEditor(rosterState);
+        rosterEditor.AddOperation(RosterOperations.CreateRoster() with { Name = "Test Marine Strike Force" });
         Console.WriteLine(">>> New roster created:");
         PrintRoster();
         // change cost limit to 1000 pts
         ChangeAndPrint("Point cost changed:",
-            change: x => x.ChangeCostLimit(x.Roster.CostLimits[0]).To(1000));
+            change: x => RosterOperations.ChangeCostLimit(x.Roster.CostLimits[0], 1000));
         // add system force
         ChangeAndPrint("System force added:",
-            change: x => x.AddForce(x.Gamesystem.ForceEntries[0]).ToRoot());
+            change: x => RosterOperations.AddForce(x.Gamesystem.ForceEntries[0]));
         // add selection to system force
         ChangeAndPrint("Selection added to system force:",
-            change: x => x.AddSelection(x.Catalogues[0].SelectionEntries[0]).To(x.Roster.Forces[0]));
+            change: x => RosterOperations.AddSelection(x.Catalogues[0].SelectionEntries[0], x.Roster.Forces[0]));
         // change count of first selection to 5
         ChangeAndPrint("Change selection count to 5:",
-            change: x => x.ChangeCountOf(x.Roster.Forces[0].Selections[0]).To(5));
+            change: x => RosterOperations.ChangeCountOf(x.Roster.Forces[0].Selections[0], 5));
         // add second selection to system force
         ChangeAndPrint("Selection added to system force:",
-            change: x => x.AddSelection(x.Catalogues[0].SelectionEntries[0]).To(x.Roster.Forces[0]));
+            change: x => RosterOperations.AddSelection(x.Catalogues[0].SelectionEntries[0], x.Roster.Forces[0]));
         // remove second selection from system force
         ChangeAndPrint("Selection removed from system force:",
-            change: x => x.RemoveSelection(x.Roster.Forces[0].Selections[1]));
+            change: x => RosterOperations.RemoveSelection(x.Roster.Forces[0].Selections[1]));
         // add marine force
         ChangeAndPrint("Marine force added:",
-            change: x => x.AddForce(x.Catalogues[0].ForceEntries[0]).ToRoot());
+            change: x => RosterOperations.AddForce(x.Catalogues[0].ForceEntries[0]));
         // add selection to marine force
         ChangeAndPrint("Selection added to Marine force:",
-            change: x => x.AddSelection(x.Catalogues[0].SelectionEntries[1]).To(x.Roster.Forces[1]));
+            change: x => RosterOperations.AddSelection(x.Catalogues[0].SelectionEntries[1], x.Roster.Forces[1]));
         // remove marine force
         ChangeAndPrint("System force removed:",
-            change: x => x.RemoveForce(x.Roster.Forces[0]));
+            change: x => RosterOperations.RemoveForce(x.Roster.Forces[0]));
         // done
         Console.WriteLine(">>> Finished.");
 
-        void ChangeAndPrint(string documentationText, Func<RosterOperationBuilder, IRosterOperation> change)
+        void ChangeAndPrint(string documentationText, Func<StateContainer, IRosterOperation> change)
         {
-            Change(change);
             Console.WriteLine($">>>>>>>>>> {documentationText} <<<<<<<<<<");
             Console.WriteLine();
+            rosterEditor.AddOperation(change(new(rosterEditor.State)));
             PrintRoster();
             Console.WriteLine();
         }
 
-        void PrintRoster() => printer.Visit(rosterEditor.Roster);
-
-        void Change(Func<RosterOperationBuilder, IRosterOperation> change) =>
-            rosterEditor = rosterEditor.Apply(change);
+        void PrintRoster() => printer.Visit(rosterEditor.State.RosterRequired);
     }
 
-    static Dataset GetDataset()
+    private record StateContainer(RosterState State)
+    {
+        public GamesystemNode Gamesystem => State.Gamesystem;
+        public ImmutableArray<CatalogueNode> Catalogues => State.Catalogues;
+        public RosterNode Roster => State.RosterRequired;
+    };
+
+    static IEnumerable<SourceNode> GetDataset()
     {
         var teamsCategory = CategoryEntry("team");
         var pub1 = Publication("pub1");
@@ -125,6 +128,6 @@ class Program
                         Constraint(type: ConstraintKind.Minimum, value: 5),
                         Constraint(type: ConstraintKind.Maximum, value: 10))));
 
-        return new(ImmutableArray.Create<CatalogueBaseNode>(gamesystem, marineCatalogue, dumbCatalogue));
+        return ImmutableArray.Create<CatalogueBaseNode>(gamesystem, marineCatalogue, dumbCatalogue);
     }
 }

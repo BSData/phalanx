@@ -28,6 +28,8 @@ public abstract class Compilation
 
     public abstract Compilation AddSourceTrees(params SourceTree[] trees);
 
+    public abstract Compilation ReplaceSourceTree(SourceTree oldTree, SourceTree? newTree);
+
     internal abstract ICatalogueSymbol CreateMissingGamesystemSymbol(DiagnosticBag diagnostics);
 
     internal abstract void AddBindingDiagnostics(DiagnosticBag toAdd);

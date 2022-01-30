@@ -46,7 +46,13 @@ public class WhamCompilation : Compilation
     }
 
     public override WhamCompilation AddSourceTrees(params SourceTree[] trees) =>
-        new(Name, SourceTrees.AddRange(trees), Options);
+        Update(SourceTrees.AddRange(trees));
+
+    public override WhamCompilation ReplaceSourceTree(SourceTree oldTree, SourceTree? newTree) =>
+        Update(newTree is null ? SourceTrees.Remove(oldTree) : SourceTrees.Replace(oldTree, newTree));
+
+    private WhamCompilation Update(ImmutableArray<SourceTree> trees) =>
+        new(Name, trees, Options);
 
     internal override ICatalogueSymbol CreateMissingGamesystemSymbol(DiagnosticBag diagnostics)
     {
@@ -56,10 +62,8 @@ public class WhamCompilation : Compilation
 
     internal Binder GetBinder(SourceNode node, ISymbol? containingSymbol)
     {
-        // TODO node has to have SourceTree property...
-        // return GetBinderFactory(node.SourceTree).GetBinder(node);
         var rootNode = node.AncestorsAndSelf().Last();
-        return GetBinderFactory(SourceTrees.First(x => x.GetRoot() == rootNode)).GetBinder(node, containingSymbol);
+        return GetBinderFactory(rootNode.GetSourceTree(this)).GetBinder(node, containingSymbol);
     }
 
     internal BinderFactory GetBinderFactory(SourceTree tree)

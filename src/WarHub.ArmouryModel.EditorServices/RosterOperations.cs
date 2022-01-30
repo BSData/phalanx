@@ -7,6 +7,23 @@ public static class RosterOperations
 {
     public static IRosterOperation Identity { get; } = new LambdaOperation(x => x);
 
+    public static CreateRosterOperation CreateRoster() => new();
+
+    public static ChangeCostLimitOperation ChangeCostLimit(CostLimitNode costLimit, decimal newValue) =>
+        new(costLimit, newValue);
+
+    public static AddForceOperation AddForce(ForceEntryNode forceEntry) => new(forceEntry);
+
+    public static AddSelectionOperation AddSelection(SelectionEntryNode selectionEntry, ForceNode force) =>
+        new(selectionEntry, force);
+
+    public static RemoveForceOperation RemoveForce(ForceNode force) => new(force);
+
+    public static RemoveSelectionOperation RemoveSelection(SelectionNode selection) =>
+        new(selection);
+
+    public static ChangeSelectionCountOperation ChangeCountOf(SelectionNode selection, int newCount) =>
+        new(selection, newCount);
 
 }
 
@@ -18,100 +35,125 @@ public abstract record OperationBuilderBase
 
     protected IRosterOperation Operation(Func<RosterNode, RosterNode> rosterTransform)
     {
-        // TODO add diagnostics for the new roster state
         return new LambdaOperation(state => Update(state, rosterTransform));
     }
 
     protected virtual RosterState Update(RosterState state, Func<RosterNode, RosterNode> rosterTransform)
     {
-        var transformed = rosterTransform(state.Roster);
+        var transformed = rosterTransform(state.RosterRequired);
         var updated = ShouldRecalculateRosterCosts ? transformed.WithUpdatedCostTotals() : transformed;
-        return state with { Roster = updated };
+        return state.ReplaceRoster(updated);
     }
 }
 
-public record CreateRosterOperationBuilder(Dataset Dataset)
+public record RosterOperationBase : IRosterOperation
 {
-    public RosterOperationBuilder WithName(string rosterName)
+    RosterOperationKind IRosterOperation.Kind => Kind;
+
+    protected virtual RosterOperationKind Kind => RosterOperationKind.Unknown;
+
+    protected virtual RosterNode TransformRoster(RosterState state) => state.RosterRequired;
+
+    RosterState IRosterOperation.Apply(RosterState baseState)
     {
-        // TODO add game system cost types to cost limits
-        var roster = NodeFactory.Roster(Dataset.Gamesystem, rosterName)
-            .WithCostLimits(Dataset.Gamesystem.CostTypes
+        return baseState.ReplaceRoster(TransformRoster(baseState));
+    }
+}
+
+public record CreateRosterOperation : IRosterOperation
+{
+    public string? Name { get; init; }
+
+    RosterState IRosterOperation.Apply(RosterState baseState)
+    {
+        var gamesystem = baseState.Gamesystem;
+        var roster =
+            Roster(gamesystem, Name)
+            .WithCostLimits(gamesystem.CostTypes
                 .Select(costType => CostLimit(costType, costType.DefaultCostLimit))
                 .ToArray())
-            .WithCosts(Dataset.Gamesystem.CostTypes
+            .WithCosts(gamesystem.CostTypes
                 .Select(costType => Cost(costType, 0m))
                 .ToArray());
-        return new RosterOperationBuilder(new RosterState(Dataset) { Roster = roster });
+        return new RosterState(baseState.Compilation.AddSourceTrees(SourceTree.CreateForRoot(roster)));
     }
 }
 
-public record ChangeCostLimitOperationBuilder(CostLimitNode CostLimit) : OperationBuilderBase
+public record ChangeCostLimitOperation(CostLimitNode CostLimit, decimal NewValue) : RosterOperationBase
 {
     protected override RosterOperationKind Kind => RosterOperationKind.ModifyCostLimits;
 
-    public IRosterOperation To(decimal newLimit) => Operation(roster =>
+    protected override RosterNode TransformRoster(RosterState state)
     {
-        return roster.WithCostLimits(roster.CostLimits.Replace(x => x == CostLimit, x => x.WithValue(newLimit)));
-    });
+        var roster = state.RosterRequired;
+        return roster.Replace(roster.CostLimits.First(x => x.TypeId == CostLimit.TypeId), x => x.WithValue(NewValue));
+    }
 }
 
-public record AddForceOperationBuilder(ForceEntryNode ForceEntry) : OperationBuilderBase
+public record AddForceOperation(ForceEntryNode ForceEntry) : RosterOperationBase
 {
     protected override RosterOperationKind Kind => RosterOperationKind.AddForce;
 
-    public IRosterOperation ToRoot() => Operation(roster =>
+    public Func<RosterNode, ForceNode>? SelectForceParent { get; init; }
+
+    protected override RosterNode TransformRoster(RosterState state)
     {
-            // TODO add categories, rules, profiles, catalogue cost types to cost limits
-            return roster.AddForces(Force(ForceEntry));
-    });
+        var roster = state.RosterRequired;
+        // TODO add categories, rules, profiles, catalogue cost types to cost limits
+        var force = Force(ForceEntry);
+        return SelectForceParent is null
+            ? roster.AddForces(force)
+            : roster.ReplaceFluent(SelectForceParent, x => x.AddForces(force));
+    }
 }
 
-public record RemoveForceOperationBuilder(ForceNode Force) : OperationBuilderBase
+public record RemoveForceOperation(ForceNode Force) : RosterOperationBase
 {
     protected override RosterOperationKind Kind => RosterOperationKind.RemoveForce;
 
-    public IRosterOperation Build() => Operation(roster =>
+    protected override RosterNode TransformRoster(RosterState state)
     {
-        return roster.Remove(x => x == Force)!;
-    });
+        return state.RosterRequired.Remove(Force);
+    }
 }
 
-public record AddSelectionOperationBuilder(SelectionEntryNode SelectionEntry) : OperationBuilderBase
+public record AddSelectionOperation(SelectionEntryNode SelectionEntry, ForceNode Force) : RosterOperationBase
 {
     protected override RosterOperationKind Kind => RosterOperationKind.AddSelection;
 
-    public IRosterOperation To(ForceNode force) => Operation(roster =>
+    protected override RosterNode TransformRoster(RosterState state)
     {
+        var roster = state.RosterRequired;
         var selectionEntryId = SelectionEntry.Id;
         if (selectionEntryId is null)
             return roster; // TODO add diagnostic invalid data
-            var selection =
-        Selection(SelectionEntry, selectionEntryId)
-        .AddCosts(SelectionEntry.Costs);
-            // TODO add selection categories, rules, profiles
-            // TODO add subselections
-            return roster.WithForces(roster.Forces.Replace(x => x == force, x => x.AddSelections(selection)));
-    });
+        var selection =
+            Selection(SelectionEntry, selectionEntryId)
+            .AddCosts(SelectionEntry.Costs);
+        // TODO add selection categories, rules, profiles
+        // TODO add subselections
+        return roster.Replace(Force, x => x.AddSelections(selection));
+    }
 }
 
-public record RemoveSelectionOperationBuilder(SelectionNode Selection) : OperationBuilderBase
+public record RemoveSelectionOperation(SelectionNode Selection) : RosterOperationBase
 {
     protected override RosterOperationKind Kind => RosterOperationKind.RemoveSelection;
 
-    public IRosterOperation Build() => Operation(roster =>
+    protected override RosterNode TransformRoster(RosterState state)
     {
-        return roster.Remove(x => x == Selection)!;
-    });
+        return state.RosterRequired.Remove(Selection);
+    }
 }
 
-public record ChangeSelectionCountOperationBuilder(SelectionNode Selection) : OperationBuilderBase
+public record ChangeSelectionCountOperation(SelectionNode Selection, int NewCount) : RosterOperationBase
 {
     protected override RosterOperationKind Kind => RosterOperationKind.ModifySelectionCount;
 
-    public IRosterOperation To(int newCount) => Operation(roster =>
+    protected override RosterNode TransformRoster(RosterState state)
     {
-            // TODO subselections (collective?)
-            return roster.Replace(x => x == Selection, x => ((SelectionNode)x).WithUpdatedNumberAndCosts(newCount))!;
-    });
+        var roster = state.RosterRequired;
+        // TODO subselections (collective?)
+        return roster.Replace(Selection, x => x.WithUpdatedNumberAndCosts(NewCount))!;
+    }
 }

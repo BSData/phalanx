@@ -5,5 +5,7 @@ namespace WarHub.ArmouryModel.EditorServices;
 /// </summary>
 public interface IRosterOperation
 {
+    RosterOperationKind Kind => RosterOperationKind.Unknown;
+
     RosterState Apply(RosterState baseState);
 }

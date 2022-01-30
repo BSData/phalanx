@@ -5,37 +5,34 @@ namespace WarHub.ArmouryModel.EditorServices;
 
 public static class SourceNodeExtensions
 {
-    public static NodeList<TNode> Replace<TNode>(this NodeList<TNode> nodes, TNode replaced, TNode inserted)
-        where TNode : SourceNode
+    public static TRoot Replace<TRoot, TNode>(this TRoot root, TNode node, Func<TNode, TNode?> computeReplacement)
+        where TNode : SourceNode where TRoot : SourceNode
     {
-        var array = nodes.ToList();
-        array[array.IndexOf(replaced)] = inserted;
-        return array.ToNodeList();
+        var replacer = new NodeReplacer<TNode>(new[] { node }, computeReplacement);
+        return (TRoot?)replacer.Visit(root) ?? throw new InvalidOperationException();
     }
 
-    public static NodeList<TNode> Replace<TNode>(this ListNode<TNode> nodes, Func<TNode, bool> match, Func<TNode, TNode> transform)
-        where TNode : SourceNode
+    public static TRoot Replace<TRoot, TNode>(this TRoot root, IEnumerable<TNode> nodes, Func<TNode, TNode?> computeReplacement)
+        where TNode : SourceNode where TRoot : SourceNode
     {
-        return nodes.NodeList.Replace(match, transform);
+        var replacer = new NodeReplacer<TNode>(nodes, computeReplacement);
+        return (TRoot?)replacer.Visit(root) ?? throw new InvalidOperationException();
     }
 
-    public static NodeList<TNode> Replace<TNode>(this NodeList<TNode> nodes, Func<TNode, bool> match, Func<TNode, TNode> transform)
-        where TNode : SourceNode
-    {
-        return nodes.Select(x => match(x) ? transform(x) : x).ToNodeList();
-    }
+    public static TRoot ReplaceFluent<TRoot, TNode>(this TRoot root, Func<TRoot, TNode> nodeSelector, Func<TNode, TNode?> computeReplacement)
+        where TNode : SourceNode where TRoot : SourceNode
+        => root.Replace(nodeSelector(root), computeReplacement);
 
-    public static TNode? Replace<TNode>(this TNode root, Func<SourceNode, bool> match, Func<SourceNode, SourceNode?> transform)
-        where TNode : SourceNode
-    {
-        var replacer = new NodeReplacer(match, transform);
-        return (TNode?)replacer.Visit(root);
-    }
 
-    public static TNode? Remove<TNode>(this TNode root, Func<SourceNode, bool> match) where TNode : SourceNode
+    public static TRoot ReplaceFluent<TRoot, TNode>(this TRoot root, Func<TRoot, IEnumerable<TNode>> nodesSelector, Func<TNode, TNode?> computeReplacement)
+        where TNode : SourceNode where TRoot : SourceNode
+        => root.Replace(nodesSelector(root), computeReplacement);
+
+    public static TRoot Remove<TRoot, TNode>(this TRoot root, TNode node)
+        where TNode : SourceNode where TRoot : SourceNode
     {
-        var remover = new NodeReplacer(match, x => null);
-        return (TNode?)remover.Visit(root);
+        var replacer = new NodeReplacer<TNode>(new[] { node }, x => null);
+        return (TRoot?)replacer.Visit(root) ?? throw new InvalidOperationException();
     }
 
     /// <summary>
@@ -47,7 +44,7 @@ public static class SourceNodeExtensions
     {
         var aggregator = new RosterCostAggregator();
         aggregator.Visit(roster);
-        return roster.WithCosts(roster.Costs.Select(Update).ToNodeList());
+        return roster.ReplaceFluent(x => x.Costs, Update);
 
         CostNode Update(CostNode cost)
         {
@@ -63,27 +60,49 @@ public static class SourceNodeExtensions
             // we assume same instance is OK if count doesn't change
             return node;
         var oldCount = node.Number;
-        var newCosts = node.Costs.Select(x => x.WithValue(UpdatedValue(x.Value))).ToNodeList();
-        return node.WithNumber(newCount).WithCosts(newCosts);
-
-        decimal UpdatedValue(decimal oldCost) => oldCost / oldCount * newCount;
+        return node.WithNumber(newCount)
+            .ReplaceFluent(x => x.Costs, x => x.WithValue(x.Value / oldCount * newCount));
     }
 
-    private class NodeReplacer : SourceRewriter
+    private class NodeReplacer<TNode> : SourceRewriter where TNode : SourceNode
     {
-        public NodeReplacer(Func<SourceNode, bool> match, Func<SourceNode, SourceNode?> transform)
+        public NodeReplacer(
+            IEnumerable<TNode>? nodes,
+            Func<TNode, TNode?> computeReplacementNode)
         {
-            Match = match;
-            Transform = transform;
+            Nodes = nodes?.ToHashSet();
+            ComputeReplacementNode = computeReplacementNode;
         }
 
-        public Func<SourceNode, bool> Match { get; }
-        public Func<SourceNode, SourceNode?> Transform { get; }
+        private HashSet<TNode>? Nodes { get; }
 
-        [return: MaybeNull]
-        public override SourceNode? Visit(SourceNode? node)
+        private Func<TNode, TNode?> ComputeReplacementNode { get; }
+
+        public override SourceNode? Visit(SourceNode? originalNode)
         {
-            return node is null ? null : Match(node) ? Transform(node) : base.Visit(node);
+            if (originalNode is null)
+            {
+                return null;
+            }
+            var visitedNode = base.Visit(originalNode);
+            if (visitedNode is null)
+            {
+                return null;
+            }
+            return ComputeReplacement(originalNode, visitedNode);
+        }
+
+        private SourceNode? ComputeReplacement(SourceNode originalNode, SourceNode visitedNode)
+        {
+            if (visitedNode is TNode typedNode)
+            {
+                if (Nodes is { } set)
+                {
+                    return set.Contains(visitedNode) ? ComputeReplacementNode(typedNode) : visitedNode;
+                }
+                return ComputeReplacementNode(typedNode);
+            }
+            return visitedNode;
         }
     }
 

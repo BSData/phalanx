@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class RosterSymbol : SourceDeclaredSymbol, IRosterSymbol
+internal class RosterSymbol : SourceDeclaredSymbol, IRosterSymbol, INodeDeclaredSymbol<RosterNode>
 {
     private ICatalogueSymbol? lazyGamesystem;
 
@@ -26,6 +26,8 @@ internal class RosterSymbol : SourceDeclaredSymbol, IRosterSymbol
     public ImmutableArray<IRosterCostSymbol> Costs => ImmutableArray<IRosterCostSymbol>.Empty;
 
     public ImmutableArray<IForceSymbol> Forces => ImmutableArray<IForceSymbol>.Empty;
+
+    RosterNode INodeDeclaredSymbol<RosterNode>.Declaration => Declaration;
 
     protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
     {

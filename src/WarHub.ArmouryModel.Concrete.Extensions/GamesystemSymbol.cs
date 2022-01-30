@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class GamesystemSymbol : CatalogueBaseSymbol
+internal class GamesystemSymbol : CatalogueBaseSymbol, INodeDeclaredSymbol<GamesystemNode>
 {
     public GamesystemSymbol(
         SourceGlobalNamespaceSymbol containingSymbol,
@@ -10,6 +10,7 @@ internal class GamesystemSymbol : CatalogueBaseSymbol
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration, diagnostics)
     {
+        Declaration = declaration;
     }
 
     public override bool IsLibrary => false;
@@ -20,4 +21,8 @@ internal class GamesystemSymbol : CatalogueBaseSymbol
 
     public override ImmutableArray<ICatalogueReferenceSymbol> Imports =>
         ImmutableArray<ICatalogueReferenceSymbol>.Empty;
+
+    internal new GamesystemNode Declaration { get; }
+
+    GamesystemNode INodeDeclaredSymbol<GamesystemNode>.Declaration => Declaration;
 }

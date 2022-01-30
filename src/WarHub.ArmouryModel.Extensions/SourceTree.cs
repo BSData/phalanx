@@ -8,6 +8,8 @@ public abstract class SourceTree
 
     public abstract SourceNode GetRoot();
 
+    public abstract SourceTree WithRoot(SourceNode newRootNode);
+
     public static SourceTree CreateForRoot(SourceNode rootNode) =>
         new InMemoryTree(rootNode);
 
@@ -31,6 +33,9 @@ public abstract class SourceTree
         }
 
         public override SourceNode GetRoot() => root;
+
+        public override InMemoryTree WithRoot(SourceNode newRootNode) =>
+            new(newRootNode);
     }
 
     public abstract FileLinePositionSpan GetLineSpan(TextSpan span);

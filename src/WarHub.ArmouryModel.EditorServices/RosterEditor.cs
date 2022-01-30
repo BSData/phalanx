@@ -1,29 +1,38 @@
-using WarHub.ArmouryModel.Source;
-using static WarHub.ArmouryModel.Source.NodeFactory;
-
 namespace WarHub.ArmouryModel.EditorServices;
-
-public delegate TNode NodeSelector<TRoot, TNode>(TRoot root)
-    where TRoot : IRootNode where TNode : SourceNode;
 
 /// <summary>
 /// Provides methods that change roster state.
 /// </summary>
-public record RosterOperationBuilder(RosterState State)
+public class RosterEditor
 {
-    public RosterNode Roster => State.Roster;
-    public GamesystemNode Gamesystem => State.Dataset.Gamesystem;
-    public ImmutableArray<CatalogueNode> Catalogues => State.Dataset.Catalogues;
-    public static CreateRosterOperationBuilder Create(Dataset dataset) => new(dataset);
-    public ChangeCostLimitOperationBuilder ChangeCostLimit(CostLimitNode costLimit) => new(costLimit);
-    public AddForceOperationBuilder AddForce(ForceEntryNode forceEntry) => new(forceEntry);
-    public AddSelectionOperationBuilder AddSelection(SelectionEntryNode selectionEntry) => new(selectionEntry);
-    public IRosterOperation RemoveForce(ForceNode force) => new RemoveForceOperationBuilder(force).Build();
-    public IRosterOperation RemoveSelection(SelectionNode selection) => new RemoveSelectionOperationBuilder(selection).Build();
-    public ChangeSelectionCountOperationBuilder ChangeCountOf(SelectionNode selection) => new(selection);
+    private readonly object lockObject = new();
+    private RosterState state;
+    private IRosterOperation? operation;
 
-    // probably an extension method
-    public RosterOperationBuilder Apply(Func<RosterOperationBuilder, IRosterOperation> operationSelector) =>
-        this with { State = operationSelector(this).Apply(State) };
+    public RosterEditor(RosterState state)
+    {
+        this.state = state;
+    }
 
+    public RosterState State => GetCurrentState();
+
+    public void AddOperation(IRosterOperation operation)
+    {
+        lock (lockObject)
+        {
+            this.operation = this.operation is null ? operation : this.operation.With(operation);
+        }
+    }
+
+    private RosterState GetCurrentState()
+    {
+        lock (lockObject)
+        {
+            if (operation is not null)
+            {
+                (state, operation) = (operation.Apply(state), null);
+            }
+            return state;
+        }
+    }
 }
