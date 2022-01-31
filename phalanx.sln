@@ -1,17 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.6.30114.105
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C3511AB4-867D-4076-B2A5-FC12CF75EADB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phalanx.DataModel.Symbols", "src\Phalanx.DataModel.Symbols\Phalanx.DataModel.Symbols.csproj", "{69A134E8-BC7C-4204-93A8-DD5A821475C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Phalanx.DataModel.Symbols", "src\Phalanx.DataModel.Symbols\Phalanx.DataModel.Symbols.csproj", "{69A134E8-BC7C-4204-93A8-DD5A821475C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phalanx.DataModel.Symbols.Tests", "src\Phalanx.DataModel.Symbols.Tests\Phalanx.DataModel.Symbols.Tests.csproj", "{4AB20486-221E-4C5A-A403-A21D2772E40D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Phalanx.DataModel.Symbols.Tests", "src\Phalanx.DataModel.Symbols.Tests\Phalanx.DataModel.Symbols.Tests.csproj", "{4AB20486-221E-4C5A-A403-A21D2772E40D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phalanx.Tool", "src\Phalanx.Tool\Phalanx.Tool.csproj", "{BF061E1A-AF3E-4A5D-AC55-34A014EE9B9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Phalanx.Tool", "src\Phalanx.Tool\Phalanx.Tool.csproj", "{BF061E1A-AF3E-4A5D-AC55-34A014EE9B9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phalanx.Tool.Tests", "src\Phalanx.Tool.Tests\Phalanx.Tool.Tests.csproj", "{DDB96589-58AE-49C7-A16C-962B47744A53}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Phalanx.Tool.Tests", "src\Phalanx.Tool.Tests\Phalanx.Tool.Tests.csproj", "{DDB96589-58AE-49C7-A16C-962B47744A53}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Phalanx.App", "src\Phalanx.App\Phalanx.App.csproj", "{56EA6FCB-71A2-4D6D-82C6-8E16729A20DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,9 +23,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{69A134E8-BC7C-4204-93A8-DD5A821475C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -74,11 +73,30 @@ Global
 		{DDB96589-58AE-49C7-A16C-962B47744A53}.Release|x64.Build.0 = Release|Any CPU
 		{DDB96589-58AE-49C7-A16C-962B47744A53}.Release|x86.ActiveCfg = Release|Any CPU
 		{DDB96589-58AE-49C7-A16C-962B47744A53}.Release|x86.Build.0 = Release|Any CPU
+		{56EA6FCB-71A2-4D6D-82C6-8E16729A20DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56EA6FCB-71A2-4D6D-82C6-8E16729A20DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56EA6FCB-71A2-4D6D-82C6-8E16729A20DA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{56EA6FCB-71A2-4D6D-82C6-8E16729A20DA}.Debug|x64.Build.0 = Debug|Any CPU
+		{56EA6FCB-71A2-4D6D-82C6-8E16729A20DA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{56EA6FCB-71A2-4D6D-82C6-8E16729A20DA}.Debug|x86.Build.0 = Debug|Any CPU
+		{56EA6FCB-71A2-4D6D-82C6-8E16729A20DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56EA6FCB-71A2-4D6D-82C6-8E16729A20DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56EA6FCB-71A2-4D6D-82C6-8E16729A20DA}.Release|x64.ActiveCfg = Release|Any CPU
+		{56EA6FCB-71A2-4D6D-82C6-8E16729A20DA}.Release|x64.Build.0 = Release|Any CPU
+		{56EA6FCB-71A2-4D6D-82C6-8E16729A20DA}.Release|x86.ActiveCfg = Release|Any CPU
+		{56EA6FCB-71A2-4D6D-82C6-8E16729A20DA}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{69A134E8-BC7C-4204-93A8-DD5A821475C1} = {C3511AB4-867D-4076-B2A5-FC12CF75EADB}
 		{4AB20486-221E-4C5A-A403-A21D2772E40D} = {C3511AB4-867D-4076-B2A5-FC12CF75EADB}
 		{BF061E1A-AF3E-4A5D-AC55-34A014EE9B9D} = {C3511AB4-867D-4076-B2A5-FC12CF75EADB}
 		{DDB96589-58AE-49C7-A16C-962B47744A53} = {C3511AB4-867D-4076-B2A5-FC12CF75EADB}
+		{56EA6FCB-71A2-4D6D-82C6-8E16729A20DA} = {C3511AB4-867D-4076-B2A5-FC12CF75EADB}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2B88DC0E-4445-4C06-80A4-142E067889FF}
 	EndGlobalSection
 EndGlobal
