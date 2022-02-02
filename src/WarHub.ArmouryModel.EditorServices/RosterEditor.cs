@@ -1,38 +1,67 @@
 namespace WarHub.ArmouryModel.EditorServices;
 
 /// <summary>
-/// Provides methods that change roster state.
+/// Provides methods that change roster state. Thread-safe, allows editing roster.
+/// Supports undo-redo stack of edits beginning with the initial roster state.
 /// </summary>
 public class RosterEditor
 {
     private readonly object lockObject = new();
-    private RosterState state;
-    private IRosterOperation? operation;
+    /// <summary>
+    /// This stack
+    /// </summary>
+    private ImmutableStack<(RosterState state, IRosterOperation operation)> stateStack
+        = ImmutableStack<(RosterState state, IRosterOperation operation)>.Empty;
+    private ImmutableStack<(RosterState state, IRosterOperation operation)> redoStack
+        = ImmutableStack<(RosterState state, IRosterOperation operation)>.Empty;
 
     public RosterEditor(RosterState state)
     {
-        this.state = state;
+        stateStack = stateStack.Push((state, RosterOperations.Identity));
     }
 
-    public RosterState State => GetCurrentState();
+    public RosterState State => stateStack.Peek().state;
 
-    public void AddOperation(IRosterOperation operation)
+    public bool CanUndo => !stateStack.Pop().IsEmpty;
+
+    public bool CanRedo => !redoStack.IsEmpty;
+
+    public void ApplyOperation(IRosterOperation operation)
     {
         lock (lockObject)
         {
-            this.operation = this.operation is null ? operation : this.operation.With(operation);
+            var newState = operation.Apply(State);
+            stateStack = stateStack.Push((newState, operation));
+            redoStack = redoStack.Clear();
         }
     }
 
-    private RosterState GetCurrentState()
+    public bool Undo()
     {
         lock (lockObject)
         {
-            if (operation is not null)
+            var previousStack = stateStack.Pop(out var current);
+            if (previousStack.IsEmpty)
             {
-                (state, operation) = (operation.Apply(state), null);
+                return false;
             }
-            return state;
+            stateStack = previousStack;
+            redoStack = redoStack.Push(current);
+            return true;
+        }
+    }
+
+    public bool Redo()
+    {
+        lock (lockObject)
+        {
+            if (redoStack.IsEmpty)
+            {
+                return false;
+            }
+            redoStack = redoStack.Pop(out var redo);
+            stateStack = stateStack.Push(redo);
+            return true;
         }
     }
 }

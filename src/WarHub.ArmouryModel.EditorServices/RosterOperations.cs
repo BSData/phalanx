@@ -5,7 +5,7 @@ namespace WarHub.ArmouryModel.EditorServices;
 
 public static class RosterOperations
 {
-    public static IRosterOperation Identity { get; } = new LambdaOperation(x => x);
+    public static IRosterOperation Identity => IdentityRosterOperation.Instance;
 
     public static CreateRosterOperation CreateRoster() => new();
 
@@ -25,6 +25,17 @@ public static class RosterOperations
     public static ChangeSelectionCountOperation ChangeCountOf(SelectionNode selection, int newCount) =>
         new(selection, newCount);
 
+}
+
+public class IdentityRosterOperation : IRosterOperation
+{
+    private IdentityRosterOperation() { }
+
+    public static IdentityRosterOperation Instance { get; } = new();
+
+    public RosterOperationKind Kind => RosterOperationKind.Identity;
+
+    public RosterState Apply(RosterState baseState) => baseState;
 }
 
 public abstract record OperationBuilderBase

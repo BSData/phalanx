@@ -33,7 +33,7 @@ class Program
         // roster modifications
         var printer = new RosterPrinter();
         var rosterEditor = new RosterEditor(rosterState);
-        rosterEditor.AddOperation(RosterOperations.CreateRoster() with { Name = "Test Marine Strike Force" });
+        rosterEditor.ApplyOperation(RosterOperations.CreateRoster() with { Name = "Test Marine Strike Force" });
         Console.WriteLine(">>> New roster created:");
         PrintRoster();
         // change cost limit to 1000 pts
@@ -70,7 +70,7 @@ class Program
         {
             Console.WriteLine($">>>>>>>>>> {documentationText} <<<<<<<<<<");
             Console.WriteLine();
-            rosterEditor.AddOperation(change(new(rosterEditor.State)));
+            rosterEditor.ApplyOperation(change(new(rosterEditor.State)));
             PrintRoster();
             Console.WriteLine();
         }

@@ -6,6 +6,7 @@ namespace WarHub.ArmouryModel.EditorServices;
 public enum RosterOperationKind
 {
     Unknown,
+    Identity,
     CreateRoster,
     AddSelection,
     RemoveSelection,
