@@ -2,10 +2,8 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal abstract class SourceDeclaredSymbol : Symbol
+internal abstract class SourceDeclaredSymbol : Symbol, INodeDeclaredSymbol<SourceNode>
 {
-    internal SourceNode Declaration { get; }
-
     protected SourceDeclaredSymbol(
         ISymbol? containingSymbol,
         SourceNode declaration)
@@ -16,6 +14,8 @@ internal abstract class SourceDeclaredSymbol : Symbol
         Declaration = declaration;
         ContainingSymbol = containingSymbol;
     }
+
+    public virtual SourceNode Declaration { get; }
 
     public sealed override ISymbol? ContainingSymbol { get; }
 

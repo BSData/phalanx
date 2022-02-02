@@ -2,10 +2,8 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class ConditionGroupConditionSymbol : TupleOperationConditionSymbol
+internal class ConditionGroupConditionSymbol : TupleOperationConditionSymbol, INodeDeclaredSymbol<ConditionGroupNode>
 {
-    internal ConditionGroupNode Declaration { get; }
-
     public ConditionGroupConditionSymbol(
         ISymbol containingSymbol,
         ConditionGroupNode declaration,
@@ -37,6 +35,8 @@ internal class ConditionGroupConditionSymbol : TupleOperationConditionSymbol
             }
         }
     }
+
+    public ConditionGroupNode Declaration { get; }
 
     public override TupleOperation Operation { get; }
 

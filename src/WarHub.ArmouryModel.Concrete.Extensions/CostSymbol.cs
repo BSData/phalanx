@@ -2,11 +2,9 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class CostSymbol : SimpleResourceEntrySymbol, ICostSymbol
+internal class CostSymbol : SimpleResourceEntrySymbol, ICostSymbol, INodeDeclaredSymbol<CostNode>
 {
     private ICostTypeSymbol? lazyCostTypeSymbol;
-
-    internal new CostNode Declaration { get; }
 
     public CostSymbol(
         ISymbol containingSymbol,
@@ -16,6 +14,8 @@ internal class CostSymbol : SimpleResourceEntrySymbol, ICostSymbol
     {
         Declaration = declaration;
     }
+
+    public override CostNode Declaration { get; }
 
     public override ResourceKind ResourceKind => ResourceKind.Cost;
 

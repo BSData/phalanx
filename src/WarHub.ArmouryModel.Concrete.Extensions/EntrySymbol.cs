@@ -4,8 +4,6 @@ namespace WarHub.ArmouryModel.Concrete;
 
 internal abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol
 {
-    internal new EntryBaseNode Declaration { get; }
-
     protected EntrySymbol(
         ISymbol containingSymbol,
         EntryBaseNode declaration,
@@ -17,6 +15,8 @@ internal abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol
             ? new EntryPublicationReferenceSymbol(this, diagnostics) : null;
         Effects = LogicSymbol.CreateEffects(this, diagnostics);
     }
+
+    public override EntryBaseNode Declaration { get; }
 
     public bool IsHidden => Declaration.Hidden;
 

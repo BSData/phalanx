@@ -2,10 +2,8 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class CostTypeSymbol : SourceDeclaredSymbol, ICostTypeSymbol
+internal class CostTypeSymbol : SourceDeclaredSymbol, ICostTypeSymbol, INodeDeclaredSymbol<CostTypeNode>
 {
-    internal new CostTypeNode Declaration { get; }
-
     public CostTypeSymbol(
         ICatalogueSymbol containingSymbol,
         CostTypeNode declaration,
@@ -14,6 +12,8 @@ internal class CostTypeSymbol : SourceDeclaredSymbol, ICostTypeSymbol
     {
         Declaration = declaration;
     }
+
+    public override CostTypeNode Declaration { get; }
 
     public override SymbolKind Kind => SymbolKind.ResourceDefinition;
 

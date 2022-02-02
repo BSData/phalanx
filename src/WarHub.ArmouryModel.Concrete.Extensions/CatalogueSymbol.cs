@@ -6,8 +6,6 @@ internal class CatalogueSymbol : CatalogueBaseSymbol, INodeDeclaredSymbol<Catalo
 {
     private ICatalogueSymbol? lazyGamesystem;
 
-    internal new CatalogueNode Declaration { get; }
-
     public CatalogueSymbol(
         SourceGlobalNamespaceSymbol containingSymbol,
         CatalogueNode declaration,
@@ -25,6 +23,8 @@ internal class CatalogueSymbol : CatalogueBaseSymbol, INodeDeclaredSymbol<Catalo
             }
         }
     }
+
+    public override CatalogueNode Declaration { get; }
 
     public override bool IsLibrary => Declaration.IsLibrary;
 

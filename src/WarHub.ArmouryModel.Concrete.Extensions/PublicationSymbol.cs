@@ -2,10 +2,8 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class PublicationSymbol : SourceDeclaredSymbol, IPublicationSymbol
+internal class PublicationSymbol : SourceDeclaredSymbol, IPublicationSymbol, INodeDeclaredSymbol<PublicationNode>
 {
-    internal new PublicationNode Declaration { get; }
-
     public PublicationSymbol(
         ICatalogueSymbol containingSymbol,
         PublicationNode declaration,
@@ -16,6 +14,8 @@ internal class PublicationSymbol : SourceDeclaredSymbol, IPublicationSymbol
         PublicationDate = DateOnly.TryParse(Declaration.PublicationDate, out var pubDate) ? pubDate : null;
         PublicationUrl = Uri.TryCreate(Declaration.PublisherUrl, UriKind.Absolute, out var uri) ? uri : null;
     }
+
+    public override PublicationNode Declaration { get; }
 
     public override SymbolKind Kind => SymbolKind.ResourceDefinition;
 

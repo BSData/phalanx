@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class ForceEntrySymbol : ContainerEntryBaseSymbol, IForceEntrySymbol
+internal class ForceEntrySymbol : ContainerEntryBaseSymbol, IForceEntrySymbol, INodeDeclaredSymbol<ForceEntryNode>
 {
     public ForceEntrySymbol(
         ISymbol containingSymbol,
@@ -37,5 +37,5 @@ internal class ForceEntrySymbol : ContainerEntryBaseSymbol, IForceEntrySymbol
 
     public ImmutableArray<ICategoryEntrySymbol> Categories { get; }
 
-    internal new ContainerEntryBaseNode Declaration { get; }
+    public override ForceEntryNode Declaration { get; }
 }

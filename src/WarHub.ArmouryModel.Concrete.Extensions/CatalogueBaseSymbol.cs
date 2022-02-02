@@ -78,7 +78,7 @@ internal abstract class CatalogueBaseSymbol : SourceDeclaredSymbol, ICatalogueSy
         }
     }
 
-    internal new CatalogueBaseNode Declaration { get; }
+    public override CatalogueBaseNode Declaration { get; }
 
     public override SymbolKind Kind => SymbolKind.Catalogue;
 

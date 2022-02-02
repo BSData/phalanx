@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class CatalogueReferenceSymbol : SourceDeclaredSymbol, ICatalogueReferenceSymbol
+internal class CatalogueReferenceSymbol : SourceDeclaredSymbol, ICatalogueReferenceSymbol, INodeDeclaredSymbol<CatalogueLinkNode>
 {
     private ICatalogueSymbol? lazyCatalogue;
 
@@ -18,7 +18,7 @@ internal class CatalogueReferenceSymbol : SourceDeclaredSymbol, ICatalogueRefere
 
     public ICatalogueSymbol Catalogue => GetBoundField(ref lazyCatalogue);
 
-    internal new CatalogueLinkNode Declaration { get; }
+    public override CatalogueLinkNode Declaration { get; }
 
     protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
     {

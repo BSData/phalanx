@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class CategoryEntrySymbol : ContainerEntryBaseSymbol, ICategoryEntrySymbol
+internal class CategoryEntrySymbol : ContainerEntryBaseSymbol, ICategoryEntrySymbol, INodeDeclaredSymbol<CategoryEntryNode>
 {
     public CategoryEntrySymbol(
         ISymbol containingSymbol,
@@ -19,5 +19,5 @@ internal class CategoryEntrySymbol : ContainerEntryBaseSymbol, ICategoryEntrySym
 
     public ICategoryEntrySymbol? ReferencedEntry => null;
 
-    internal new CategoryEntryNode Declaration { get; }
+    public override CategoryEntryNode Declaration { get; }
 }

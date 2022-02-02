@@ -2,11 +2,9 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class SelectionEntryGroupSymbol : SelectionEntryBaseSymbol, ISelectionEntryGroupSymbol
+internal class SelectionEntryGroupSymbol : SelectionEntryBaseSymbol, ISelectionEntryGroupSymbol, INodeDeclaredSymbol<SelectionEntryGroupNode>
 {
     private ISelectionEntrySymbol? lazyDefaultEntry;
-
-    internal new SelectionEntryGroupNode Declaration { get; }
 
     public SelectionEntryGroupSymbol(
         ISymbol containingSymbol,
@@ -16,6 +14,8 @@ internal class SelectionEntryGroupSymbol : SelectionEntryBaseSymbol, ISelectionE
     {
         Declaration = declaration;
     }
+
+    public override SelectionEntryGroupNode Declaration { get; }
 
     public override ContainerEntryKind ContainerKind => ContainerEntryKind.SelectionGroup;
 

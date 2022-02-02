@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class ModifierGroupEffectSymbol : EffectSymbol, IConditionalEffectSymbol
+internal class ModifierGroupEffectSymbol : EffectSymbol, IConditionalEffectSymbol, INodeDeclaredSymbol<ModifierGroupNode>
 {
     public ModifierGroupEffectSymbol(
         ISymbol containingSymbol,
@@ -10,6 +10,7 @@ internal class ModifierGroupEffectSymbol : EffectSymbol, IConditionalEffectSymbo
         DiagnosticBag diagnostics)
         : base(containingSymbol)
     {
+        Declaration = declaration;
         // BS_SPEC: modifier group creates a scope: all modifiers (and sub groups)
         // have their own conditions combined via AND with all conditions and condition groups
         // declared at that modifier's level. We achieve the same via IConditionalEffectSymbol:
@@ -37,6 +38,8 @@ internal class ModifierGroupEffectSymbol : EffectSymbol, IConditionalEffectSymbo
             }
         }
     }
+
+    public ModifierGroupNode Declaration { get; }
 
     public IConditionSymbol Condition { get; }
 

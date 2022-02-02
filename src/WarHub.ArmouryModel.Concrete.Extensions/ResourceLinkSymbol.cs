@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class ResourceLinkSymbol : EntrySymbol, IResourceEntrySymbol
+internal class ResourceLinkSymbol : EntrySymbol, IResourceEntrySymbol, INodeDeclaredSymbol<InfoLinkNode>
 {
     private IResourceEntrySymbol? lazyReferencedEntry;
 
@@ -26,13 +26,13 @@ internal class ResourceLinkSymbol : EntrySymbol, IResourceEntrySymbol
         }
     }
 
+    public override InfoLinkNode Declaration { get; }
+
     public override SymbolKind Kind => SymbolKind.Resource;
 
     public ResourceKind ResourceKind { get; }
 
     public IResourceDefinitionSymbol? Type => null;
-
-    internal new InfoLinkNode Declaration { get; }
 
     public IResourceEntrySymbol ReferencedEntry => GetBoundField(ref lazyReferencedEntry);
 

@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class ResourceGroupSymbol : EntrySymbol, IResourceGroupSymbol
+internal class ResourceGroupSymbol : EntrySymbol, IResourceGroupSymbol, INodeDeclaredSymbol<InfoGroupNode>
 {
     public ResourceGroupSymbol(
         ISymbol containingSymbol,
@@ -10,6 +10,7 @@ internal class ResourceGroupSymbol : EntrySymbol, IResourceGroupSymbol
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration, diagnostics)
     {
+        Declaration = declaration;
         Resources = CreateResourceEntries().ToImmutableArray();
 
         IEnumerable<IResourceEntrySymbol> CreateResourceEntries()
@@ -32,6 +33,8 @@ internal class ResourceGroupSymbol : EntrySymbol, IResourceGroupSymbol
             }
         }
     }
+
+    public override InfoGroupNode Declaration { get; }
 
     public override SymbolKind Kind => SymbolKind.Resource;
 

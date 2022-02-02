@@ -2,10 +2,9 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class ProfileSymbol : EntrySymbol, IProfileSymbol
+internal class ProfileSymbol : EntrySymbol, IProfileSymbol, INodeDeclaredSymbol<ProfileNode>
 {
     private IProfileTypeSymbol? lazyType;
-    internal new ProfileNode Declaration { get; }
 
     public ProfileSymbol(
         ISymbol containingSymbol,
@@ -24,6 +23,8 @@ internal class ProfileSymbol : EntrySymbol, IProfileSymbol
             }
         }
     }
+
+    public override ProfileNode Declaration { get; }
 
     public IProfileTypeSymbol Type => GetBoundField(ref lazyType);
 

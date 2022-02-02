@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class CategoryLinkSymbol : ContainerEntryBaseSymbol, ICategoryEntrySymbol
+internal class CategoryLinkSymbol : ContainerEntryBaseSymbol, ICategoryEntrySymbol, INodeDeclaredSymbol<CategoryLinkNode>
 {
     private ICategoryEntrySymbol? lazyReference;
 
@@ -21,7 +21,7 @@ internal class CategoryLinkSymbol : ContainerEntryBaseSymbol, ICategoryEntrySymb
 
     public ICategoryEntrySymbol ReferencedEntry => GetBoundField(ref lazyReference);
 
-    internal new CategoryLinkNode Declaration { get; }
+    public override CategoryLinkNode Declaration { get; }
 
     protected override IEntrySymbol? BaseReferencedEntry => ReferencedEntry;
 

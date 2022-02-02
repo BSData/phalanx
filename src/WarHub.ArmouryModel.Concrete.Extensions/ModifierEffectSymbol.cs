@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class ModifierEffectSymbol : EffectSymbol, IConditionalEffectSymbol
+internal class ModifierEffectSymbol : EffectSymbol, IConditionalEffectSymbol, INodeDeclaredSymbol<ModifierNode>
 {
     public ModifierEffectSymbol(
         ISymbol containingSymbol,
@@ -10,6 +10,7 @@ internal class ModifierEffectSymbol : EffectSymbol, IConditionalEffectSymbol
         DiagnosticBag diagnostics)
         : base(containingSymbol)
     {
+        Declaration = declaration;
         if (declaration.Repeats.Count > 0)
         {
             // TODO implement repeats
@@ -27,4 +28,6 @@ internal class ModifierEffectSymbol : EffectSymbol, IConditionalEffectSymbol
     public ImmutableArray<IEffectSymbol> SatisfiedEffects { get; }
 
     public ImmutableArray<IEffectSymbol> UnsatisfiedEffects => ImmutableArray<IEffectSymbol>.Empty;
+
+    public ModifierNode Declaration { get; }
 }

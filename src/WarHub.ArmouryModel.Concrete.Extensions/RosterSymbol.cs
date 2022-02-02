@@ -6,8 +6,6 @@ internal class RosterSymbol : SourceDeclaredSymbol, IRosterSymbol, INodeDeclared
 {
     private ICatalogueSymbol? lazyGamesystem;
 
-    internal new RosterNode Declaration { get; }
-
     public RosterSymbol(
         SourceGlobalNamespaceSymbol containingSymbol,
         RosterNode declaration,
@@ -16,6 +14,8 @@ internal class RosterSymbol : SourceDeclaredSymbol, IRosterSymbol, INodeDeclared
         Declaration = declaration;
         // TODO implement costs/forces
     }
+
+    public override RosterNode Declaration { get; }
 
     public override SymbolKind Kind => SymbolKind.Roster;
 
@@ -26,8 +26,6 @@ internal class RosterSymbol : SourceDeclaredSymbol, IRosterSymbol, INodeDeclared
     public ImmutableArray<IRosterCostSymbol> Costs => ImmutableArray<IRosterCostSymbol>.Empty;
 
     public ImmutableArray<IForceSymbol> Forces => ImmutableArray<IForceSymbol>.Empty;
-
-    RosterNode INodeDeclaredSymbol<RosterNode>.Declaration => Declaration;
 
     protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
     {

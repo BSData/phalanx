@@ -2,11 +2,9 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class SelectionEntryLinkSymbol : SelectionEntryBaseSymbol
+internal class SelectionEntryLinkSymbol : SelectionEntryBaseSymbol, INodeDeclaredSymbol<EntryLinkNode>
 {
     private ISelectionEntryContainerSymbol? lazyReference;
-
-    internal new EntryLinkNode Declaration { get; }
 
     public SelectionEntryLinkSymbol(
         ISymbol containingSymbol,
@@ -26,6 +24,8 @@ internal class SelectionEntryLinkSymbol : SelectionEntryBaseSymbol
             diagnostics.Add(ErrorCode.ERR_UnknownEnumerationValue, Declaration);
         }
     }
+
+    public override EntryLinkNode Declaration { get; }
 
     public override ContainerEntryKind ContainerKind { get; }
 

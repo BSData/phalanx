@@ -2,10 +2,8 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class ProfileTypeSymbol : SourceDeclaredSymbol, IProfileTypeSymbol
+internal class ProfileTypeSymbol : SourceDeclaredSymbol, IProfileTypeSymbol, INodeDeclaredSymbol<ProfileTypeNode>
 {
-    internal new ProfileTypeNode Declaration { get; }
-
     public ProfileTypeSymbol(
         ICatalogueSymbol containingSymbol,
         ProfileTypeNode declaration,
@@ -17,6 +15,8 @@ internal class ProfileTypeSymbol : SourceDeclaredSymbol, IProfileTypeSymbol
             .Select(x => new CharacteristicTypeSymbol(this, x, diagnostics))
             .ToImmutableArray<ICharacteristicTypeSymbol>();
     }
+
+    public override ProfileTypeNode Declaration { get; }
 
     public override SymbolKind Kind => SymbolKind.ResourceDefinition;
 

@@ -2,10 +2,8 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class QueryConditionSymbol : EffectSymbol, IQueryConditionSymbol
+internal class QueryConditionSymbol : EffectSymbol, IQueryConditionSymbol, INodeDeclaredSymbol<ConditionNode>
 {
-    internal ConditionNode Declaration { get; }
-
     public QueryConditionSymbol(
         ISymbol containingSymbol,
         ConditionNode declaration,
@@ -29,6 +27,8 @@ internal class QueryConditionSymbol : EffectSymbol, IQueryConditionSymbol
             diagnostics.Add(ErrorCode.ERR_UnknownEnumerationValue, Declaration);
         Query = new QuerySymbol(containingSymbol, Declaration, diagnostics);
     }
+
+    public ConditionNode Declaration { get; }
 
     public QueryComparisonType Comparison { get; }
 

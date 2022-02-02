@@ -2,11 +2,9 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class CharacteristicSymbol : SimpleResourceEntrySymbol, ICharacteristicSymbol
+internal class CharacteristicSymbol : SimpleResourceEntrySymbol, ICharacteristicSymbol, INodeDeclaredSymbol<CharacteristicNode>
 {
     private ICharacteristicTypeSymbol? lazyType;
-
-    internal new CharacteristicNode Declaration { get; }
 
     public CharacteristicSymbol(
         IProfileSymbol containingSymbol,
@@ -16,6 +14,8 @@ internal class CharacteristicSymbol : SimpleResourceEntrySymbol, ICharacteristic
     {
         Declaration = declaration;
     }
+
+    public override CharacteristicNode Declaration { get; }
 
     public override ResourceKind ResourceKind => ResourceKind.Characteristic;
 

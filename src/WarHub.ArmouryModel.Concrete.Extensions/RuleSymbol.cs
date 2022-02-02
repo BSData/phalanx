@@ -2,10 +2,8 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class RuleSymbol : EntrySymbol, IRuleSymbol
+internal class RuleSymbol : EntrySymbol, IRuleSymbol, INodeDeclaredSymbol<RuleNode>
 {
-    internal new RuleNode Declaration { get; }
-
     public RuleSymbol(
         ISymbol containingSymbol,
         RuleNode declaration,
@@ -14,6 +12,8 @@ internal class RuleSymbol : EntrySymbol, IRuleSymbol
     {
         Declaration = declaration;
     }
+
+    public override RuleNode Declaration { get; }
 
     public override SymbolKind Kind => SymbolKind.Resource;
 
