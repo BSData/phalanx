@@ -6,9 +6,9 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceFolder}/.build/bin/Phalanx.Tool/Debug/net6.0/Phalanx.Tool.dll",
+      "program": "${workspaceFolder}/.build/bin/Phalanx.PlaygroundTool/Debug/net6.0/Phalanx.PlaygroundTool.dll",
       "args": [],
-      "cwd": "${workspaceFolder}/src/Phalanx.Tool",
+      "cwd": "${workspaceFolder}/src/Phalanx.PlaygroundTool",
       "console": "internalConsole",
       "stopAtEntry": false
     },

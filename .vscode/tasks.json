@@ -41,7 +41,7 @@
         "/consoleloggerparameters:NoSummary"
       ],
       "options": {
-        "cwd": "${workspaceFolder}/src/Phalanx.Tool/"
+        "cwd": "${workspaceFolder}/src/Phalanx.PlaygroundTool/"
       },
       "problemMatcher": "$msCompile"
     },
@@ -56,7 +56,7 @@
         "/consoleloggerparameters:NoSummary"
       ],
       "options": {
-        "cwd": "${workspaceFolder}/src/Phalanx.Tool/"
+        "cwd": "${workspaceFolder}/src/Phalanx.PlaygroundTool/"
       },
       "problemMatcher": "$msCompile"
     }
