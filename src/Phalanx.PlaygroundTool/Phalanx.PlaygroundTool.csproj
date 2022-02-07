@@ -9,6 +9,11 @@
     <ProjectReference Include="..\WarHub.ArmouryModel.Concrete.Extensions\WarHub.ArmouryModel.Concrete.Extensions.csproj" />
     <ProjectReference Include="..\WarHub.ArmouryModel.Extensions\WarHub.ArmouryModel.Extensions.csproj" />
     <ProjectReference Include="..\WarHub.ArmouryModel.EditorServices\WarHub.ArmouryModel.EditorServices.csproj" />
+    <ProjectReference Include="..\Phalanx.SampleDataset\Phalanx.SampleDataset.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WarHub.ArmouryModel.Workspaces.BattleScribe" Version="0.13.0" />
   </ItemGroup>
 
 </Project>

@@ -1,3 +1,5 @@
+using WarHub.ArmouryModel.Source;
+
 namespace WarHub.ArmouryModel.Concrete;
 
 /// <summary>
@@ -10,19 +12,25 @@ internal class EntryPublicationReferenceSymbol : Symbol, IPublicationReferenceSy
 
     private IPublicationSymbol? lazyPublication;
 
-    public EntryPublicationReferenceSymbol(EntrySymbol containingSymbol, DiagnosticBag diagnostics)
+    public EntryPublicationReferenceSymbol(
+        EntrySymbol containingSymbol,
+        EntryBaseNode declaration,
+        DiagnosticBag diagnostics)
     {
-        if (containingSymbol.Declaration.PublicationId is null)
+        Declaration = declaration;
+        if (Declaration.PublicationId is null)
         {
             // that's not what should happen, if publicationId is null,
             // the containing symbol should set its IPublicationRefernceSymbol property to null
             diagnostics.Add(
                 ErrorCode.ERR_GenericError,
-                containingSymbol.Declaration.GetLocation(),
+                Declaration.GetLocation(),
                 ImmutableArray.Create<Symbol>(this));
         }
         this.containingSymbol = containingSymbol;
     }
+
+    public EntryBaseNode Declaration { get; }
 
     public override SymbolKind Kind => SymbolKind.Link;
 

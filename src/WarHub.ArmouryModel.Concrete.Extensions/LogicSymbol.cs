@@ -23,17 +23,18 @@ internal abstract class LogicSymbol : Symbol, IConditionSymbol
 
     public static ImmutableArray<IEffectSymbol> CreateEffects(
         EntrySymbol containingSymbol,
+        EntryBaseNode declaration,
         DiagnosticBag diagnostics)
     {
         return CreateChildEffects().ToImmutableArray();
 
         IEnumerable<IEffectSymbol> CreateChildEffects()
         {
-            foreach (var item in containingSymbol.Declaration.Modifiers)
+            foreach (var item in declaration.Modifiers)
             {
                 yield return CreateEffect(containingSymbol, item, diagnostics);
             }
-            foreach (var item in containingSymbol.Declaration.ModifierGroups)
+            foreach (var item in declaration.ModifierGroups)
             {
                 yield return CreateEffect(containingSymbol, item, diagnostics);
             }

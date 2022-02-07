@@ -1,3 +1,4 @@
+using Phalanx.SampleDataset;
 using WarHub.ArmouryModel;
 using WarHub.ArmouryModel.EditorServices;
 using WarHub.ArmouryModel.Source;
@@ -9,6 +10,22 @@ class Program
 {
     static void Main()
     {
+        Console.WriteLine("Loading sample dataset:");
+        var ws = SampleDataResources.CreateXmlWorkspace();
+        foreach (var doc in ws.Documents)
+        {
+            Console.WriteLine($"{doc.Filepath} ({doc.Kind})");
+        }
+        Console.WriteLine("Compiling sample dataset:");
+        var sampleCompilation = RosterState.CreateFromNodes(ws.Documents.Select(x => x.GetRootAsync().Result!)).Compilation;
+        foreach (var diagnostic in sampleCompilation.GetDiagnostics())
+        {
+            Console.WriteLine(diagnostic.ToString());
+        }
+        Console.WriteLine("Finished processing sample dataset.");
+        Console.WriteLine("-----------------------------------");
+        Console.WriteLine();
+
         Console.WriteLine(">>> Building dataset.");
         // create
         var rosterState = RosterState.CreateFromNodes(GetDataset());

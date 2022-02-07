@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<catalogue id="fccc-3ddb-779a-4e99" name="Babies" revision="1" battleScribeVersion="2.03" authorName="Rylok" authorContact="@rylok3" library="false" gameSystemId="bc3d-3e2a-b2b3-fef7" gameSystemRevision="2" xmlns="http://www.battlescribe.net/schema/catalogueSchema">
+  <publications>
+    <publication id="1ee7-1cb3-868f-a153" name="BabyBook 2022"/>
+  </publications>
+  <sharedSelectionEntries>
+    <selectionEntry id="209b-ff54-3ea6-3651" name="BabyBuggy" publicationId="1ee7-1cb3-868f-a153" hidden="false" collective="false" import="true" type="unit">
+      <categoryLinks>
+        <categoryLink id="3ee6-bce5-3dd3-f479" name="New CategoryLink" hidden="false" targetId="2c8f-63d4-2b0c-01ad" primary="true"/>
+      </categoryLinks>
+    </selectionEntry>
+    <selectionEntry id="7d6e-e84a-1220-8e97" name="Wheeled Bassinet" publicationId="1ee7-1cb3-868f-a153" hidden="false" collective="false" import="true" type="unit">
+      <categoryLinks>
+        <categoryLink id="0592-7b8a-3708-a4d4" name="New CategoryLink" hidden="false" targetId="c735-947c-993c-e57d" primary="true"/>
+        <categoryLink id="aa98-84fe-f980-8b75" name="Support Vehicles" hidden="false" targetId="2c8f-63d4-2b0c-01ad" primary="false"/>
+        <categoryLink id="f4d2-5e18-ee94-4954" name="Lead Vehicles" hidden="false" targetId="1f30-56d0-ac83-1212" primary="false"/>
+      </categoryLinks>
+    </selectionEntry>
+  </sharedSelectionEntries>
+  <sharedProfiles>
+    <profile id="7dfd-7679-54e8-7cfd" name="Bottle" publicationId="1ee7-1cb3-868f-a153" hidden="false" typeId="6cfe-fe74-1a3d-6d17" typeName="Weapon">
+      <characteristics>
+        <characteristic name="Type" typeId="5fce-07c3-4ac4-725c">Ranged</characteristic>
+        <characteristic name="Damage" typeId="e9b6-5ffa-ead8-7da4">10</characteristic>
+        <characteristic name="Attack Speed" typeId="b3d9-5892-fc1d-cd47">10</characteristic>
+        <characteristic name="Parry" typeId="9972-d522-3bdb-4501">10</characteristic>
+        <characteristic name="Range" typeId="b352-1258-db4f-2de1">10</characteristic>
+      </characteristics>
+    </profile>
+    <profile id="08a6-1376-aefc-179a" name="Sharp Nails" publicationId="1ee7-1cb3-868f-a153" hidden="false" typeId="6cfe-fe74-1a3d-6d17" typeName="Weapon">
+      <characteristics>
+        <characteristic name="Type" typeId="5fce-07c3-4ac4-725c">Melee</characteristic>
+        <characteristic name="Damage" typeId="e9b6-5ffa-ead8-7da4">10</characteristic>
+        <characteristic name="Attack Speed" typeId="b3d9-5892-fc1d-cd47">10</characteristic>
+        <characteristic name="Parry" typeId="9972-d522-3bdb-4501">10</characteristic>
+        <characteristic name="Range" typeId="b352-1258-db4f-2de1">10</characteristic>
+      </characteristics>
+    </profile>
+  </sharedProfiles>
+</catalogue>

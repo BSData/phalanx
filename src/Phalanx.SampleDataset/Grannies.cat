@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<catalogue id="f702-88f3-aa96-b128" name="Grannies" revision="1" battleScribeVersion="2.03" authorName="Rylok" authorContact="@rylok3" library="false" gameSystemId="bc3d-3e2a-b2b3-fef7" gameSystemRevision="2" xmlns="http://www.battlescribe.net/schema/catalogueSchema">
+  <publications>
+    <publication id="3284-fc7c-1d66-fe31" name="Grannybook 2021"/>
+  </publications>
+  <entryLinks>
+    <entryLink id="ee62-e229-cb4b-9256" name="1978 Cutlass" publicationId="3284-fc7c-1d66-fe31" hidden="false" collective="false" import="true" targetId="3fea-0fc5-75d5-08ce" type="selectionEntry">
+      <costs>
+        <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="25.0"/>
+        <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="2.0"/>
+      </costs>
+    </entryLink>
+    <entryLink id="b5e5-01c4-aec9-6aa9" name="Horse and Buggy" publicationId="3284-fc7c-1d66-fe31" hidden="false" collective="false" import="true" targetId="1f97-e558-f7c2-a9e6" type="selectionEntry">
+      <costs>
+        <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="10.0"/>
+      </costs>
+    </entryLink>
+    <entryLink id="013c-0969-52c7-a739" name="Big Rig" publicationId="3284-fc7c-1d66-fe31" hidden="false" collective="false" import="true" targetId="5251-ba58-8494-67e5" type="selectionEntry">
+      <costs>
+        <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="30.0"/>
+        <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="50.0"/>
+      </costs>
+    </entryLink>
+  </entryLinks>
+  <sharedSelectionEntries>
+    <selectionEntry id="3fea-0fc5-75d5-08ce" name="1978 Cutlass" publicationId="3284-fc7c-1d66-fe31" hidden="false" collective="false" import="true" type="unit">
+      <profiles>
+        <profile id="759e-f9d5-8c31-8763" name="1978 Cutlass" publicationId="3284-fc7c-1d66-fe31" hidden="false" typeId="5f4a-2d9d-d324-0d8b" typeName="Vehicle">
+          <characteristics>
+            <characteristic name="Hit Points" typeId="0505-be28-4cc1-c30f">10</characteristic>
+            <characteristic name="Speed" typeId="2a19-89bb-b447-44bf">10</characteristic>
+            <characteristic name="Defense" typeId="db87-a58d-19f7-6a5f">10</characteristic>
+            <characteristic name="Style" typeId="6b85-49c9-f4e2-e51a">10</characteristic>
+            <characteristic name="Seats" typeId="ec2d-c0b5-a1fd-3cf4">7</characteristic>
+          </characteristics>
+        </profile>
+      </profiles>
+      <infoLinks>
+        <infoLink id="84cb-ac6f-85b1-ef30" name="Turbo Boost" hidden="false" targetId="536a-04b6-ca02-d522" type="profile"/>
+      </infoLinks>
+      <categoryLinks>
+        <categoryLink id="17f7-dbc0-bb59-08f1" name="Attack" hidden="false" targetId="c735-947c-993c-e57d" primary="false"/>
+        <categoryLink id="2b23-43f9-fa6a-de37" name="Lead Car" hidden="false" targetId="1f30-56d0-ac83-1212" primary="true"/>
+      </categoryLinks>
+      <selectionEntryGroups>
+        <selectionEntryGroup id="1093-a697-d8a8-7096" name="Driver" publicationId="2ea4-57c2-c067-7215" hidden="false" collective="false" import="true">
+          <constraints>
+            <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="a3fa-2a45-51d9-b0d9" type="max"/>
+            <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="f835-f58f-1017-e9a3" type="min"/>
+          </constraints>
+          <entryLinks>
+            <entryLink id="3515-9416-b082-13cc" name="Great Grandmother Eloise" publicationId="3284-fc7c-1d66-fe31" hidden="false" collective="false" import="true" targetId="76f0-5a6c-4078-7688" type="selectionEntry"/>
+            <entryLink id="1ce5-46c3-5093-fe96" name="Mee-Maw" hidden="false" collective="false" import="true" targetId="8f0b-f738-a954-3b96" type="selectionEntry"/>
+            <entryLink id="aa71-9087-d39d-6bae" name="Granny Trooper" hidden="false" collective="false" import="true" targetId="4191-729e-affc-9637" type="selectionEntry"/>
+          </entryLinks>
+        </selectionEntryGroup>
+        <selectionEntryGroup id="0e18-4aae-69cd-b4e8" name="Navigator" publicationId="2ea4-57c2-c067-7215" hidden="false" collective="false" import="true">
+          <constraints>
+            <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="00f8-ead2-3d0b-72f4" type="min"/>
+            <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="5123-b30e-89f9-8880" type="max"/>
+          </constraints>
+          <entryLinks>
+            <entryLink id="ddbb-bda0-4f81-d427" name="Great Grandmother Eloise" publicationId="3284-fc7c-1d66-fe31" hidden="false" collective="false" import="true" targetId="76f0-5a6c-4078-7688" type="selectionEntry"/>
+            <entryLink id="da91-a478-e0a4-34bd" name="Mee-Maw" hidden="false" collective="false" import="true" targetId="8f0b-f738-a954-3b96" type="selectionEntry"/>
+            <entryLink id="0548-6bac-7e35-63d1" name="Granny Trooper" hidden="false" collective="false" import="true" targetId="4191-729e-affc-9637" type="selectionEntry"/>
+          </entryLinks>
+        </selectionEntryGroup>
+      </selectionEntryGroups>
+      <costs>
+        <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
+        <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="0.0"/>
+      </costs>
+    </selectionEntry>
+    <selectionEntry id="5251-ba58-8494-67e5" name="Big Rig" publicationId="3284-fc7c-1d66-fe31" hidden="false" collective="false" import="true" type="unit">
+      <profiles>
+        <profile id="7a6f-9695-36a5-79b9" name="Big Rig" publicationId="3284-fc7c-1d66-fe31" hidden="false" typeId="5f4a-2d9d-d324-0d8b" typeName="Vehicle">
+          <characteristics>
+            <characteristic name="Hit Points" typeId="0505-be28-4cc1-c30f">10</characteristic>
+            <characteristic name="Speed" typeId="2a19-89bb-b447-44bf">10</characteristic>
+            <characteristic name="Defense" typeId="db87-a58d-19f7-6a5f">10</characteristic>
+            <characteristic name="Style" typeId="6b85-49c9-f4e2-e51a">10</characteristic>
+            <characteristic name="Seats" typeId="ec2d-c0b5-a1fd-3cf4">2</characteristic>
+          </characteristics>
+        </profile>
+      </profiles>
+      <infoLinks>
+        <infoLink id="b797-d41b-3c3e-5ad1" name="Turbo Boost" hidden="false" targetId="536a-04b6-ca02-d522" type="profile"/>
+      </infoLinks>
+      <categoryLinks>
+        <categoryLink id="129d-6a61-1694-750d" name="Support" hidden="false" targetId="2c8f-63d4-2b0c-01ad" primary="true"/>
+        <categoryLink id="3684-b96a-92bf-f122" name="Attack" hidden="false" targetId="c735-947c-993c-e57d" primary="false"/>
+      </categoryLinks>
+      <selectionEntryGroups>
+        <selectionEntryGroup id="a564-f674-3227-15de" name="Driver" publicationId="2ea4-57c2-c067-7215" hidden="false" collective="false" import="true">
+          <constraints>
+            <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="7277-2c42-6f2c-02ff" type="max"/>
+            <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="be11-6aa4-de7b-928c" type="min"/>
+          </constraints>
+          <entryLinks>
+            <entryLink id="5922-6212-1064-0f59" name="Great Grandmother Eloise" publicationId="3284-fc7c-1d66-fe31" hidden="false" collective="false" import="true" targetId="76f0-5a6c-4078-7688" type="selectionEntry"/>
+            <entryLink id="a02e-9101-c911-6559" name="Mee-Maw" hidden="false" collective="false" import="true" targetId="8f0b-f738-a954-3b96" type="selectionEntry"/>
+            <entryLink id="9c33-292c-e8af-336f" name="Granny Trooper" hidden="false" collective="false" import="true" targetId="4191-729e-affc-9637" type="selectionEntry"/>
+          </entryLinks>
+        </selectionEntryGroup>
+        <selectionEntryGroup id="c7d8-d8c4-1f22-2592" name="Navigator" publicationId="2ea4-57c2-c067-7215" hidden="false" collective="false" import="true">
+          <constraints>
+            <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="3f2e-bc63-a21c-4e94" type="min"/>
+            <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="13a1-11ad-e6a5-5553" type="max"/>
+          </constraints>
+          <entryLinks>
+            <entryLink id="5e4e-df43-28ac-89d6" name="Great Grandmother Eloise" publicationId="3284-fc7c-1d66-fe31" hidden="false" collective="false" import="true" targetId="76f0-5a6c-4078-7688" type="selectionEntry"/>
+            <entryLink id="e520-56f7-3cb4-fea7" name="Mee-Maw" hidden="false" collective="false" import="true" targetId="8f0b-f738-a954-3b96" type="selectionEntry"/>
+            <entryLink id="d049-8a01-c67c-7df1" name="Granny Trooper" hidden="false" collective="false" import="true" targetId="4191-729e-affc-9637" type="selectionEntry"/>
+          </entryLinks>
+        </selectionEntryGroup>
+      </selectionEntryGroups>
+      <costs>
+        <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
+        <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="0.0"/>
+      </costs>
+    </selectionEntry>
+    <selectionEntry id="1f97-e558-f7c2-a9e6" name="Horse and Buggy" publicationId="3284-fc7c-1d66-fe31" hidden="false" collective="false" import="true" type="unit">
+      <profiles>
+        <profile id="033b-a28c-91eb-0806" name="Horse and Buggy" hidden="false" typeId="5f4a-2d9d-d324-0d8b" typeName="Vehicle">
+          <characteristics>
+            <characteristic name="Hit Points" typeId="0505-be28-4cc1-c30f">10</characteristic>
+            <characteristic name="Speed" typeId="2a19-89bb-b447-44bf">10</characteristic>
+            <characteristic name="Defense" typeId="db87-a58d-19f7-6a5f">10</characteristic>
+            <characteristic name="Style" typeId="6b85-49c9-f4e2-e51a">10</characteristic>
+            <characteristic name="Seats" typeId="ec2d-c0b5-a1fd-3cf4">2</characteristic>
+          </characteristics>
+        </profile>
+      </profiles>
+      <categoryLinks>
+        <categoryLink id="198a-eb84-023a-f24c" name="Support" hidden="false" targetId="2c8f-63d4-2b0c-01ad" primary="false"/>
+        <categoryLink id="bca3-3090-a535-5c2e" name="Attack" hidden="false" targetId="c735-947c-993c-e57d" primary="true"/>
+      </categoryLinks>
+      <selectionEntries>
+        <selectionEntry id="401a-b0ef-f454-16c5" name="Second Horse" publicationId="3284-fc7c-1d66-fe31" hidden="false" collective="false" import="true" type="upgrade">
+          <constraints>
+            <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="064d-4733-86b5-ee13" type="max"/>
+          </constraints>
+          <costs>
+            <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="5.0"/>
+            <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
+          </costs>
+        </selectionEntry>
+      </selectionEntries>
+      <selectionEntryGroups>
+        <selectionEntryGroup id="d633-4afb-c233-747d" name="Driver" publicationId="2ea4-57c2-c067-7215" hidden="false" collective="false" import="true">
+          <constraints>
+            <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="4f26-37d6-b3bc-78da" type="max"/>
+            <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="1824-fe44-36d6-fedd" type="min"/>
+          </constraints>
+          <entryLinks>
+            <entryLink id="8cc6-cafd-fe3e-8142" name="Great Grandmother Eloise" publicationId="3284-fc7c-1d66-fe31" hidden="false" collective="false" import="true" targetId="76f0-5a6c-4078-7688" type="selectionEntry"/>
+            <entryLink id="1c52-0fad-5b15-a2fe" name="Mee-Maw" hidden="false" collective="false" import="true" targetId="8f0b-f738-a954-3b96" type="selectionEntry"/>
+            <entryLink id="17ed-2864-9896-f214" name="Granny Trooper" hidden="false" collective="false" import="true" targetId="4191-729e-affc-9637" type="selectionEntry"/>
+          </entryLinks>
+        </selectionEntryGroup>
+        <selectionEntryGroup id="7c81-68f0-9efb-fd22" name="Ridin&apos; Shotgun" publicationId="2ea4-57c2-c067-7215" hidden="false" collective="false" import="true">
+          <constraints>
+            <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="2f7c-9ed2-cf7c-edf1" type="min"/>
+            <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="23f4-74ea-76b8-7621" type="max"/>
+          </constraints>
+          <entryLinks>
+            <entryLink id="db1a-fa7e-10db-c0f9" name="Great Grandmother Eloise" publicationId="3284-fc7c-1d66-fe31" hidden="false" collective="false" import="true" targetId="76f0-5a6c-4078-7688" type="selectionEntry"/>
+            <entryLink id="d5d9-920b-e484-7f4d" name="Mee-Maw" hidden="false" collective="false" import="true" targetId="8f0b-f738-a954-3b96" type="selectionEntry"/>
+            <entryLink id="c13d-f23a-a773-4905" name="Granny Trooper" hidden="false" collective="false" import="true" targetId="4191-729e-affc-9637" type="selectionEntry"/>
+          </entryLinks>
+        </selectionEntryGroup>
+      </selectionEntryGroups>
+      <costs>
+        <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
+        <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="0.0"/>
+      </costs>
+    </selectionEntry>
+    <selectionEntry id="76f0-5a6c-4078-7688" name="Great Grandmother Eloise" publicationId="3284-fc7c-1d66-fe31" hidden="false" collective="false" import="true" type="model">
+      <constraints>
+        <constraint field="selections" scope="roster" value="1.0" percentValue="false" shared="true" includeChildSelections="true" includeChildForces="true" id="01b1-dd19-e5b1-2809" type="max"/>
+        <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="8aed-b973-a0e8-1569" type="max"/>
+      </constraints>
+      <profiles>
+        <profile id="5fb2-e9a9-51ef-62e5" name="Great Grandmother Eloise" publicationId="3284-fc7c-1d66-fe31" hidden="false" typeId="a6e8-411d-f765-546a" typeName="Character">
+          <characteristics>
+            <characteristic name="Attack Power" typeId="1744-8129-95a0-536e">10</characteristic>
+            <characteristic name="Evasion" typeId="9aab-d556-7966-cc13">10</characteristic>
+            <characteristic name="Driving Skill" typeId="8b10-f201-846f-ab9f">10</characteristic>
+            <characteristic name="Navigation Skill" typeId="3f4b-aa15-3364-134b">10</characteristic>
+          </characteristics>
+        </profile>
+      </profiles>
+      <infoLinks>
+        <infoLink id="f950-bc41-043b-d9b5" name="Shriek" hidden="false" targetId="c092-75d7-d592-9cde" type="profile"/>
+      </infoLinks>
+      <entryLinks>
+        <entryLink id="3f78-4e51-f93b-b783" name="Weppon" hidden="false" collective="false" import="true" targetId="ee2f-5b09-868f-0957" type="selectionEntryGroup"/>
+      </entryLinks>
+      <costs>
+        <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
+        <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="0.0"/>
+      </costs>
+    </selectionEntry>
+    <selectionEntry id="8f0b-f738-a954-3b96" name="Mee-Maw" publicationId="3284-fc7c-1d66-fe31" hidden="false" collective="false" import="true" type="model">
+      <constraints>
+        <constraint field="selections" scope="roster" value="1.0" percentValue="false" shared="true" includeChildSelections="true" includeChildForces="true" id="e954-0b3a-8385-ae07" type="max"/>
+        <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="e31f-330f-b24b-89e6" type="max"/>
+      </constraints>
+      <profiles>
+        <profile id="dcee-4ab2-0121-d99e" name="Mee-Maw" publicationId="3284-fc7c-1d66-fe31" hidden="false" typeId="a6e8-411d-f765-546a" typeName="Character">
+          <characteristics>
+            <characteristic name="Attack Power" typeId="1744-8129-95a0-536e">10</characteristic>
+            <characteristic name="Evasion" typeId="9aab-d556-7966-cc13">10</characteristic>
+            <characteristic name="Driving Skill" typeId="8b10-f201-846f-ab9f">10</characteristic>
+            <characteristic name="Navigation Skill" typeId="3f4b-aa15-3364-134b">10</characteristic>
+          </characteristics>
+        </profile>
+      </profiles>
+      <infoLinks>
+        <infoLink id="cae8-f58b-4c48-f896" name="Shriek" hidden="false" targetId="c092-75d7-d592-9cde" type="profile"/>
+      </infoLinks>
+      <entryLinks>
+        <entryLink id="ee41-e259-8446-40e7" name="Weapon" hidden="false" collective="false" import="true" targetId="ee2f-5b09-868f-0957" type="selectionEntryGroup"/>
+      </entryLinks>
+      <costs>
+        <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
+        <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="0.0"/>
+      </costs>
+    </selectionEntry>
+    <selectionEntry id="4191-729e-affc-9637" name="Granny Trooper" publicationId="3284-fc7c-1d66-fe31" hidden="false" collective="false" import="true" type="model">
+      <profiles>
+        <profile id="fa81-b0bd-2659-7f2e" name="Granny Trooper" publicationId="3284-fc7c-1d66-fe31" hidden="false" typeId="a6e8-411d-f765-546a" typeName="Character">
+          <characteristics>
+            <characteristic name="Attack Power" typeId="1744-8129-95a0-536e">10</characteristic>
+            <characteristic name="Evasion" typeId="9aab-d556-7966-cc13">10</characteristic>
+            <characteristic name="Driving Skill" typeId="8b10-f201-846f-ab9f">10</characteristic>
+            <characteristic name="Navigation Skill" typeId="3f4b-aa15-3364-134b">10</characteristic>
+          </characteristics>
+        </profile>
+      </profiles>
+      <entryLinks>
+        <entryLink id="7d5d-f394-2944-7add" name="Weppon" hidden="false" collective="false" import="true" targetId="ee2f-5b09-868f-0957" type="selectionEntryGroup"/>
+      </entryLinks>
+      <costs>
+        <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
+        <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="0.0"/>
+      </costs>
+    </selectionEntry>
+    <selectionEntry id="f15e-05be-b168-2e56" name="Cane" publicationId="3284-fc7c-1d66-fe31" hidden="false" collective="false" import="true" type="upgrade">
+      <infoLinks>
+        <infoLink id="38a1-e8d4-ebda-d8af" name="Cane" hidden="false" targetId="7b27-1195-36ac-2e33" type="profile"/>
+      </infoLinks>
+      <costs>
+        <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="2.0"/>
+        <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
+      </costs>
+    </selectionEntry>
+    <selectionEntry id="5dfb-930b-3711-e2f0" name="Walker" publicationId="3284-fc7c-1d66-fe31" hidden="false" collective="false" import="true" type="upgrade">
+      <infoLinks>
+        <infoLink id="2f58-657f-282b-c9f4" name="Walker" hidden="false" targetId="f651-9466-7043-f18f" type="profile"/>
+      </infoLinks>
+      <costs>
+        <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="4.0"/>
+        <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
+      </costs>
+    </selectionEntry>
+  </sharedSelectionEntries>
+  <sharedSelectionEntryGroups>
+    <selectionEntryGroup id="ee2f-5b09-868f-0957" name="Weapon" publicationId="2ea4-57c2-c067-7215" hidden="false" collective="false" import="true">
+      <constraints>
+        <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="d29e-cfb5-2ab2-ca2b" type="max"/>
+      </constraints>
+      <entryLinks>
+        <entryLink id="32b9-c42e-8c9b-d7d9" name="Cane" hidden="false" collective="false" import="true" targetId="f15e-05be-b168-2e56" type="selectionEntry">
+          <constraints>
+            <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="e304-6882-b070-51cd" type="max"/>
+          </constraints>
+        </entryLink>
+        <entryLink id="4d3b-80ae-149d-0e30" name="Walker" hidden="false" collective="false" import="true" targetId="5dfb-930b-3711-e2f0" type="selectionEntry">
+          <constraints>
+            <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="ff6c-1c5e-bc97-6d65" type="max"/>
+          </constraints>
+        </entryLink>
+      </entryLinks>
+    </selectionEntryGroup>
+  </sharedSelectionEntryGroups>
+  <sharedProfiles>
+    <profile id="7b27-1195-36ac-2e33" name="Cane" publicationId="3284-fc7c-1d66-fe31" hidden="false" typeId="6cfe-fe74-1a3d-6d17" typeName="Weapon">
+      <characteristics>
+        <characteristic name="Type" typeId="5fce-07c3-4ac4-725c">Melee</characteristic>
+        <characteristic name="Damage" typeId="e9b6-5ffa-ead8-7da4">10</characteristic>
+        <characteristic name="Attack Speed" typeId="b3d9-5892-fc1d-cd47">10</characteristic>
+        <characteristic name="Parry" typeId="9972-d522-3bdb-4501">10</characteristic>
+        <characteristic name="Range" typeId="b352-1258-db4f-2de1">10</characteristic>
+      </characteristics>
+    </profile>
+    <profile id="f651-9466-7043-f18f" name="Walker" publicationId="3284-fc7c-1d66-fe31" hidden="false" typeId="6cfe-fe74-1a3d-6d17" typeName="Weapon">
+      <characteristics>
+        <characteristic name="Type" typeId="5fce-07c3-4ac4-725c">Melee</characteristic>
+        <characteristic name="Damage" typeId="e9b6-5ffa-ead8-7da4">10</characteristic>
+        <characteristic name="Attack Speed" typeId="b3d9-5892-fc1d-cd47">10</characteristic>
+        <characteristic name="Parry" typeId="9972-d522-3bdb-4501">10</characteristic>
+        <characteristic name="Range" typeId="b352-1258-db4f-2de1">10</characteristic>
+      </characteristics>
+    </profile>
+  </sharedProfiles>
+</catalogue>

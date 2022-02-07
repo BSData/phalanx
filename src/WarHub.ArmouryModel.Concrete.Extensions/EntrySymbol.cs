@@ -12,8 +12,8 @@ internal abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol
     {
         Declaration = declaration;
         PublicationReference = declaration.PublicationId is not null
-            ? new EntryPublicationReferenceSymbol(this, diagnostics) : null;
-        Effects = LogicSymbol.CreateEffects(this, diagnostics);
+            ? new EntryPublicationReferenceSymbol(this, declaration, diagnostics) : null;
+        Effects = LogicSymbol.CreateEffects(this, declaration, diagnostics);
     }
 
     public override EntryBaseNode Declaration { get; }

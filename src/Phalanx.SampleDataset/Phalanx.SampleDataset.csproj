@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>$(CommonTargetFramework)</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="*.cat;*.gst" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WarHub.ArmouryModel.Workspaces.BattleScribe" Version="0.13.0" />
+  </ItemGroup>
+
+</Project>
