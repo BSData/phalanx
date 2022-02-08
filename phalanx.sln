@@ -20,6 +20,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Phalanx.PlaygroundTool", "s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Phalanx.SampleDataset", "src\Phalanx.SampleDataset\Phalanx.SampleDataset.csproj", "{3B8D010C-44BB-4CB2-AF19-67D5255108A9}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Phalanx.App", "src\Phalanx.App\Phalanx.App.csproj", "{C6899AC8-32B8-4CD1-80F2-0B1F9D68846D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,6 +92,18 @@ Global
 		{3B8D010C-44BB-4CB2-AF19-67D5255108A9}.Release|x64.Build.0 = Release|Any CPU
 		{3B8D010C-44BB-4CB2-AF19-67D5255108A9}.Release|x86.ActiveCfg = Release|Any CPU
 		{3B8D010C-44BB-4CB2-AF19-67D5255108A9}.Release|x86.Build.0 = Release|Any CPU
+		{C6899AC8-32B8-4CD1-80F2-0B1F9D68846D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6899AC8-32B8-4CD1-80F2-0B1F9D68846D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6899AC8-32B8-4CD1-80F2-0B1F9D68846D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C6899AC8-32B8-4CD1-80F2-0B1F9D68846D}.Debug|x64.Build.0 = Debug|Any CPU
+		{C6899AC8-32B8-4CD1-80F2-0B1F9D68846D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C6899AC8-32B8-4CD1-80F2-0B1F9D68846D}.Debug|x86.Build.0 = Debug|Any CPU
+		{C6899AC8-32B8-4CD1-80F2-0B1F9D68846D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6899AC8-32B8-4CD1-80F2-0B1F9D68846D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6899AC8-32B8-4CD1-80F2-0B1F9D68846D}.Release|x64.ActiveCfg = Release|Any CPU
+		{C6899AC8-32B8-4CD1-80F2-0B1F9D68846D}.Release|x64.Build.0 = Release|Any CPU
+		{C6899AC8-32B8-4CD1-80F2-0B1F9D68846D}.Release|x86.ActiveCfg = Release|Any CPU
+		{C6899AC8-32B8-4CD1-80F2-0B1F9D68846D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -100,6 +114,7 @@ Global
 		{4B3DFD65-40EB-4A80-AE39-3975C74A4580} = {C3511AB4-867D-4076-B2A5-FC12CF75EADB}
 		{36FCC2CB-A584-44C4-B13F-31EA4267CF3A} = {C3511AB4-867D-4076-B2A5-FC12CF75EADB}
 		{3B8D010C-44BB-4CB2-AF19-67D5255108A9} = {C3511AB4-867D-4076-B2A5-FC12CF75EADB}
+		{C6899AC8-32B8-4CD1-80F2-0B1F9D68846D} = {C3511AB4-867D-4076-B2A5-FC12CF75EADB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {588DA2B5-3BD3-4ECF-B037-C6FA3F57128C}
