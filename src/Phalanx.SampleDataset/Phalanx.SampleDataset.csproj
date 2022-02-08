@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="*.cat;*.gst" />
+    <EmbeddedResource Include="*.cat;*.gst;*.ros" />
   </ItemGroup>
 
   <ItemGroup>
