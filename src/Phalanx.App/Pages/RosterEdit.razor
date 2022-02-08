@@ -1,0 +1,55 @@
+﻿@page "/rosteredit/{roster}"
+@using Models
+@using System.Windows
+@using WarHub.ArmouryModel.EditorServices
+@using WarHub.ArmouryModel.Source
+
+@if (Roster is not null)
+{
+    <h2>@Roster.Name</h2>
+    @foreach (var cost in Roster.Costs)
+    {
+        if (Roster.CostLimits.FirstOrDefault(x => x.TypeId == cost.TypeId) is {} limit)
+        {            
+            <span>@cost.Value / @limit.Value @cost.Name</span>
+        }     
+        else
+        {
+            <span style="color:white">@cost.Value @cost.Name</span>
+        }
+    }
+    <br />
+    <fast-accordion>
+        <fast-accordion-item>
+            <span slot="heading">HQ</span>
+            <fast-listbox id="hqList" style="min-width:100%">
+                @* @foreach (var unit in roster?.Units?.Where(x => x.OrgSlotId == 1))
+                    {
+                    <div class="row">
+                    <div class="col-11">
+                    <fast-option style="display: block" @onclick="ListItemClick">@unit?.Name @unit?.PointsPerModel</fast-option>
+                    </div>
+                    <div class="col-1">
+                    <fast-button href="#" appearance="accent" style="float:right" @onclick="ButtonClick"><i class="fas fa-trash"></i></fast-button>
+                    </div>
+                    </div>
+                    }*@
+            </fast-listbox>
+        </fast-accordion-item>
+        <fast-accordion-item>
+            <span slot="heading">Troops</span>
+            Panel two content
+        </fast-accordion-item>
+        <fast-accordion-item>
+            <span slot="heading">Elites</span>
+
+        </fast-accordion-item>
+    </fast-accordion>
+}
+
+@code {
+    [Parameter]
+    public RosterEditor? Editor { get; set; }
+
+    private RosterNode? Roster => Editor?.State.Roster;
+}

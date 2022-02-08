@@ -1,0 +1,19 @@
+[
+  {
+    "id": 1,
+    "name": "Battallion"
+  },
+  {
+    "id": 2,
+    "name": "Patrol"
+  },
+  {
+    "id": 3,
+    "name": "Brigade"
+  },
+  {
+    "id": 4,
+    "name": "Outrider"
+  }
+]
+

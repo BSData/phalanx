@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "name": "Imperium"
+  },
+  {
+    "id": 2,
+    "name": "Xenos"
+  },
+  {
+    "id": 3,
+    "name": "Chaos"
+  },
+  {
+    "id": 4,
+    "name": "Adeptus Astartes"
+  }
+]

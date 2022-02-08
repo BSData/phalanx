@@ -1,0 +1,142 @@
+﻿@page "/rostercreate"
+@using Newtonsoft.Json
+@inject HttpClient Http
+@inject IJSRuntime JS
+@implements IDisposable
+@inject ILogger<RosterSelect> Logger
+@inject NavigationManager NavigationManager
+@using Models
+
+<div id="rosterCreateContainer" hidden="@IsCreateRosterHidden">
+    <h2>Create Roster</h2>
+    <br />
+    <div class="row">
+        <div class="col-12">
+            <fast-select id="factionDropDown" @onchange="PopulateSubfactions" style="min-width:100%">
+                <fast-option value="0">Select faction</fast-option>
+                @if (factions != null)
+                {
+                    @foreach (var faction in factions)
+                    {
+                        <fast-option value="@faction.Id">@faction.Name</fast-option>
+                    }
+                }
+            </fast-select>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-12">
+            <fast-select id="subFactionDropDown" style="display:none; min-width:100%" @onchange="PopulateDetachments">
+                <fast-option selected value="0">Select subfaction</fast-option>
+            </fast-select>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-12">
+            <fast-select id="detachmentDropDown" style="display:none; min-width:100%" @onchange="ShowDetailsForm">
+                <fast-option selected value="0">Select detachment</fast-option>
+            </fast-select>
+        </div>
+    </div>
+
+    <br />
+    <div id="detailsForm" hidden="@IsDetailsFormHidden">
+        <div class="row">
+            <div class="col-6">
+                <fast-text-field appearance="filled" placeholder="Enter name" style="min-width:100%" @onchange="GetRosterName">Name</fast-text-field>
+            </div>
+            <div class="col-6">
+                <fast-text-area placeholder="Add notes" style="min-width:100%" @onchange="GetRosterNotes">Notes</fast-text-area>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <fast-button appearance="accent" @onclick="ShowEditRoster">Submit</fast-button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="rosterEditContainer" hidden="@IsEditRosterHidden">
+    <RosterEdit roster="@roster" />
+</div>
+
+
+@code {
+    private Faction[]? factions;
+    private Subfaction[]? subfactions;
+    private Detachment[]? detachments;
+    private Roster roster = new Roster();
+
+    private bool IsDetailsFormHidden { get; set; } = true;
+    private bool IsEditRosterHidden { get; set; } = true;
+    private bool IsCreateRosterHidden { get; set; } = false;
+    private string? RosterName { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        factions = await Http.GetFromJsonAsync<Faction[]>("sample-data/factions.json");
+    }
+
+    private async Task PopulateSubfactions(ChangeEventArgs e)
+    {
+        int factionId;
+        int.TryParse(e?.Value?.ToString(),out factionId);
+        roster.FactionId = factionId;
+        subfactions = await Http.GetFromJsonAsync<Subfaction[]>("sample-data/subfactions.json");
+        if (factionId != 0 && subfactions != null)
+        {
+            var filteredSubfactions = subfactions.Where(x => x.Factionid == factionId).ToArray();
+            await JS.InvokeAsync<string>("setSubFactionFilteredDropDownItems", JsonConvert.SerializeObject(filteredSubfactions));
+        }
+    }
+
+    private async Task PopulateDetachments(ChangeEventArgs e)
+    {
+        int subfactionId;
+        int.TryParse(e?.Value?.ToString(),out subfactionId);
+        roster.SubfactionId = subfactionId;
+        detachments = await Http.GetFromJsonAsync<Detachment[]>("sample-data/detachments.json");
+        await JS.InvokeAsync<string>("setDetachmentFilteredDropDownItems", JsonConvert.SerializeObject(detachments));
+    }
+
+    private void ShowDetailsForm()
+    {
+        IsDetailsFormHidden = false;
+    }
+
+    private void ShowEditRoster()
+    {
+        IsEditRosterHidden = false;
+        IsCreateRosterHidden = true;
+    }
+
+    protected override void OnInitialized()
+    {
+        NavigationManager.LocationChanged += HandleLocationChanged;
+    }
+
+    private void HandleLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        Logger.LogInformation("URL of new location: {Location}", e.Location);
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= HandleLocationChanged;
+    }
+
+    public void GetRosterName(ChangeEventArgs e)
+    {
+        roster.Name = e?.Value?.ToString();   
+    }
+
+    public void GetRosterNotes(ChangeEventArgs e)
+    {
+        roster.Notes = e?.Value?.ToString();   
+    }
+
+}
