@@ -21,6 +21,7 @@ jobs:
       - run: dotnet test --no-build
 
       - name: Publish
+        if: github.ref == 'refs/heads/main'
         run: dotnet publish src/Phalanx.App --output ./.build/pub -p:GHPages=true -p:GHPagesBase=https://${{ env.PagesCname }}
 
       - name: Push gh-pages
