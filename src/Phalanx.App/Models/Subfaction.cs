@@ -1,8 +1,7 @@
-﻿namespace Phalanx.App.Models
+namespace Phalanx.App.Models;
+
+public class Subfaction
 {
-    public class Subfaction
-    {
-        public int Factionid { get; set; }
-        public string? Name { get; set; }
-    }
+    public int Factionid { get; set; }
+    public string? Name { get; set; }
 }

@@ -1,8 +1,7 @@
-﻿namespace Phalanx.App.Models
+namespace Phalanx.App.Models;
+
+public class Faction
 {
-    public class Faction
-    {
-        public int Id { get; set; }
-        public string? Name { get; set; }
-    }
+    public int Id { get; set; }
+    public string? Name { get; set; }
 }

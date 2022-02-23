@@ -1,4 +1,4 @@
-﻿using WarHub.ArmouryModel.Workspaces.BattleScribe;
+using WarHub.ArmouryModel.Workspaces.BattleScribe;
 
 namespace Phalanx.SampleDataset;
 

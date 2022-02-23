@@ -9,6 +9,7 @@
     <Copyright>Copyright © $(Authors)</Copyright>
     <IsPackable>false</IsPackable>
     <CommonTargetFramework>net6.0</CommonTargetFramework>
+    <EnforceCodeStyleOnBuild>true</EnforceCodeStyleOnBuild>
   </PropertyGroup>
 
   <PropertyGroup>

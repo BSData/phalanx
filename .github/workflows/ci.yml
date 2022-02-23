@@ -19,6 +19,7 @@ jobs:
       - run: dotnet restore
       - run: dotnet build --no-restore
       - run: dotnet test --no-build
+      - run: dotnet format --no-restore --verify-no-changes --verbosity normal
 
       - name: Publish
         if: github.ref == 'refs/heads/main'
