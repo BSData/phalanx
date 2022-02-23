@@ -41,7 +41,7 @@
         "/consoleloggerparameters:NoSummary"
       ],
       "options": {
-        "cwd": "${workspaceFolder}/src/Phalanx.PlaygroundTool/"
+        "cwd": "${workspaceFolder}/src/Phalanx.App/"
       },
       "problemMatcher": "$msCompile"
     },
@@ -51,12 +51,10 @@
       "type": "process",
       "args": [
         "watch",
-        "run",
-        "/property:GenerateFullPaths=true",
-        "/consoleloggerparameters:NoSummary"
+        "run"
       ],
       "options": {
-        "cwd": "${workspaceFolder}/src/Phalanx.PlaygroundTool/"
+        "cwd": "${workspaceFolder}/src/Phalanx.App/"
       },
       "problemMatcher": "$msCompile"
     }

@@ -1,0 +1,7 @@
+{
+  "recommendations": [
+    "ms-dotnettools.blazorwasm-companion",
+    "ms-dotnettools.csharp",
+    "tintoy.msbuild-project-tools"
+  ]
+}
