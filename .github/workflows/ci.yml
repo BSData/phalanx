@@ -4,7 +4,7 @@ env:
   DOTNET_NOLOGO: 1
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
   Configuration: Release
-  PagesCname: phalanx.tools
+  PagesCname: www.phalanx.tools
 defaults:
   run:
     shell: pwsh
