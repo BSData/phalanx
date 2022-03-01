@@ -9,6 +9,16 @@ Our main communication channel beside Issues, PRs and Discussions on GitHub is t
 
 Please see [Wiki](https://github.com/BSData/phalanx/wiki) for more information.
 
+## Technical description
+
+The following stack of app layers is currently (at least partially) implemented:
+- DTO to (de)serialize XML content into typed objects (WarHub.ArmouryModel.Source.*Core types). This layer is a tree where children don't have a reference to their parent.
+- SourceNode layer, lazy-initialized immutable wrappers for DTOs (WarHub.ArmouryModel.Source.*Node types). This layer is a tree where children have a reference to their parent.
+- Symbol layer, immutable object graph. Internal implementation of upper ISymbol layer, which builds an actual object graph, by resolving references (e.g. link targetId is resolved to an actual symbol for the target entry) - this operation is called binding. This layer also generates diagnostics (e.g. bad links, invalid enum values, etc).
+- ISymbol layer is an interface view of the Symbol layer, creating a fully bound object graph.
+- Compilation is a container for a set of data roots (gamesystem, catalogues, rosters), in which a binding happends.
+- RosterEditor and RosterState (from `RosterServices` namespace) is a heavily WIP layer that manages actual editing of roster, via IRosterOperations which encapsulate roster edit actions.
+
 ## TODO
 
 - test default group entry binding - how it works in BattleScribe (allowed selections), does it work same in Phalanx
