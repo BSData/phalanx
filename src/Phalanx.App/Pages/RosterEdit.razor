@@ -1,18 +1,19 @@
-﻿@page "/rosteredit/{roster}"
-@using Models
-@using System.Windows
+﻿@page "/rosteredit"
+@using Phalanx.SampleDataset
 @using WarHub.ArmouryModel.EditorServices
 @using WarHub.ArmouryModel.Source
 
 @if (Roster is not null)
 {
+    <TitlePart>@Roster.Name</TitlePart>
+
     <h2>@Roster.Name</h2>
     @foreach (var cost in Roster.Costs)
     {
-        if (Roster.CostLimits.FirstOrDefault(x => x.TypeId == cost.TypeId) is {} limit)
-        {            
+        if (Roster.CostLimits.FirstOrDefault(x => x.TypeId == cost.TypeId) is { } limit)
+        {
             <span>@cost.Value / @limit.Value @cost.Name</span>
-        }     
+        }
         else
         {
             <span style="color:white">@cost.Value @cost.Name</span>
@@ -52,4 +53,18 @@
     public RosterEditor? Editor { get; set; }
 
     private RosterNode? Roster => Editor?.State.Roster;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        LoadTestRoster();
+    }
+
+    void LoadTestRoster()
+    {
+        //get roster from file
+        var ws = SampleDataResources.CreateXmlWorkspace();
+        var rosterState = RosterState.CreateFromNodes(ws.Documents.Select(x => x.GetRootAsync().Result!));
+        Editor = new RosterEditor(rosterState);
+    }
 }

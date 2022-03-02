@@ -1,9 +1,21 @@
 ﻿@inherits LayoutComponentBase
 
+@using System.Reflection
+
 <div class="page">
     <main>
         <article class="content px-4">
             @Body
         </article>
     </main>
+
+    <footer>
+        <span>Project Phalanx is awesome 🎉</span>
+        <span>Copyright © Phalanx Team</span>
+        <span>v@(AppVersion)</span>
+    </footer>
 </div>
+
+@code {
+    static string AppVersion = typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+}

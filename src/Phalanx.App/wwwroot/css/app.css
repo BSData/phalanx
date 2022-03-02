@@ -1,12 +1,17 @@
-﻿@import url('https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css');
 
-html, body {
-    font-family: 'Montserrat', sans-serif;
-    background-color: #1A1A1D;
+html, body, #app, #app > *:first-child {
+    height: 100%;
 }
 
-h1:focus {
-    outline: none;
+html, body {
+    font-family: var(--body-font);
+    color: var(--neutral-foreground-rest);
+    background-color: var(--fill-color);
+}
+
+h1 {
+    text-transform: capitalize;
 }
 
 a, .btn-link {
@@ -97,8 +102,4 @@ nav {
     border-bottom-left-radius: 5px;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
-}
-
-h2 {
-    color: white;
 }
