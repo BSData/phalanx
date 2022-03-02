@@ -19,6 +19,15 @@ The following stack of app layers is currently (at least partially) implemented:
 - Compilation is a container for a set of data roots (gamesystem, catalogues, rosters), in which a binding happends.
 - RosterEditor and RosterState (from `RosterServices` namespace) is a heavily WIP layer that manages actual editing of roster, via IRosterOperations which encapsulate roster edit actions.
 
+## Development
+
+You need one of the following setups:
+
+- Visual Studio 2022 (latest) - open the `Phalanx.sln` with it.
+- VSCode and .NET 6 SDK (latest) - open the repository folder in it.
+
+The main app to run is in `src/Phalanx.App` - select this project as startup project in Visual Studio. VSCode has a defined debug configuration.
+
 ## TODO
 
 - test default group entry binding - how it works in BattleScribe (allowed selections), does it work same in Phalanx
