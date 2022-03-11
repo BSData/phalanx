@@ -1,0 +1,106 @@
+@page "/print"
+@using Printing
+@using SampleDataset
+@using WarHub.ArmouryModel.Source
+@using WarHub.ArmouryModel.Workspaces.BattleScribe
+
+@inject Printing.RosterFormatter formatter
+
+<h1>Format roster</h1>
+
+<label>Select roster file</label>
+<InputFile OnChange="@LoadRosterFile" accept=".ros, .rosz" />
+
+<p>
+    <strong>
+        Loaded:
+        @if (RosterNode is null)
+        {
+            <span>none</span>
+        }
+        else
+        {
+            <span>@RosterNode.Name</span>
+        }
+    </strong>
+</p>
+
+<label>Select formatter</label>
+<fast-select current-value="@SelectedFormatIndex" @onchange="OnFormatIndexSelected">
+    @foreach (var (format, index) in formatter.Formats.Select((x, i) => (x, i)))
+    {
+        <fast-option value="@index">@format.Name</fast-option>
+    }
+</fast-select>
+@if (selectedFormat is not null)
+{
+    <section>
+        <h2>Handlebars template <em>@selectedFormat.Name</em>:</h2>
+        <fast-text-area current-value="@selectedFormat.HandlebarsTemplate"
+        @onchange="e => selectedFormat.HandlebarsTemplate = e.Value?.ToString()" resize="both">
+        </fast-text-area>
+        <hr />
+    </section>
+}
+<fast-button @onclick="RunFormatter" disabled="@(selectedFormat is null || RosterNode is null)">Format</fast-button>
+
+<section>
+    <h2>Formatted output:</h2>
+    <hr />
+    @formattedOutput
+    <hr />
+</section>
+
+@code {
+    private RosterNode? RosterNode;
+    private string? formattedOutput;
+    private RosterFormat? selectedFormat;
+    private string? selectedFormatIndex;
+    private string? SelectedFormatIndex
+    {
+        get => selectedFormatIndex;
+        set
+        {
+            selectedFormatIndex = value;
+            selectedFormat = int.TryParse(value, out var i)
+            ? formatter.Formats.ElementAtOrDefault(i)
+            : null;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        selectedFormat = formatter.Formats.FirstOrDefault();
+        var rosterFile = SampleDataResources.CreateXmlWorkspace().DocumentsByKind[XmlDocumentKind.Roster][0];
+        RosterNode = (RosterNode?)(await rosterFile.GetRootAsync());
+    }
+
+    void OnFormatIndexSelected(ChangeEventArgs e)
+    {
+        SelectedFormatIndex = e.Value?.ToString();
+    }
+
+    async Task LoadRosterFile(InputFileChangeEventArgs eventArgs)
+    {
+        // 10MB
+        const long maxSize = 10 << 10 << 10;
+        using var stream = eventArgs.File.OpenReadStream(maxAllowedSize: maxSize);
+        // it's bad but WHAM doesn't support async reading currently :(
+        // TODO fix when wham gains async support, consider migrating?
+        using var memStream = new MemoryStream();
+        await stream.CopyToAsync(memStream);
+        memStream.Position = 0;
+        RosterNode = (RosterNode)await memStream.LoadSourceAuto(eventArgs.File.Name).GetDataOrThrowAsync<RosterNode>();
+    }
+
+    void RunFormatter()
+    {
+        if (RosterNode is null || selectedFormat is null)
+        {
+            formattedOutput = null;
+            return;
+        }
+        formattedOutput = formatter.Format(RosterNode, selectedFormat);
+    }
+}
