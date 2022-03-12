@@ -1,0 +1,49 @@
+@using WarHub.ArmouryModel.EditorServices.Formatting
+
+<label style="display: flex; flex-direction: column; align-items: flex-start;">
+    Name
+    <fast-text-field placeholder="name" current-value="@Format.Name" @onchange="OnTemplateNameChanged"
+        disabled="@Readonly">
+    </fast-text-field>
+</label>
+<label style="display: flex; flex-direction: column; align-items: flex-start;">
+    Output type
+    <fast-select current-value="@Format.OutputFormat" @onchange="OnTemplateOutputFormatChanged"
+        disabled="@Readonly">
+        @foreach (var item in Enum.GetValues<OutputFormat>())
+        {
+            <fast-option value="@item">@item</fast-option>
+        }
+    </fast-select>
+</label>
+<fast-text-area value="@Format.HandlebarsTemplate" current-value="@Format.HandlebarsTemplate" @onchange="OnTemplateContentChanged" resize="vertical"
+    disabled="@Readonly">
+</fast-text-area>
+
+@code {
+    [Parameter]
+    public RosterFormat Format { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<RosterFormat> FormatChanged { get; set; }
+
+    [Parameter]
+    public bool Readonly { get; set; }
+
+    Task OnTemplateNameChanged(ChangeEventArgs e)
+    {
+        return FormatChanged.InvokeAsync(Format with { Name = e.Value?.ToString() });
+    }
+
+    Task OnTemplateOutputFormatChanged(ChangeEventArgs e)
+    {
+        return Enum.TryParse<OutputFormat>(e.Value?.ToString(), out var result)
+        ? FormatChanged.InvokeAsync(Format with { OutputFormat = result })
+        : Task.CompletedTask;
+    }
+
+    Task OnTemplateContentChanged(ChangeEventArgs e)
+    {
+        return FormatChanged.InvokeAsync(Format with { HandlebarsTemplate = e.Value?.ToString() });
+    }
+}

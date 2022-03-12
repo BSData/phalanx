@@ -1,60 +1,76 @@
 @page "/print"
-@using Printing
+@using Phalanx.App.Pages.Printing
 @using SampleDataset
+@using WarHub.ArmouryModel.EditorServices.Formatting
 @using WarHub.ArmouryModel.Source
 @using WarHub.ArmouryModel.Workspaces.BattleScribe
 
-@inject Printing.RosterFormatter formatter
+@inject Printing.RosterFormatsProvider formatter
 
-<h1>Format roster</h1>
 
-<label>Select roster file</label>
-<InputFile OnChange="@LoadRosterFile" accept=".ros, .rosz" />
+<div style="display: grid; grid-auto-rows: max-content; gap: 20px">
+    <h1>Format roster</h1>
+    <label>Select roster file</label>
+    <InputFile OnChange="LoadRosterFile" accept=".ros, .rosz" />
 
-<p>
-    <strong>
-        Loaded:
-        @if (RosterNode is null)
+    <p>
+        <strong>
+            Loaded:
+            @if (RosterNode is null)
+            {
+                <span>none</span>
+            }
+            else
+            {
+                <span>@RosterNode.Name</span>
+            }
+        </strong>
+    </p>
+
+    <fast-card style="padding: 20px; display: grid; grid-auto-rows: max-content; gap: 20px">
+        <label style="display: flex; flex-direction: column; align-items: flex-start;">
+            Select formatter
+            <fast-select current-value="@SelectedFormatIndex" @onchange="OnFormatIndexSelected"
+                disabled="@isCustomFormat">
+                @foreach (var (format, index) in formatter.Formats.Select((x, i) => (x, i)))
+                {
+                    <fast-option value="@index">@format.Name</fast-option>
+                }
+            </fast-select>
+        </label>
+        <fast-checkbox current-value="@isCustomFormat" @onchange="e => isCustomFormat = !isCustomFormat">
+            Custom format
+        </fast-checkbox>
+        @if (selectedFormat is not null)
         {
-            <span>none</span>
+            <RosterFormatEditor @bind-Format=selectedFormat Readonly="!isCustomFormat"></RosterFormatEditor>
         }
-        else
+    </fast-card>
+
+    <fast-card style="padding: 20px; display: grid; grid-auto-rows: max-content; gap: 20px">
+        <h3>Formatted output:</h3>
+        @if (selectedFormat is not null && RosterNode is not null)
         {
-            <span>@RosterNode.Name</span>
+            var formattedOutput = RosterFormatter.Format(RosterNode, selectedFormat);
+            @if (selectedFormat?.OutputFormat == OutputFormat.Html)
+            {
+                <fast-card style="padding: 20px;">
+                    @((MarkupString) formattedOutput)
+                </fast-card>
+            }
+            else
+            {
+                <fast-text-area value="@formattedOutput" readonly resize="vertical">
+                </fast-text-area>
+            }
         }
-    </strong>
-</p>
-
-<label>Select formatter</label>
-<fast-select current-value="@SelectedFormatIndex" @onchange="OnFormatIndexSelected">
-    @foreach (var (format, index) in formatter.Formats.Select((x, i) => (x, i)))
-    {
-        <fast-option value="@index">@format.Name</fast-option>
-    }
-</fast-select>
-@if (selectedFormat is not null)
-{
-    <section>
-        <h2>Handlebars template <em>@selectedFormat.Name</em>:</h2>
-        <fast-text-area current-value="@selectedFormat.HandlebarsTemplate"
-        @onchange="e => selectedFormat.HandlebarsTemplate = e.Value?.ToString()" resize="both">
-        </fast-text-area>
-        <hr />
-    </section>
-}
-<fast-button @onclick="RunFormatter" disabled="@(selectedFormat is null || RosterNode is null)">Format</fast-button>
-
-<section>
-    <h2>Formatted output:</h2>
-    <hr />
-    @formattedOutput
-    <hr />
-</section>
+    </fast-card>
+</div>
 
 @code {
     private RosterNode? RosterNode;
-    private string? formattedOutput;
     private RosterFormat? selectedFormat;
+    private bool isCustomFormat;
     private string? selectedFormatIndex;
     private string? SelectedFormatIndex
     {
@@ -92,15 +108,5 @@
         await stream.CopyToAsync(memStream);
         memStream.Position = 0;
         RosterNode = (RosterNode)await memStream.LoadSourceAuto(eventArgs.File.Name).GetDataOrThrowAsync<RosterNode>();
-    }
-
-    void RunFormatter()
-    {
-        if (RosterNode is null || selectedFormat is null)
-        {
-            formattedOutput = null;
-            return;
-        }
-        formattedOutput = formatter.Format(RosterNode, selectedFormat);
     }
 }
