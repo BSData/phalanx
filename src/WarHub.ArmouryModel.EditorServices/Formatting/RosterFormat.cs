@@ -6,5 +6,7 @@ public record RosterFormat
 
     public OutputFormat OutputFormat { get; init; } = OutputFormat.PlainText;
 
-    public string? HandlebarsTemplate { get; init; }
+    public string? Template { get; init; }
+
+    public FormatMethod Method { get; init; } = FormatMethod.Handlebars;
 }

@@ -8,16 +8,24 @@
 </label>
 <label style="display: flex; flex-direction: column; align-items: flex-start;">
     Output type
-    <fast-select current-value="@Format.OutputFormat" @onchange="OnTemplateOutputFormatChanged"
-        disabled="@Readonly">
+    <fast-select current-value="@Format.OutputFormat" @onchange="OnTemplateOutputFormatChanged" disabled="@Readonly">
         @foreach (var item in Enum.GetValues<OutputFormat>())
         {
             <fast-option value="@item">@item</fast-option>
         }
     </fast-select>
 </label>
-<fast-text-area value="@Format.HandlebarsTemplate" current-value="@Format.HandlebarsTemplate" @onchange="OnTemplateContentChanged" resize="vertical"
-    disabled="@Readonly">
+<label style="display: flex; flex-direction: column; align-items: flex-start;">
+    Format method
+    <fast-select current-value="@Format.Method" @onchange="OnTemplateFormatMethodChanged" disabled="@Readonly">
+        @foreach (var item in Enum.GetValues<FormatMethod>())
+        {
+            <fast-option value="@item">@item</fast-option>
+        }
+    </fast-select>
+</label>
+<fast-text-area value="@Format.Template" current-value="@Format.Template" @onchange="OnTemplateContentChanged"
+    resize="vertical" disabled="@Readonly">
 </fast-text-area>
 
 @code {
@@ -42,8 +50,15 @@
         : Task.CompletedTask;
     }
 
+    Task OnTemplateFormatMethodChanged(ChangeEventArgs e)
+    {
+        return Enum.TryParse<FormatMethod>(e.Value?.ToString(), out var result)
+        ? FormatChanged.InvokeAsync(Format with { Method = result })
+        : Task.CompletedTask;
+    }
+
     Task OnTemplateContentChanged(ChangeEventArgs e)
     {
-        return FormatChanged.InvokeAsync(Format with { HandlebarsTemplate = e.Value?.ToString() });
+        return FormatChanged.InvokeAsync(Format with { Template = e.Value?.ToString() });
     }
 }

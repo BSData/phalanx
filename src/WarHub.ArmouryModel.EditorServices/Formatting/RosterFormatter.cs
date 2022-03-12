@@ -1,3 +1,5 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using HandlebarsDotNet;
 using WarHub.ArmouryModel.Source;
 
@@ -14,12 +16,32 @@ public static class RosterFormatter
     /// <returns></returns>
     public static string Format(RosterNode roster, RosterFormat format)
     {
-        var templateBuilder = Handlebars.Compile(format.HandlebarsTemplate);
-        var context = new
+        return format.Method switch
         {
-            roster = roster.Core,
-            // TODO consider more things, e.g. configuration/options of the template
+            FormatMethod.Handlebars => GetHandlebars(),
+            FormatMethod.Json => GetJson(),
+            _ => throw new ArgumentException($"Unknown {nameof(FormatMethod)} value '{format.Method}'.", nameof(format)),
         };
-        return templateBuilder(context);
+
+        string GetHandlebars()
+        {
+            var templateBuilder = Handlebars.Compile(format.Template);
+            var context = new
+            {
+                roster = roster.Core,
+                // TODO consider more things, e.g. configuration/options of the template
+            };
+            return templateBuilder(context);
+        }
+        string GetJson()
+        {
+            return JsonSerializer.Serialize(roster.Core, new JsonSerializerOptions
+            {
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                WriteIndented = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
+            });
+        }
     }
 }

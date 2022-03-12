@@ -21,8 +21,13 @@ public class RosterFormatsProvider
             new()
             {
                 Name = "Default",
-                HandlebarsTemplate = "{{roster}}"
-            }
+                Template = "{{roster}}",
+            },
+            new()
+            {
+                Name = "Json",
+                Method = FormatMethod.Json,
+            },
         };
     }
 }
