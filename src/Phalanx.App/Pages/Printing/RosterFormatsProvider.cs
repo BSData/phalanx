@@ -21,7 +21,8 @@ public class RosterFormatsProvider
             new()
             {
                 Name = "Default",
-                Template = "{{roster}}",
+                Template = "<code>{{roster}}</code>",
+                OutputFormat = OutputFormat.Html,
             },
             new()
             {

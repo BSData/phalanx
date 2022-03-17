@@ -1,0 +1,60 @@
+fast-card {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    /* justify-items: stretch; */
+    height: auto;
+}
+
+fast-tab-panel {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.output-frame {
+    /* TODO white background until we can adjust styling */
+    background-color: white;
+    min-height: 50vh;
+}
+
+.h-100 {
+    height: 100%;
+}
+
+.flex-no-grow {
+    flex-grow: 0;
+}
+
+.flex-auto {
+    flex: auto;
+}
+
+fieldset {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+::deep label {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+}
+
+.card-container {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+@media only screen and (max-width: 1024px) {
+    .card-container {
+        flex-direction: column;
+    }
+}

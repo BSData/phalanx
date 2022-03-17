@@ -1,12 +1,12 @@
 @using WarHub.ArmouryModel.EditorServices.Formatting
 
-<label style="display: flex; flex-direction: column; align-items: flex-start;">
+<label>
     Name
     <fast-text-field placeholder="name" current-value="@Format.Name" @onchange="OnTemplateNameChanged"
         disabled="@Readonly">
     </fast-text-field>
 </label>
-<label style="display: flex; flex-direction: column; align-items: flex-start;">
+<label>
     Output type
     <fast-select current-value="@Format.OutputFormat" @onchange="OnTemplateOutputFormatChanged" disabled="@Readonly">
         @foreach (var item in Enum.GetValues<OutputFormat>())
@@ -15,7 +15,7 @@
         }
     </fast-select>
 </label>
-<label style="display: flex; flex-direction: column; align-items: flex-start;">
+<label>
     Format method
     <fast-select current-value="@Format.Method" @onchange="OnTemplateFormatMethodChanged" disabled="@Readonly">
         @foreach (var item in Enum.GetValues<FormatMethod>())
@@ -25,7 +25,7 @@
     </fast-select>
 </label>
 <fast-text-area value="@Format.Template" current-value="@Format.Template" @onchange="OnTemplateContentChanged"
-    resize="vertical" disabled="@Readonly">
+    resize="vertical" rows="50" disabled="@Readonly">
 </fast-text-area>
 
 @code {
