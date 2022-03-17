@@ -1,6 +1,6 @@
 {
-  "name": "Phalanx.App",
-  "short_name": "Phalanx.App",
+  "name": "Project Phalanx",
+  "short_name": "Phalanx",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -8,14 +8,8 @@
   "prefer_related_applications": false,
   "icons": [
     {
-      "src": "icon-512.png",
-      "type": "image/png",
-      "sizes": "512x512"
-    },
-    {
-      "src": "icon-192.png",
-      "type": "image/png",
-      "sizes": "192x192"
+      "src": "/phalanx-favicon.svg",
+      "sizes": "any"
     }
   ]
 }
