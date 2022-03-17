@@ -1,0 +1,67 @@
+<style>
+    #hideCostButton:checked~* .costs {
+        display: none;
+    }
+</style>
+
+<label>Hide costs</label>
+
+<input id="hideCostButton" type="checkbox">
+
+<h1>
+    {{roster.name}} ({{roster.gameSystemName}})
+    <em>
+        {{> costs roster}}
+    </em>
+</h1>
+
+<ul>
+    {{#each roster.forces}}
+    <li>
+        {{> force}}
+    </li>
+    {{/each}}
+</ul>
+
+{{#*inline "costs"}}
+{{#each costs as |cost|}}
+<span class="costs">
+    {{#if cost.value}}
+    {{cost.value}}
+    {{cost.name}}{{#unless @last}}, {{/unless}}
+    {{/if}}
+</span>
+{{/each}}
+{{/inline}}
+
+{{#*inline "force"}}
+<h2>
+    {{name}} ({{catalogueName}})
+    <em>
+        {{> costs}}
+    </em>
+</h2>
+<ul>
+    {{#each selections}}
+    <li>
+        {{> selection}}
+    </li>
+    {{/each}}
+</ul>
+{{/inline}}
+
+{{#*inline "selection"}}
+<span>
+    <strong>
+        {{name}}
+    </strong>
+    <em>
+        {{> costs}}
+    </em>
+</span>
+<ul>
+    {{#each selections}}
+    <li>{{> selection}}</li>
+    {{/each}}
+</ul>
+{{/inline}}

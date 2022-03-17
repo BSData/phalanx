@@ -7,6 +7,11 @@ namespace WarHub.ArmouryModel.EditorServices.Formatting;
 
 public static class RosterFormatter
 {
+    public static ImmutableArray<RosterFormat> BuiltinFormatters { get; } =
+        FormatManifestResources.GetFormatJsonResourceNames()
+        .Select(name => FormatManifestResources.LoadFormatDefinition(name))
+        .ToImmutableArray();
+
     /// <summary>
     /// Handlebars template can reference members of <see cref="RosterCore"/>
     /// by accessing the root context's "roster" property: <code>Name: {{roster.name}}</code>.
@@ -25,6 +30,10 @@ public static class RosterFormatter
 
         string GetHandlebars()
         {
+            if (format.Template is null)
+            {
+                return "";
+            }
             var templateBuilder = Handlebars.Compile(format.Template);
             var context = new
             {
