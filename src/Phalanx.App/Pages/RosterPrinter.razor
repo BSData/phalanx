@@ -12,70 +12,72 @@
 
 <div class="card-container">
     <fast-card>
-        <fieldset>
-            <legend>Roster file</legend>
-            <label>
-                Select roster file (.ros, .rosz)
-                <InputFile OnChange="LoadRosterFile" accept=".ros, .rosz" />
-            </label>
+        <form>
+            <fieldset>
+                <legend>Roster file</legend>
+                <label>
+                    Select roster file (.ros, .rosz)
+                    <InputFile OnChange="LoadRosterFile" accept=".ros, .rosz" />
+                </label>
 
-            <p>
-                <strong>
-                    Loaded:
-                    @if (RosterNode is null)
-                    {
-                        <span>none</span>
-                    }
-                    else
-                    {
-                        <span>@RosterNode.Name</span>
-                    }
-                </strong>
-            </p>
-        </fieldset>
-        <fieldset>
-            <legend>Formatter</legend>
-            <label>
-                Select preset
-                <fast-select current-value="@SelectedFormatIndex" @onchange="OnFormatIndexSelected">
-                    @foreach (var (format, index) in formatter.Formats.Select((x, i) => (x, i)))
-                    {
-                        <fast-option value="@index">@format.Name</fast-option>
-                    }
-                </fast-select>
-            </label>
-            <fast-checkbox current-checked="@isCustomFormat.ToString()"
-                @onchange="e => isCustomFormat = !isCustomFormat">
-                Edit
-            </fast-checkbox>
-            @if (selectedFormat is not null)
-            {
-                <RosterFormatEditor @bind-Format=selectedFormat Readonly="!isCustomFormat"></RosterFormatEditor>
-            }
-        </fieldset>
+                <p>
+                    <strong>
+                        Loaded:
+                        @if (RosterNode is null)
+                        {
+                            <span>none</span>
+                        }
+                        else
+                        {
+                            <span>@RosterNode.Name</span>
+                        }
+                    </strong>
+                </p>
+            </fieldset>
+            <fieldset>
+                <legend>Formatter</legend>
+                <label>
+                    Select preset
+                    <fast-select current-value="@SelectedFormatIndex" @onchange="OnFormatIndexSelected">
+                        @foreach (var (format, index) in formatter.Formats.Select((x, i) => (x, i)))
+                        {
+                            <fast-option value="@index">@format.Name</fast-option>
+                        }
+                    </fast-select>
+                </label>
+                <fast-checkbox current-checked="@isCustomFormat.ToString()"
+                    @onchange="e => isCustomFormat = !isCustomFormat">
+                    Edit
+                </fast-checkbox>
+                @if (selectedFormat is not null)
+                {
+                    <RosterFormatEditor @bind-Format=selectedFormat Readonly="!isCustomFormat"></RosterFormatEditor>
+                }
+            </fieldset>
+        </form>
     </fast-card>
 
     <fast-card>
-        <h3 class="flex-no-grow">Formatted output</h3>
+        <h3>Formatted output</h3>
         @if (selectedFormat is not null && RosterNode is not null)
         {
             var formattedOutput = RosterFormatter.Format(RosterNode, selectedFormat);
-            <fast-tabs class="flex-auto">
+            <fast-tabs class="output-tabs">
                 <fast-tab>Preview</fast-tab>
                 <fast-tab-panel slot="tabpanel">
                     @if (selectedFormat?.OutputFormat == OutputFormat.Html)
                     {
-                        <iframe class="flex-auto output-frame" srcdoc="@formattedOutput">
+                        <iframe srcdoc="@formattedOutput" class="html-renderer">
                         </iframe>
                     }
                     else
                     {
-                        <pre class="flex-auto">@formattedOutput</pre>
+                        <pre>@formattedOutput</pre>
                     }
                 </fast-tab-panel>
                 <fast-tab>Raw text</fast-tab>
                 <fast-tab-panel slot="tabpanel">
-                    <pre class="flex-auto">@formattedOutput</pre>
+                    <pre>@formattedOutput</pre>
                 </fast-tab-panel>
             </fast-tabs>
         }

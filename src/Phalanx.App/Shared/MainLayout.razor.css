@@ -9,6 +9,10 @@ main {
     flex: 1;
 }
 
+article {
+    padding: 0 1.5rem;
+}
+
 footer {
     display: flex;
     justify-content: center;
