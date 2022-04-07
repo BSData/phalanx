@@ -1,0 +1,71 @@
+﻿@page "/rosteredit"
+@using Phalanx.SampleDataset
+@using WarHub.ArmouryModel.EditorServices
+@using WarHub.ArmouryModel.Source
+@using Phalanx.App.Components
+@if (Roster is not null && System is not null)
+{
+
+    @* The Roster header/title *@
+    <div>
+        <TitlePart>@Roster.Name</TitlePart>
+
+        <h2>@Roster.Name</h2>
+        @foreach (var cost in Roster.Costs)
+        {
+            if (Roster.CostLimits.FirstOrDefault(x => x.TypeId == cost.TypeId) is { } limit)
+            {
+                <span style="margin-right:10px;">@cost.Value / @limit.Value @cost.Name</span>
+            }
+            else
+            {
+                <span style="color:white; margin-right:10px;">@cost.Value @cost.Name</span>
+            }
+        }
+        
+    </div>
+    <br />
+
+
+@* 
+TODO - this needs to be thrown directly into the trash. For now, figure out what the important values are to display a roster
+After that, drink some coffee, determine what the right controls should be to modify them and how to do so w the engine. *@
+    @* god-div for holding the add selector (left) and the current roster (right) *@
+    <div style="display:flex; flex-direction:row; flex:1; width:100%">
+        <UnitSelectPanel Editor="@Editor" OnAdd="OnUnitAdded"/>
+        <RosterEditPanel Editor="@Editor"/>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public RosterEditor? Editor { get; set; }
+
+    private RosterNode? Roster => Editor?.State.Roster;
+
+    private GamesystemNode? System => Editor?.State.Gamesystem;
+
+    private void OnUnitAdded(RosterNode state){ 
+        //Editor.State.Roster = state;                   
+        InvokeAsync(StateHasChanged);
+        Console.WriteLine("State has changed!");
+        Phalanx.App.RosterPrinter printer = new Phalanx.App.RosterPrinter();
+        printer.Visit(Editor.State.Roster);
+    }
+
+    private ImmutableArray<CatalogueNode>? Catalogues => Editor?.State.Catalogues;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        LoadTestRoster();
+    }
+
+    void LoadTestRoster()
+    {
+        //get roster from file
+        var ws = SampleDataResources.CreateXmlWorkspace();
+        var rosterState = RosterState.CreateFromNodes(ws.Documents.Select(x => x.GetRootAsync().Result!));
+        Editor = new RosterEditor(rosterState);
+    }
+}

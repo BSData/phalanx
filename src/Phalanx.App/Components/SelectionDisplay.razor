@@ -1,0 +1,51 @@
+@page "/selectiondisplay"
+@using Phalanx.SampleDataset
+@using WarHub.ArmouryModel.EditorServices
+@using WarHub.ArmouryModel.Source
+@inject Navigation Navigation
+
+@* TODO - might be better to make SelectionAdd/Display a single class with toggles 
+    /might/ be worth looking at making a common super-component for other UI items that have similar behavior to a selection
+*@
+
+@if (DisplayNode is not null)
+{
+    <div style="display:flex; flex:1; width:100%; flex-direction:row; justify-content:space-between">
+        @DisplayNode.Name
+        <div>
+            <CostDisplay Costs = "@DisplayNode.Costs"/>
+            @if(DisplayNode.Selections.Count > 0){
+
+            <fast-button @onclick="NavToSelection">></fast-button>
+            } else{
+                <fast-button style="display:none;" @onclick="NavToSelection">X</fast-button>
+            }
+        </div>
+    </div>
+    @* Behold my works, ye mighty, and despair *@
+    @* @foreach (var selection in DisplayNode.Selections)
+    {
+        <SelectionDisplay DisplayNode="@selection" Editor="@Editor"/>
+    } *@
+
+}
+
+@code {
+    [Parameter]
+    public SelectionNode? DisplayNode {get; set;}
+
+    [Parameter]
+    public RosterEditor? Editor { get; set; }
+
+    public void NavToSelection(){
+        // TODO make this edit, TODO make a navstack
+        Console.WriteLine("This is where the new edit panel would go!");
+        Navigation.NavigateTo("selectionedit/" + DisplayNode.Id);
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+}

@@ -1,6 +1,56 @@
 ﻿@page "/rostercreate"
 @using WarHub.ArmouryModel.Source
 
+<<<<<<< HEAD
+<div id="rosterCreateContainer" hidden="@IsCreateRosterHidden">
+    <h2>Create Roster</h2>
+    <br />
+    <div class="col-12">
+        <fast-select class="col-12" id="factionDropDown" @onchange="PopulateSubfactions" style="min-width:100%">
+            <fast-option value="0">Select faction</fast-option>
+            @if (factions != null)
+            {
+                @foreach (var faction in factions)
+                {
+                    <fast-option value="@faction.Id">@faction.Name</fast-option>
+                }
+            }
+        </fast-select>
+    </div>
+    <br />
+    <div class="col-12">
+        <fast-select id="subFactionDropDown" style="display:none; min-width:100%" @onchange="PopulateDetachments">
+            <fast-option selected value="0">Select subfaction</fast-option>
+        </fast-select>
+    </div>
+    <br />
+    <div class="col-12">
+        <fast-select id="detachmentDropDown" style="display:none; min-width:100%" @onchange="ShowDetailsForm">
+            <fast-option selected value="0">Select detachment</fast-option>
+        </fast-select>
+    </div>
+
+    <br />
+    <div id="detailsForm" hidden="@IsDetailsFormHidden">
+        <div class="row">
+            <div class="col-6">
+                <fast-text-field appearance="filled" placeholder="Enter name" style="min-width:100%" @onchange="GetRosterName">Name</fast-text-field>
+            </div>
+            <div class="col-6">
+                <fast-text-area placeholder="Add notes" style="min-width:100%" @onchange="GetRosterNotes">Notes</fast-text-area>
+            </div>
+        </div>
+        <div class="col-6">
+            <fast-button appearance="accent" @onclick="ShowEditRoster">Submit</fast-button>
+        </div>
+    </div>
+</div>
+
+<div id="rosterEditContainer" hidden="@IsEditRosterHidden">
+    <RosterEdit roster="@roster" />
+</div>
+
+=======
 <h1>Create Roster</h1>
 
 <fast-card>
@@ -28,6 +78,7 @@
         </fieldset>
     </EditForm>
 </fast-card>
+>>>>>>> 2731daca431fae86e2eefdcd844fb0afdddca5f9
 
 @code {
 

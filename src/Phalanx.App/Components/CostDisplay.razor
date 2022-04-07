@@ -1,0 +1,25 @@
+@page "/costdisplay"
+@using Phalanx.SampleDataset
+@using WarHub.ArmouryModel.EditorServices
+@using WarHub.ArmouryModel.Source
+
+@if (Costs is not null)
+{
+    @* TODO - need to sort so orders between entries are consistent *@
+    @foreach(CostNode cost in Costs){
+        if(cost.Value !=0){
+            <span style="color:white; margin-right:10px; text-decoration: underline;">@cost.Value @cost.Name</span>
+        }           
+    }
+}
+
+@code {
+    [Parameter]
+    public CostListNode? Costs {get; set;}
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+}

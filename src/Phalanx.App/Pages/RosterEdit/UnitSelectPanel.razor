@@ -1,0 +1,91 @@
+@page "/unitselectpanel"
+@using Phalanx.SampleDataset
+@using WarHub.ArmouryModel.EditorServices
+@using WarHub.ArmouryModel.Source
+@using Phalanx.App.Components
+@if (Roster is not null && System is not null)
+{
+
+ @* The LHS panel for stuff user can add to roster *@
+ 
+        <div style="display:flex; flex:1; flex-direction:column; margin-right:10px;">
+
+            @* TODO - selections in general need some GUI logic to make them not a total mess
+               Need to filter catalogs unused by the roster
+               Sorting would be good too *@
+            @if(Catalogues is not null){
+                @foreach(CatalogueNode catalog in Catalogues)
+                {
+                    @* @foreach (var selection in catalog.SelectionEntries)
+                    {
+
+                        <div style="border-style:solid; border-width:1; border-color: white;">
+                            <div style="color:white; margin-right:10px;">@selection.Name</div>
+                        </div>
+                        
+                    } *@
+
+                    @* TODO - maybe engine isn't loading this from xml yet? 
+                        This isn't what the sample code us using (Catalogues[0].SelectionEntries[0])
+                        but, at least it shows /something/ for now
+                    *@
+                    @* @foreach (SelectionEntryNode sel in catalog.SelectionEntries) *@
+
+                    @foreach (EntryLinkNode sel in catalog.EntryLinks)
+                    {
+                        //Console.WriteLine("GS Child: " + node.GetType().Name);
+
+                        <SelectionAdd OnAdd="SelectionAdded" Node="@sel" Editor="@Editor"/>
+                    }
+                }
+            }
+            @* <fast-accordion>
+                <fast-accordion-item>
+                    <span slot="heading">HQ</span>
+                    <fast-listbox id="hqList" style="min-width:100%">
+                    </fast-listbox>
+                </fast-accordion-item>
+                <fast-accordion-item>
+                    <span slot="heading">Troops</span>
+                    Panel two content
+                </fast-accordion-item>
+                <fast-accordion-item>
+                    <span slot="heading">Elites</span>
+
+                </fast-accordion-item>
+            </fast-accordion> *@
+        </div> 
+}
+
+
+@code {
+    [Parameter]
+    public RosterEditor? Editor { get; set; }
+
+    [Parameter]
+    public EventCallback<RosterNode> OnAdd{get; set;}
+    private RosterNode? Roster => Editor?.State.Roster;
+
+    private GamesystemNode? System => Editor?.State.Gamesystem;
+
+
+
+    public void SelectionAdded(RosterNode state){
+        OnAdd.InvokeAsync(state);
+    }
+    private ImmutableArray<CatalogueNode>? Catalogues => Editor?.State.Catalogues;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        LoadTestRoster();
+    }
+
+    void LoadTestRoster()
+    {
+        //get roster from file
+        var ws = SampleDataResources.CreateXmlWorkspace();
+        var rosterState = RosterState.CreateFromNodes(ws.Documents.Select(x => x.GetRootAsync().Result!));
+        Editor = new RosterEditor(rosterState);
+    }
+}

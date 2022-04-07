@@ -1,0 +1,39 @@
+@page "/selectionedit/{id?}"
+@using Phalanx.SampleDataset
+@using WarHub.ArmouryModel.EditorServices
+@using WarHub.ArmouryModel.Source
+@inject Navigation Navigation
+
+<div style="display:flex; flex:1; flex-direction:column; width:100%;">
+    <fast-button @onclick="NavBack" style="display:flex; flex:0;">Back</fast-button>
+    <div>
+        Selection Edit
+    </div>
+    <div>
+        @Id
+    </div>
+</div>
+
+
+
+@code {
+    [Parameter]
+    public string? Id {get; set;}
+
+    [Parameter]
+    public RosterEditor? Editor { get; set; }
+
+    public void NavToSelection(){
+        // TODO make this edit, TODO make a navstack
+    }
+
+    public void NavBack(){
+        Navigation.NavigateBack();
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+}

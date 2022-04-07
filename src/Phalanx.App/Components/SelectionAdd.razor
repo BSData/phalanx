@@ -1,0 +1,65 @@
+@page "/selectionadd"
+@using Phalanx.SampleDataset
+@using WarHub.ArmouryModel.EditorServices
+@using WarHub.ArmouryModel.Source
+
+@if (Node is not null)
+{
+    <div style="display:flex; flex-direction:row; justify-content:space-between;">
+        @Node.Name
+        <div>
+            <CostDisplay Costs="@Node.Costs"/>
+            <fast-button @onclick="AddEntry">+</fast-button>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public EntryLinkNode? Node {get; set;}
+
+     [Parameter]
+    public RosterEditor? Editor { get; set; }
+
+    [Parameter]
+    public EventCallback<RosterNode> OnAdd {get; set;}
+    public void AddEntry(){
+
+        //Editor.ApplyOperation(RosterOperations.AddSelection(Node, Editor.State.Roster.Forces[0]));
+        Console.WriteLine("Try to add SelectionEntry with TargetId = " + Node.TargetId);
+
+        SelectionEntryNode node = null;
+        // TODO I want this damn thing to work, lol. Fix this later with a nicer lookup or utility or w/e
+        bool found = false;
+        foreach(CatalogueNode cat in Editor.State.Catalogues)
+        {
+            Console.WriteLine("Checking catalog...");
+            foreach(SelectionEntryNode sel in cat.SharedSelectionEntries )
+            {
+                Console.WriteLine(sel.Id +" == "+  Node.TargetId);
+
+                if(sel.Id == Node.TargetId){
+                    node = sel;
+                    found = true;
+                    Console.WriteLine("Found entry with TargetId = " + Node.TargetId);
+
+                    break;
+                }
+            }
+            if(found) break;
+        }
+
+        if(node is not null ){
+            Editor.ApplyOperation(RosterOperations.AddSelection(node, Editor.State.Roster.Forces[0]));
+            RosterPrinter printer = new RosterPrinter();
+            printer.Visit(Editor.State.Roster);
+            OnAdd.InvokeAsync(Editor.State.Roster);
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+}

@@ -1,0 +1,57 @@
+@page "/rostereditpanel"
+@using Phalanx.SampleDataset
+@using WarHub.ArmouryModel.EditorServices
+@using WarHub.ArmouryModel.Source
+@using Phalanx.App.Components
+
+@if (Roster is not null)
+{
+
+    <div style="display:flex; flex:1; flex-direction:column;">
+            @{
+                @* Console.WriteLine("Catalogue Print!");
+                var printer = new CataloguePrinter();
+                printer.Visit(Editor.State.Catalogues[0]);
+                printer.Visit(Editor.State.Catalogues[1]); *@
+
+            }
+            @*  TODO: following the tradition of most 3rd party Blazor UI libs, fast-accordion doesn't want to nest in a way
+                that is either intuitive or documented on fast.design. Probably some issue in SelectionDisplay *@
+        <fast-accordion>
+            @foreach (var force in Roster.Forces)
+            {
+                <fast-accordion-item expanded>
+                    <span slot="heading">@force.Name</span> 
+                    @* <CostDisplay Costs="@force.Costs - not a real value"/>  *@
+
+                    @* TODO get category selection to work. For now, go flat *@
+                    @foreach (var node in force.Selections)
+                    {
+                        <SelectionDisplay DisplayNode="@node" Editor="@Editor"/>
+                    }
+                </fast-accordion-item>
+            }
+        </fast-accordion>
+    </div> 
+}
+
+@code {
+    [Parameter]
+    public RosterEditor? Editor { get; set; }
+
+    private RosterNode? Roster => Editor?.State.Roster;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        LoadTestRoster();
+    }
+
+    void LoadTestRoster()
+    {
+        //get roster from file
+        var ws = SampleDataResources.CreateXmlWorkspace();
+        var rosterState = RosterState.CreateFromNodes(ws.Documents.Select(x => x.GetRootAsync().Result!));
+        Editor = new RosterEditor(rosterState);
+    }
+}
