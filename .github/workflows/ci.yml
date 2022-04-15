@@ -93,6 +93,7 @@ jobs:
           action: upload
           skip_app_build: true
           skip_api_build: true
+          app_location: ./.build/pub/wwwroot
           output_location: ./.build/pub/wwwroot
 
   close_pr:
