@@ -72,7 +72,7 @@ jobs:
       - run: dotnet tool restore
 
       - name: Publish
-        run: dotnet publish src/Phalanx.App --output ./.build/pub
+        run: dotnet publish src/Phalanx.App --output ./.build/pub --version-suffix "beta.${{ github.run_number }}"
 
       - name: Add staticwebapp config
         env:

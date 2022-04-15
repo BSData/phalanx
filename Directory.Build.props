@@ -9,12 +9,11 @@
     <Copyright>Copyright © $(Authors)</Copyright>
     <IsPackable>false</IsPackable>
     <CommonTargetFramework>net6.0</CommonTargetFramework>
+    <VersionPrefix>1.0.0</VersionPrefix>
     <EnforceCodeStyleOnBuild>true</EnforceCodeStyleOnBuild>
   </PropertyGroup>
 
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <IsTestProject>$(MSBuildProjectName.Contains('Test'))</IsTestProject>
     <!-- Put stuff into a common directory ./.build (bin,obj) -->
     <BaseOutputPath>$(MSBuildThisFileDirectory).build/bin/$(MSBuildProjectName)/</BaseOutputPath>
     <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory).build/obj/$(MSBuildProjectName)/</BaseIntermediateOutputPath>
@@ -28,6 +27,10 @@
 
   <ItemGroup>
     <Using Include="System.Collections.Immutable" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>
