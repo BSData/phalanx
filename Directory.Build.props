@@ -10,7 +10,7 @@
     <IsPackable>false</IsPackable>
     <CommonTargetFramework>net6.0</CommonTargetFramework>
     <VersionPrefix>1.0.0</VersionPrefix>
-    <EnforceCodeStyleOnBuild>true</EnforceCodeStyleOnBuild>
+    <!-- <EnforceCodeStyleOnBuild>true</EnforceCodeStyleOnBuild> -->
   </PropertyGroup>
 
   <PropertyGroup>
