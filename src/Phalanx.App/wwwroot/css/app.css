@@ -10,7 +10,7 @@ html, body {
     padding: 0;
 }
 
-fast-card {
+.pcard {
     padding: 10px;
     display: flex;
     flex-direction: column;
