@@ -11,6 +11,7 @@
     <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
     <PackageReference Include="Microsoft.Fast.Components.FluentUI" Version="1.2.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="NuGet.Versioning" Version="6.1.0" />
     <PackageReference Include="PublishSPAforGitHubPages.Build" Version="1.3.6" />
   </ItemGroup>
 
