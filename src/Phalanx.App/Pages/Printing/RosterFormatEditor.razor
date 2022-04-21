@@ -2,33 +2,29 @@
 
 <label>
     Name
-    <fast-text-field placeholder="name" current-value="@Format.Name" @onchange="OnTemplateNameChanged"
-        disabled="@Readonly">
-    </fast-text-field>
+    <FluentTextField Placeholder="name" @bind-Value="Name" Disabled="Readonly" />
 </label>
 <label>
     Output type
-    <fast-select current-value="@Format.OutputFormat" @onchange="OnTemplateOutputFormatChanged" disabled="@Readonly">
+    <FluentSelect @bind-Value="OutputFormat" Disabled="Readonly">
         @foreach (var item in Enum.GetValues<OutputFormat>())
         {
-            <fast-option value="@item">@item</fast-option>
+            <FluentOption Value="@item">@item</FluentOption>
         }
-    </fast-select>
+    </FluentSelect>
 </label>
 <label>
     Format method
-    <fast-select current-value="@Format.Method" @onchange="OnTemplateFormatMethodChanged" disabled="@Readonly">
+    <FluentSelect @bind-Value="Method" Disabled="Readonly">
         @foreach (var item in Enum.GetValues<FormatMethod>())
         {
-            <fast-option value="@item">@item</fast-option>
+            <FluentOption Value="@item">@item</FluentOption>
         }
-    </fast-select>
+    </FluentSelect>
 </label>
-<fast-text-area value="@Format.Template" current-value="@Format.Template" @onchange="OnTemplateContentChanged"
-    resize="vertical" rows="50" disabled="@Readonly">
-</fast-text-area>
+<FluentTextArea @bind-Value="Template" Resize="Resize.Vertical" rows="50" Disabled="Readonly" />
 
-@code {
+    @code {
     [Parameter]
     public RosterFormat Format { get; set; } = new();
 
@@ -38,27 +34,27 @@
     [Parameter]
     public bool Readonly { get; set; }
 
-    Task OnTemplateNameChanged(ChangeEventArgs e)
+    string? Name
     {
-        return FormatChanged.InvokeAsync(Format with { Name = e.Value?.ToString() });
+        get => Format.Name;
+        set => FormatChanged.InvokeAsync(Format with { Name = value });
     }
 
-    Task OnTemplateOutputFormatChanged(ChangeEventArgs e)
+    OutputFormat OutputFormat
     {
-        return Enum.TryParse<OutputFormat>(e.Value?.ToString(), out var result)
-        ? FormatChanged.InvokeAsync(Format with { OutputFormat = result })
-        : Task.CompletedTask;
+        get => Format.OutputFormat;
+        set => FormatChanged.InvokeAsync(Format with { OutputFormat = value });
     }
 
-    Task OnTemplateFormatMethodChanged(ChangeEventArgs e)
+    FormatMethod Method
     {
-        return Enum.TryParse<FormatMethod>(e.Value?.ToString(), out var result)
-        ? FormatChanged.InvokeAsync(Format with { Method = result })
-        : Task.CompletedTask;
+        get => Format.Method;
+        set => FormatChanged.InvokeAsync(Format with { Method = value });
     }
 
-    Task OnTemplateContentChanged(ChangeEventArgs e)
+    string? Template
     {
-        return FormatChanged.InvokeAsync(Format with { Template = e.Value?.ToString() });
+        get => Format.Template;
+        set => FormatChanged.InvokeAsync(Format with { Template = value });
     }
 }

@@ -8,44 +8,44 @@
     <TitlePart>@Roster.Name</TitlePart>
 
     <h2>@Roster.Name</h2>
-    @foreach (var cost in Roster.Costs)
-    {
-        if (Roster.CostLimits.FirstOrDefault(x => x.TypeId == cost.TypeId) is { } limit)
+    <p>
+        @foreach (var cost in Roster.Costs)
         {
-            <span>@cost.Value / @limit.Value @cost.Name</span>
+            if (Roster.CostLimits.FirstOrDefault(x => x.TypeId == cost.TypeId) is { } limit)
+            {
+                <span>@cost.Value / @limit.Value @cost.Name</span>
+            }
+            else
+            {
+                <span>@cost.Value @cost.Name</span>
+            }
+            if (cost != Roster.Costs[^1])
+            {
+                <span>, </span>
+            }
         }
-        else
+    </p>
+    <FluentTreeView>
+        @foreach (var force in Roster.Forces)
         {
-            <span style="color:white">@cost.Value @cost.Name</span>
+            <FluentTreeItem Expanded="true">
+                <span>@force.Name</span>
+                @foreach (var category in force.Categories)
+                {
+                    <FluentTreeItem Expanded="true">
+                        <span>@category.Name</span>
+                        @foreach (var selection in force.Selections.Where(sel => sel.Categories.Any(x => x.Primary && x.EntryId ==
+                       category.EntryId)))
+                        {
+                            <FluentTreeItem Expanded="true">
+                                <span>@selection.Name</span>
+                            </FluentTreeItem>
+                        }
+                    </FluentTreeItem>
+                }
+            </FluentTreeItem>
         }
-    }
-    <br />
-    <fast-accordion>
-        <fast-accordion-item>
-            <span slot="heading">HQ</span>
-            <fast-listbox id="hqList" style="min-width:100%">
-                @* @foreach (var unit in roster?.Units?.Where(x => x.OrgSlotId == 1))
-                    {
-                    <div class="row">
-                    <div class="col-11">
-                    <fast-option style="display: block" @onclick="ListItemClick">@unit?.Name @unit?.PointsPerModel</fast-option>
-                    </div>
-                    <div class="col-1">
-                    <fast-button href="#" appearance="accent" style="float:right" @onclick="ButtonClick"><i class="fas fa-trash"></i></fast-button>
-                    </div>
-                    </div>
-                    }*@
-            </fast-listbox>
-        </fast-accordion-item>
-        <fast-accordion-item>
-            <span slot="heading">Troops</span>
-            Panel two content
-        </fast-accordion-item>
-        <fast-accordion-item>
-            <span slot="heading">Elites</span>
-
-        </fast-accordion-item>
-    </fast-accordion>
+    </FluentTreeView>
 }
 
 @code {

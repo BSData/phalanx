@@ -11,7 +11,7 @@
 <h1>Format roster</h1>
 
 <div class="card-container">
-    <fast-card>
+    <FluentCard class="pcard">
         <form>
             <fieldset>
                 <legend>Roster file</legend>
@@ -38,33 +38,32 @@
                 <legend>Formatter</legend>
                 <label>
                     Select preset
-                    <fast-select current-value="@SelectedFormatIndex" @onchange="OnFormatIndexSelected">
+                    <FluentSelect @bind-Value="@SelectedFormatIndex">
                         @foreach (var (format, index) in formatter.Formats.Select((x, i) => (x, i)))
-                        {
-                            <fast-option value="@index">@format.Name</fast-option>
-                        }
-                    </fast-select>
-                </label>
-                <fast-checkbox current-checked="@isCustomFormat.ToString()"
-                    @onchange="e => isCustomFormat = !isCustomFormat">
-                    Edit
-                </fast-checkbox>
-                @if (selectedFormat is not null)
+                            {
+                                <FluentOption Value="@index">@format.Name</FluentOption>
+                            }
+                        </FluentSelect>
+                    </label>
+                    <FluentCheckbox @bind-Value="isCustomFormat">
+                        Edit
+                    </FluentCheckbox>
+                    @if (selectedFormat is not null)
                 {
-                    <RosterFormatEditor @bind-Format=selectedFormat Readonly="!isCustomFormat"></RosterFormatEditor>
+                    <RosterFormatEditor @bind-Format=selectedFormat Readonly="!isCustomFormat" />
                 }
             </fieldset>
         </form>
-    </fast-card>
+    </FluentCard>
 
-    <fast-card>
+    <FluentCard class="pcard">
         <h3>Formatted output</h3>
         @if (selectedFormat is not null && RosterNode is not null)
         {
             var formattedOutput = RosterFormatter.Format(RosterNode, selectedFormat);
-            <fast-tabs class="output-tabs">
-                <fast-tab>Preview</fast-tab>
-                <fast-tab-panel slot="tabpanel">
+            <FluentTabs class="output-tabs">
+                <FluentTab>Preview</FluentTab>
+                <FluentTabPanel slot="tabpanel">
                     @if (selectedFormat?.OutputFormat == OutputFormat.Html)
                     {
                         <iframe srcdoc="@formattedOutput" class="html-renderer">
@@ -74,14 +73,14 @@
                     {
                         <pre>@formattedOutput</pre>
                     }
-                </fast-tab-panel>
-                <fast-tab>Raw text</fast-tab>
-                <fast-tab-panel slot="tabpanel">
+                </FluentTabPanel>
+                <FluentTab>Raw text</FluentTab>
+                <FluentTabPanel slot="tabpanel">
                     <pre>@formattedOutput</pre>
-                </fast-tab-panel>
-            </fast-tabs>
+                </FluentTabPanel>
+            </FluentTabs>
         }
-    </fast-card>
+    </FluentCard>
 </div>
 
 @code {

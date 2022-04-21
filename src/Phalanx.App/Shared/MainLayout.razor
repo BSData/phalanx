@@ -1,6 +1,7 @@
 ﻿@inherits LayoutComponentBase
 
 @using System.Reflection
+@using NuGet.Versioning
 
 <div class="page">
     <main>
@@ -17,7 +18,29 @@
 </div>
 
 @code {
-    static string AppVersion =
-        typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
-            ?? "(n/a)";
+    static string AppVersion = GetShortAppVersion();
+
+    private static string GetShortAppVersion()
+    {
+        if (GetFromAttribute() is { } version)
+        {
+            return version.HasMetadata ? version.ToNormalizedString() + "+" + version.Metadata.Substring(0, Math.Min(version.Metadata.Length, 6)) : version.ToFullString();
+        }
+        return "(n/a)";
+
+        static SemanticVersion? GetFromAttribute()
+        {
+            try
+            {
+                var raw = typeof(Program).Assembly
+                .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+                ?.InformationalVersion;
+                return raw is null ? null : SemanticVersion.TryParse(raw, out var parsed) ? parsed : null;
+            }
+            catch (System.Exception)
+            {
+                return null;
+            }
+        }
+    }
 }

@@ -3,33 +3,30 @@
 
 <h1>Create Roster</h1>
 
-<fast-card>
+<FluentCard class="pcard">
     <EditForm Model="Model">
         <fieldset>
             <legend>New roster</legend>
 
             <label>
                 Name
-                <fast-text-field placeholder="Roster name" current-value="@Model.Name"
-                    @onchange="(e => Model.Name = e.Value?.ToString())">
-
-                </fast-text-field>
+                <FluentTextField Placeholder="Roster name" @bind-Value="@Model.Name" />
             </label>
             <label>
                 Game system
-                <fast-select current-value="@Model.GamesystemIndex" @onchange="OnGamesystemChange">
+                <FluentSelect @bind-Value="@Model.GamesystemIndex">
                     @foreach (var (item, idx) in Gamesystems.Select((item, idx) => (item, idx)))
                     {
-                        <fast-option value="@idx">@item.Name</fast-option>
+                        <FluentOption Value="@idx">@item.Name</FluentOption>
                     }
-                </fast-select>
+                </FluentSelect>
             </label>
-            <fast-button appearance="accent">Create</fast-button>
+            <FluentButton Appearance="Appearance.Accent">Create</FluentButton>
         </fieldset>
     </EditForm>
-</fast-card>
+</FluentCard>
 
-@code {
+    @code {
 
     public class NewRosterModel
     {
@@ -42,9 +39,4 @@
     private List<GamesystemNode> Gamesystems { get; } = new();
 
     public NewRosterModel Model { get; } = new();
-
-    void OnGamesystemChange(ChangeEventArgs e)
-    {
-        Model.GamesystemIndex = int.TryParse(e.Value?.ToString(), out var idx) ? idx : null;
-    }
 }
