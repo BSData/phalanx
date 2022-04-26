@@ -43,7 +43,7 @@ internal abstract class Symbol : ISymbol
 
     internal virtual bool RequiresCompletion => false;
 
-    private int bindingDone = 0;
+    private int bindingDone;
 
     private bool BindingDone => bindingDone > 0;
 

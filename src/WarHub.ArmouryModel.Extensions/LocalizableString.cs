@@ -61,11 +61,11 @@ public abstract partial class LocalizableString : IFormattable, IEquatable<Local
         }
     }
 
-    public sealed override bool Equals(object? other)
+    public sealed override bool Equals(object? obj)
     {
         try
         {
-            return AreEqual(other);
+            return AreEqual(obj);
         }
         catch (Exception ex)
         {

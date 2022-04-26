@@ -4,7 +4,7 @@ namespace Phalanx.PlaygroundTool;
 
 class RosterPrinter : SourceWalker
 {
-    private int Depth { get; set; } = 0;
+    private int Depth { get; set; }
 
     public override void VisitRoster(RosterNode node)
     {

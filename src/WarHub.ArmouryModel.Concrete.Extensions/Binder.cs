@@ -108,6 +108,7 @@ internal class Binder
         return (TSymbol)bindingResult;
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Method is WIP")]
     internal SingleLookupResult CheckViability(
         ISymbol symbol,
         string symbolId,
@@ -193,6 +194,7 @@ internal class Binder
         }
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Method is WIP")]
     internal ISymbol ResultSymbol(
         LookupResult result,
         string symbolId,

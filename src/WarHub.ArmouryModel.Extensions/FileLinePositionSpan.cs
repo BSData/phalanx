@@ -91,8 +91,8 @@ public readonly struct FileLinePositionSpan : IEquatable<FileLinePositionSpan>
     /// <summary>
     /// Determines if two FileLinePositionSpan objects are equal.
     /// </summary>
-    public override bool Equals(object? other)
-        => other is FileLinePositionSpan span && Equals(span);
+    public override bool Equals(object? obj)
+        => obj is FileLinePositionSpan span && Equals(span);
 
     /// <summary>
     /// Serves as a hash function for FileLinePositionSpan.

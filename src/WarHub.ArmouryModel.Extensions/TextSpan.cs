@@ -4,6 +4,7 @@ namespace WarHub.ArmouryModel;
 /// Immutable abstract representation of a span of source nodes in prefix order
 /// (node, children, siblings).
 /// </summary>
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1036:Override methods on comparable types")]
 public readonly struct TextSpan : IEquatable<TextSpan>, IComparable<TextSpan>
 {
     public TextSpan(int start, int length)

@@ -102,7 +102,7 @@ internal abstract class CommonMessageProvider
     /// </summary>
     public string GetIdForErrorCode(int errorCode)
     {
-        return errorIdCache.GetOrAdd((CodePrefix, errorCode), key => key.prefix + key.code.ToString("0000"));
+        return errorIdCache.GetOrAdd((CodePrefix, errorCode), key => key.prefix + key.code.ToString("0000", CultureInfo.InvariantCulture));
     }
 
     /// <summary>

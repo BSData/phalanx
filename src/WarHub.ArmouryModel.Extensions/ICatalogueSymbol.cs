@@ -16,7 +16,7 @@ public interface ICatalogueSymbol : ISymbol
     /// <summary>
     /// Represents catalogues linked using CatalogueLink syntax.
     /// </summary>
-    ImmutableArray<ICatalogueReferenceSymbol> Imports { get; }
+    ImmutableArray<ICatalogueReferenceSymbol> CatalogueReferences { get; }
 
     ImmutableArray<ISymbol> AllItems { get; }
 

@@ -92,11 +92,11 @@ internal abstract class CatalogueBaseSymbol : SourceDeclaredSymbol, ICatalogueSy
 
     public abstract ICatalogueSymbol Gamesystem { get; }
 
-    public abstract ImmutableArray<ICatalogueReferenceSymbol> Imports { get; }
+    public abstract ImmutableArray<ICatalogueReferenceSymbol> CatalogueReferences { get; }
 
     public ImmutableArray<ISymbol> AllItems =>
         ImmutableArray<ISymbol>.Empty
-        .AddRange(Imports)
+        .AddRange(CatalogueReferences)
         .AddRange(ResourceDefinitions)
         .AddRange(RootContainerEntries)
         .AddRange(RootResourceEntries)

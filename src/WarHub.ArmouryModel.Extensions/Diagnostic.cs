@@ -134,14 +134,16 @@ public abstract partial class Diagnostic : IEquatable<Diagnostic?>, IFormattable
 
     public override string ToString()
     {
+#pragma warning disable CA1305 // Specify IFormatProvider // Warning: Method passes 'CultureInfo.CurrentUICulture' as the 'IFormatProvider' parameter. This property returns a culture that is inappropriate for formatting methods.
         return DiagnosticFormatter.Instance.Format(this, CultureInfo.CurrentUICulture);
+#pragma warning restore CA1305 // Specify IFormatProvider
     }
 
     public abstract override bool Equals(object? obj);
 
     public abstract override int GetHashCode();
 
-    public abstract bool Equals(Diagnostic? obj);
+    public abstract bool Equals(Diagnostic? other);
 
     /// <summary>
     /// Create a new instance of this diagnostic with the Location property changed.

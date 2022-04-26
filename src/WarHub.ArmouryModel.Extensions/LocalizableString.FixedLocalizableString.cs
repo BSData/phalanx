@@ -34,12 +34,12 @@ public abstract partial class LocalizableString
         protected override bool AreEqual(object? other)
         {
             return other is FixedLocalizableString fixedStr
-                && string.Equals(fixedString, fixedStr.fixedString);
+                && string.Equals(fixedString, fixedStr.fixedString, StringComparison.Ordinal);
         }
 
         protected override int GetHash()
         {
-            return fixedString?.GetHashCode() ?? 0;
+            return fixedString?.GetHashCode(StringComparison.Ordinal) ?? 0;
         }
 
         internal override bool CanThrowExceptions => false;

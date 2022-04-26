@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace WarHub.ArmouryModel;
 
 /// <summary>
@@ -65,6 +67,6 @@ public readonly struct LinePositionSpan : IEquatable<LinePositionSpan>
     /// <example>(0,0)-(5,6)</example>
     public override string ToString()
     {
-        return string.Format("({0})-({1})", Start, End);
+        return string.Format(CultureInfo.InvariantCulture, "({0})-({1})", Start, End);
     }
 }

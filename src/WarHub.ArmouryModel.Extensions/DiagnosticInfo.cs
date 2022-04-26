@@ -275,6 +275,6 @@ internal class DiagnosticInfo : IFormattable
 
     private string? GetDebuggerDisplay()
     {
-        return ToString();
+        return ToString(null);
     }
 }

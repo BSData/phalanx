@@ -57,10 +57,10 @@ public class DiagnosticFormatter
 
     internal virtual string FormatSourceSpan(LinePositionSpan span, IFormatProvider? formatter)
     {
-        return string.Format("({0},{1})", span.Start.Line + 1, span.Start.Character + 1);
+        return string.Format(CultureInfo.InvariantCulture, "({0},{1})", span.Start.Line + 1, span.Start.Character + 1);
     }
 
-    internal string GetMessagePrefix(Diagnostic diagnostic)
+    internal static string GetMessagePrefix(Diagnostic diagnostic)
     {
         var prefix = diagnostic.Severity switch
         {
@@ -70,7 +70,7 @@ public class DiagnosticFormatter
             DiagnosticSeverity.Error => "error",
             _ => throw new InvalidOperationException($"Unexpected value: {diagnostic.Severity}"),
         };
-        return string.Format("{0} {1}", prefix, diagnostic.Id);
+        return string.Format(CultureInfo.InvariantCulture, "{0} {1}", prefix, diagnostic.Id);
     }
 
     internal static readonly DiagnosticFormatter Instance = new();

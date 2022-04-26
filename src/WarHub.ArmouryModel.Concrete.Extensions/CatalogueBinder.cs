@@ -31,7 +31,7 @@ internal class CatalogueBaseBinder : Binder
             if (processed.Add(item))
             {
                 closureItems.Add(item);
-                foreach (var import in item.Imports)
+                foreach (var import in item.CatalogueReferences)
                 {
                     queuedForProcessing.Enqueue(import.Catalogue);
                 }

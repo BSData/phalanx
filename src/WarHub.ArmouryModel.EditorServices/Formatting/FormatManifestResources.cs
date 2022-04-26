@@ -9,11 +9,11 @@ internal static class FormatManifestResources
 
     public static IEnumerable<string> GetAllTemplatesResourceNames() =>
         typeof(FormatManifestResources).Assembly.GetManifestResourceNames()
-        .Where(x => x.StartsWith("Templates."));
+        .Where(x => x.StartsWith("Templates.", StringComparison.Ordinal));
 
     public static IEnumerable<string> GetFormatJsonResourceNames() =>
         GetAllTemplatesResourceNames()
-        .Where(x => x.EndsWith(FormatJsonSuffix));
+        .Where(x => x.EndsWith(FormatJsonSuffix, StringComparison.Ordinal));
 
     public static Stream? OpenDataResource(string name) =>
         typeof(FormatManifestResources).Assembly.GetManifestResourceStream(name);
@@ -50,8 +50,10 @@ internal static class FormatManifestResources
         {
             throw new InvalidOperationException("Format failed to deserialize.");
         }
+
+        var resourceName = formatJsonName.Replace(FormatJsonSuffix, ".handlebars", StringComparison.Ordinal);
         if (format is { Method: FormatMethod.Handlebars, Template: null }
-            && TryGetResourceAsString(formatJsonName.Replace(FormatJsonSuffix, ".handlebars")) is { } template)
+            && TryGetResourceAsString(resourceName) is { } template)
         {
             format = format with
             {

@@ -257,7 +257,7 @@ internal static class ErrorSymbols
 
         public abstract ICatalogueSymbol Gamesystem { get; }
 
-        ImmutableArray<ICatalogueReferenceSymbol> ICatalogueSymbol.Imports =>
+        ImmutableArray<ICatalogueReferenceSymbol> ICatalogueSymbol.CatalogueReferences =>
             ImmutableArray<ICatalogueReferenceSymbol>.Empty;
 
         ImmutableArray<ISymbol> ICatalogueSymbol.AllItems =>

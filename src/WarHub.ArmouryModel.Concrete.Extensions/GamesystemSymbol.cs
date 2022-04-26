@@ -19,7 +19,7 @@ internal class GamesystemSymbol : CatalogueBaseSymbol, INodeDeclaredSymbol<Games
 
     public override ICatalogueSymbol Gamesystem => this;
 
-    public override ImmutableArray<ICatalogueReferenceSymbol> Imports =>
+    public override ImmutableArray<ICatalogueReferenceSymbol> CatalogueReferences =>
         ImmutableArray<ICatalogueReferenceSymbol>.Empty;
 
     public override GamesystemNode Declaration { get; }
