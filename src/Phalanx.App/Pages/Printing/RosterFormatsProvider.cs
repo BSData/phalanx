@@ -5,14 +5,12 @@ namespace Phalanx.App.Pages.Printing;
 
 public class RosterFormatsProvider
 {
-    private readonly Options options;
-
     public RosterFormatsProvider(IOptions<Options> options)
     {
-        this.options = options.Value;
+        Formats = options.Value.Formats.ToImmutableArray();
     }
 
-    public IEnumerable<RosterFormat> Formats => options.Formats;
+    public ImmutableArray<RosterFormat> Formats { get; }
 
     public class Options
     {

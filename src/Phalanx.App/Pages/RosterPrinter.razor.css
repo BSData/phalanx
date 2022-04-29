@@ -11,12 +11,6 @@
     width: 100%;
 }
 
-.html-renderer {
-    /* TODO white background until we can adjust styling */
-    background-color: white;
-    min-height: 50vh;
-}
-
 .card-container {
     display: flex;
     flex-direction: column;

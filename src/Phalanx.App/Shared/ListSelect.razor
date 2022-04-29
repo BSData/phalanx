@@ -1,0 +1,61 @@
+@typeparam TItem
+
+<FluentSelect TValue="int" Value="@selectedIndex" ValueChanged="OnValueChanged">
+    @for (int i = 0; i < Items.Count; i++)
+    {
+        var index = i;
+        var item = Items[i];
+        <FluentOption Value="@index">
+            @if (ChildContent is not null)
+            {
+                @ChildContent(item)
+            }
+            else
+            {
+                @item?.ToString()
+            }
+    </FluentOption>
+    }
+</FluentSelect>
+
+@code {
+    int selectedIndex;
+
+    [Parameter, EditorRequired]
+    public IReadOnlyList<TItem> Items { get; set; } = Array.Empty<TItem>();
+
+    [Parameter]
+    public TItem? Value
+    {
+        get => selectedIndex >= Items.Count ? default : Items[selectedIndex];
+        set => SetValue(value);
+    }
+
+    [Parameter]
+    public EventCallback<TItem> ValueChanged { get; set; }
+
+    [Parameter]
+    public RenderFragment<TItem>? ChildContent { get; set; }
+
+    void SetValue(TItem? value)
+    {
+        if (!object.ReferenceEquals(value, Value))
+        {
+            for (int i = 0; i < Items.Count; i++)
+            {
+                if (object.ReferenceEquals(Items[i], value))
+                {
+                    selectedIndex = i;
+                    OnValueChanged(i);
+                    return;
+                }
+            }
+            OnValueChanged(0);
+        }
+    }
+
+    Task OnValueChanged(int index)
+    {
+        return ValueChanged.InvokeAsync(Items[index]);
+    }
+}

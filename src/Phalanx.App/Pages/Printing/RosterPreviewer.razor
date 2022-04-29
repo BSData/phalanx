@@ -1,0 +1,25 @@
+@using WarHub.ArmouryModel.EditorServices.Formatting
+@using WarHub.ArmouryModel.Source
+@using WarHub.ArmouryModel.Workspaces.BattleScribe
+
+@if (Format is not null && RosterNode is not null)
+{
+    var formattedOutput = RosterFormatter.Format(RosterNode, Format);
+    @if (Format.OutputFormat == OutputFormat.Html)
+    {
+        <iframe srcdoc="@formattedOutput" class="html-renderer">
+        </iframe>
+    }
+    else
+    {
+        <pre>@formattedOutput</pre>
+    }
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public RosterNode? RosterNode { get; set; }
+
+    [Parameter, EditorRequired]
+    public RosterFormat Format { get; set; } = RosterFormatter.BuiltinFormatters[0];
+}

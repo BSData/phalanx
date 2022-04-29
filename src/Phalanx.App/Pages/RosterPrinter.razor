@@ -64,15 +64,7 @@
             <FluentTabs class="output-tabs">
                 <FluentTab>Preview</FluentTab>
                 <FluentTabPanel slot="tabpanel">
-                    @if (selectedFormat?.OutputFormat == OutputFormat.Html)
-                    {
-                        <iframe srcdoc="@formattedOutput" class="html-renderer">
-                        </iframe>
-                    }
-                    else
-                    {
-                        <pre>@formattedOutput</pre>
-                    }
+                    <RosterPreviewer RosterNode="RosterNode" Format="selectedFormat" />
                 </FluentTabPanel>
                 <FluentTab>Raw text</FluentTab>
                 <FluentTabPanel slot="tabpanel">

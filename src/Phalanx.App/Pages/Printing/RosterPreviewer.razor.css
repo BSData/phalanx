@@ -1,0 +1,6 @@
+.html-renderer {
+    /* TODO white background until we can adjust styling */
+    background-color: white;
+    min-height: 50vh;
+    width: 100%;
+}
