@@ -67,7 +67,7 @@ public record RosterOperationBase : IRosterOperation
 
     RosterState IRosterOperation.Apply(RosterState baseState)
     {
-        return baseState.ReplaceRoster(TransformRoster(baseState));
+        return baseState.ReplaceRoster(TransformRoster(baseState).WithUpdatedCostTotals());
     }
 }
 
