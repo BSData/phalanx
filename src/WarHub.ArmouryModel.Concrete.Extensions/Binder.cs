@@ -64,7 +64,7 @@ internal class Binder
         BindSimple<IResourceEntrySymbol, ErrorSymbols.ErrorResourceEntrySymbol>(
             node,
             diagnostics, node.TargetId,
-            LookupOptions.ResourceEntryOnly | LookupOptions.SharedEntryOnly | node.Type switch
+            LookupOptions.ResourceEntryOnly | LookupOptions.SharedOnly | node.Type switch
             {
                 InfoLinkKind.InfoGroup => LookupOptions.ResourceGroupEntryOnly,
                 InfoLinkKind.Profile => LookupOptions.ProfileEntryOnly,
@@ -76,7 +76,7 @@ internal class Binder
         BindSimple<ISelectionEntryContainerSymbol, ErrorSymbols.ErrorSelectionEntryContainerSymbol>(
             node,
             diagnostics, node.TargetId,
-            LookupOptions.ContainerEntryOnly | LookupOptions.SharedEntryOnly | node.Type switch
+            LookupOptions.ContainerEntryOnly | LookupOptions.SharedOnly | node.Type switch
             {
                 EntryLinkKind.SelectionEntry => LookupOptions.SelectionEntryOnly,
                 EntryLinkKind.SelectionEntryGroup => LookupOptions.SelectionGroupEntryOnly,
@@ -119,11 +119,11 @@ internal class Binder
         {
             return LookupResult.Empty();
         }
-        if (options.HasFlag(LookupOptions.RootEntryOnly) && !IsRootEntry(symbol))
+        if (options.HasFlag(LookupOptions.RootOnly) && !IsRootEntry(symbol))
         {
             return LookupResult.Empty();
         }
-        if (options.HasFlag(LookupOptions.SharedEntryOnly) && !IsSharedEntry(symbol))
+        if (options.HasFlag(LookupOptions.SharedOnly) && !IsSharedEntry(symbol))
         {
             return LookupResult.Empty();
         }
@@ -219,6 +219,7 @@ internal class Binder
                 // TODO multi-result analysis
                 // TODO report possible warnings or errors
                 // TODO candidate-containing result
+                diagnostics.Add(ErrorCode.ERR_MultipleViableBindingCandidates, where.GetLocation(), result.Symbols.ToImmutableArray(), symbolId);
                 return new ErrorSymbols.ErrorSymbolBase();
             }
         }
@@ -226,6 +227,7 @@ internal class Binder
         if (result.Kind is LookupResultKind.Empty)
         {
             // TODO diagnostics, specific type?
+            diagnostics.Add(ErrorCode.ERR_NoBindingCandidates, where.GetLocation(), symbolId);
             return new ErrorSymbols.ErrorSymbolBase();
         }
 
@@ -234,6 +236,10 @@ internal class Binder
         if (result.Error is { } error)
         {
             diagnostics.Add(new WhamDiagnostic(error, where.GetLocation()));
+        }
+        else
+        {
+            diagnostics.Add(ErrorCode.ERR_UnviableBindingCandidates, where.GetLocation(), result.Symbols.ToImmutableArray(), symbolId);
         }
 
         if (result.SingleSymbolOrDefault is { } singleUnviable)

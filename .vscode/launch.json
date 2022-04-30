@@ -7,6 +7,28 @@
       "request": "launch",
       "cwd": "${workspaceFolder}/src/Phalanx.App",
       "url": "https://localhost:7098"
+    },
+    {
+      "name": ".NET Core Launch (console)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/.build/bin/${input:project}/Debug/net6.0/${input:project}.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "stopAtEntry": false,
+      "console": "internalConsole"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "project",
+      "type": "pickString",
+      "description": "Project",
+      "default": "Phalanx.PlaygroundTool",
+      "options": [
+        "Phalanx.PlaygroundTool"
+      ]
     }
   ]
 }

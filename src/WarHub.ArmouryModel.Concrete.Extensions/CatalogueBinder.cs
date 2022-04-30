@@ -69,7 +69,7 @@ internal class CatalogueBaseBinder : Binder
         {
             originalBinder.CheckViability(result, catalogue.ResourceDefinitions, symbolId, options, diagnose);
         }
-        if (!options.HasFlag(LookupOptions.SharedEntryOnly))
+        if (!options.HasFlag(LookupOptions.SharedOnly))
         {
             if (options.CanConsiderContainerEntries())
             {
@@ -80,7 +80,7 @@ internal class CatalogueBaseBinder : Binder
                 originalBinder.CheckViability(result, catalogue.RootResourceEntries, symbolId, options, diagnose);
             }
         }
-        if (!options.HasFlag(LookupOptions.RootEntryOnly))
+        if (!options.HasFlag(LookupOptions.RootOnly))
         {
             if (options.CanConsiderContainerEntries())
             {

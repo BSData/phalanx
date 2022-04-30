@@ -11,4 +11,7 @@ internal enum ErrorCode
     ERR_MissingGamesystem = 3,
     ERR_MultipleGamesystems = 4,
     ERR_UnknownCatalogueType = 5,
+    ERR_NoBindingCandidates = 6,
+    ERR_MultipleViableBindingCandidates = 7,
+    ERR_UnviableBindingCandidates = 8,
 }

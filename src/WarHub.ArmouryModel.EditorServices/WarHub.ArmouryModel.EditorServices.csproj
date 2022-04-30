@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Formatting/templates/**/*" LogicalName="Templates.%(Filename)%(Extension)" />
+    <InternalsVisibleTo Include="WarHub.ArmouryModel.Concrete.Extensions.Tests" />
   </ItemGroup>
 
   <ItemGroup>
