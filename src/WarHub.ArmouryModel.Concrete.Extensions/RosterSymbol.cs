@@ -11,11 +11,16 @@ internal class RosterSymbol : SourceDeclaredSymbol, IRosterSymbol, INodeDeclared
         RosterNode declaration,
         DiagnosticBag diagnostics) : base(containingSymbol, declaration)
     {
+        ContainingNamespace = containingSymbol;
         Declaration = declaration;
         // TODO implement costs/forces
     }
 
     public override RosterNode Declaration { get; }
+
+    public override ICatalogueSymbol? ContainingCatalogue => null;
+
+    public override SourceGlobalNamespaceSymbol ContainingNamespace { get; }
 
     public override SymbolKind Kind => SymbolKind.Roster;
 

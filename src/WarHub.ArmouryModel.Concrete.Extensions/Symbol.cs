@@ -12,34 +12,23 @@ internal abstract class Symbol : ISymbol
 
     public abstract ISymbol? ContainingSymbol { get; }
 
-    public virtual ICatalogueSymbol? ContainingCatalogue
+    public virtual ICatalogueSymbol? ContainingCatalogue => ContainingSymbol switch
     {
-        get
-        {
-            if (ContainingSymbol is null)
-                return null;
-            return ContainingSymbol.Kind switch
-            {
-                SymbolKind.Catalogue => (ICatalogueSymbol)ContainingSymbol,
-                _ => ContainingSymbol.ContainingCatalogue
-            };
-        }
-    }
+        { Kind: SymbolKind.Catalogue } => (ICatalogueSymbol)ContainingSymbol,
+        _ => ContainingSymbol?.ContainingCatalogue
+    };
 
-    public virtual IGamesystemNamespaceSymbol? ContainingNamespace =>
-        ContainingSymbol?.ContainingNamespace;
-
-    internal virtual WhamCompilation? DeclaringCompilation
+    public virtual IGamesystemNamespaceSymbol? ContainingNamespace => ContainingSymbol switch
     {
-        get
-        {
-            return Kind switch
-            {
-                SymbolKind.Namespace => throw new InvalidOperationException("Namespace must override DeclaringCompilation"),
-                _ => (ContainingNamespace as SourceGlobalNamespaceSymbol)?.DeclaringCompilation
-            };
-        }
-    }
+        { Kind: SymbolKind.Namespace } => throw new InvalidOperationException("Namespace child must override ContainingNamespace."),
+        _ => ContainingSymbol?.ContainingNamespace,
+    };
+
+    internal virtual WhamCompilation? DeclaringCompilation => Kind switch
+    {
+        SymbolKind.Namespace => throw new InvalidOperationException("Namespace must override DeclaringCompilation."),
+        _ => (ContainingNamespace as SourceGlobalNamespaceSymbol)?.DeclaringCompilation
+    };
 
     internal virtual bool RequiresCompletion => false;
 
