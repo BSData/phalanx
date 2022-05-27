@@ -14,7 +14,19 @@
     <FluentTabs>
         <FluentTab>Edit</FluentTab>
         <FluentTabPanel>
-            <Phalanx.App.Pages.Editing.EditTreeRosterItem Roster="Roster" OnRosterEdit="OnRosterEdit" />
+            @* TODO the editor should be injected rather than passed all over the place *@
+            <Phalanx.App.Pages.Editing.EditTreeRosterItem Roster="Roster" Editor="Editor" OnRosterEdit="OnRosterEdit" />
+        </FluentTabPanel>
+        <FluentTab>Options</FluentTab>
+        <FluentTabPanel>
+            <div>IOU - 1 functional page</div>
+            <br/>
+            <div>Roster Name edit</div>
+            <br/>
+            <div>Roster's "Game Options" or whatever node decoration indicates that</div>
+            <br/>
+            <div>Notes:</div>
+
         </FluentTabPanel>
         <FluentTab>Preview</FluentTab>
         <FluentTabPanel>

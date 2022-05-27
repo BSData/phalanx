@@ -1,0 +1,127 @@
+@page "/rosteradd"
+
+@using WarHub.ArmouryModel.EditorServices
+@using WarHub.ArmouryModel.Source
+
+@if (Roster is not null && Editor is not null)
+{
+    <TitlePart>Add Units</TitlePart>
+    @* TODO add a toggle button here for a Cat view (current) or a flat abc view of all entries*@
+
+    @* TODO - this is probably unnecessary with better cat management *@
+    AddEntries = new Dictionary<string,EntryLinkNode>();
+    
+    <FluentTreeView>
+        @* TODO this iteration scheme is probably incomplete  *@
+        @foreach (var force in Roster.Forces)
+        {
+             @* // TODO need to get the entrylinks and entries, filter, and add those instead
+            // of copies of the current roster selections *@
+            CatalogueNode catalog = null;
+            foreach(var cat in Editor.State.Catalogues){
+                if(cat.Id == force.CatalogueId){
+                    catalog = cat;
+                    break;
+                }
+            } 
+
+            if(catalog != null){
+                @* TODO this iteration scheme is probably incomplete  *@
+                foreach(var entryLink in catalog.EntryLinks){
+
+                    if(entryLink.Id == null) // make the IDE happy
+                        break; 
+
+                    if(!AddCounts.ContainsKey(entryLink.Id)){
+                        AddCounts[entryLink.Id] = 0;
+                    }   
+                    
+                    AddEntries[entryLink.Id] = entryLink;
+                    AddCats[entryLink.Id] = catalog;
+
+                    <FluentTreeItem Expanded="true">
+                        @* TODO afaik, FluentNumberField sucks at using @bind, and <input> sucks at everything else,
+                        need the bind for the map to work, so one with the ability to do both bind and min/max is 
+                        ideal - odds are there's an attribute I'm just not finding*@
+                        @* <FluentNumberField TValue="int" @bind="AddCounts[entryLink.Name]" Min="0" Size="2" /> *@
+                        <input style="width:70px" type="number" @bind="AddCounts[entryLink.Id]"/>
+
+                        <span>@entryLink.Name</span>
+
+                        <CostDisplay Values="entryLink.Costs"/>
+                    </FluentTreeItem>
+                    @* Console.WriteLine($"- " + entryLink.Name); *@
+
+                }
+            }
+        }
+    </FluentTreeView>
+    <FluentButton Appearance="Appearance.Accent" @onclick="()=> CloseMenu(true)">Add</FluentButton>
+    <FluentButton Appearance="Appearance.Accent" @onclick="()=> CloseMenu(false)">Cancel</FluentButton>
+
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public RosterNode? Roster { get; set; }
+
+    [Parameter, EditorRequired]
+    public RosterEditor? Editor { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback<bool> OnAddDone { get; set; }
+
+
+    private Dictionary<string, int> AddCounts = new Dictionary<string, int>();
+
+    @* TODO this parallel dict is probably, like, the worst thing ever. *@
+    private Dictionary<string, EntryLinkNode> AddEntries = new Dictionary<string, EntryLinkNode>();
+    @* TODO, either there's a nice way to make anonymous types for dicts, or byte the bullet and just make a class for Name, Count+cat at this point *@
+    private Dictionary<string, CatalogueNode> AddCats = new Dictionary<string, CatalogueNode>();
+
+    Task CloseMenu(bool add)
+    {
+       
+        if(add){
+            foreach(string key in AddCounts.Keys){
+
+                if(AddCounts[key] < 1)
+                    continue;
+
+                Console.WriteLine("Adding " + AddEntries[key].Name + " - x" + AddCounts[key]);
+
+
+                Console.WriteLine("Looking for " + AddEntries[key].TargetId);
+                Console.WriteLine("SelectionEntryIds:");
+                foreach(var id in AddCats[key].SelectionEntries){
+                    Console.WriteLine("id:" + id.Id + " name " + id.Name);
+                }
+                // TODO this is gross; it would be good to have a EntryLink.GetTarget() call
+                // though, this mess of iterations could also be optimized....__builder
+
+                // TODO - can entrylinks point to things besides selections? If not, kill this comment ;)
+
+                // Get the Selection this entrylink points to, then add it to the Roster
+                var theFind = AddCats[key].SelectionEntries.Where(s => s.Id == AddEntries[key].TargetId).First();
+
+                
+
+                @* SelectionEntryNode theFind = null;
+                foreach(var find in found){
+                    Console.WriteLine("Found! " + find.Name + " " + find.Id);
+                    theFind = find;
+                } *@
+
+                if(theFind != null){
+                    for(int i =0; i< AddCounts[key]; i++){
+                        Console.WriteLine("Adding " + theFind.Name + " " + theFind.Id);
+
+                    }
+                }
+            }
+        }
+
+        return OnAddDone.InvokeAsync(false);
+    }
+
+}

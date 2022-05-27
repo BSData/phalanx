@@ -5,7 +5,6 @@
 @if (Selection is not null)
 {
     <div style="display: flex; gap: 1em;">
-        <FluentNumberField TValue="int" Value="Selection.Number" ValueChanged="ChangeNumber" Min="1" Size="2" />
 
         <span>@Selection.Name</span>
 
@@ -27,8 +26,4 @@
         return OnRosterEdit.InvokeAsync(RosterOperations.RemoveSelection(node));
     }
 
-    Task ChangeNumber(int value)
-    {
-        return OnRosterEdit.InvokeAsync(RosterOperations.ChangeCountOf(Selection!, value));
-    }
 }

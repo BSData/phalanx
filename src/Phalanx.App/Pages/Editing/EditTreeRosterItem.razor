@@ -6,6 +6,7 @@
     <TitlePart>@Roster.Name</TitlePart>
 
     <h2>@Roster.Name</h2>
+    @* Total Roster Costs *@
     <p>
         @foreach (var cost in Roster.Costs)
         {
@@ -23,33 +24,71 @@
             }
         }
     </p>
-    <FluentTreeView>
-        @foreach (var force in Roster.Forces)
-        {
-            <FluentTreeItem Expanded="true">
-                <span>@force.Name</span>
-                @foreach (var category in force.Categories)
-                {
-                    <FluentTreeItem Expanded="true">
-                        <span>@category.Name</span>
-                        @foreach (var selection in force.Selections.Where(sel => sel.Categories.Any(x => x.Primary && x.EntryId ==
-                       category.EntryId)))
-                        {
-                            <FluentTreeItem Expanded="true">
-                                <EditTreeSelectionItem Selection="selection" OnRosterEdit="OnRosterEdit" />
-                            </FluentTreeItem>
-                        }
-                    </FluentTreeItem>
-                }
-            </FluentTreeItem>
-        }
-    </FluentTreeView>
+    @* TODO make this a fab or etc *@
+    @if(!AddMode){
+        <TitlePart>Add Units</TitlePart>
+
+        <FluentTreeView>
+            @foreach (var force in Roster.Forces)
+            {
+                <FluentTreeItem Expanded="true">
+                    <span>@force.Name</span>
+
+                    @foreach (var category in force.Categories)
+                    {
+                        <FluentTreeItem Expanded="true">
+                            <span>@category.Name</span>
+
+                            @foreach (var selections in force.Selections
+                                .Where(sel => sel.Categories.Any(x => x.Primary && x.EntryId == category.EntryId)))
+                            {
+                                @* <FluentTreeItem Expanded="true">
+                                    <EditTreeSelectionItem Selection="selections" OnRosterEdit="OnRosterEdit" />
+                                </FluentTreeItem> *@
+                                @* @foreach (var selection in selections.Selections)
+                                { *@
+                                    <FluentTreeItem Expanded="true">
+                                        <SelectionDisplay Selection="selections" OnRosterEdit="OnRosterEdit" />
+                                    </FluentTreeItem>
+                                @* } *@
+                            }
+                        </FluentTreeItem>
+                    }
+                </FluentTreeItem>
+            }
+        </FluentTreeView>
+        
+        <FluentButton Appearance="Appearance.Accent" @onclick="ToggleAdd">Add Units</FluentButton>
+
+
+    }
+    else{
+        <RosterAddMenu Roster="Roster" Editor="Editor" OnAddDone="CloseAddMenu" ></RosterAddMenu>
+        @* OnRosterEdit="ToggleAdd" *@
+        @* <FluentButton Appearance="Appearance.Accent" @onclick="ToggleAdd">Add To Roster</FluentButton> *@
+    }
+
 }
 
 @code {
+    
+    [Parameter, EditorRequired]
+    public RosterEditor? Editor { get; set; }
+    // TODO pretty sure Roster lives int eh
+
     [Parameter, EditorRequired]
     public RosterNode? Roster { get; set; }
 
+    private bool AddMode {get; set; } = false;
+
+    private void ToggleAdd(){
+        this.AddMode = !this.AddMode;
+    }
+
     [Parameter, EditorRequired]
     public EventCallback<IRosterOperation> OnRosterEdit { get; set; }
+
+    public void CloseAddMenu(bool save){
+        ToggleAdd();
+    }
 }

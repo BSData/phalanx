@@ -1,0 +1,31 @@
+@using WarHub.ArmouryModel.Source
+
+@if (Values is not null)
+{
+    @* TODO - need to sort so orders between entries are consistent *@
+    @* TODO - might be good to do polymorphism/interface instead of using a CostLinkNode *@
+
+    @foreach(CostNode cost in Values){
+        if(cost.Value !=0)
+        {
+            <span>
+                <span>@cost.Value @cost.Name</span>
+                @if (cost != Values[^1])
+                {
+                    <span>, </span>
+                }
+            </span>
+        }           
+    }
+}
+
+@code {
+    [Parameter]
+    public CostListNode? Values {get; set;}
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+}

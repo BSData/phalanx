@@ -1,0 +1,23 @@
+@using Phalanx.SampleDataset
+@using WarHub.ArmouryModel.EditorServices
+@using WarHub.ArmouryModel.Source
+
+@if (Selection is not null)
+{
+    <div style="display: flex; gap: 1em;">
+        <FluentNumberField TValue="int" Value="Value" Min="0" Size="2" />
+
+        <span>@Selection.Name</span>
+
+        <CostDisplay Values="Selection.Costs"/>
+
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public SelectionNode? Selection { get; set; }
+
+    public int Value {get; set;} = 0;
+
+}

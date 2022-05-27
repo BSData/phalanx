@@ -2,7 +2,7 @@
 <roster id="7878-bcc2-a813-c4d1" name="Test Roster 1" battleScribeVersion="2.03" gameSystemId="bc3d-3e2a-b2b3-fef7" gameSystemName="Spec Kata Wars 9000" gameSystemRevision="2" xmlns="http://www.battlescribe.net/schema/rosterSchema">
   <costs>
     <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="32.0"/>
-    <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="85.0"/>
+    <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="95.0"/>
   </costs>
   <forces>
     <force id="2eff-8940-c03e-1d35" name="Convoy" entryId="f92c-51d5-ff55-166c" publicationId="2ea4-57c2-c067-7215" catalogueId="f702-88f3-aa96-b128" catalogueRevision="1" catalogueName="Grannies">
@@ -21,7 +21,7 @@
             <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="0.0"/>
           </costs>
           <categories>
-            <category id="d7ac-51ba-d629-1e08" name="Game Options" entryId="10c7-1327-32a1-6bee" publicationId="2ea4-57c2-c067-7215" primary="true"/>
+            <category id="a188-f383-e0ca-556d" name="Game Options" entryId="10c7-1327-32a1-6bee" publicationId="2ea4-57c2-c067-7215" primary="true"/>
           </categories>
         </selection>
         <selection id="7205-141a-63b2-fd4b" name="Horse and Buggy" entryId="b5e5-01c4-aec9-6aa9::1f97-e558-f7c2-a9e6" publicationId="3284-fc7c-1d66-fe31" number="1" type="unit">
@@ -75,8 +75,8 @@
             <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="10.0"/>
           </costs>
           <categories>
-            <category id="9798-9ec1-9179-95ec" name="Support Vehicles" entryId="2c8f-63d4-2b0c-01ad" publicationId="2ea4-57c2-c067-7215" primary="false"/>
-            <category id="f628-124a-18ef-88aa" name="Attack Vehicles" entryId="c735-947c-993c-e57d" publicationId="2ea4-57c2-c067-7215" primary="true"/>
+            <category id="5279-72fc-294c-ec1a" name="Support Vehicles" entryId="2c8f-63d4-2b0c-01ad" publicationId="2ea4-57c2-c067-7215" primary="false"/>
+            <category id="d441-826d-23a1-a069" name="Attack Vehicles" entryId="c735-947c-993c-e57d" publicationId="2ea4-57c2-c067-7215" primary="true"/>
           </categories>
         </selection>
         <selection id="1bf9-0031-bed8-6f52" name="Big Rig" entryId="013c-0969-52c7-a739::5251-ba58-8494-67e5" publicationId="3284-fc7c-1d66-fe31" number="1" type="unit">
@@ -140,8 +140,8 @@
             <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="50.0"/>
           </costs>
           <categories>
-            <category id="3a3b-bd91-a9ae-1d83" name="Support Vehicles" entryId="2c8f-63d4-2b0c-01ad" publicationId="2ea4-57c2-c067-7215" primary="true"/>
-            <category id="4ded-d052-ffda-cbf4" name="Attack Vehicles" entryId="c735-947c-993c-e57d" publicationId="2ea4-57c2-c067-7215" primary="false"/>
+            <category id="0371-8610-df44-308e" name="Support Vehicles" entryId="2c8f-63d4-2b0c-01ad" publicationId="2ea4-57c2-c067-7215" primary="true"/>
+            <category id="ef8a-72cb-495f-0a5c" name="Attack Vehicles" entryId="c735-947c-993c-e57d" publicationId="2ea4-57c2-c067-7215" primary="false"/>
           </categories>
         </selection>
         <selection id="221b-69ea-103f-2d61" name="1978 Cutlass" entryId="ee62-e229-cb4b-9256::3fea-0fc5-75d5-08ce" publicationId="3284-fc7c-1d66-fe31" number="1" type="unit">
@@ -205,8 +205,63 @@
             <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="2.0"/>
           </costs>
           <categories>
-            <category id="aa6b-e7c9-30c1-ae80" name="Attack Vehicles" entryId="c735-947c-993c-e57d" publicationId="2ea4-57c2-c067-7215" primary="false"/>
-            <category id="33c4-22b6-eddc-0016" name="Lead Vehicles" entryId="1f30-56d0-ac83-1212" publicationId="2ea4-57c2-c067-7215" primary="true"/>
+            <category id="38f9-7f22-ba61-1962" name="Attack Vehicles" entryId="c735-947c-993c-e57d" publicationId="2ea4-57c2-c067-7215" primary="false"/>
+            <category id="af7b-5963-331c-aa73" name="Lead Vehicles" entryId="1f30-56d0-ac83-1212" publicationId="2ea4-57c2-c067-7215" primary="true"/>
+          </categories>
+        </selection>
+        <selection id="25de-6428-9dbd-f351" name="Horse and Buggy" entryId="b5e5-01c4-aec9-6aa9::1f97-e558-f7c2-a9e6" publicationId="3284-fc7c-1d66-fe31" number="1" type="unit">
+          <profiles>
+            <profile id="b5e5-01c4-aec9-6aa9::033b-a28c-91eb-0806" name="Horse and Buggy" hidden="false" typeId="5f4a-2d9d-d324-0d8b" typeName="Vehicle">
+              <characteristics>
+                <characteristic name="Hit Points" typeId="0505-be28-4cc1-c30f">10</characteristic>
+                <characteristic name="Speed" typeId="2a19-89bb-b447-44bf">10</characteristic>
+                <characteristic name="Defense" typeId="db87-a58d-19f7-6a5f">10</characteristic>
+                <characteristic name="Style" typeId="6b85-49c9-f4e2-e51a">10</characteristic>
+                <characteristic name="Seats" typeId="ec2d-c0b5-a1fd-3cf4">2</characteristic>
+              </characteristics>
+            </profile>
+          </profiles>
+          <selections>
+            <selection id="3800-4185-1f72-f299" name="Granny Trooper" entryId="b5e5-01c4-aec9-6aa9::17ed-2864-9896-f214::4191-729e-affc-9637" entryGroupId="b5e5-01c4-aec9-6aa9::d633-4afb-c233-747d" publicationId="3284-fc7c-1d66-fe31" number="1" type="model">
+              <profiles>
+                <profile id="b5e5-01c4-aec9-6aa9::17ed-2864-9896-f214::fa81-b0bd-2659-7f2e" name="Granny Trooper" publicationId="3284-fc7c-1d66-fe31" hidden="false" typeId="a6e8-411d-f765-546a" typeName="Character">
+                  <characteristics>
+                    <characteristic name="Attack Power" typeId="1744-8129-95a0-536e">10</characteristic>
+                    <characteristic name="Evasion" typeId="9aab-d556-7966-cc13">10</characteristic>
+                    <characteristic name="Driving Skill" typeId="8b10-f201-846f-ab9f">10</characteristic>
+                    <characteristic name="Navigation Skill" typeId="3f4b-aa15-3364-134b">10</characteristic>
+                  </characteristics>
+                </profile>
+              </profiles>
+              <costs>
+                <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
+                <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="0.0"/>
+              </costs>
+            </selection>
+            <selection id="6989-5913-614b-ba01" name="Granny Trooper" entryId="b5e5-01c4-aec9-6aa9::c13d-f23a-a773-4905::4191-729e-affc-9637" entryGroupId="b5e5-01c4-aec9-6aa9::7c81-68f0-9efb-fd22" publicationId="3284-fc7c-1d66-fe31" number="1" type="model">
+              <profiles>
+                <profile id="b5e5-01c4-aec9-6aa9::c13d-f23a-a773-4905::fa81-b0bd-2659-7f2e" name="Granny Trooper" publicationId="3284-fc7c-1d66-fe31" hidden="false" typeId="a6e8-411d-f765-546a" typeName="Character">
+                  <characteristics>
+                    <characteristic name="Attack Power" typeId="1744-8129-95a0-536e">10</characteristic>
+                    <characteristic name="Evasion" typeId="9aab-d556-7966-cc13">10</characteristic>
+                    <characteristic name="Driving Skill" typeId="8b10-f201-846f-ab9f">10</characteristic>
+                    <characteristic name="Navigation Skill" typeId="3f4b-aa15-3364-134b">10</characteristic>
+                  </characteristics>
+                </profile>
+              </profiles>
+              <costs>
+                <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
+                <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="0.0"/>
+              </costs>
+            </selection>
+          </selections>
+          <costs>
+            <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
+            <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="10.0"/>
+          </costs>
+          <categories>
+            <category id="1724-b7ff-f589-9439" name="Support Vehicles" entryId="2c8f-63d4-2b0c-01ad" publicationId="2ea4-57c2-c067-7215" primary="false"/>
+            <category id="fa2d-94fb-e35f-609a" name="Attack Vehicles" entryId="c735-947c-993c-e57d" publicationId="2ea4-57c2-c067-7215" primary="true"/>
           </categories>
         </selection>
       </selections>
@@ -215,11 +270,11 @@
         <publication id="3284-fc7c-1d66-fe31" name="Grannybook 2021"/>
       </publications>
       <categories>
-        <category id="9e61-8396-eb43-6f78" name="Uncategorised" entryId="(No Category)" primary="false"/>
-        <category id="3f51-7014-5b75-bd7b" name="Game Options" entryId="10c7-1327-32a1-6bee" publicationId="2ea4-57c2-c067-7215" primary="false"/>
-        <category id="b876-d06c-d41c-f029" name="Attack Vehicles" entryId="c735-947c-993c-e57d" publicationId="2ea4-57c2-c067-7215" primary="false"/>
-        <category id="87c8-f5b8-755d-ee5e" name="Support Vehicles" entryId="2c8f-63d4-2b0c-01ad" publicationId="2ea4-57c2-c067-7215" primary="false"/>
-        <category id="4903-8a06-6055-53e0" name="Lead Vehicles" entryId="1f30-56d0-ac83-1212" publicationId="2ea4-57c2-c067-7215" primary="false"/>
+        <category id="0562-7032-c18e-d362" name="Uncategorised" entryId="(No Category)" primary="false"/>
+        <category id="7e1c-d053-69ee-7d92" name="Game Options" entryId="10c7-1327-32a1-6bee" publicationId="2ea4-57c2-c067-7215" primary="false"/>
+        <category id="70db-54f0-5adc-0a37" name="Attack Vehicles" entryId="c735-947c-993c-e57d" publicationId="2ea4-57c2-c067-7215" primary="false"/>
+        <category id="dcfc-007c-1405-db8b" name="Support Vehicles" entryId="2c8f-63d4-2b0c-01ad" publicationId="2ea4-57c2-c067-7215" primary="false"/>
+        <category id="437d-db59-7623-8654" name="Lead Vehicles" entryId="1f30-56d0-ac83-1212" publicationId="2ea4-57c2-c067-7215" primary="false"/>
       </categories>
     </force>
   </forces>
