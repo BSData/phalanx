@@ -36,6 +36,22 @@ public class RosterEditor
         }
     }
 
+    public void ApplyOperations(IRosterOperation[] operations)
+    {
+        if(operations == null){
+            return;
+        }
+        
+        lock (lockObject)
+        {
+            foreach(IRosterOperation op in operations){
+                var newState = op.Apply(State);
+                stateStack = stateStack.Push((newState, op));
+            }
+            redoStack = redoStack.Clear();
+        }
+    }
+
     public bool Undo()
     {
         lock (lockObject)

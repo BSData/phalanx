@@ -4,6 +4,7 @@
 @using WarHub.ArmouryModel.EditorServices
 @using WarHub.ArmouryModel.EditorServices.Formatting
 @using WarHub.ArmouryModel.Source
+@using Phalanx.App.Pages.Editing
 
 @inject Phalanx.App.Pages.Printing.RosterFormatsProvider formatter
 
@@ -15,7 +16,7 @@
         <FluentTab>Edit</FluentTab>
         <FluentTabPanel>
             @* TODO the editor should be injected rather than passed all over the place *@
-            <Phalanx.App.Pages.Editing.EditTreeRosterItem Roster="Roster" Editor="Editor" OnRosterEdit="OnRosterEdit" />
+            <EditTreeRosterItem Roster="Roster" Editor="Editor" OnRosterEdit="OnRosterEdit" />
         </FluentTabPanel>
         <FluentTab>Options</FluentTab>
         <FluentTabPanel>
@@ -67,8 +68,18 @@ else
         Editor = new RosterEditor(rosterState);
     }
 
-    void OnRosterEdit(IRosterOperation operation)
+    void OnRosterEdit(IRosterOperation[] operations)
     {
-        Editor?.ApplyOperation(operation);
+        Console.WriteLine("Calling apply at RosterEdit");
+
+        foreach(IRosterOperation op in operations)
+            Editor?.ApplyOperation(op);
+
+        var printer = new Phalanx.App.RosterDebugPrinter();
+        printer.Visit(Editor?.State.Roster);
+        printer.Visit(Roster);
+
+
+        StateHasChanged();
     }
 }

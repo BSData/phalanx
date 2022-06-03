@@ -42,16 +42,18 @@
                             @foreach (var selections in force.Selections
                                 .Where(sel => sel.Categories.Any(x => x.Primary && x.EntryId == category.EntryId)))
                             {
-                                @* <FluentTreeItem Expanded="true">
-                                    <EditTreeSelectionItem Selection="selections" OnRosterEdit="OnRosterEdit" />
-                                </FluentTreeItem> *@
-                                @* @foreach (var selection in selections.Selections)
-                                { *@
-                                    <FluentTreeItem Expanded="true">
-                                        <SelectionDisplay Selection="selections" OnRosterEdit="OnRosterEdit" />
-                                    </FluentTreeItem>
-                                @* } *@
+                                <FluentTreeItem Expanded="true">
+                                    <SelectionDisplay Selection="selections" OnRosterEdit="OnRosterEdit" />
+                                </FluentTreeItem>
                             }
+                        </FluentTreeItem>
+                    }
+                    @* TODO kludge for now *@
+                    @foreach (var selections in force.Selections
+                        .Where(sel => sel.Categories.Count() < 1))
+                    {
+                        <FluentTreeItem Expanded="true">
+                            <SelectionDisplay Selection="selections" OnRosterEdit="OnRosterEdit" />
                         </FluentTreeItem>
                     }
                 </FluentTreeItem>
@@ -64,8 +66,6 @@
     }
     else{
         <RosterAddMenu Roster="Roster" Editor="Editor" OnAddDone="CloseAddMenu" ></RosterAddMenu>
-        @* OnRosterEdit="ToggleAdd" *@
-        @* <FluentButton Appearance="Appearance.Accent" @onclick="ToggleAdd">Add To Roster</FluentButton> *@
     }
 
 }
@@ -86,9 +86,14 @@
     }
 
     [Parameter, EditorRequired]
-    public EventCallback<IRosterOperation> OnRosterEdit { get; set; }
+    public EventCallback<IRosterOperation[]> OnRosterEdit { get; set; }
 
-    public void CloseAddMenu(bool save){
+    public Task CloseAddMenu(IRosterOperation[] ops){
         ToggleAdd();
+        Console.WriteLine("Invoking at ETRI");
+
+        return OnRosterEdit.InvokeAsync(ops);
+
+
     }
 }

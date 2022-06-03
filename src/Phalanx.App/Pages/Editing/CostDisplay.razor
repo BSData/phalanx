@@ -8,13 +8,15 @@
     @foreach(CostNode cost in Values){
         if(cost.Value !=0)
         {
-            <span>
-                <span>@cost.Value @cost.Name</span>
-                @if (cost != Values[^1])
-                {
-                    <span>, </span>
-                }
-            </span>
+            <div style="display: flex; gap: 1em;">
+                <span>
+                    <span>@cost.Value @cost.Name</span>
+                    @if (cost != Values[^1])
+                    {
+                        <span>, </span>
+                    }
+                </span>
+            </div>
         }           
     }
 }

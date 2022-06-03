@@ -17,6 +17,8 @@ public static class RosterOperations
     public static AddSelectionOperation AddSelection(SelectionEntryNode selectionEntry, ForceNode force) =>
         new(selectionEntry, force);
 
+    public static AddSelectionFromLinkOp AddSelectionFromLink(SelectionEntryNode selectionEntry, EntryLinkNode link, ForceNode force) =>
+        new(selectionEntry, link, force);
     public static RemoveForceOperation RemoveForce(ForceNode force) => new(force);
 
     public static RemoveSelectionOperation RemoveSelection(SelectionNode selection) =>
@@ -143,6 +145,27 @@ public record AddSelectionOperation(SelectionEntryNode SelectionEntry, ForceNode
             .AddCosts(SelectionEntry.Costs);
         // TODO add selection categories, rules, profiles
         // TODO add subselections
+        return roster.Replace(Force, x => x.AddSelections(selection));
+    }
+}
+
+public record AddSelectionFromLinkOp(SelectionEntryNode SelectionEntry, EntryLinkNode entryLink, ForceNode Force) : RosterOperationBase
+{
+    protected override RosterOperationKind Kind => RosterOperationKind.AddSelection;
+
+    protected override RosterNode TransformRoster(RosterState state)
+    {
+        var roster = state.RosterRequired;
+        var selectionEntryId = SelectionEntry.Id;
+        if (selectionEntryId is null)
+            return roster; // TODO add diagnostic invalid data
+        var selection =
+            Selection(SelectionEntry, selectionEntryId)
+            .AddCosts(entryLink.Costs);
+        // TODO add selection categories, rules, profiles
+        // TODO add subselections
+        
+        // TODO this seems to cause issues when called in succession, could be Razor tho
         return roster.Replace(Force, x => x.AddSelections(selection));
     }
 }

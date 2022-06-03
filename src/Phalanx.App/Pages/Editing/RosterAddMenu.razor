@@ -1,4 +1,3 @@
-@page "/rosteradd"
 
 @using WarHub.ArmouryModel.EditorServices
 @using WarHub.ArmouryModel.Source
@@ -44,20 +43,20 @@
                         need the bind for the map to work, so one with the ability to do both bind and min/max is 
                         ideal - odds are there's an attribute I'm just not finding*@
                         @* <FluentNumberField TValue="int" @bind="AddCounts[entryLink.Name]" Min="0" Size="2" /> *@
+
                         <input style="width:70px" type="number" @bind="AddCounts[entryLink.Id]"/>
 
                         <span>@entryLink.Name</span>
 
                         <CostDisplay Values="entryLink.Costs"/>
                     </FluentTreeItem>
-                    @* Console.WriteLine($"- " + entryLink.Name); *@
 
                 }
             }
         }
     </FluentTreeView>
-    <FluentButton Appearance="Appearance.Accent" @onclick="()=> CloseMenu(true)">Add</FluentButton>
-    <FluentButton Appearance="Appearance.Accent" @onclick="()=> CloseMenu(false)">Cancel</FluentButton>
+    <FluentButton Appearance="Appearance.Accent" @onclick="()=> AddSelected()">Add</FluentButton>
+    <FluentButton Appearance="Appearance.Accent" @onclick="()=> CloseMenu()">Cancel</FluentButton>
 
 }
 
@@ -69,7 +68,7 @@
     public RosterEditor? Editor { get; set; }
 
     [Parameter, EditorRequired]
-    public EventCallback<bool> OnAddDone { get; set; }
+    public EventCallback<IRosterOperation[]> OnAddDone { get; set; }
 
 
     private Dictionary<string, int> AddCounts = new Dictionary<string, int>();
@@ -79,49 +78,48 @@
     @* TODO, either there's a nice way to make anonymous types for dicts, or byte the bullet and just make a class for Name, Count+cat at this point *@
     private Dictionary<string, CatalogueNode> AddCats = new Dictionary<string, CatalogueNode>();
 
-    Task CloseMenu(bool add)
+    Task AddSelected()
     {
-       
-        if(add){
-            foreach(string key in AddCounts.Keys){
 
-                if(AddCounts[key] < 1)
-                    continue;
+        var operations = new List<IRosterOperation>();
+        var printer = new RosterDebugPrinter();
+        printer.Visit(Editor.State.Roster);
 
-                Console.WriteLine("Adding " + AddEntries[key].Name + " - x" + AddCounts[key]);
+        foreach(string key in AddCounts.Keys){
 
+            if(AddCounts[key] < 1)
+                continue;
 
-                Console.WriteLine("Looking for " + AddEntries[key].TargetId);
-                Console.WriteLine("SelectionEntryIds:");
-                foreach(var id in AddCats[key].SelectionEntries){
-                    Console.WriteLine("id:" + id.Id + " name " + id.Name);
-                }
-                // TODO this is gross; it would be good to have a EntryLink.GetTarget() call
-                // though, this mess of iterations could also be optimized....__builder
+            // TODO this is gross; it would be good to have a EntryLink.GetTarget() call
+            // though, this mess of iterations could also be optimized....
 
-                // TODO - can entrylinks point to things besides selections? If not, kill this comment ;)
+            // TODO - can entrylinks point to things besides selections? If not, kill this comment ;)
+            // TODO determine if other arrays need traversal besides SSE - First() is not happy if the array is a miss
+            // Get the Selection this entrylink points to, then add it to the Roster
+            var theFind = AddCats[key].SharedSelectionEntries.Where(s => s.Id == AddEntries[key].TargetId).First();
 
-                // Get the Selection this entrylink points to, then add it to the Roster
-                var theFind = AddCats[key].SelectionEntries.Where(s => s.Id == AddEntries[key].TargetId).First();
+            if(theFind != null){
+                for(int i =0; i< AddCounts[key]; i++){
+                    Console.WriteLine("Adding " + theFind.Name + " to " + Roster?.Forces[0].Name);
 
-                
-
-                @* SelectionEntryNode theFind = null;
-                foreach(var find in found){
-                    Console.WriteLine("Found! " + find.Name + " " + find.Id);
-                    theFind = find;
-                } *@
-
-                if(theFind != null){
-                    for(int i =0; i< AddCounts[key]; i++){
-                        Console.WriteLine("Adding " + theFind.Name + " " + theFind.Id);
-
-                    }
+                    @* var toAdd = theFind.; *@
+                    // TODO this is bad
+                    //theFind.Costs.Append(AddEntries[key].Costs);
+                    // TODO hardcoded Force[0]
+                    operations.Add(RosterOperations.AddSelectionFromLink(theFind, AddEntries[key], Roster?.Forces[0]));
                 }
             }
         }
+        
+        printer.Visit(Editor.State.Roster);
 
-        return OnAddDone.InvokeAsync(false);
+        Console.WriteLine("Invoking at AddMenu");
+
+        return OnAddDone.InvokeAsync(operations.ToArray());
+    }
+
+    Task CloseMenu(){
+        return OnAddDone.InvokeAsync(null);
     }
 
 }
