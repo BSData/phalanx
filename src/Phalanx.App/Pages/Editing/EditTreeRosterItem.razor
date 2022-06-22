@@ -43,7 +43,7 @@
                                 .Where(sel => sel.Categories.Any(x => x.Primary && x.EntryId == category.EntryId)))
                             {
                                 <FluentTreeItem Expanded="true">
-                                    <SelectionDisplay Selection="selections" OnRosterEdit="OnRosterEdit" />
+                                    <SelectionDisplay Selection="selections" />
                                 </FluentTreeItem>
                             }
                         </FluentTreeItem>
@@ -53,7 +53,7 @@
                         .Where(sel => sel.Categories.Count() < 1))
                     {
                         <FluentTreeItem Expanded="true">
-                            <SelectionDisplay Selection="selections" OnRosterEdit="OnRosterEdit" />
+                            <SelectionDisplay Selection="selections"/>
                         </FluentTreeItem>
                     }
                 </FluentTreeItem>
@@ -65,19 +65,17 @@
 
     }
     else{
-        <RosterAddMenu Roster="Roster" Editor="Editor" OnAddDone="CloseAddMenu" ></RosterAddMenu>
+        <RosterAddMenu OnAddDone="CloseAddMenu" ></RosterAddMenu>
     }
 
 }
 
 @code {
     
-    [Parameter, EditorRequired]
+    [CascadingParameter, EditorRequired]
     public RosterEditor? Editor { get; set; }
-    // TODO pretty sure Roster lives int eh
 
-    [Parameter, EditorRequired]
-    public RosterNode? Roster { get; set; }
+    private RosterNode? Roster => Editor?.State.Roster;
 
     private bool AddMode {get; set; } = false;
 
@@ -85,15 +83,8 @@
         this.AddMode = !this.AddMode;
     }
 
-    [Parameter, EditorRequired]
-    public EventCallback<IRosterOperation[]> OnRosterEdit { get; set; }
-
-    public Task CloseAddMenu(IRosterOperation[] ops){
+    public void CloseAddMenu(IRosterOperation[] ops){
         ToggleAdd();
         Console.WriteLine("Invoking at ETRI");
-
-        return OnRosterEdit.InvokeAsync(ops);
-
-
     }
 }

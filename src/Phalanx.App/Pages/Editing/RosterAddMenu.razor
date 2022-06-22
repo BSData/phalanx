@@ -61,11 +61,11 @@
 }
 
 @code {
-    [Parameter, EditorRequired]
-    public RosterNode? Roster { get; set; }
 
-    [Parameter, EditorRequired]
+    [CascadingParameter, EditorRequired]
     public RosterEditor? Editor { get; set; }
+    private RosterNode? Roster => Editor?.State.Roster;
+
 
     [Parameter, EditorRequired]
     public EventCallback<IRosterOperation[]> OnAddDone { get; set; }
@@ -106,16 +106,19 @@
                     // TODO this is bad
                     //theFind.Costs.Append(AddEntries[key].Costs);
                     // TODO hardcoded Force[0]
-                    operations.Add(RosterOperations.AddSelectionFromLink(theFind, AddEntries[key], Roster?.Forces[0]));
+                    //operations.Add(RosterOperations.AddSelectionFromLink(theFind, AddEntries[key], Roster?.Forces[0]));
+                    Editor?.ApplyOperation(RosterOperations.AddSelectionFromLink(theFind, AddEntries[key], Roster?.Forces[0]));
+
                 }
             }
         }
-        
+        //RefreshService.CallRequestRefresh();
+
         printer.Visit(Editor.State.Roster);
 
         Console.WriteLine("Invoking at AddMenu");
 
-        return OnAddDone.InvokeAsync(operations.ToArray());
+        return OnAddDone.InvokeAsync();
     }
 
     Task CloseMenu(){

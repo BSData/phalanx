@@ -11,36 +11,43 @@
 @if (Roster is not null)
 {
     <TitlePart>@Roster.Name</TitlePart>
+    <CascadingValue Value="@Editor">
+        <CascadingValue Value="@OnRosterEdit" IsFixed="true">
+        <FluentTabs>
+            <FluentTab>Edit</FluentTab>
+            <FluentTabPanel>
+                @* TODO the editor should be injected rather than passed all over the place *@
+                    <EditTreeRosterItem/>
+            </FluentTabPanel>
+            <FluentTab>Options</FluentTab>
+            <FluentTabPanel>
+                <div>IOU - 1 functional page</div>
+                <br/>
+                <div>Roster Name edit</div>
+                <br/>
+                <div>Roster's Limits for costs and etc or whatever node decoration indicates that</div>
+                <br/>
+                <div>Notes:</div>
+                <br/>
+                <div>Edit Roster Forces Menu:</div>
 
-    <FluentTabs>
-        <FluentTab>Edit</FluentTab>
-        <FluentTabPanel>
-            @* TODO the editor should be injected rather than passed all over the place *@
-            <EditTreeRosterItem Roster="Roster" Editor="Editor" OnRosterEdit="OnRosterEdit" />
-        </FluentTabPanel>
-        <FluentTab>Options</FluentTab>
-        <FluentTabPanel>
-            <div>IOU - 1 functional page</div>
-            <br/>
-            <div>Roster Name edit</div>
-            <br/>
-            <div>Roster's "Game Options" or whatever node decoration indicates that</div>
-            <br/>
-            <div>Notes:</div>
 
-        </FluentTabPanel>
-        <FluentTab>Preview</FluentTab>
-        <FluentTabPanel>
+            </FluentTabPanel>
+            <FluentTab>Preview</FluentTab>
+            <FluentTabPanel>
 
-            <div>
-                <ListSelect @bind-Value="Format" Items="formatter.Formats">
-                    @context.Name
-                </ListSelect>
-            </div>
+                <div>
+                    <ListSelect @bind-Value="Format" Items="formatter.Formats">
+                        @context.Name
+                    </ListSelect>
+                </div>
 
-            <Phalanx.App.Pages.Printing.RosterPreviewer RosterNode="Roster" Format="Format" />
-        </FluentTabPanel>
-    </FluentTabs>
+                <Phalanx.App.Pages.Printing.RosterPreviewer RosterNode="Roster" Format="Format" />
+            </FluentTabPanel>
+        </FluentTabs>
+        </CascadingValue>
+    </CascadingValue>
+
 }
 else
 {
@@ -59,7 +66,6 @@ else
         base.OnInitialized();
         LoadTestRoster();
     }
-
     void LoadTestRoster()
     {
         //get roster from file
@@ -72,14 +78,21 @@ else
     {
         Console.WriteLine("Calling apply at RosterEdit");
 
-        foreach(IRosterOperation op in operations)
-            Editor?.ApplyOperation(op);
+        @* foreach(IRosterOperation op in operations)
+            Editor?.ApplyOperation(op); *@
 
         var printer = new Phalanx.App.RosterDebugPrinter();
         printer.Visit(Editor?.State.Roster);
-        printer.Visit(Roster);
+        @* printer.Visit(Roster); *@
 
 
         StateHasChanged();
     }
+
+
+
+private void RefreshMe()
+{
+    StateHasChanged();
+}
 }

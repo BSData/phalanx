@@ -18,13 +18,17 @@
     [Parameter, EditorRequired]
     public SelectionNode? Selection { get; set; }
 
-    [Parameter, EditorRequired]
-    public EventCallback<IRosterOperation[]> OnRosterEdit { get; set; }
 
-    Task RemoveSelf(SelectionNode node)
+    [CascadingParameter]
+    public RosterEditor? Editor { get; set; }
+
+    void RemoveSelf(SelectionNode node)
     {
-        var ops = new IRosterOperation[]{RosterOperations.RemoveSelection(node)};
-        return OnRosterEdit.InvokeAsync(ops);
+        @* var ops = new IRosterOperation[]{RosterOperations.RemoveSelection(node)}; *@
+        @* return OnRosterEdit.InvokeAsync(ops); *@
+        Console.WriteLine("Remove Self called");
+        Editor?.ApplyOperation(RosterOperations.RemoveSelection(node));
+
     }
 
 }
