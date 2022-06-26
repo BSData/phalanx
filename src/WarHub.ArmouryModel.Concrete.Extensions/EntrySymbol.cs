@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol
+internal abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol, INodeDeclaredSymbol<EntryBaseNode>
 {
     protected EntrySymbol(
         ISymbol containingSymbol,
@@ -11,8 +11,7 @@ internal abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol
         : base(containingSymbol, declaration)
     {
         Declaration = declaration;
-        PublicationReference = declaration.PublicationId is not null
-            ? new EntryPublicationReferenceSymbol(this, declaration, diagnostics) : null;
+        PublicationReference = PublicationReferenceSymbol.Create(this, declaration, diagnostics);
         Effects = LogicSymbol.CreateEffects(this, declaration, diagnostics);
     }
 
@@ -22,7 +21,7 @@ internal abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol
 
     protected virtual IEntrySymbol? BaseReferencedEntry => null;
 
-    public EntryPublicationReferenceSymbol? PublicationReference { get; }
+    public PublicationReferenceSymbol? PublicationReference { get; }
 
     IPublicationReferenceSymbol? IEntrySymbol.PublicationReference => PublicationReference;
 

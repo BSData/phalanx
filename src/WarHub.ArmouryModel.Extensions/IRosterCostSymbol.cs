@@ -6,7 +6,7 @@ namespace WarHub.ArmouryModel;
 /// WHAM <see cref="Source.CostNode" />
 /// and <see cref="Source.CostLimitNode" />.
 /// </summary>
-public interface IRosterCostSymbol : IRosterItemSymbol
+public interface IRosterCostSymbol : ISymbol
 {
     decimal Value { get; }
     decimal? Limit { get; }

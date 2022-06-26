@@ -24,6 +24,12 @@ internal abstract class Symbol : ISymbol
         _ => ContainingSymbol?.ContainingNamespace,
     };
 
+    public virtual IRosterSymbol? ContainingRoster => ContainingSymbol switch
+    {
+        { Kind: SymbolKind.Roster } => (IRosterSymbol)ContainingSymbol,
+        _ => ContainingSymbol?.ContainingRoster
+    };
+
     internal virtual WhamCompilation? DeclaringCompilation => Kind switch
     {
         SymbolKind.Namespace => throw new InvalidOperationException("Namespace must override DeclaringCompilation."),

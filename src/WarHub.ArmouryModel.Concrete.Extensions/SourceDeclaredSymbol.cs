@@ -1,7 +1,6 @@
 using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
-
 internal abstract class SourceDeclaredSymbol : Symbol, INodeDeclaredSymbol<SourceNode>
 {
     protected SourceDeclaredSymbol(

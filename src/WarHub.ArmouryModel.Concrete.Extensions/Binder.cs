@@ -36,9 +36,9 @@ internal class Binder
         BindSimple<IProfileTypeSymbol, ErrorSymbols.ErrorProfileTypeSymbol>(
             node, diagnostics, node.TypeId, LookupOptions.ProfileTypeOnly);
 
-    internal IPublicationSymbol BindPublicationSymbol(EntryBaseNode node, DiagnosticBag diagnostics) =>
+    internal IPublicationSymbol BindPublicationSymbol(IPublicationReferencingNode node, DiagnosticBag diagnostics) =>
         BindSimple<IPublicationSymbol, ErrorSymbols.ErrorPublicationSymbol>(
-            node, diagnostics, node.PublicationId, LookupOptions.PublicationOnly);
+            (SourceNode)node, diagnostics, node.PublicationId, LookupOptions.PublicationOnly);
 
     internal ICharacteristicTypeSymbol BindCharacteristicTypeSymbol(CharacteristicNode node, DiagnosticBag diagnostics) =>
         BindSimple<ICharacteristicTypeSymbol, ErrorSymbols.ErrorCharacteristicTypeSymbol>(

@@ -38,4 +38,10 @@ public interface ISymbol
     /// if the symbol doesn't belong to a namespace (e.g. is a namespace itself).
     /// </summary>
     IGamesystemNamespaceSymbol? ContainingNamespace { get; }
+
+    /// <summary>
+    /// Gets the <see cref="IRosterSymbol"/> for the containing roster. Returns null if the symbol
+    /// is not from a roster.
+    /// </summary>
+    IRosterSymbol? ContainingRoster { get; }
 }

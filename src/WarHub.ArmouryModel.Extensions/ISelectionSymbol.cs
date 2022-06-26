@@ -1,3 +1,5 @@
+using WarHub.ArmouryModel.Source;
+
 namespace WarHub.ArmouryModel;
 
 /// <summary>
@@ -8,11 +10,22 @@ namespace WarHub.ArmouryModel;
 public interface ISelectionSymbol : IRosterSelectionTreeElementSymbol
 {
     /// <summary>
-    /// Selection count, or the number of times that selection is "taken".
+    /// Selection count (number of times that selection is "taken").
     /// </summary>
     int Count { get; }
 
+    SelectionEntryKind EntryKind { get; }
+
     new ISelectionEntrySymbol SourceEntry { get; }
 
-    IRosterSelectionTreeElementSymbol Parent { get; }
+    ICategorySymbol? PrimaryCategory { get; }
+
+    ImmutableArray<ICategorySymbol> Categories { get; }
+
+    /// <summary>
+    /// Costs for this selection (with <see cref="Count"/> taken into account).
+    /// Doesn't include costs of <see cref="IRosterSelectionTreeElementSymbol.ChildSelections"/>.
+    /// These are extracted from <see cref="IRosterEntrySymbol.Resources"/>.
+    /// </summary>
+    ImmutableArray<ICostSymbol> Costs { get; }
 }

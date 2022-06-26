@@ -34,6 +34,9 @@ public enum SymbolKind
     // force in roster
     Force,
 
+    // category in force, category of selection
+    Category,
+
     // roster selection
     Selection,
 }

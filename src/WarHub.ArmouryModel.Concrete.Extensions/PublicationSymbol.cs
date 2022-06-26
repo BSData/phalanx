@@ -5,7 +5,7 @@ namespace WarHub.ArmouryModel.Concrete;
 internal class PublicationSymbol : SourceDeclaredSymbol, IPublicationSymbol, INodeDeclaredSymbol<PublicationNode>
 {
     public PublicationSymbol(
-        ICatalogueSymbol containingSymbol,
+        ISymbol? containingSymbol,
         PublicationNode declaration,
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration)

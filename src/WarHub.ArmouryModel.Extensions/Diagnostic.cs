@@ -36,6 +36,7 @@ public abstract partial class Diagnostic : IEquatable<Diagnostic?>, IFormattable
         Location? location,
         params object?[]? messageArgs)
     {
+        // TODO that's infinite recursion! there's a missing factory method
         return Create(descriptor, location, null, null, messageArgs);
     }
 

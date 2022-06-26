@@ -12,6 +12,7 @@ Please see [Wiki](https://github.com/BSData/phalanx/wiki) for more information.
 ## Technical description
 
 The following stack of app layers is currently (at least partially) implemented:
+
 - DTO to (de)serialize XML content into typed objects (WarHub.ArmouryModel.Source.*Core types). This layer is a tree where children don't have a reference to their parent.
 - SourceNode layer, lazy-initialized immutable wrappers for DTOs (WarHub.ArmouryModel.Source.*Node types). This layer is a tree where children have a reference to their parent.
 - Symbol layer, immutable object graph. Internal implementation of upper ISymbol layer, which builds an actual object graph, by resolving references (e.g. link targetId is resolved to an actual symbol for the target entry) - this operation is called binding. This layer also generates diagnostics (e.g. bad links, invalid enum values, etc).
@@ -34,19 +35,16 @@ The main app to run is in `src/Phalanx.App` - select this project as startup pro
 - consider removing "deeper" types than IResourceDefinition/IResourceEntry/IContainerEntry
   - simpler usage
   - requires moving their "custom" properties somewhere: "ContentFields" collection of custom name-value wrappers, maybe strongly typed?
-- drop Dataset type
 - symbol layer:
   - symbolinfo that might be an error
-  - implementation for: constraints, logic (conditions, modifiers), roster entitites
+  - implementation for: constraints, logic (conditions, modifiers)
   - binder factory
   - binders for sub-catalogue levels
 - add default subselections:
   - for entries with constraints min > 0 (constraints need symbols?)
   - entry groups
   - should that be in a separate "RosterEditor" module?
-- category links of two types (force entry child and selection entry child)?
 - implement Logic symbols
-- implement Roster symbols
 
 ## Symbols
 
@@ -93,9 +91,9 @@ to the link target.
       - ITupleOperationConditionSymbol // condition groups
     - IQuerySymbol
 - IRosterSymbol
-- IRosterItemSymbol // has roster ref
-  - IRosterCostSymbol
-  - IRosterEntrySymbol // has SourceEntry
-    - IForceOrSelectionSymbol // has selections
-      - IForceSymbol
-      - ISelectionSymbol
+- IRosterCostSymbol // both value and limit (if set)
+- IRosterEntrySymbol // has SourceEntry
+  - ICategorySymbol
+  - IRosterSelectionTreeElementSymbol // has selections
+    - IForceSymbol
+    - ISelectionSymbol
