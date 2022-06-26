@@ -1,54 +1,49 @@
-
 @using WarHub.ArmouryModel.EditorServices
 @using WarHub.ArmouryModel.Source
 
-@if (Roster is not null && Editor is not null)
+@if (Editor is { State: { Roster: { } Roster, Catalogues: { } Catalogues } })
 {
     <TitlePart>Add Units</TitlePart>
     @* TODO add a toggle button here for a Cat view (current) or a flat abc view of all entries*@
 
     @* TODO - this is probably unnecessary with better cat management *@
-    AddEntries = new Dictionary<string,EntryLinkNode>();
-    
+    AddEntries = new Dictionary<string, EntryLinkNode>();
+
     <FluentTreeView>
-        @* TODO this iteration scheme is probably incomplete  *@
+        @* TODO this iteration scheme is probably incomplete *@
         @foreach (var force in Roster.Forces)
         {
-             @* // TODO need to get the entrylinks and entries, filter, and add those instead
-            // of copies of the current roster selections *@
-            CatalogueNode catalog = null;
-            foreach(var cat in Editor.State.Catalogues){
-                if(cat.Id == force.CatalogueId){
-                    catalog = cat;
-                    break;
-                }
-            } 
+            @* // TODO need to get the entrylinks and entries, filter, and add those instead
+                // of copies of the current roster selections *@
+            var catalog = Catalogues.FirstOrDefault(x => x.Id == force.CatalogueId);
+            if (catalog != null)
+            {
+                @* TODO this iteration scheme is probably incomplete *@
+                foreach (var entryLink in catalog.EntryLinks)
+                {
 
-            if(catalog != null){
-                @* TODO this iteration scheme is probably incomplete  *@
-                foreach(var entryLink in catalog.EntryLinks){
+                    if (entryLink.Id == null) // make the IDE happy
+                        break;
 
-                    if(entryLink.Id == null) // make the IDE happy
-                        break; 
-
-                    if(!AddCounts.ContainsKey(entryLink.Id)){
+                    if (!AddCounts.ContainsKey(entryLink.Id))
+                    {
                         AddCounts[entryLink.Id] = 0;
-                    }   
-                    
+                    }
+
                     AddEntries[entryLink.Id] = entryLink;
                     AddCats[entryLink.Id] = catalog;
 
                     <FluentTreeItem Expanded="true">
                         @* TODO afaik, FluentNumberField sucks at using @bind, and <input> sucks at everything else,
-                        need the bind for the map to work, so one with the ability to do both bind and min/max is 
-                        ideal - odds are there's an attribute I'm just not finding*@
+                            need the bind for the map to work, so one with the ability to do both bind and min/max is
+                            ideal - odds are there's an attribute I'm just not finding*@
                         @* <FluentNumberField TValue="int" @bind="AddCounts[entryLink.Name]" Min="0" Size="2" /> *@
 
-                        <input style="width:70px" type="number" @bind="AddCounts[entryLink.Id]"/>
+                        <input style="width:70px" type="number" @bind="AddCounts[entryLink.Id]" />
 
                         <span>@entryLink.Name</span>
 
-                        <CostDisplay Values="entryLink.Costs"/>
+                        <CostDisplay Values="entryLink.Costs" />
                     </FluentTreeItem>
 
                 }
@@ -64,8 +59,6 @@
 
     [CascadingParameter, EditorRequired]
     public RosterEditor? Editor { get; set; }
-    private RosterNode? Roster => Editor?.State.Roster;
-
 
     [Parameter, EditorRequired]
     public EventCallback<IRosterOperation[]> OnAddDone { get; set; }
@@ -75,19 +68,23 @@
 
     @* TODO this parallel dict is probably, like, the worst thing ever. *@
     private Dictionary<string, EntryLinkNode> AddEntries = new Dictionary<string, EntryLinkNode>();
-    @* TODO, either there's a nice way to make anonymous types for dicts, or byte the bullet and just make a class for Name, Count+cat at this point *@
+    @* TODO, either there's a nice way to make anonymous types for dicts, or byte the bullet and just make a class for Name,
+        Count+cat at this point *@
     private Dictionary<string, CatalogueNode> AddCats = new Dictionary<string, CatalogueNode>();
 
     Task AddSelected()
     {
-
+        if (Editor?.State is not { Roster: { } roster } state)
+        {
+            return Task.CompletedTask;
+        }
         var operations = new List<IRosterOperation>();
         var printer = new RosterDebugPrinter();
-        printer.Visit(Editor.State.Roster);
+        printer.Visit(roster);
 
-        foreach(string key in AddCounts.Keys){
-
-            if(AddCounts[key] < 1)
+        foreach (string key in AddCounts.Keys)
+        {
+            if (AddCounts[key] < 1)
                 continue;
 
             // TODO this is gross; it would be good to have a EntryLink.GetTarget() call
@@ -98,16 +95,18 @@
             // Get the Selection this entrylink points to, then add it to the Roster
             var theFind = AddCats[key].SharedSelectionEntries.Where(s => s.Id == AddEntries[key].TargetId).First();
 
-            if(theFind != null){
-                for(int i =0; i< AddCounts[key]; i++){
-                    Console.WriteLine("Adding " + theFind.Name + " to " + Roster?.Forces[0].Name);
+            if (theFind != null)
+            {
+                for (int i = 0; i < AddCounts[key]; i++)
+                {
+                    Console.WriteLine("Adding " + theFind.Name + " to " + roster.Forces[0].Name);
 
                     @* var toAdd = theFind.; *@
                     // TODO this is bad
                     //theFind.Costs.Append(AddEntries[key].Costs);
                     // TODO hardcoded Force[0]
                     //operations.Add(RosterOperations.AddSelectionFromLink(theFind, AddEntries[key], Roster?.Forces[0]));
-                    Editor?.ApplyOperation(RosterOperations.AddSelectionFromLink(theFind, AddEntries[key], Roster?.Forces[0]));
+                    Editor?.ApplyOperation(RosterOperations.AddSelectionFromLink(theFind, AddEntries[key], roster.Forces[0]));
 
                 }
             }
@@ -121,8 +120,8 @@
         return OnAddDone.InvokeAsync();
     }
 
-    Task CloseMenu(){
+    Task CloseMenu()
+    {
         return OnAddDone.InvokeAsync(null);
     }
-
 }

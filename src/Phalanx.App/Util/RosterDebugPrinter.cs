@@ -28,28 +28,10 @@ class RosterDebugPrinter : SourceWalker
         Depth--;
     }
 
-    public void VisitArray<T>(string name, Action<T> baseCall, T node){
-        // Print(name + " {");
-        // Depth++;
-        baseCall(node);
-        // Depth--;
-        // Print("}");
-    }
-
-    public override void VisitSelectionEntryList(SelectionEntryListNode node)
-    {
-        VisitArray("SelectionEntryList", base.VisitSelectionEntryList, node);
-    }
-
-
-    public override void VisitSelectionList(SelectionListNode node)
-    {
-        VisitArray("SelectionList", base.VisitSelectionList, node);
-    }
     public override void VisitSelection(SelectionNode node)
     {
         Print($"- {node.Number}x {node.Name} [{string.Join(", ", node.Costs.Select(x => $"{x.Value}{x.Name}"))}]");
-        if(node.Categories.Count() > 0)
+        if (node.Categories.Count > 0)
             Print($"  categories: [{string.Join(", ", node.Categories.Select(x => $"id:{x.EntryId} primary:{x.Primary}"))}]");
 
         Depth++;

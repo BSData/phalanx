@@ -164,8 +164,6 @@ public record AddSelectionFromLinkOp(SelectionEntryNode SelectionEntry, EntryLin
             .AddCosts(entryLink.Costs);
         // TODO add selection categories, rules, profiles
         // TODO add subselections
-        
-        // TODO this seems to cause issues when called in succession, could be Razor tho
         return roster.Replace(Force, x => x.AddSelections(selection));
     }
 }

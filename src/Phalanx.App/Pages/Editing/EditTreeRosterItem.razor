@@ -25,7 +25,8 @@
         }
     </p>
     @* TODO make this a fab or etc *@
-    @if(!AddMode){
+    @if (!AddMode)
+    {
         <TitlePart>Add Units</TitlePart>
 
         <FluentTreeView>
@@ -40,7 +41,7 @@
                             <span>@category.Name</span>
 
                             @foreach (var selections in force.Selections
-                                .Where(sel => sel.Categories.Any(x => x.Primary && x.EntryId == category.EntryId)))
+                           .Where(sel => sel.Categories.Any(x => x.Primary && x.EntryId == category.EntryId)))
                             {
                                 <FluentTreeItem Expanded="true">
                                     <SelectionDisplay Selection="selections" />
@@ -50,40 +51,39 @@
                     }
                     @* TODO kludge for now *@
                     @foreach (var selections in force.Selections
-                        .Where(sel => sel.Categories.Count() < 1))
+                   .Where(sel => sel.Categories.Count() < 1))
                     {
                         <FluentTreeItem Expanded="true">
-                            <SelectionDisplay Selection="selections"/>
+                            <SelectionDisplay Selection="selections" />
                         </FluentTreeItem>
                     }
                 </FluentTreeItem>
             }
         </FluentTreeView>
-        
+
         <FluentButton Appearance="Appearance.Accent" @onclick="ToggleAdd">Add Units</FluentButton>
-
-
     }
-    else{
-        <RosterAddMenu OnAddDone="CloseAddMenu" ></RosterAddMenu>
+    else
+    {
+        <RosterAddMenu OnAddDone="CloseAddMenu"></RosterAddMenu>
     }
-
 }
 
 @code {
-    
     [CascadingParameter, EditorRequired]
     public RosterEditor? Editor { get; set; }
 
     private RosterNode? Roster => Editor?.State.Roster;
 
-    private bool AddMode {get; set; } = false;
+    private bool AddMode { get; set; } = false;
 
-    private void ToggleAdd(){
+    private void ToggleAdd()
+    {
         this.AddMode = !this.AddMode;
     }
 
-    public void CloseAddMenu(IRosterOperation[] ops){
+    public void CloseAddMenu(IRosterOperation[] ops)
+    {
         ToggleAdd();
         Console.WriteLine("Invoking at ETRI");
     }

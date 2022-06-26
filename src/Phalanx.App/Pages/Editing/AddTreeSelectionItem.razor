@@ -9,7 +9,7 @@
 
         <span>@Selection.Name</span>
 
-        <CostDisplay Values="Selection.Costs"/>
+        <CostDisplay Values="Selection.Costs" />
     </div>
 }
 
@@ -17,6 +17,5 @@
     [Parameter, EditorRequired]
     public SelectionNode? Selection { get; set; }
 
-    public int Value {get; set;} = 0;
-
+    public int Value { get; set; } = 0;
 }
