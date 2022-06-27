@@ -25,10 +25,10 @@ internal class CategoryLinkSymbol : ContainerEntryBaseSymbol, ICategoryEntrySymb
 
     protected override IEntrySymbol? BaseReferencedEntry => ReferencedEntry;
 
-    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
+    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnostics)
     {
-        base.BindReferencesCore(binder, diagnosticBag);
+        base.BindReferencesCore(binder, diagnostics);
 
-        lazyReference = binder.BindCategoryEntrySymbol(Declaration, diagnosticBag);
+        lazyReference = binder.BindCategoryEntrySymbol(Declaration, diagnostics);
     }
 }

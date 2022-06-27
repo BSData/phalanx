@@ -42,7 +42,7 @@ internal abstract class SourceDeclaredSymbol : Symbol, INodeDeclaredSymbol<Sourc
         BindReferencesCore(compilation.GetBinder(Declaration, ContainingSymbol), diagnostics);
     }
 
-    protected virtual void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
+    protected virtual void BindReferencesCore(Binder binder, DiagnosticBag diagnostics)
     {
     }
 }

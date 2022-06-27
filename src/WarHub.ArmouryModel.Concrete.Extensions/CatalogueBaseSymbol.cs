@@ -117,9 +117,9 @@ internal abstract class CatalogueBaseSymbol : SourceDeclaredSymbol, ICatalogueSy
 
     public ImmutableArray<IResourceEntrySymbol> SharedResourceEntries { get; }
 
-    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
+    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnostics)
     {
-        base.BindReferencesCore(binder, diagnosticBag);
+        base.BindReferencesCore(binder, diagnostics);
     }
 
     protected override void InvokeForceCompleteOnChildren()

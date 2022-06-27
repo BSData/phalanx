@@ -26,10 +26,11 @@ internal class CategorySymbol : RosterEntryBasedSymbol, ICategorySymbol, INodeDe
 
     public bool IsPrimaryCategory => Declaration.Primary;
 
-    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
+    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnostics)
     {
-        base.BindReferencesCore(binder, diagnosticBag);
-        // TODO bind lazyCategoryEntry
+        base.BindReferencesCore(binder, diagnostics);
+        // TODO handle the special `(No Category)` here, or in binder?
+        lazyCategoryEntry = binder.BindCategoryEntrySymbol(Declaration, diagnostics);
     }
 
     protected override void InvokeForceCompleteOnChildren()

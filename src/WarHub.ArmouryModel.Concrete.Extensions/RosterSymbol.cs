@@ -51,10 +51,10 @@ internal class RosterSymbol : SourceDeclaredSymbol, IRosterSymbol, INodeDeclared
 
     public ImmutableArray<IForceSymbol> Forces { get; }
 
-    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
+    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnostics)
     {
-        base.BindReferencesCore(binder, diagnosticBag);
-        lazyGamesystem = binder.BindGamesystemSymbol(Declaration, diagnosticBag);
+        base.BindReferencesCore(binder, diagnostics);
+        lazyGamesystem = binder.BindGamesystemSymbol(Declaration, diagnostics);
     }
 
     protected override void InvokeForceCompleteOnChildren()

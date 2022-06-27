@@ -25,10 +25,10 @@ internal class CostSymbol : SimpleResourceEntrySymbol, ICostSymbol, INodeDeclare
 
     protected override IResourceDefinitionSymbol? BaseType => Type;
 
-    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
+    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnostics)
     {
-        base.BindReferencesCore(binder, diagnosticBag);
+        base.BindReferencesCore(binder, diagnostics);
 
-        lazyCostTypeSymbol = binder.BindCostTypeSymbol(Declaration, diagnosticBag);
+        lazyCostTypeSymbol = binder.BindCostTypeSymbol(Declaration, diagnostics);
     }
 }

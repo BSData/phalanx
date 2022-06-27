@@ -44,9 +44,17 @@ internal class Binder
         BindSimple<ICharacteristicTypeSymbol, ErrorSymbols.ErrorCharacteristicTypeSymbol>(
             node, diagnostics, node.TypeId, LookupOptions.CharacteristicTypeOnly);
 
+    internal IForceEntrySymbol BindForceEntrySymbol(ForceNode node, DiagnosticBag diagnostics) =>
+        BindSimple<IForceEntrySymbol, ErrorSymbols.ErrorForceEntrySymbol>(
+            node, diagnostics, node.EntryId, LookupOptions.ForceEntryOnly);
+
     internal ICatalogueSymbol BindCatalogueSymbol(CatalogueLinkNode node, DiagnosticBag diagnostics) =>
         BindSimple<ICatalogueSymbol, ErrorSymbols.ErrorCatalogueSymbol>(
             node, diagnostics, node.TargetId, LookupOptions.CatalogueOnly);
+
+    internal ICatalogueSymbol BindCatalogueSymbol(ForceNode node, DiagnosticBag diagnostics) =>
+        BindSimple<ICatalogueSymbol, ErrorSymbols.ErrorCatalogueSymbol>(
+            node, diagnostics, node.CatalogueId, LookupOptions.CatalogueOnly);
 
     internal ICatalogueSymbol BindGamesystemSymbol(CatalogueNode node, DiagnosticBag diagnostics) =>
         BindSimple<ICatalogueSymbol, ErrorSymbols.ErrorGamesystemSymbol>(
@@ -87,10 +95,22 @@ internal class Binder
         BindSimple<ICategoryEntrySymbol, ErrorSymbols.ErrorCategoryEntrySymbol>(
             node, diagnostics, node.TargetId, LookupOptions.CategoryEntryOnly);
 
+    internal ICategoryEntrySymbol BindCategoryEntrySymbol(CategoryNode node, DiagnosticBag diagnostics) =>
+        BindSimple<ICategoryEntrySymbol, ErrorSymbols.ErrorCategoryEntrySymbol>(
+            node, diagnostics, node.EntryId, LookupOptions.CategoryEntryOnly);
+
     // TODO this definitely needs work, as it looks downward, into children
     internal ISelectionEntrySymbol BindSelectionEntryGroupDefaultEntrySymbol(SelectionEntryGroupNode node, DiagnosticBag diagnostics) =>
         BindSimple<ISelectionEntrySymbol, ErrorSymbols.ErrorSelectionEntrySymbol>(
             node, diagnostics, node.DefaultSelectionEntryId, LookupOptions.SelectionEntryOnly);
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Code Analysis", "CA1822", Justification = "WIP")]
+    internal ISelectionEntrySymbol BindSelectionEntry(SelectionNode node, DiagnosticBag diagnostics)
+    {
+        // TODO implement selection binding
+        diagnostics.Add(ErrorCode.ERR_GenericError, node.GetLocation(), "Selection binding is not yet implemented.");
+        return new ErrorSymbols.ErrorSelectionEntrySymbol();
+    }
 
     private TSymbol BindSimple<TSymbol, TErrorSymbol>(SourceNode node, DiagnosticBag diagnostics, string? symbolId, LookupOptions options)
         where TSymbol : ISymbol

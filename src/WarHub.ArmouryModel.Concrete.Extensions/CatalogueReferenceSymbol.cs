@@ -16,14 +16,16 @@ internal class CatalogueReferenceSymbol : SourceDeclaredSymbol, ICatalogueRefere
 
     public bool ImportsRootEntries => Declaration.ImportRootEntries;
 
+    public int CatalogueRevision => default;
+
     public ICatalogueSymbol Catalogue => GetBoundField(ref lazyCatalogue);
 
     public override CatalogueLinkNode Declaration { get; }
 
-    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
+    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnostics)
     {
-        base.BindReferencesCore(binder, diagnosticBag);
+        base.BindReferencesCore(binder, diagnostics);
 
-        lazyCatalogue = binder.BindCatalogueSymbol(Declaration, diagnosticBag);
+        lazyCatalogue = binder.BindCatalogueSymbol(Declaration, diagnostics);
     }
 }

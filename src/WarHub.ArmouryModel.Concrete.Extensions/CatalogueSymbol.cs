@@ -36,11 +36,11 @@ internal class CatalogueSymbol : CatalogueBaseSymbol, INodeDeclaredSymbol<Catalo
 
     CatalogueNode INodeDeclaredSymbol<CatalogueNode>.Declaration => Declaration;
 
-    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
+    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnostics)
     {
-        base.BindReferencesCore(binder, diagnosticBag);
+        base.BindReferencesCore(binder, diagnostics);
 
-        lazyGamesystem = binder.BindGamesystemSymbol(Declaration, diagnosticBag);
+        lazyGamesystem = binder.BindGamesystemSymbol(Declaration, diagnostics);
     }
 
     protected override void InvokeForceCompleteOnChildren()

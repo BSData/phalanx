@@ -25,10 +25,10 @@ internal class CharacteristicSymbol : SimpleResourceEntrySymbol, ICharacteristic
 
     protected override IResourceDefinitionSymbol? BaseType => Type;
 
-    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
+    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnostics)
     {
-        base.BindReferencesCore(binder, diagnosticBag);
+        base.BindReferencesCore(binder, diagnostics);
 
-        lazyType = binder.BindCharacteristicTypeSymbol(Declaration, diagnosticBag);
+        lazyType = binder.BindCharacteristicTypeSymbol(Declaration, diagnostics);
     }
 }

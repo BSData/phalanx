@@ -13,6 +13,7 @@ internal class ForceSymbol : RosterEntryBasedSymbol, IForceSymbol, INodeDeclared
         : base(containingSymbol, declaration, diagnostics)
     {
         Declaration = declaration;
+        CatalogueReference = new ForceCatalogueReferenceSymbol(this, declaration, diagnostics);
         Resources = CreateRosterEntryResources(diagnostics).ToImmutableArray();
         Categories = declaration.Categories.Select(x => new CategorySymbol(this, x , diagnostics)).ToImmutableArray<ICategorySymbol>();
         Publications = declaration.Publications.Select(x => new PublicationSymbol(this, x, diagnostics)).ToImmutableArray<IPublicationSymbol>();
@@ -36,15 +37,18 @@ internal class ForceSymbol : RosterEntryBasedSymbol, IForceSymbol, INodeDeclared
 
     public ImmutableArray<IPublicationSymbol> Publications { get; }
 
-    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
+    public ICatalogueReferenceSymbol CatalogueReference { get; }
+
+    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnostics)
     {
-        base.BindReferencesCore(binder, diagnosticBag);
-        // TODO bind lazyForceEntry
+        base.BindReferencesCore(binder, diagnostics);
+        lazyForceEntry = binder.BindForceEntrySymbol(Declaration, diagnostics);
     }
 
     protected override void InvokeForceCompleteOnChildren()
     {
         base.InvokeForceCompleteOnChildren();
+        InvokeForceComplete(CatalogueReference);
         // Resources are done in base.Invoke... call
         InvokeForceComplete(Categories);
         InvokeForceComplete(Publications);

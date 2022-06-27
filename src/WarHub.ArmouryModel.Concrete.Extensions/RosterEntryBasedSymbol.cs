@@ -43,7 +43,7 @@ internal abstract class RosterEntryBasedSymbol : SourceDeclaredSymbol, IRosterEn
     protected override void InvokeForceCompleteOnChildren()
     {
         base.InvokeForceCompleteOnChildren();
-        PublicationReference?.ForceComplete();
+        InvokeForceComplete(PublicationReference);
         InvokeForceComplete(Resources);
     }
 }

@@ -38,9 +38,14 @@ internal abstract class Symbol : ISymbol
 
     internal virtual bool RequiresCompletion => false;
 
+    /// <summary>
+    /// Value 0 - binding not started.
+    /// Value 1 - binding started.
+    /// Value 2 - binding finished.
+    /// </summary>
     private int bindingDone;
 
-    private bool BindingDone => bindingDone > 0;
+    private bool BindingDone => bindingDone > 1;
 
     internal void ForceComplete()
     {
@@ -52,6 +57,8 @@ internal abstract class Symbol : ISymbol
                 var diagnostics = DiagnosticBag.GetInstance();
                 BindReferences(compilation, diagnostics);
                 compilation.AddBindingDiagnostics(diagnostics);
+                // we mark binding as done before completing children, as children track their binding state separately
+                Interlocked.Increment(ref bindingDone); 
                 InvokeForceCompleteOnChildren();
             }
             else
@@ -67,13 +74,18 @@ internal abstract class Symbol : ISymbol
 
     protected virtual void InvokeForceCompleteOnChildren() { }
 
-    protected static void InvokeForceComplete<TChild>(ImmutableArray<TChild> children)
+    protected static void InvokeForceComplete<TChild>(ImmutableArray<TChild> children) where TChild : ISymbol
     {
         foreach (var child in children)
         {
-            if (child is Symbol { RequiresCompletion: true } toComplete)
-                toComplete.ForceComplete();
+            InvokeForceComplete(child: child);
         }
+    }
+
+    protected static void InvokeForceComplete<TChild>(TChild? child) where TChild : ISymbol
+    {
+        if (child is Symbol { RequiresCompletion: true } toComplete)
+            toComplete.ForceComplete();
     }
 
     protected TField GetBoundField<TField>(ref TField? field) where TField : class

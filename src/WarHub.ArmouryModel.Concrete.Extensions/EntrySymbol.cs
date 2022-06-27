@@ -34,7 +34,7 @@ internal abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol, INodeD
     protected override void InvokeForceCompleteOnChildren()
     {
         base.InvokeForceCompleteOnChildren();
-        PublicationReference?.ForceComplete();
+        InvokeForceComplete(PublicationReference);
         InvokeForceComplete(Effects);
     }
 

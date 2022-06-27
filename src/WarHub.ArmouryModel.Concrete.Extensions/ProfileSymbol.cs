@@ -38,11 +38,11 @@ internal class ProfileSymbol : EntrySymbol, IProfileSymbol, INodeDeclaredSymbol<
 
     IResourceEntrySymbol? IResourceEntrySymbol.ReferencedEntry => null;
 
-    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
+    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnostics)
     {
-        base.BindReferencesCore(binder, diagnosticBag);
+        base.BindReferencesCore(binder, diagnostics);
 
-        lazyType = binder.BindProfileTypeSymbol(Declaration, diagnosticBag);
+        lazyType = binder.BindProfileTypeSymbol(Declaration, diagnostics);
     }
 
     protected override void InvokeForceCompleteOnChildren()

@@ -21,13 +21,13 @@ internal class SelectionEntryGroupSymbol : SelectionEntryBaseSymbol, ISelectionE
 
     public ISelectionEntrySymbol? DefaultSelectionEntry => GetOptionalBoundField(ref lazyDefaultEntry);
 
-    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
+    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnostics)
     {
-        base.BindReferencesCore(binder, diagnosticBag);
+        base.BindReferencesCore(binder, diagnostics);
 
         if (Declaration.DefaultSelectionEntryId is not null)
         {
-            lazyDefaultEntry = binder.BindSelectionEntryGroupDefaultEntrySymbol(Declaration, diagnosticBag);
+            lazyDefaultEntry = binder.BindSelectionEntryGroupDefaultEntrySymbol(Declaration, diagnostics);
         }
     }
 }

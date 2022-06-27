@@ -9,6 +9,8 @@ public interface IForceSymbol : IRosterSelectionTreeElementSymbol
 {
     new IForceEntrySymbol SourceEntry { get; }
 
+    ICatalogueReferenceSymbol CatalogueReference { get; }
+
     // TODO research how child forces interact
     ImmutableArray<IForceSymbol> ChildForces { get; }
 

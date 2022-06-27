@@ -97,3 +97,10 @@ to the link target.
   - IRosterSelectionTreeElementSymbol // has selections
     - IForceSymbol
     - ISelectionSymbol
+
+## Implementation notes
+
+BattleScribe has some unnatural or unexpected, or just unobvious behavior.
+Here we try to gather such cases:
+
+- Editing a roster results in Categories having new IDs, even if they/selections didn't change.

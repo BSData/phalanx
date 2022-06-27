@@ -38,10 +38,10 @@ internal class ResourceLinkSymbol : EntrySymbol, IResourceEntrySymbol, INodeDecl
 
     protected override IEntrySymbol? BaseReferencedEntry => ReferencedEntry;
 
-    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnosticBag)
+    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnostics)
     {
-        base.BindReferencesCore(binder, diagnosticBag);
+        base.BindReferencesCore(binder, diagnostics);
 
-        lazyReferencedEntry = binder.BindSharedResourceEntrySymbol(Declaration, diagnosticBag);
+        lazyReferencedEntry = binder.BindSharedResourceEntrySymbol(Declaration, diagnostics);
     }
 }
