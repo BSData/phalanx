@@ -20,6 +20,8 @@ public class RosterEditor
         stateStack = stateStack.Push((state, RosterOperations.Identity));
     }
 
+    public event Action<IRosterOperation, RosterState>? OperationApplied;
+
     public RosterState State => stateStack.Peek().state;
 
     public bool CanUndo => !stateStack.Pop().IsEmpty;
@@ -33,6 +35,7 @@ public class RosterEditor
             var newState = operation.Apply(State);
             stateStack = stateStack.Push((newState, operation));
             redoStack = redoStack.Clear();
+            OperationApplied?.Invoke(operation, newState);
         }
     }
 
