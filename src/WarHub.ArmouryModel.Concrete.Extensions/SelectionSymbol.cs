@@ -15,7 +15,7 @@ internal class SelectionSymbol : RosterEntryBasedSymbol, ISelectionSymbol, INode
         Declaration = declaration;
         Costs = declaration.Costs.Select(x => new CostSymbol(this, x, diagnostics)).ToImmutableArray<ICostSymbol>();
         Resources = Costs.CastArray<IResourceEntrySymbol>().AddRange(CreateRosterEntryResources(diagnostics));
-        Categories = declaration.Categories.Select(x => new CategorySymbol(this, x , diagnostics)).ToImmutableArray<ICategorySymbol>();
+        Categories = declaration.Categories.Select(x => new CategorySymbol(this, x, diagnostics)).ToImmutableArray<ICategorySymbol>();
         ChildSelections = declaration.Selections.Select(x => new SelectionSymbol(this, x, diagnostics)).ToImmutableArray<ISelectionSymbol>();
         PrimaryCategory = Categories.FirstOrDefault(x => x.IsPrimaryCategory); // TODO diagnostic if count != 1 for root selection? (also what about NoCategory)
     }

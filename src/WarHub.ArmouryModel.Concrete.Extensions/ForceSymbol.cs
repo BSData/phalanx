@@ -15,7 +15,7 @@ internal class ForceSymbol : RosterEntryBasedSymbol, IForceSymbol, INodeDeclared
         Declaration = declaration;
         CatalogueReference = new ForceCatalogueReferenceSymbol(this, declaration, diagnostics);
         Resources = CreateRosterEntryResources(diagnostics).ToImmutableArray();
-        Categories = declaration.Categories.Select(x => new CategorySymbol(this, x , diagnostics)).ToImmutableArray<ICategorySymbol>();
+        Categories = declaration.Categories.Select(x => new CategorySymbol(this, x, diagnostics)).ToImmutableArray<ICategorySymbol>();
         Publications = declaration.Publications.Select(x => new PublicationSymbol(this, x, diagnostics)).ToImmutableArray<IPublicationSymbol>();
         ChildForces = declaration.Forces.Select(x => new ForceSymbol(this, x, diagnostics)).ToImmutableArray<IForceSymbol>();
         ChildSelections = declaration.Selections.Select(x => new SelectionSymbol(this, x, diagnostics)).ToImmutableArray<ISelectionSymbol>();

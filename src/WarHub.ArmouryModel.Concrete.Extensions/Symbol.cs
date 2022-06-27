@@ -58,7 +58,7 @@ internal abstract class Symbol : ISymbol
                 BindReferences(compilation, diagnostics);
                 compilation.AddBindingDiagnostics(diagnostics);
                 // we mark binding as done before completing children, as children track their binding state separately
-                Interlocked.Increment(ref bindingDone); 
+                Interlocked.Increment(ref bindingDone);
                 InvokeForceCompleteOnChildren();
             }
             else
