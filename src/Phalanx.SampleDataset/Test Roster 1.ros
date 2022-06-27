@@ -2,14 +2,22 @@
 <roster id="7878-bcc2-a813-c4d1" name="Test Roster 1" battleScribeVersion="2.03" gameSystemId="bc3d-3e2a-b2b3-fef7" gameSystemName="Spec Kata Wars 9000" gameSystemRevision="2" xmlns="http://www.battlescribe.net/schema/rosterSchema">
   <costs>
     <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="32.0"/>
-    <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="95.0"/>
+    <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="114.0"/>
   </costs>
+  <costLimits>
+    <costLimit name="Points" typeId="a66b-3b27-93dd-68ce" value="200.0"/>
+  </costLimits>
   <forces>
     <force id="2eff-8940-c03e-1d35" name="Convoy" entryId="f92c-51d5-ff55-166c" publicationId="2ea4-57c2-c067-7215" catalogueId="f702-88f3-aa96-b128" catalogueRevision="1" catalogueName="Grannies">
+      <rules>
+        <rule id="81f7-b9ea-fee6-1b5b" name="Ol&apos; but Gold" publicationId="3284-fc7c-1d66-fe31" page="132" hidden="false">
+          <description>Grannies are old, but with age comes experience. They can ignore Roadblocks when Driving.</description>
+        </rule>
+      </rules>
       <selections>
         <selection id="6b05-7361-4802-6742" name="Game Size" entryId="f0bc-6218-0276-0632::a23f-f979-d5f7-34d5" publicationId="2ea4-57c2-c067-7215" number="1" type="upgrade">
           <selections>
-            <selection id="e39e-ccef-b038-932f" name="100 Points" entryId="f0bc-6218-0276-0632::9d78-85fe-4de7-2099" entryGroupId="f0bc-6218-0276-0632::c2b2-23d3-76b2-6d2d" number="1" type="upgrade">
+            <selection id="e3ff-5330-3653-6f42" name="200 Points" entryId="f0bc-6218-0276-0632::d31f-2b03-7d58-4df1" entryGroupId="f0bc-6218-0276-0632::c2b2-23d3-76b2-6d2d" number="1" type="upgrade">
               <costs>
                 <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
                 <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="0.0"/>
@@ -64,6 +72,25 @@
                   </characteristics>
                 </profile>
               </profiles>
+              <selections>
+                <selection id="9c9c-053a-4634-45aa" name="Cane" entryId="b5e5-01c4-aec9-6aa9::c13d-f23a-a773-4905::7d5d-f394-2944-7add::32b9-c42e-8c9b-d7d9::f15e-05be-b168-2e56" entryGroupId="b5e5-01c4-aec9-6aa9::c13d-f23a-a773-4905::7d5d-f394-2944-7add::ee2f-5b09-868f-0957" publicationId="3284-fc7c-1d66-fe31" number="1" type="upgrade">
+                  <profiles>
+                    <profile id="b5e5-01c4-aec9-6aa9::c13d-f23a-a773-4905::7d5d-f394-2944-7add::32b9-c42e-8c9b-d7d9::38a1-e8d4-ebda-d8af::7b27-1195-36ac-2e33" name="Cane" publicationId="3284-fc7c-1d66-fe31" hidden="false" typeId="6cfe-fe74-1a3d-6d17" typeName="Weapon">
+                      <characteristics>
+                        <characteristic name="Type" typeId="5fce-07c3-4ac4-725c">Melee</characteristic>
+                        <characteristic name="Damage" typeId="e9b6-5ffa-ead8-7da4">10</characteristic>
+                        <characteristic name="Attack Speed" typeId="b3d9-5892-fc1d-cd47">10</characteristic>
+                        <characteristic name="Parry" typeId="9972-d522-3bdb-4501">10</characteristic>
+                        <characteristic name="Range" typeId="b352-1258-db4f-2de1">10</characteristic>
+                      </characteristics>
+                    </profile>
+                  </profiles>
+                  <costs>
+                    <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="2.0"/>
+                    <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
+                  </costs>
+                </selection>
+              </selections>
               <costs>
                 <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
                 <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="0.0"/>
@@ -113,6 +140,25 @@
                   </characteristics>
                 </profile>
               </profiles>
+              <selections>
+                <selection id="8195-e895-bda6-f311" name="Walker" entryId="013c-0969-52c7-a739::a02e-9101-c911-6559::ee41-e259-8446-40e7::4d3b-80ae-149d-0e30::5dfb-930b-3711-e2f0" entryGroupId="013c-0969-52c7-a739::a02e-9101-c911-6559::ee41-e259-8446-40e7::ee2f-5b09-868f-0957" publicationId="3284-fc7c-1d66-fe31" number="1" type="upgrade">
+                  <profiles>
+                    <profile id="013c-0969-52c7-a739::a02e-9101-c911-6559::ee41-e259-8446-40e7::4d3b-80ae-149d-0e30::2f58-657f-282b-c9f4::f651-9466-7043-f18f" name="Walker" publicationId="3284-fc7c-1d66-fe31" hidden="false" typeId="6cfe-fe74-1a3d-6d17" typeName="Weapon">
+                      <characteristics>
+                        <characteristic name="Type" typeId="5fce-07c3-4ac4-725c">Melee</characteristic>
+                        <characteristic name="Damage" typeId="e9b6-5ffa-ead8-7da4">10</characteristic>
+                        <characteristic name="Attack Speed" typeId="b3d9-5892-fc1d-cd47">10</characteristic>
+                        <characteristic name="Parry" typeId="9972-d522-3bdb-4501">10</characteristic>
+                        <characteristic name="Range" typeId="b352-1258-db4f-2de1">10</characteristic>
+                      </characteristics>
+                    </profile>
+                  </profiles>
+                  <costs>
+                    <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="4.0"/>
+                    <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
+                  </costs>
+                </selection>
+              </selections>
               <costs>
                 <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
                 <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="0.0"/>
@@ -129,6 +175,25 @@
                   </characteristics>
                 </profile>
               </profiles>
+              <selections>
+                <selection id="2c5c-6b4e-40a1-c610" name="Cane" entryId="013c-0969-52c7-a739::d049-8a01-c67c-7df1::7d5d-f394-2944-7add::32b9-c42e-8c9b-d7d9::f15e-05be-b168-2e56" entryGroupId="013c-0969-52c7-a739::d049-8a01-c67c-7df1::7d5d-f394-2944-7add::ee2f-5b09-868f-0957" publicationId="3284-fc7c-1d66-fe31" number="1" type="upgrade">
+                  <profiles>
+                    <profile id="013c-0969-52c7-a739::d049-8a01-c67c-7df1::7d5d-f394-2944-7add::32b9-c42e-8c9b-d7d9::38a1-e8d4-ebda-d8af::7b27-1195-36ac-2e33" name="Cane" publicationId="3284-fc7c-1d66-fe31" hidden="false" typeId="6cfe-fe74-1a3d-6d17" typeName="Weapon">
+                      <characteristics>
+                        <characteristic name="Type" typeId="5fce-07c3-4ac4-725c">Melee</characteristic>
+                        <characteristic name="Damage" typeId="e9b6-5ffa-ead8-7da4">10</characteristic>
+                        <characteristic name="Attack Speed" typeId="b3d9-5892-fc1d-cd47">10</characteristic>
+                        <characteristic name="Parry" typeId="9972-d522-3bdb-4501">10</characteristic>
+                        <characteristic name="Range" typeId="b352-1258-db4f-2de1">10</characteristic>
+                      </characteristics>
+                    </profile>
+                  </profiles>
+                  <costs>
+                    <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="2.0"/>
+                    <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
+                  </costs>
+                </selection>
+              </selections>
               <costs>
                 <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
                 <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="0.0"/>
@@ -163,6 +228,11 @@
           </profiles>
           <selections>
             <selection id="a488-d7ac-4d0a-dfc3" name="Great Grandmother Eloise" entryId="ee62-e229-cb4b-9256::3515-9416-b082-13cc::76f0-5a6c-4078-7688" entryGroupId="ee62-e229-cb4b-9256::1093-a697-d8a8-7096" publicationId="3284-fc7c-1d66-fe31" number="1" type="model">
+              <rules>
+                <rule id="ee62-e229-cb4b-9256::3515-9416-b082-13cc::2c37-cbb1-27a1-f2f9::3a55-6ffe-2151-b32f" name="Wisdom" publicationId="3284-fc7c-1d66-fe31" page="132" hidden="false">
+                  <description>This model can reroll a single dice roll during its turn.</description>
+                </rule>
+              </rules>
               <profiles>
                 <profile id="ee62-e229-cb4b-9256::3515-9416-b082-13cc::5fb2-e9a9-51ef-62e5" name="Great Grandmother Eloise" publicationId="3284-fc7c-1d66-fe31" hidden="false" typeId="a6e8-411d-f765-546a" typeName="Character">
                   <characteristics>
@@ -178,6 +248,25 @@
                   </characteristics>
                 </profile>
               </profiles>
+              <selections>
+                <selection id="6139-1c15-6e8f-2d26" name="Cane" entryId="ee62-e229-cb4b-9256::3515-9416-b082-13cc::3f78-4e51-f93b-b783::32b9-c42e-8c9b-d7d9::f15e-05be-b168-2e56" entryGroupId="ee62-e229-cb4b-9256::3515-9416-b082-13cc::3f78-4e51-f93b-b783::ee2f-5b09-868f-0957" publicationId="3284-fc7c-1d66-fe31" number="1" type="upgrade">
+                  <profiles>
+                    <profile id="ee62-e229-cb4b-9256::3515-9416-b082-13cc::3f78-4e51-f93b-b783::32b9-c42e-8c9b-d7d9::38a1-e8d4-ebda-d8af::7b27-1195-36ac-2e33" name="Cane" publicationId="3284-fc7c-1d66-fe31" hidden="false" typeId="6cfe-fe74-1a3d-6d17" typeName="Weapon">
+                      <characteristics>
+                        <characteristic name="Type" typeId="5fce-07c3-4ac4-725c">Melee</characteristic>
+                        <characteristic name="Damage" typeId="e9b6-5ffa-ead8-7da4">10</characteristic>
+                        <characteristic name="Attack Speed" typeId="b3d9-5892-fc1d-cd47">10</characteristic>
+                        <characteristic name="Parry" typeId="9972-d522-3bdb-4501">10</characteristic>
+                        <characteristic name="Range" typeId="b352-1258-db4f-2de1">10</characteristic>
+                      </characteristics>
+                    </profile>
+                  </profiles>
+                  <costs>
+                    <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="2.0"/>
+                    <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
+                  </costs>
+                </selection>
+              </selections>
               <costs>
                 <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
                 <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="0.0"/>
@@ -249,9 +338,34 @@
                   </characteristics>
                 </profile>
               </profiles>
+              <selections>
+                <selection id="4dd2-96ba-b303-cbc5" name="Walker" entryId="b5e5-01c4-aec9-6aa9::c13d-f23a-a773-4905::7d5d-f394-2944-7add::4d3b-80ae-149d-0e30::5dfb-930b-3711-e2f0" entryGroupId="b5e5-01c4-aec9-6aa9::c13d-f23a-a773-4905::7d5d-f394-2944-7add::ee2f-5b09-868f-0957" publicationId="3284-fc7c-1d66-fe31" number="1" type="upgrade">
+                  <profiles>
+                    <profile id="b5e5-01c4-aec9-6aa9::c13d-f23a-a773-4905::7d5d-f394-2944-7add::4d3b-80ae-149d-0e30::2f58-657f-282b-c9f4::f651-9466-7043-f18f" name="Walker" publicationId="3284-fc7c-1d66-fe31" hidden="false" typeId="6cfe-fe74-1a3d-6d17" typeName="Weapon">
+                      <characteristics>
+                        <characteristic name="Type" typeId="5fce-07c3-4ac4-725c">Melee</characteristic>
+                        <characteristic name="Damage" typeId="e9b6-5ffa-ead8-7da4">10</characteristic>
+                        <characteristic name="Attack Speed" typeId="b3d9-5892-fc1d-cd47">10</characteristic>
+                        <characteristic name="Parry" typeId="9972-d522-3bdb-4501">10</characteristic>
+                        <characteristic name="Range" typeId="b352-1258-db4f-2de1">10</characteristic>
+                      </characteristics>
+                    </profile>
+                  </profiles>
+                  <costs>
+                    <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="4.0"/>
+                    <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
+                  </costs>
+                </selection>
+              </selections>
               <costs>
                 <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
                 <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="0.0"/>
+              </costs>
+            </selection>
+            <selection id="a9cc-9600-737b-48d3" name="Second Horse" entryId="b5e5-01c4-aec9-6aa9::401a-b0ef-f454-16c5" publicationId="3284-fc7c-1d66-fe31" number="1" type="upgrade">
+              <costs>
+                <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="5.0"/>
+                <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
               </costs>
             </selection>
           </selections>

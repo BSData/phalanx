@@ -22,6 +22,11 @@
       </costs>
     </entryLink>
   </entryLinks>
+  <rules>
+    <rule id="81f7-b9ea-fee6-1b5b" name="Ol&apos; but Gold" publicationId="3284-fc7c-1d66-fe31" page="132" hidden="false">
+      <description>Grannies are old, but with age comes experience. They can ignore Roadblocks when Driving.</description>
+    </rule>
+  </rules>
   <sharedSelectionEntries>
     <selectionEntry id="3fea-0fc5-75d5-08ce" name="1978 Cutlass" publicationId="3284-fc7c-1d66-fe31" hidden="false" collective="false" import="true" type="unit">
       <profiles>
@@ -192,6 +197,7 @@
       </profiles>
       <infoLinks>
         <infoLink id="f950-bc41-043b-d9b5" name="Shriek" hidden="false" targetId="c092-75d7-d592-9cde" type="profile"/>
+        <infoLink id="2c37-cbb1-27a1-f2f9" name="Wisdom" hidden="false" targetId="3a55-6ffe-2151-b32f" type="rule"/>
       </infoLinks>
       <entryLinks>
         <entryLink id="3f78-4e51-f93b-b783" name="Weppon" hidden="false" collective="false" import="true" targetId="ee2f-5b09-868f-0957" type="selectionEntryGroup"/>
@@ -284,6 +290,11 @@
       </entryLinks>
     </selectionEntryGroup>
   </sharedSelectionEntryGroups>
+  <sharedRules>
+    <rule id="3a55-6ffe-2151-b32f" name="Wisdom" publicationId="3284-fc7c-1d66-fe31" page="132" hidden="false">
+      <description>This model can reroll a single dice roll during its turn.</description>
+    </rule>
+  </sharedRules>
   <sharedProfiles>
     <profile id="7b27-1195-36ac-2e33" name="Cane" publicationId="3284-fc7c-1d66-fe31" hidden="false" typeId="6cfe-fe74-1a3d-6d17" typeName="Weapon">
       <characteristics>
