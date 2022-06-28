@@ -14,9 +14,9 @@ internal class RosterSymbol : SourceDeclaredSymbol, IRosterSymbol, INodeDeclared
         ContainingNamespace = containingSymbol;
         Declaration = declaration;
         Costs = CreateCosts().ToImmutableArray();
-        Forces = declaration.Forces.Select(x => new ForceSymbol(this, x, diagnostics)).ToImmutableArray<IForceSymbol>();
+        Forces = declaration.Forces.Select(x => new ForceSymbol(this, x, diagnostics)).ToImmutableArray();
 
-        IEnumerable<IRosterCostSymbol> CreateCosts()
+        IEnumerable<RosterCostSymbol> CreateCosts()
         {
             foreach (var cost in declaration.Costs)
             {
@@ -37,9 +37,9 @@ internal class RosterSymbol : SourceDeclaredSymbol, IRosterSymbol, INodeDeclared
 
     public override RosterNode Declaration { get; }
 
-    public override ICatalogueSymbol? ContainingCatalogue => null;
-
     public override SourceGlobalNamespaceSymbol ContainingNamespace { get; }
+
+    public override IModuleSymbol? ContainingModule => null;
 
     public override SymbolKind Kind => SymbolKind.Roster;
 
@@ -47,20 +47,22 @@ internal class RosterSymbol : SourceDeclaredSymbol, IRosterSymbol, INodeDeclared
 
     public ICatalogueSymbol Gamesystem => GetBoundField(ref lazyGamesystem);
 
-    public ImmutableArray<IRosterCostSymbol> Costs { get; }
+    public ImmutableArray<RosterCostSymbol> Costs { get; }
 
-    public ImmutableArray<IForceSymbol> Forces { get; }
+    public ImmutableArray<ForceSymbol> Forces { get; }
 
-    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnostics)
+    ImmutableArray<IRosterCostSymbol> IRosterSymbol.Costs => Costs.Cast<RosterCostSymbol, IRosterCostSymbol>();
+
+    ImmutableArray<IForceSymbol> IRosterSymbol.Forces => Forces.Cast<ForceSymbol, IForceSymbol>();
+
+    protected override void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)
     {
         base.BindReferencesCore(binder, diagnostics);
         lazyGamesystem = binder.BindGamesystemSymbol(Declaration, diagnostics);
     }
 
-    protected override void InvokeForceCompleteOnChildren()
-    {
-        base.InvokeForceCompleteOnChildren();
-        InvokeForceComplete(Costs);
-        InvokeForceComplete(Forces);
-    }
+    protected override ImmutableArray<Symbol> MakeAllMembers(BindingDiagnosticBag diagnostics) =>
+        base.MakeAllMembers(diagnostics)
+        .AddRange(Costs.Cast<RosterCostSymbol, Symbol>())
+        .AddRange(Forces.Cast<ForceSymbol, Symbol>());
 }

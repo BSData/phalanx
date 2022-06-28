@@ -15,14 +15,14 @@ internal class ForceEntrySymbol : ContainerEntryBaseSymbol, IForceEntrySymbol, I
         ChildForces = CreateChildEntries().ToImmutableArray();
         Categories = CreateCategories().ToImmutableArray();
 
-        IEnumerable<IForceEntrySymbol> CreateChildEntries()
+        IEnumerable<ForceEntrySymbol> CreateChildEntries()
         {
             foreach (var item in declaration.ForceEntries)
             {
                 yield return CreateEntry(this, item, diagnostics);
             }
         }
-        IEnumerable<ICategoryEntrySymbol> CreateCategories()
+        IEnumerable<CategoryLinkSymbol> CreateCategories()
         {
             foreach (var item in declaration.CategoryLinks)
             {
@@ -31,11 +31,22 @@ internal class ForceEntrySymbol : ContainerEntryBaseSymbol, IForceEntrySymbol, I
         }
     }
 
+    public override ForceEntryNode Declaration { get; }
+
     public override ContainerEntryKind ContainerKind => ContainerEntryKind.Force;
 
-    public ImmutableArray<IForceEntrySymbol> ChildForces { get; }
+    public ImmutableArray<ForceEntrySymbol> ChildForces { get; }
 
-    public ImmutableArray<ICategoryEntrySymbol> Categories { get; }
+    public ImmutableArray<CategoryLinkSymbol> Categories { get; }
 
-    public override ForceEntryNode Declaration { get; }
+    ImmutableArray<IForceEntrySymbol> IForceEntrySymbol.ChildForces =>
+        ChildForces.Cast<ForceEntrySymbol, IForceEntrySymbol>();
+
+    ImmutableArray<ICategoryEntrySymbol> IForceEntrySymbol.Categories =>
+        Categories.Cast<CategoryLinkSymbol, ICategoryEntrySymbol>();
+
+    protected override ImmutableArray<Symbol> MakeAllMembers(BindingDiagnosticBag diagnostics) =>
+        base.MakeAllMembers(diagnostics)
+        .AddRange(ChildForces)
+        .AddRange(Categories);
 }

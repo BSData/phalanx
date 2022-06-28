@@ -1,3 +1,6 @@
+using System.Diagnostics;
+using WarHub.ArmouryModel.Source;
+
 namespace WarHub.ArmouryModel.Concrete;
 
 internal abstract class Symbol : ISymbol
@@ -12,22 +15,17 @@ internal abstract class Symbol : ISymbol
 
     public abstract ISymbol? ContainingSymbol { get; }
 
-    public virtual ICatalogueSymbol? ContainingCatalogue => ContainingSymbol switch
-    {
-        { Kind: SymbolKind.Catalogue } => (ICatalogueSymbol)ContainingSymbol,
-        _ => ContainingSymbol?.ContainingCatalogue
-    };
-
     public virtual IGamesystemNamespaceSymbol? ContainingNamespace => ContainingSymbol switch
     {
         { Kind: SymbolKind.Namespace } => throw new InvalidOperationException("Namespace child must override ContainingNamespace."),
         _ => ContainingSymbol?.ContainingNamespace,
     };
 
-    public virtual IRosterSymbol? ContainingRoster => ContainingSymbol switch
+    public virtual IModuleSymbol? ContainingModule => ContainingSymbol switch
     {
-        { Kind: SymbolKind.Roster } => (IRosterSymbol)ContainingSymbol,
-        _ => ContainingSymbol?.ContainingRoster
+        { Kind: SymbolKind.Catalogue } x => (IModuleSymbol)x,
+        { Kind: SymbolKind.Roster } x => (IModuleSymbol)x,
+        _ => ContainingSymbol?.ContainingModule
     };
 
     internal virtual WhamCompilation? DeclaringCompilation => Kind switch
@@ -36,67 +34,73 @@ internal abstract class Symbol : ISymbol
         _ => (ContainingNamespace as SourceGlobalNamespaceSymbol)?.DeclaringCompilation
     };
 
-    internal virtual bool RequiresCompletion => false;
+    internal virtual void AddDeclarationDiagnostics(BindingDiagnosticBag diagnostics)
+    {
+        if (diagnostics.DiagnosticBag is { IsEmptyWithoutResolution: false } || diagnostics.DependenciesBag?.Count > 0)
+        {
+            var compilation = DeclaringCompilation;
+            Debug.Assert(compilation != null);
+
+            // TODO implement AddUsedAssemblies first
+            // compilation.AddUsedAssemblies(diagnostics.DependenciesBag);
+
+            if (diagnostics.DiagnosticBag is { IsEmptyWithoutResolution: false })
+            {
+                compilation.DeclarationDiagnostics.AddRange(diagnostics.DiagnosticBag);
+            }
+        }
+    }
 
     /// <summary>
-    /// Value 0 - binding not started.
-    /// Value 1 - binding started.
-    /// Value 2 - binding finished.
+    /// Reports specified use-site diagnostic to given diagnostic bag. 
     /// </summary>
-    private int bindingDone;
-
-    private bool BindingDone => bindingDone > 1;
-
-    internal void ForceComplete()
+    /// <remarks>
+    /// This method should be the only method adding use-site diagnostics to a diagnostic bag. 
+    /// It may perform additional adjustments of the location for unification related diagnostics and 
+    /// may be the place where to add more use-site location post-processing.
+    /// </remarks>
+    /// <returns>True if the diagnostic has error severity.</returns>
+    internal static bool ReportUseSiteDiagnostic(DiagnosticInfo info, DiagnosticBag diagnostics, Location location)
     {
-        if (RequiresCompletion && !BindingDone)
+        diagnostics.Add(info, location);
+        return info.Severity == DiagnosticSeverity.Error;
+    }
+
+    /// <summary>
+    /// True if the symbol has a use-site diagnostic with error severity.
+    /// </summary>
+    internal bool HasUseSiteError
+    {
+        get
         {
-            var compilation = DeclaringCompilation ?? throw new InvalidOperationException("Binding requires declaring compilation.");
-            if (Interlocked.CompareExchange(ref bindingDone, 1, 0) == 0)
-            {
-                var diagnostics = DiagnosticBag.GetInstance();
-                BindReferences(compilation, diagnostics);
-                compilation.AddBindingDiagnostics(diagnostics);
-                // we mark binding as done before completing children, as children track their binding state separately
-                Interlocked.Increment(ref bindingDone);
-                InvokeForceCompleteOnChildren();
-            }
-            else
-            {
-                // wait until another thread finished binding
-                // are we afraid of deadlock here?
-                SpinWait.SpinUntil(() => BindingDone);
-            }
+            var info = GetUseSiteInfo();
+            return info.DiagnosticInfo?.Severity == DiagnosticSeverity.Error;
         }
     }
 
-    protected virtual void BindReferences(WhamCompilation compilation, DiagnosticBag diagnostics) { }
+    /// <summary>
+    /// Returns diagnostic info that should be reported at the use site of the symbol, or default if there is none.
+    /// </summary>
+    internal virtual UseSiteInfo<IModuleSymbol> GetUseSiteInfo() => default;
 
-    protected virtual void InvokeForceCompleteOnChildren() { }
+    /// <summary>
+    /// True if this Symbol should be completed by calling ForceComplete.
+    /// Intuitively, true for source entities (from any compilation).
+    /// </summary>
+    internal virtual bool RequiresCompletion => false;
 
-    protected static void InvokeForceComplete<TChild>(ImmutableArray<TChild> children) where TChild : ISymbol
+    internal virtual void ForceComplete(CancellationToken cancellationToken)
     {
-        foreach (var child in children)
-        {
-            InvokeForceComplete(child: child);
-        }
+        // must be overridden by source symbols, no-op for other symbols
+        Debug.Assert(!RequiresCompletion);
     }
 
-    protected static void InvokeForceComplete<TChild>(TChild? child) where TChild : ISymbol
+    internal virtual bool HasComplete(CompletionPart part)
     {
-        if (child is Symbol { RequiresCompletion: true } toComplete)
-            toComplete.ForceComplete();
+        // must be overridden by source symbols, no-op for other symbols
+        Debug.Assert(!RequiresCompletion);
+        return true;
     }
 
-    protected TField GetBoundField<TField>(ref TField? field) where TField : class
-    {
-        ForceComplete();
-        return field ?? throw new InvalidOperationException("Bound field was null after binding.");
-    }
-
-    protected TField? GetOptionalBoundField<TField>(ref TField? field) where TField : class
-    {
-        ForceComplete();
-        return field;
-    }
+    internal virtual ImmutableArray<ISymbol> GetMembers() => ImmutableArray<ISymbol>.Empty;
 }

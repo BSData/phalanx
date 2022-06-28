@@ -41,6 +41,34 @@ public class SimpleIntegrationTests
     }
 
     [Fact]
+    public void Compilation_connects_characteristic_to_characteristic_type()
+    {
+        // arrange
+        var gst = NodeFactory.Gamesystem("foo")
+            .AddProfileTypes(
+                NodeFactory.ProfileType("weapon")
+                .AddCharacteristicTypes(NodeFactory.CharacteristicType("strength").Tee(out var charType))
+                .Tee(out var weaponType));
+        var cat = NodeFactory.Catalogue(gst, "bar")
+            .AddSelectionEntries(
+                NodeFactory.SelectionEntry("entry")
+                .AddProfiles(
+                    NodeFactory.Profile(weaponType, "bow")
+                    .AddCharacteristics(NodeFactory.Characteristic(charType, "5")))
+                .Tee(out var entry));
+        var compilation = WhamCompilation.Create();
+        // act
+        var result = compilation.AddSourceTrees(SourceTree.CreateForRoot(gst), SourceTree.CreateForRoot(cat));
+        // assert
+        result.GetDiagnostics().Should().BeEmpty();
+        var catalogue = result.GlobalNamespace.Catalogues.Single(x => !x.IsGamesystem);
+        var profile = catalogue.RootContainerEntries.Single()
+            .Resources.OfType<IProfileSymbol>().Single();
+        var charTypeSymbol = catalogue.Gamesystem.ResourceDefinitions.OfType<IProfileTypeSymbol>().Single().CharacteristicTypes.Single();
+        profile.Characteristics.Single().Type.Should().Be(charTypeSymbol);
+    }
+
+    [Fact]
     public void Given_bad_root_entry_link_When_GetDiagnostics_Then_returns_error()
     {
         // arrange

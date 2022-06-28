@@ -31,7 +31,7 @@ internal class SelectionEntryLinkSymbol : SelectionEntryBaseSymbol, INodeDeclare
 
     public override ISelectionEntryContainerSymbol ReferencedEntry => GetBoundField(ref lazyReference);
 
-    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnostics)
+    protected override void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)
     {
         base.BindReferencesCore(binder, diagnostics);
 

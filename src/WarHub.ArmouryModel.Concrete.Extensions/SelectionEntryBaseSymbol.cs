@@ -38,13 +38,11 @@ internal abstract class SelectionEntryBaseSymbol : ContainerEntryBaseSymbol, ISe
         }
     }
 
-    public virtual ISelectionEntryContainerSymbol? ReferencedEntry => null;
+    public override ISelectionEntryContainerSymbol? ReferencedEntry => null;
 
     public ICategoryEntrySymbol? PrimaryCategory { get; }
 
     public ImmutableArray<ICategoryEntrySymbol> Categories { get; }
 
     public ImmutableArray<ISelectionEntryContainerSymbol> ChildSelectionEntries { get; }
-
-    protected sealed override IEntrySymbol? BaseReferencedEntry => ReferencedEntry;
 }

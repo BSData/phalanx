@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class ProfileTypeSymbol : SourceDeclaredSymbol, IProfileTypeSymbol, INodeDeclaredSymbol<ProfileTypeNode>
+internal class ProfileTypeSymbol : ResourceDefinitionBaseSymbol, IProfileTypeSymbol, INodeDeclaredSymbol<ProfileTypeNode>
 {
     public ProfileTypeSymbol(
         ICatalogueSymbol containingSymbol,
@@ -13,14 +13,19 @@ internal class ProfileTypeSymbol : SourceDeclaredSymbol, IProfileTypeSymbol, INo
         Declaration = declaration;
         CharacteristicTypes = declaration.CharacteristicTypes
             .Select(x => new CharacteristicTypeSymbol(this, x, diagnostics))
-            .ToImmutableArray<ICharacteristicTypeSymbol>();
+            .ToImmutableArray();
     }
 
     public override ProfileTypeNode Declaration { get; }
 
-    public override SymbolKind Kind => SymbolKind.ResourceDefinition;
+    public override ResourceKind ResourceKind => ResourceKind.Profile;
 
-    public ResourceKind ResourceKind => ResourceKind.Profile;
+    public ImmutableArray<CharacteristicTypeSymbol> CharacteristicTypes { get; }
 
-    public ImmutableArray<ICharacteristicTypeSymbol> CharacteristicTypes { get; }
+    ImmutableArray<ICharacteristicTypeSymbol> IProfileTypeSymbol.CharacteristicTypes =>
+        CharacteristicTypes.Cast<CharacteristicTypeSymbol, ICharacteristicTypeSymbol>();
+
+    protected override ImmutableArray<Symbol> MakeAllMembers(BindingDiagnosticBag diagnostics) =>
+        base.MakeAllMembers(diagnostics)
+        .AddRange(CharacteristicTypes.Cast<CharacteristicTypeSymbol, Symbol>());
 }

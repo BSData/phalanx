@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class ResourceLinkSymbol : EntrySymbol, IResourceEntrySymbol, INodeDeclaredSymbol<InfoLinkNode>
+internal class ResourceLinkSymbol : ResourceEntryBaseSymbol, IResourceEntrySymbol, INodeDeclaredSymbol<InfoLinkNode>
 {
     private IResourceEntrySymbol? lazyReferencedEntry;
 
@@ -28,17 +28,11 @@ internal class ResourceLinkSymbol : EntrySymbol, IResourceEntrySymbol, INodeDecl
 
     public override InfoLinkNode Declaration { get; }
 
-    public override SymbolKind Kind => SymbolKind.Resource;
+    public override ResourceKind ResourceKind { get; }
 
-    public ResourceKind ResourceKind { get; }
+    public override IResourceEntrySymbol ReferencedEntry => GetBoundField(ref lazyReferencedEntry);
 
-    public IResourceDefinitionSymbol? Type => null;
-
-    public IResourceEntrySymbol ReferencedEntry => GetBoundField(ref lazyReferencedEntry);
-
-    protected override IEntrySymbol? BaseReferencedEntry => ReferencedEntry;
-
-    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnostics)
+    protected override void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)
     {
         base.BindReferencesCore(binder, diagnostics);
 

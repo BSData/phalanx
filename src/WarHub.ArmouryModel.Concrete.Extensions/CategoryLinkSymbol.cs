@@ -19,13 +19,11 @@ internal class CategoryLinkSymbol : ContainerEntryBaseSymbol, ICategoryEntrySymb
 
     public bool IsPrimaryCategory => Declaration.Primary;
 
-    public ICategoryEntrySymbol ReferencedEntry => GetBoundField(ref lazyReference);
+    public override ICategoryEntrySymbol ReferencedEntry => GetBoundField(ref lazyReference);
 
     public override CategoryLinkNode Declaration { get; }
 
-    protected override IEntrySymbol? BaseReferencedEntry => ReferencedEntry;
-
-    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnostics)
+    protected override void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)
     {
         base.BindReferencesCore(binder, diagnostics);
 

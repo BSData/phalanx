@@ -13,7 +13,7 @@ internal abstract class ContainerEntryBaseSymbol : EntrySymbol, IContainerEntryS
         Constraints = ImmutableArray<IConstraintSymbol>.Empty; // TODO map
         Resources = CreateResourceEntries().ToImmutableArray();
 
-        IEnumerable<IResourceEntrySymbol> CreateResourceEntries()
+        IEnumerable<ResourceEntryBaseSymbol> CreateResourceEntries()
         {
             var costs = declaration switch
             {
@@ -50,5 +50,13 @@ internal abstract class ContainerEntryBaseSymbol : EntrySymbol, IContainerEntryS
 
     public ImmutableArray<IConstraintSymbol> Constraints { get; }
 
-    public ImmutableArray<IResourceEntrySymbol> Resources { get; }
+    public ImmutableArray<ResourceEntryBaseSymbol> Resources { get; }
+
+    ImmutableArray<IResourceEntrySymbol> IContainerEntrySymbol.Resources =>
+        Resources.Cast<ResourceEntryBaseSymbol, IResourceEntrySymbol>();
+
+    protected override ImmutableArray<Symbol> MakeAllMembers(BindingDiagnosticBag diagnostics) =>
+        base.MakeAllMembers(diagnostics)
+        // TODO .AddRange(Constraints)
+        .AddRange(Resources);
 }

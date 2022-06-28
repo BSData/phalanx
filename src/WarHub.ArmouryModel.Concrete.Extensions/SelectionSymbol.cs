@@ -13,10 +13,10 @@ internal class SelectionSymbol : RosterEntryBasedSymbol, ISelectionSymbol, INode
         : base(containingSymbol, declaration, diagnostics)
     {
         Declaration = declaration;
-        Costs = declaration.Costs.Select(x => new CostSymbol(this, x, diagnostics)).ToImmutableArray<ICostSymbol>();
-        Resources = Costs.CastArray<IResourceEntrySymbol>().AddRange(CreateRosterEntryResources(diagnostics));
-        Categories = declaration.Categories.Select(x => new CategorySymbol(this, x, diagnostics)).ToImmutableArray<ICategorySymbol>();
-        ChildSelections = declaration.Selections.Select(x => new SelectionSymbol(this, x, diagnostics)).ToImmutableArray<ISelectionSymbol>();
+        Costs = declaration.Costs.Select(x => new CostSymbol(this, x, diagnostics)).ToImmutableArray();
+        Resources = Costs.Cast<CostSymbol, ResourceEntryBaseSymbol>().AddRange(CreateRosterEntryResources(diagnostics));
+        Categories = declaration.Categories.Select(x => new CategorySymbol(this, x, diagnostics)).ToImmutableArray();
+        ChildSelections = declaration.Selections.Select(x => new SelectionSymbol(this, x, diagnostics)).ToImmutableArray();
         PrimaryCategory = Categories.FirstOrDefault(x => x.IsPrimaryCategory); // TODO diagnostic if count != 1 for root selection? (also what about NoCategory)
     }
 
@@ -28,30 +28,35 @@ internal class SelectionSymbol : RosterEntryBasedSymbol, ISelectionSymbol, INode
 
     public override ISelectionEntrySymbol SourceEntry => GetBoundField(ref lazySelectionEntry);
 
-    public ImmutableArray<ISelectionSymbol> ChildSelections { get; }
+    public ImmutableArray<SelectionSymbol> ChildSelections { get; }
 
-    public override ImmutableArray<IResourceEntrySymbol> Resources { get; }
+    public override ImmutableArray<ResourceEntryBaseSymbol> Resources { get; }
 
     public SelectionEntryKind EntryKind => Declaration.Type;
 
     public ICategorySymbol? PrimaryCategory { get; }
 
-    public ImmutableArray<ICategorySymbol> Categories { get; }
+    public ImmutableArray<CategorySymbol> Categories { get; }
 
-    public ImmutableArray<ICostSymbol> Costs { get; }
+    public ImmutableArray<CostSymbol> Costs { get; }
 
-    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnostics)
+    ImmutableArray<ICategorySymbol> ISelectionSymbol.Categories =>
+        Categories.Cast<CategorySymbol, ICategorySymbol>();
+
+    ImmutableArray<ICostSymbol> ISelectionSymbol.Costs =>
+        Costs.Cast<CostSymbol, ICostSymbol>();
+
+    ImmutableArray<ISelectionSymbol> IRosterSelectionTreeElementSymbol.ChildSelections =>
+        ChildSelections.Cast<SelectionSymbol, ISelectionSymbol>();
+
+    protected override void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)
     {
         base.BindReferencesCore(binder, diagnostics);
         lazySelectionEntry = binder.BindSelectionEntry(Declaration, diagnostics);
     }
 
-    protected override void InvokeForceCompleteOnChildren()
-    {
-        base.InvokeForceCompleteOnChildren();
-        // Resources are done in base.Invoke... call
-        // Costs are included in Resources
-        InvokeForceComplete(Categories);
-        InvokeForceComplete(ChildSelections);
-    }
+    protected override ImmutableArray<Symbol> MakeAllMembers(BindingDiagnosticBag diagnostics) =>
+        base.MakeAllMembers(diagnostics)
+        .AddRange(Categories)
+        .AddRange(ChildSelections);
 }

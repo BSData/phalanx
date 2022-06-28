@@ -2,43 +2,44 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol, INodeDeclaredSymbol<EntryBaseNode>
+internal abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol
 {
     protected EntrySymbol(
-        ISymbol containingSymbol,
-        EntryBaseNode declaration,
+        ISymbol? containingSymbol,
+        SourceNode declaration,
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration)
     {
-        Declaration = declaration;
         PublicationReference = PublicationReferenceSymbol.Create(this, declaration, diagnostics);
-        Effects = LogicSymbol.CreateEffects(this, declaration, diagnostics);
+        if (declaration is EntryBaseNode entryNode)
+        {
+            IsHidden = entryNode.Hidden;
+            Effects = LogicSymbol.CreateEffects(this, entryNode, diagnostics);
+        }
     }
 
-    public override EntryBaseNode Declaration { get; }
+    public bool IsReference => ReferencedEntry is not null;
 
-    public bool IsHidden => Declaration.Hidden;
+    public bool IsHidden { get; }
 
-    protected virtual IEntrySymbol? BaseReferencedEntry => null;
+    public virtual IEntrySymbol? ReferencedEntry => null;
+
+    IEntrySymbol? IEntrySymbol.ReferencedEntry => ReferencedEntry;
 
     public PublicationReferenceSymbol? PublicationReference { get; }
 
     IPublicationReferenceSymbol? IEntrySymbol.PublicationReference => PublicationReference;
 
-    public ImmutableArray<IEffectSymbol> Effects { get; }
+    public ImmutableArray<EffectSymbol> Effects { get; } = ImmutableArray<EffectSymbol>.Empty;
 
-    public bool IsReference => BaseReferencedEntry is not null;
+    ImmutableArray<IEffectSymbol> IEntrySymbol.Effects => Effects.Cast<EffectSymbol, IEffectSymbol>();
 
-    IEntrySymbol? IEntrySymbol.ReferencedEntry => BaseReferencedEntry;
+    protected override ImmutableArray<Symbol> MakeAllMembers(BindingDiagnosticBag diagnostics) =>
+        (PublicationReference is null ? ImmutableArray<Symbol>.Empty : ImmutableArray.Create<Symbol>(PublicationReference))
+        .AddRange(base.MakeAllMembers(diagnostics))
+        .AddRange(Effects.Cast<EffectSymbol, Symbol>());
 
-    protected override void InvokeForceCompleteOnChildren()
-    {
-        base.InvokeForceCompleteOnChildren();
-        InvokeForceComplete(PublicationReference);
-        InvokeForceComplete(Effects);
-    }
-
-    public static ISelectionEntryContainerSymbol CreateEntry(
+    public static SelectionEntryLinkSymbol CreateEntry(
         ISymbol containingSymbol,
         EntryLinkNode item,
         DiagnosticBag diagnostics)
@@ -46,7 +47,7 @@ internal abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol, INodeD
         return new SelectionEntryLinkSymbol(containingSymbol, item, diagnostics);
     }
 
-    public static IRuleSymbol CreateEntry(
+    public static RuleSymbol CreateEntry(
         ISymbol containingSymbol,
         RuleNode item,
         DiagnosticBag diagnostics)
@@ -54,7 +55,7 @@ internal abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol, INodeD
         return new RuleSymbol(containingSymbol, item, diagnostics);
     }
 
-    public static IProfileSymbol CreateEntry(
+    public static ProfileSymbol CreateEntry(
         ISymbol containingSymbol,
         ProfileNode item,
         DiagnosticBag diagnostics)
@@ -62,7 +63,7 @@ internal abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol, INodeD
         return new ProfileSymbol(containingSymbol, item, diagnostics);
     }
 
-    public static IResourceEntrySymbol CreateEntry(
+    public static ResourceLinkSymbol CreateEntry(
         ISymbol containingSymbol,
         InfoLinkNode item,
         DiagnosticBag diagnostics)
@@ -70,7 +71,7 @@ internal abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol, INodeD
         return new ResourceLinkSymbol(containingSymbol, item, diagnostics);
     }
 
-    public static IResourceGroupSymbol CreateEntry(
+    public static ResourceGroupSymbol CreateEntry(
         ISymbol containingSymbol,
         InfoGroupNode item,
         DiagnosticBag diagnostics)
@@ -78,7 +79,7 @@ internal abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol, INodeD
         return new ResourceGroupSymbol(containingSymbol, item, diagnostics);
     }
 
-    public static ICostSymbol CreateEntry(
+    public static CostSymbol CreateEntry(
         ISymbol containingSymbol,
         CostNode item,
         DiagnosticBag diagnostics)
@@ -86,7 +87,7 @@ internal abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol, INodeD
         return new CostSymbol(containingSymbol, item, diagnostics);
     }
 
-    public static ICategoryEntrySymbol CreateEntry(
+    public static CategoryEntrySymbol CreateEntry(
         ISymbol containingSymbol,
         CategoryEntryNode item,
         DiagnosticBag diagnostics)
@@ -94,7 +95,7 @@ internal abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol, INodeD
         return new CategoryEntrySymbol(containingSymbol, item, diagnostics);
     }
 
-    public static ICategoryEntrySymbol CreateEntry(
+    public static CategoryLinkSymbol CreateEntry(
         ISymbol containingSymbol,
         CategoryLinkNode item,
         DiagnosticBag diagnostics)
@@ -102,7 +103,7 @@ internal abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol, INodeD
         return new CategoryLinkSymbol(containingSymbol, item, diagnostics);
     }
 
-    public static IForceEntrySymbol CreateEntry(
+    public static ForceEntrySymbol CreateEntry(
         ISymbol containingSymbol,
         ForceEntryNode item,
         DiagnosticBag diagnostics)
@@ -110,7 +111,7 @@ internal abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol, INodeD
         return new ForceEntrySymbol(containingSymbol, item, diagnostics);
     }
 
-    public static ISelectionEntryContainerSymbol CreateEntry(
+    public static SelectionEntryBaseSymbol CreateEntry(
         ISymbol containingSymbol,
         SelectionEntryNode node,
         DiagnosticBag diagnostics)
@@ -118,7 +119,7 @@ internal abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol, INodeD
         return new SelectionEntrySymbol(containingSymbol, node, diagnostics);
     }
 
-    public static ISelectionEntryContainerSymbol CreateEntry(
+    public static SelectionEntryBaseSymbol CreateEntry(
         ISymbol containingSymbol,
         SelectionEntryGroupNode node,
         DiagnosticBag diagnostics)

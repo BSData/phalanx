@@ -4,10 +4,6 @@ namespace WarHub.ArmouryModel.Concrete;
 
 internal abstract class CatalogueBaseSymbol : SourceDeclaredSymbol, ICatalogueSymbol
 {
-    private readonly ImmutableArray<CostTypeSymbol> costTypes;
-    private readonly ImmutableArray<ProfileTypeSymbol> profileTypes;
-    private readonly ImmutableArray<PublicationSymbol> publications;
-
     protected CatalogueBaseSymbol(
         SourceGlobalNamespaceSymbol containingSymbol,
         CatalogueBaseNode declaration,
@@ -16,15 +12,29 @@ internal abstract class CatalogueBaseSymbol : SourceDeclaredSymbol, ICatalogueSy
     {
         ContainingNamespace = containingSymbol;
         Declaration = declaration;
-        costTypes = declaration.CostTypes.Select(x => new CostTypeSymbol(this, x, diagnostics)).ToImmutableArray();
-        profileTypes = declaration.ProfileTypes.Select(x => new ProfileTypeSymbol(this, x, diagnostics)).ToImmutableArray();
-        publications = declaration.Publications.Select(x => new PublicationSymbol(this, x, diagnostics)).ToImmutableArray();
+        ResourceDefinitions = CreateResourceDefinitions().ToImmutableArray();
         RootContainerEntries = CreateRootContainerEntries().ToImmutableArray();
         RootResourceEntries = CreateRootResourceEntries().ToImmutableArray();
         SharedSelectionEntryContainers = CreateSharedContainerEntries().ToImmutableArray();
         SharedResourceEntries = CreateSharedResourceEntries().ToImmutableArray();
 
-        IEnumerable<IContainerEntrySymbol> CreateRootContainerEntries()
+        IEnumerable<ResourceDefinitionBaseSymbol> CreateResourceDefinitions()
+        {
+            foreach (var item in declaration.CostTypes)
+            {
+                yield return new CostTypeSymbol(this, item, diagnostics);
+            }
+            foreach (var item in declaration.ProfileTypes)
+            {
+                yield return new ProfileTypeSymbol(this, item, diagnostics);
+            }
+            foreach (var item in declaration.Publications)
+            {
+                yield return new PublicationSymbol(this, item, diagnostics);
+            }
+        }
+
+        IEnumerable<ContainerEntryBaseSymbol> CreateRootContainerEntries()
         {
             foreach (var item in declaration.SelectionEntries)
             {
@@ -43,14 +53,14 @@ internal abstract class CatalogueBaseSymbol : SourceDeclaredSymbol, ICatalogueSy
                 yield return EntrySymbol.CreateEntry(this, item, diagnostics);
             }
         }
-        IEnumerable<IResourceEntrySymbol> CreateRootResourceEntries()
+        IEnumerable<ResourceEntryBaseSymbol> CreateRootResourceEntries()
         {
             foreach (var item in declaration.Rules)
             {
                 yield return EntrySymbol.CreateEntry(this, item, diagnostics);
             }
         }
-        IEnumerable<ISelectionEntryContainerSymbol> CreateSharedContainerEntries()
+        IEnumerable<SelectionEntryBaseSymbol> CreateSharedContainerEntries()
         {
             foreach (var item in declaration.SharedSelectionEntries)
             {
@@ -61,7 +71,7 @@ internal abstract class CatalogueBaseSymbol : SourceDeclaredSymbol, ICatalogueSy
                 yield return EntrySymbol.CreateEntry(this, item, diagnostics);
             }
         }
-        IEnumerable<IResourceEntrySymbol> CreateSharedResourceEntries()
+        IEnumerable<ResourceEntryBaseSymbol> CreateSharedResourceEntries()
         {
             foreach (var item in declaration.SharedInfoGroups)
             {
@@ -82,9 +92,9 @@ internal abstract class CatalogueBaseSymbol : SourceDeclaredSymbol, ICatalogueSy
 
     public override SymbolKind Kind => SymbolKind.Catalogue;
 
-    public override ICatalogueSymbol? ContainingCatalogue => null;
-
     public override SourceGlobalNamespaceSymbol ContainingNamespace { get; }
+
+    public override IModuleSymbol? ContainingModule => null;
 
     public abstract bool IsLibrary { get; }
 
@@ -92,39 +102,46 @@ internal abstract class CatalogueBaseSymbol : SourceDeclaredSymbol, ICatalogueSy
 
     public abstract ICatalogueSymbol Gamesystem { get; }
 
-    public abstract ImmutableArray<ICatalogueReferenceSymbol> CatalogueReferences { get; }
+    public abstract ImmutableArray<CatalogueReferenceSymbol> CatalogueReferences { get; }
 
-    public ImmutableArray<ISymbol> AllItems =>
-        ImmutableArray<ISymbol>.Empty
+    public ImmutableArray<Symbol> AllItems => GetMembersCore();
+
+    ImmutableArray<ISymbol> ICatalogueSymbol.AllItems => GetMembers();
+
+    public ImmutableArray<ResourceDefinitionBaseSymbol> ResourceDefinitions { get; }
+
+    public ImmutableArray<ContainerEntryBaseSymbol> RootContainerEntries { get; }
+
+    public ImmutableArray<ResourceEntryBaseSymbol> RootResourceEntries { get; }
+
+    public ImmutableArray<SelectionEntryBaseSymbol> SharedSelectionEntryContainers { get; }
+
+    public ImmutableArray<ResourceEntryBaseSymbol> SharedResourceEntries { get; }
+
+    ImmutableArray<IContainerEntrySymbol> ICatalogueSymbol.RootContainerEntries =>
+        RootContainerEntries.Cast<ContainerEntryBaseSymbol, IContainerEntrySymbol>();
+
+    ImmutableArray<IResourceEntrySymbol> ICatalogueSymbol.RootResourceEntries =>
+        RootResourceEntries.Cast<ResourceEntryBaseSymbol, IResourceEntrySymbol>();
+
+    ImmutableArray<ISelectionEntryContainerSymbol> ICatalogueSymbol.SharedSelectionEntryContainers =>
+        SharedSelectionEntryContainers.Cast<SelectionEntryBaseSymbol, ISelectionEntryContainerSymbol>();
+
+    ImmutableArray<IResourceEntrySymbol> ICatalogueSymbol.SharedResourceEntries =>
+        SharedResourceEntries.Cast<ResourceEntryBaseSymbol, IResourceEntrySymbol>();
+
+    ImmutableArray<ICatalogueReferenceSymbol> ICatalogueSymbol.CatalogueReferences =>
+        CatalogueReferences.Cast<CatalogueReferenceSymbol, ICatalogueReferenceSymbol>();
+
+    ImmutableArray<IResourceDefinitionSymbol> ICatalogueSymbol.ResourceDefinitions =>
+        ResourceDefinitions.Cast<ResourceDefinitionBaseSymbol, IResourceDefinitionSymbol>();
+
+    protected sealed override ImmutableArray<Symbol> MakeAllMembers(BindingDiagnosticBag diagnostics) =>
+        base.MakeAllMembers(diagnostics)
         .AddRange(CatalogueReferences)
         .AddRange(ResourceDefinitions)
         .AddRange(RootContainerEntries)
         .AddRange(RootResourceEntries)
         .AddRange(SharedSelectionEntryContainers)
         .AddRange(SharedResourceEntries);
-
-    public ImmutableArray<IResourceDefinitionSymbol> ResourceDefinitions =>
-        ImmutableArray<IResourceDefinitionSymbol>.Empty
-        .AddRange(costTypes)
-        .AddRange(profileTypes)
-        .AddRange(publications);
-
-    public ImmutableArray<IContainerEntrySymbol> RootContainerEntries { get; }
-
-    public ImmutableArray<IResourceEntrySymbol> RootResourceEntries { get; }
-
-    public ImmutableArray<ISelectionEntryContainerSymbol> SharedSelectionEntryContainers { get; }
-
-    public ImmutableArray<IResourceEntrySymbol> SharedResourceEntries { get; }
-
-    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnostics)
-    {
-        base.BindReferencesCore(binder, diagnostics);
-    }
-
-    protected override void InvokeForceCompleteOnChildren()
-    {
-        base.InvokeForceCompleteOnChildren();
-        InvokeForceComplete(AllItems);
-    }
 }

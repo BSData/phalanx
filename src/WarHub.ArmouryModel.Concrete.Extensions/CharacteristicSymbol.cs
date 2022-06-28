@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class CharacteristicSymbol : SimpleResourceEntrySymbol, ICharacteristicSymbol, INodeDeclaredSymbol<CharacteristicNode>
+internal class CharacteristicSymbol : ResourceEntryBaseSymbol, ICharacteristicSymbol, INodeDeclaredSymbol<CharacteristicNode>
 {
     private ICharacteristicTypeSymbol? lazyType;
 
@@ -19,13 +19,11 @@ internal class CharacteristicSymbol : SimpleResourceEntrySymbol, ICharacteristic
 
     public override ResourceKind ResourceKind => ResourceKind.Characteristic;
 
-    public ICharacteristicTypeSymbol Type => GetBoundField(ref lazyType);
+    public override ICharacteristicTypeSymbol Type => GetBoundField(ref lazyType);
 
     public string Value => Declaration.Value ?? string.Empty;
 
-    protected override IResourceDefinitionSymbol? BaseType => Type;
-
-    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnostics)
+    protected override void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)
     {
         base.BindReferencesCore(binder, diagnostics);
 

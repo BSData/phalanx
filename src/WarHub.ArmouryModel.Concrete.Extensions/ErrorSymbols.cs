@@ -61,11 +61,9 @@ internal static class ErrorSymbols
 
         public ISymbol? ContainingSymbol => null;
 
-        public ICatalogueSymbol? ContainingCatalogue => null;
+        public IModuleSymbol? ContainingModule => null;
 
         public IGamesystemNamespaceSymbol? ContainingNamespace => null;
-
-        public IRosterSymbol? ContainingRoster => null;
 
         public ImmutableArray<ISymbol> CandidateSymbols { get; init; } = ImmutableArray<ISymbol>.Empty;
 

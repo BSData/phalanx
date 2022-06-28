@@ -1,9 +1,12 @@
+using System.Diagnostics;
 using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
 internal class SourceGlobalNamespaceSymbol : Symbol, IGamesystemNamespaceSymbol
 {
+    protected SymbolCompletionState state;
+
     public SourceGlobalNamespaceSymbol(
         ImmutableArray<SourceNode> rootDataNodes,
         WhamCompilation declaringCompilation)
@@ -15,6 +18,7 @@ internal class SourceGlobalNamespaceSymbol : Symbol, IGamesystemNamespaceSymbol
         Catalogues = AllRootSymbols.OfType<CatalogueBaseSymbol>().ToImmutableArray();
         RootCatalogue = GetOrCreateGamesystemSymbol();
         // TODO more diagnostics, e.g. all catalogues are from the same game system?
+        state.NotePartComplete(CompletionPart.Members);
 
         ICatalogueSymbol GetOrCreateGamesystemSymbol()
         {
@@ -58,7 +62,11 @@ internal class SourceGlobalNamespaceSymbol : Symbol, IGamesystemNamespaceSymbol
 
     public override string? Comment => null;
 
-    public override ISymbol? ContainingSymbol => null;
+    public override Symbol? ContainingSymbol => null;
+
+    public override IGamesystemNamespaceSymbol? ContainingNamespace => null;
+
+    public override IModuleSymbol? ContainingModule => null;
 
     public ICatalogueSymbol RootCatalogue { get; }
 
@@ -68,10 +76,6 @@ internal class SourceGlobalNamespaceSymbol : Symbol, IGamesystemNamespaceSymbol
 
     public ImmutableArray<RosterSymbol> Rosters { get; }
 
-    public override IGamesystemNamespaceSymbol? ContainingNamespace => null;
-
-    public override ICatalogueSymbol? ContainingCatalogue => null;
-
     internal override WhamCompilation DeclaringCompilation { get; }
 
     internal DiagnosticBag DeclarationDiagnostics { get; }
@@ -79,17 +83,45 @@ internal class SourceGlobalNamespaceSymbol : Symbol, IGamesystemNamespaceSymbol
     internal override bool RequiresCompletion => true;
 
     ImmutableArray<ICatalogueSymbol> IGamesystemNamespaceSymbol.Catalogues =>
-        ImmutableArray<ICatalogueSymbol>.CastUp(Catalogues);
+        Catalogues.Cast<CatalogueBaseSymbol, ICatalogueSymbol>();
 
     ImmutableArray<IRosterSymbol> IGamesystemNamespaceSymbol.Rosters =>
-        ImmutableArray<IRosterSymbol>.CastUp(Rosters);
+        Rosters.Cast<RosterSymbol, IRosterSymbol>();
 
     ImmutableArray<ISymbol> IGamesystemNamespaceSymbol.AllRootSymbols =>
-        ImmutableArray<ISymbol>.CastUp(AllRootSymbols);
+        AllRootSymbols.Cast<Symbol, ISymbol>();
 
-    protected override void InvokeForceCompleteOnChildren()
+    internal sealed override bool HasComplete(CompletionPart part) => state.HasComplete(part);
+
+    internal override void ForceComplete(CancellationToken cancellationToken)
     {
-        base.InvokeForceCompleteOnChildren();
-        InvokeForceComplete(AllRootSymbols);
+        while (true)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var incompletePart = state.NextIncompletePart;
+            switch (incompletePart)
+            {
+                case CompletionPart.None:
+                    return;
+                case CompletionPart.MembersCompleted:
+                    {
+                        foreach (var member in AllRootSymbols)
+                        {
+                            cancellationToken.ThrowIfCancellationRequested();
+                            member.ForceComplete(cancellationToken);
+                        }
+                        state.NotePartComplete(CompletionPart.MembersCompleted);
+                        break;
+                    }
+                default:
+                    // This assert will trigger if we forgot to handle any of the completion parts
+                    Debug.Assert((incompletePart & CompletionPart.NamespaceAll) == 0);
+                    // any other values are completion parts intended for other kinds of symbols
+                    state.NotePartComplete(CompletionPart.All & ~CompletionPart.NamespaceAll);
+                    break;
+            }
+            state.SpinWaitComplete(incompletePart, cancellationToken);
+        }
+        throw new InvalidOperationException("Unreachable code.");
     }
 }

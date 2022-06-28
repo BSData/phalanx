@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class PublicationSymbol : SourceDeclaredSymbol, IPublicationSymbol, INodeDeclaredSymbol<PublicationNode>
+internal class PublicationSymbol : ResourceDefinitionBaseSymbol, IPublicationSymbol, INodeDeclaredSymbol<PublicationNode>
 {
     public PublicationSymbol(
         ISymbol? containingSymbol,
@@ -17,9 +17,7 @@ internal class PublicationSymbol : SourceDeclaredSymbol, IPublicationSymbol, INo
 
     public override PublicationNode Declaration { get; }
 
-    public override SymbolKind Kind => SymbolKind.ResourceDefinition;
-
-    public ResourceKind ResourceKind => ResourceKind.Publication;
+    public override ResourceKind ResourceKind => ResourceKind.Publication;
 
     public string? ShortName => Declaration.ShortName;
 

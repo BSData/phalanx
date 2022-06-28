@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class RuleSymbol : EntrySymbol, IRuleSymbol, INodeDeclaredSymbol<RuleNode>
+internal class RuleSymbol : ResourceEntryBaseSymbol, IRuleSymbol, INodeDeclaredSymbol<RuleNode>
 {
     public RuleSymbol(
         ISymbol containingSymbol,
@@ -15,13 +15,7 @@ internal class RuleSymbol : EntrySymbol, IRuleSymbol, INodeDeclaredSymbol<RuleNo
 
     public override RuleNode Declaration { get; }
 
-    public override SymbolKind Kind => SymbolKind.Resource;
-
-    public ResourceKind ResourceKind => ResourceKind.Rule;
+    public override ResourceKind ResourceKind => ResourceKind.Rule;
 
     public string DescriptionText => Declaration.Description ?? string.Empty;
-
-    IResourceDefinitionSymbol? IResourceEntrySymbol.Type => null;
-
-    IResourceEntrySymbol? IResourceEntrySymbol.ReferencedEntry => null;
 }

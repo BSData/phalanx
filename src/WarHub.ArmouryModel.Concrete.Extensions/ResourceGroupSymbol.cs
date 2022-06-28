@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class ResourceGroupSymbol : EntrySymbol, IResourceGroupSymbol, INodeDeclaredSymbol<InfoGroupNode>
+internal class ResourceGroupSymbol : ResourceEntryBaseSymbol, IResourceGroupSymbol, INodeDeclaredSymbol<InfoGroupNode>
 {
     public ResourceGroupSymbol(
         ISymbol containingSymbol,
@@ -13,7 +13,7 @@ internal class ResourceGroupSymbol : EntrySymbol, IResourceGroupSymbol, INodeDec
         Declaration = declaration;
         Resources = CreateResourceEntries().ToImmutableArray();
 
-        IEnumerable<IResourceEntrySymbol> CreateResourceEntries()
+        IEnumerable<ResourceEntryBaseSymbol> CreateResourceEntries()
         {
             foreach (var item in declaration.InfoGroups)
             {
@@ -36,13 +36,13 @@ internal class ResourceGroupSymbol : EntrySymbol, IResourceGroupSymbol, INodeDec
 
     public override InfoGroupNode Declaration { get; }
 
-    public override SymbolKind Kind => SymbolKind.Resource;
+    public override ResourceKind ResourceKind => ResourceKind.Group;
 
-    public ResourceKind ResourceKind => ResourceKind.Group;
+    public ImmutableArray<ResourceEntryBaseSymbol> Resources { get; }
 
-    public ImmutableArray<IResourceEntrySymbol> Resources { get; }
+    ImmutableArray<IResourceEntrySymbol> IResourceGroupSymbol.Resources =>
+        Resources.Cast<ResourceEntryBaseSymbol, IResourceEntrySymbol>();
 
-    public IResourceDefinitionSymbol? Type => null;
-
-    public IResourceEntrySymbol? ReferencedEntry => null;
+    protected override ImmutableArray<Symbol> MakeAllMembers(BindingDiagnosticBag diagnostics) =>
+        base.MakeAllMembers(diagnostics).AddRange(Resources);
 }

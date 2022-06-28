@@ -20,22 +20,16 @@ internal class CategorySymbol : RosterEntryBasedSymbol, ICategorySymbol, INodeDe
 
     public override ICategoryEntrySymbol SourceEntry => GetBoundField(ref lazyCategoryEntry);
 
-    public override ImmutableArray<IResourceEntrySymbol> Resources { get; }
+    public override ImmutableArray<ResourceEntryBaseSymbol> Resources { get; }
 
     public override SymbolKind Kind => SymbolKind.Category;
 
     public bool IsPrimaryCategory => Declaration.Primary;
 
-    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnostics)
+    protected override void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)
     {
         base.BindReferencesCore(binder, diagnostics);
         // TODO handle the special `(No Category)` here, or in binder?
         lazyCategoryEntry = binder.BindCategoryEntrySymbol(Declaration, diagnostics);
-    }
-
-    protected override void InvokeForceCompleteOnChildren()
-    {
-        base.InvokeForceCompleteOnChildren();
-        // Resources are done in base.Invoke... call
     }
 }

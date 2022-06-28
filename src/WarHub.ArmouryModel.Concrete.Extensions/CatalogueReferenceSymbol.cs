@@ -22,7 +22,7 @@ internal class CatalogueReferenceSymbol : SourceDeclaredSymbol, ICatalogueRefere
 
     public override CatalogueLinkNode Declaration { get; }
 
-    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnostics)
+    protected override void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)
     {
         base.BindReferencesCore(binder, diagnostics);
 

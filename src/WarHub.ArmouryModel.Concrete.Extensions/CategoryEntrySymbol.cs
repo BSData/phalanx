@@ -17,7 +17,7 @@ internal class CategoryEntrySymbol : ContainerEntryBaseSymbol, ICategoryEntrySym
 
     public bool IsPrimaryCategory => false;
 
-    public ICategoryEntrySymbol? ReferencedEntry => null;
+    public override ICategoryEntrySymbol? ReferencedEntry => null;
 
     public override CategoryEntryNode Declaration { get; }
 }

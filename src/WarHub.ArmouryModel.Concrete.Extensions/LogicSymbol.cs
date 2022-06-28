@@ -21,14 +21,14 @@ internal abstract class LogicSymbol : Symbol, IConditionSymbol
 
     public override SymbolKind Kind => SymbolKind.Logic;
 
-    public static ImmutableArray<IEffectSymbol> CreateEffects(
+    public static ImmutableArray<EffectSymbol> CreateEffects(
         EntrySymbol containingSymbol,
         EntryBaseNode declaration,
         DiagnosticBag diagnostics)
     {
         return CreateChildEffects().ToImmutableArray();
 
-        IEnumerable<IEffectSymbol> CreateChildEffects()
+        IEnumerable<EffectSymbol> CreateChildEffects()
         {
             foreach (var item in declaration.Modifiers)
             {
@@ -41,7 +41,7 @@ internal abstract class LogicSymbol : Symbol, IConditionSymbol
         }
     }
 
-    public static IEffectSymbol CreateEffect(
+    public static EffectSymbol CreateEffect(
         ISymbol containingSymbol,
         ModifierNode declaration,
         DiagnosticBag diagnostics)
@@ -49,7 +49,7 @@ internal abstract class LogicSymbol : Symbol, IConditionSymbol
         return new ModifierEffectSymbol(containingSymbol, declaration, diagnostics);
     }
 
-    public static IEffectSymbol CreateEffect(
+    public static EffectSymbol CreateEffect(
         ISymbol containingSymbol,
         ModifierGroupNode declaration,
         DiagnosticBag diagnostics)

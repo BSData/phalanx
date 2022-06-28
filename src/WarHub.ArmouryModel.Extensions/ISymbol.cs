@@ -28,20 +28,14 @@ public interface ISymbol
     ISymbol? ContainingSymbol { get; }
 
     /// <summary>
-    /// Gets the <see cref="ICatalogueSymbol"/> for the containing catalogue. Returns null if the symbol
-    /// is not from a catalogue.
+    /// Gets the containing module (<see cref="ICatalogueSymbol"/> or <see cref="IRosterSymbol"/>).
+    /// Returns null if the symbol doesn't belong to a module.
     /// </summary>
-    ICatalogueSymbol? ContainingCatalogue { get; }
+    IModuleSymbol? ContainingModule { get; }
 
     /// <summary>
     /// Gets the <see cref="IGamesystemNamespaceSymbol"/> for the containing namespace symbol. Returns null
     /// if the symbol doesn't belong to a namespace (e.g. is a namespace itself).
     /// </summary>
     IGamesystemNamespaceSymbol? ContainingNamespace { get; }
-
-    /// <summary>
-    /// Gets the <see cref="IRosterSymbol"/> for the containing roster. Returns null if the symbol
-    /// is not from a roster.
-    /// </summary>
-    IRosterSymbol? ContainingRoster { get; }
 }

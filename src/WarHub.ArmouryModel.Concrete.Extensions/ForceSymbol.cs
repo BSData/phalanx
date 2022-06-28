@@ -15,10 +15,10 @@ internal class ForceSymbol : RosterEntryBasedSymbol, IForceSymbol, INodeDeclared
         Declaration = declaration;
         CatalogueReference = new ForceCatalogueReferenceSymbol(this, declaration, diagnostics);
         Resources = CreateRosterEntryResources(diagnostics).ToImmutableArray();
-        Categories = declaration.Categories.Select(x => new CategorySymbol(this, x, diagnostics)).ToImmutableArray<ICategorySymbol>();
-        Publications = declaration.Publications.Select(x => new PublicationSymbol(this, x, diagnostics)).ToImmutableArray<IPublicationSymbol>();
-        ChildForces = declaration.Forces.Select(x => new ForceSymbol(this, x, diagnostics)).ToImmutableArray<IForceSymbol>();
-        ChildSelections = declaration.Selections.Select(x => new SelectionSymbol(this, x, diagnostics)).ToImmutableArray<ISelectionSymbol>();
+        Categories = declaration.Categories.Select(x => new CategorySymbol(this, x, diagnostics)).ToImmutableArray();
+        Publications = declaration.Publications.Select(x => new PublicationSymbol(this, x, diagnostics)).ToImmutableArray();
+        ChildForces = declaration.Forces.Select(x => new ForceSymbol(this, x, diagnostics)).ToImmutableArray();
+        ChildSelections = declaration.Selections.Select(x => new SelectionSymbol(this, x, diagnostics)).ToImmutableArray();
     }
 
     public override ForceNode Declaration { get; }
@@ -27,32 +27,43 @@ internal class ForceSymbol : RosterEntryBasedSymbol, IForceSymbol, INodeDeclared
 
     public override IForceEntrySymbol SourceEntry => GetBoundField(ref lazyForceEntry);
 
-    public ImmutableArray<IForceSymbol> ChildForces { get; }
+    public ImmutableArray<ForceSymbol> ChildForces { get; }
 
-    public ImmutableArray<ISelectionSymbol> ChildSelections { get; }
+    public ImmutableArray<SelectionSymbol> ChildSelections { get; }
 
-    public override ImmutableArray<IResourceEntrySymbol> Resources { get; }
+    public override ImmutableArray<ResourceEntryBaseSymbol> Resources { get; }
 
-    public ImmutableArray<ICategorySymbol> Categories { get; }
+    public ImmutableArray<CategorySymbol> Categories { get; }
 
-    public ImmutableArray<IPublicationSymbol> Publications { get; }
+    public ImmutableArray<PublicationSymbol> Publications { get; }
 
-    public ICatalogueReferenceSymbol CatalogueReference { get; }
+    public ForceCatalogueReferenceSymbol CatalogueReference { get; }
 
-    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnostics)
+    ICatalogueReferenceSymbol IForceSymbol.CatalogueReference => CatalogueReference;
+
+    ImmutableArray<IForceSymbol> IForceSymbol.ChildForces =>
+        ChildForces.Cast<ForceSymbol, IForceSymbol>();
+
+    ImmutableArray<ICategorySymbol> IForceSymbol.Categories =>
+        Categories.Cast<CategorySymbol, ICategorySymbol>();
+
+    ImmutableArray<IPublicationSymbol> IForceSymbol.Publications =>
+        Publications.Cast<PublicationSymbol, IPublicationSymbol>();
+
+    ImmutableArray<ISelectionSymbol> IRosterSelectionTreeElementSymbol.ChildSelections =>
+        ChildSelections.Cast<SelectionSymbol, ISelectionSymbol>();
+
+    protected override void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)
     {
         base.BindReferencesCore(binder, diagnostics);
         lazyForceEntry = binder.BindForceEntrySymbol(Declaration, diagnostics);
     }
 
-    protected override void InvokeForceCompleteOnChildren()
-    {
-        base.InvokeForceCompleteOnChildren();
-        InvokeForceComplete(CatalogueReference);
-        // Resources are done in base.Invoke... call
-        InvokeForceComplete(Categories);
-        InvokeForceComplete(Publications);
-        InvokeForceComplete(ChildForces);
-        InvokeForceComplete(ChildSelections);
-    }
+    protected override ImmutableArray<Symbol> MakeAllMembers(BindingDiagnosticBag diagnostics) =>
+        base.MakeAllMembers(diagnostics)
+        .Add(CatalogueReference)
+        .AddRange(Categories)
+        .AddRange(Publications)
+        .AddRange(ChildForces)
+        .AddRange(ChildSelections);
 }

@@ -5,13 +5,11 @@ namespace WarHub.ArmouryModel;
 /// BS catalogue/gamesystem.
 /// WHAM <see cref="Source.CatalogueBaseNode" />.
 /// </summary>
-public interface ICatalogueSymbol : ISymbol
+public interface ICatalogueSymbol : IModuleSymbol
 {
     bool IsLibrary { get; }
 
     bool IsGamesystem { get; }
-
-    ICatalogueSymbol Gamesystem { get; }
 
     /// <summary>
     /// Represents catalogues linked using CatalogueLink syntax.

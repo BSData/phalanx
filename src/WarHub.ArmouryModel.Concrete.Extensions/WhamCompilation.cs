@@ -6,7 +6,7 @@ public class WhamCompilation : Compilation
 {
     private SourceGlobalNamespaceSymbol? lazyGlobalNamespace;
     private Binder? lazyGlobalNamespaceBinder;
-    private DiagnosticBag? lazyBindingDiagnostics;
+    private DiagnosticBag? lazyDeclarationDiagnostics;
 
     internal WhamCompilation(string? name, ImmutableArray<SourceTree> sourceTrees, CompilationOptions options)
         : base(name, sourceTrees, options)
@@ -36,12 +36,12 @@ public class WhamCompilation : Compilation
 
     public override ImmutableArray<Diagnostic> GetDiagnostics(CancellationToken cancellationToken = default)
     {
-        var declarationDiagnostics = SourceGlobalNamespace.DeclarationDiagnostics;
-        SourceGlobalNamespace.ForceComplete();
-        var bindingDiagnostics = BindingDiagnostics;
-        var builder = ImmutableArray.CreateBuilder<Diagnostic>(declarationDiagnostics.Count + bindingDiagnostics.Count);
+        var namespaceDiagnostics = SourceGlobalNamespace.DeclarationDiagnostics;
+        SourceGlobalNamespace.ForceComplete(cancellationToken);
+        var declarationDiagnostics = DeclarationDiagnostics;
+        var builder = ImmutableArray.CreateBuilder<Diagnostic>(namespaceDiagnostics.Count + declarationDiagnostics.Count);
+        builder.AddRange(namespaceDiagnostics.AsEnumerable());
         builder.AddRange(declarationDiagnostics.AsEnumerable());
-        builder.AddRange(bindingDiagnostics.AsEnumerable());
         return builder.MoveToImmutable();
     }
 
@@ -101,26 +101,15 @@ public class WhamCompilation : Compilation
         return new SourceGlobalNamespaceSymbol(nodes, this);
     }
 
-    private DiagnosticBag BindingDiagnostics
+    internal DiagnosticBag DeclarationDiagnostics
     {
         get
         {
-            var bag = DiagnosticBag.GetInstance();
-            var oldBag = Interlocked.CompareExchange(ref lazyBindingDiagnostics, bag, null);
-            if (oldBag is not null)
+            if (lazyDeclarationDiagnostics is null)
             {
-                bag.Free();
-                return oldBag;
+                Interlocked.CompareExchange(ref lazyDeclarationDiagnostics, DiagnosticBag.GetInstance(), null);
             }
-            else
-            {
-                return bag;
-            }
+            return lazyDeclarationDiagnostics;
         }
-    }
-
-    internal override void AddBindingDiagnostics(DiagnosticBag toAdd)
-    {
-        BindingDiagnostics.AddRange(toAdd);
     }
 }

@@ -44,7 +44,7 @@ internal class RosterCostSymbol : SourceDeclaredSymbol, IRosterCostSymbol
 
     public ICostTypeSymbol CostType => GetBoundField(ref lazyCostType);
 
-    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnostics)
+    protected override void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)
     {
         base.BindReferencesCore(binder, diagnostics);
         lazyCostType = binder.BindCostTypeSymbol(CostDeclaration, diagnostics);

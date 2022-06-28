@@ -26,9 +26,12 @@ internal abstract class RosterEntryBasedSymbol : SourceDeclaredSymbol, IRosterEn
 
     IPublicationReferenceSymbol? IRosterEntrySymbol.PublicationReference => PublicationReference;
 
-    public abstract ImmutableArray<IResourceEntrySymbol> Resources { get; }
+    public abstract ImmutableArray<ResourceEntryBaseSymbol> Resources { get; }
 
-    protected IEnumerable<IResourceEntrySymbol> CreateRosterEntryResources(DiagnosticBag diagnostics)
+    ImmutableArray<IResourceEntrySymbol> IRosterEntrySymbol.Resources =>
+        Resources.Cast<ResourceEntryBaseSymbol, IResourceEntrySymbol>();
+
+    protected IEnumerable<ResourceEntryBaseSymbol> CreateRosterEntryResources(DiagnosticBag diagnostics)
     {
         foreach (var item in Declaration.Rules)
         {
@@ -40,10 +43,8 @@ internal abstract class RosterEntryBasedSymbol : SourceDeclaredSymbol, IRosterEn
         }
     }
 
-    protected override void InvokeForceCompleteOnChildren()
-    {
-        base.InvokeForceCompleteOnChildren();
-        InvokeForceComplete(PublicationReference);
-        InvokeForceComplete(Resources);
-    }
+    protected override ImmutableArray<Symbol> MakeAllMembers(BindingDiagnosticBag diagnostics) =>
+        (PublicationReference is null ? ImmutableArray<Symbol>.Empty : ImmutableArray.Create<Symbol>(PublicationReference))
+        .AddRange(base.MakeAllMembers(diagnostics))
+        .AddRange(Resources.Cast<ResourceEntryBaseSymbol, Symbol>());
 }

@@ -41,4 +41,10 @@ internal static class DiagnosticBagExtensions
         diagnostics.Add(diag);
         return info;
     }
+
+    internal static void Add(this DiagnosticBag diagnostics, DiagnosticInfo info, Location location)
+    {
+        var diag = new WhamDiagnostic(info, location);
+        diagnostics.Add(diag);
+    }
 }

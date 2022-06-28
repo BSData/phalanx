@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class ProfileSymbol : EntrySymbol, IProfileSymbol, INodeDeclaredSymbol<ProfileNode>
+internal class ProfileSymbol : ResourceEntryBaseSymbol, IProfileSymbol, INodeDeclaredSymbol<ProfileNode>
 {
     private IProfileTypeSymbol? lazyType;
 
@@ -15,7 +15,7 @@ internal class ProfileSymbol : EntrySymbol, IProfileSymbol, INodeDeclaredSymbol<
         Declaration = declaration;
         Characteristics = CreateCharacteristics().ToImmutableArray();
 
-        IEnumerable<ICharacteristicSymbol> CreateCharacteristics()
+        IEnumerable<CharacteristicSymbol> CreateCharacteristics()
         {
             foreach (var item in declaration.Characteristics)
             {
@@ -26,28 +26,22 @@ internal class ProfileSymbol : EntrySymbol, IProfileSymbol, INodeDeclaredSymbol<
 
     public override ProfileNode Declaration { get; }
 
-    public IProfileTypeSymbol Type => GetBoundField(ref lazyType);
+    public override IProfileTypeSymbol Type => GetBoundField(ref lazyType);
 
-    public override SymbolKind Kind => SymbolKind.Resource;
+    public override ResourceKind ResourceKind => ResourceKind.Profile;
 
-    public ResourceKind ResourceKind => ResourceKind.Profile;
+    public ImmutableArray<CharacteristicSymbol> Characteristics { get; }
 
-    public ImmutableArray<ICharacteristicSymbol> Characteristics { get; }
+    ImmutableArray<ICharacteristicSymbol> IProfileSymbol.Characteristics =>
+        Characteristics.Cast<CharacteristicSymbol, ICharacteristicSymbol>();
 
-    IResourceDefinitionSymbol? IResourceEntrySymbol.Type => Type;
-
-    IResourceEntrySymbol? IResourceEntrySymbol.ReferencedEntry => null;
-
-    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnostics)
+    protected override void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)
     {
         base.BindReferencesCore(binder, diagnostics);
 
         lazyType = binder.BindProfileTypeSymbol(Declaration, diagnostics);
     }
 
-    protected override void InvokeForceCompleteOnChildren()
-    {
-        base.InvokeForceCompleteOnChildren();
-        InvokeForceComplete(Characteristics);
-    }
+    protected override ImmutableArray<Symbol> MakeAllMembers(BindingDiagnosticBag diagnostics) =>
+        base.MakeAllMembers(diagnostics).AddRange(Characteristics);
 }

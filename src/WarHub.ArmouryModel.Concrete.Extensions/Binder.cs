@@ -32,43 +32,43 @@ internal class Binder
     internal virtual EntrySymbol? ContainingEntrySymbol =>
         ContainingSymbol as EntrySymbol ?? NextRequired.ContainingEntrySymbol;
 
-    internal IProfileTypeSymbol BindProfileTypeSymbol(ProfileNode node, DiagnosticBag diagnostics) =>
+    internal IProfileTypeSymbol BindProfileTypeSymbol(ProfileNode node, BindingDiagnosticBag diagnostics) =>
         BindSimple<IProfileTypeSymbol, ErrorSymbols.ErrorProfileTypeSymbol>(
             node, diagnostics, node.TypeId, LookupOptions.ProfileTypeOnly);
 
-    internal IPublicationSymbol BindPublicationSymbol(IPublicationReferencingNode node, DiagnosticBag diagnostics) =>
+    internal IPublicationSymbol BindPublicationSymbol(IPublicationReferencingNode node, BindingDiagnosticBag diagnostics) =>
         BindSimple<IPublicationSymbol, ErrorSymbols.ErrorPublicationSymbol>(
             (SourceNode)node, diagnostics, node.PublicationId, LookupOptions.PublicationOnly);
 
-    internal ICharacteristicTypeSymbol BindCharacteristicTypeSymbol(CharacteristicNode node, DiagnosticBag diagnostics) =>
+    internal ICharacteristicTypeSymbol BindCharacteristicTypeSymbol(CharacteristicNode node, BindingDiagnosticBag diagnostics) =>
         BindSimple<ICharacteristicTypeSymbol, ErrorSymbols.ErrorCharacteristicTypeSymbol>(
             node, diagnostics, node.TypeId, LookupOptions.CharacteristicTypeOnly);
 
-    internal IForceEntrySymbol BindForceEntrySymbol(ForceNode node, DiagnosticBag diagnostics) =>
+    internal IForceEntrySymbol BindForceEntrySymbol(ForceNode node, BindingDiagnosticBag diagnostics) =>
         BindSimple<IForceEntrySymbol, ErrorSymbols.ErrorForceEntrySymbol>(
             node, diagnostics, node.EntryId, LookupOptions.ForceEntryOnly);
 
-    internal ICatalogueSymbol BindCatalogueSymbol(CatalogueLinkNode node, DiagnosticBag diagnostics) =>
+    internal ICatalogueSymbol BindCatalogueSymbol(CatalogueLinkNode node, BindingDiagnosticBag diagnostics) =>
         BindSimple<ICatalogueSymbol, ErrorSymbols.ErrorCatalogueSymbol>(
             node, diagnostics, node.TargetId, LookupOptions.CatalogueOnly);
 
-    internal ICatalogueSymbol BindCatalogueSymbol(ForceNode node, DiagnosticBag diagnostics) =>
+    internal ICatalogueSymbol BindCatalogueSymbol(ForceNode node, BindingDiagnosticBag diagnostics) =>
         BindSimple<ICatalogueSymbol, ErrorSymbols.ErrorCatalogueSymbol>(
             node, diagnostics, node.CatalogueId, LookupOptions.CatalogueOnly);
 
-    internal ICatalogueSymbol BindGamesystemSymbol(CatalogueNode node, DiagnosticBag diagnostics) =>
+    internal ICatalogueSymbol BindGamesystemSymbol(CatalogueNode node, BindingDiagnosticBag diagnostics) =>
         BindSimple<ICatalogueSymbol, ErrorSymbols.ErrorGamesystemSymbol>(
             node, diagnostics, node.GamesystemId, LookupOptions.CatalogueOnly);
 
-    internal ICatalogueSymbol BindGamesystemSymbol(RosterNode node, DiagnosticBag diagnostics) =>
+    internal ICatalogueSymbol BindGamesystemSymbol(RosterNode node, BindingDiagnosticBag diagnostics) =>
         BindSimple<ICatalogueSymbol, ErrorSymbols.ErrorGamesystemSymbol>(
             node, diagnostics, node.GameSystemId, LookupOptions.CatalogueOnly);
 
-    internal ICostTypeSymbol BindCostTypeSymbol(CostNode node, DiagnosticBag diagnostics) =>
+    internal ICostTypeSymbol BindCostTypeSymbol(CostNode node, BindingDiagnosticBag diagnostics) =>
         BindSimple<ICostTypeSymbol, ErrorSymbols.ErrorCostTypeSymbol>(
             node, diagnostics, node.TypeId, LookupOptions.CostTypeOnly);
 
-    internal IResourceEntrySymbol BindSharedResourceEntrySymbol(InfoLinkNode node, DiagnosticBag diagnostics) =>
+    internal IResourceEntrySymbol BindSharedResourceEntrySymbol(InfoLinkNode node, BindingDiagnosticBag diagnostics) =>
         BindSimple<IResourceEntrySymbol, ErrorSymbols.ErrorResourceEntrySymbol>(
             node,
             diagnostics, node.TargetId,
@@ -80,7 +80,7 @@ internal class Binder
                 _ => LookupOptions.Default,
             });
 
-    internal ISelectionEntryContainerSymbol BindSharedSelectionEntrySymbol(EntryLinkNode node, DiagnosticBag diagnostics) =>
+    internal ISelectionEntryContainerSymbol BindSharedSelectionEntrySymbol(EntryLinkNode node, BindingDiagnosticBag diagnostics) =>
         BindSimple<ISelectionEntryContainerSymbol, ErrorSymbols.ErrorSelectionEntryContainerSymbol>(
             node,
             diagnostics, node.TargetId,
@@ -91,28 +91,28 @@ internal class Binder
                 _ => LookupOptions.Default,
             });
 
-    internal ICategoryEntrySymbol BindCategoryEntrySymbol(CategoryLinkNode node, DiagnosticBag diagnostics) =>
+    internal ICategoryEntrySymbol BindCategoryEntrySymbol(CategoryLinkNode node, BindingDiagnosticBag diagnostics) =>
         BindSimple<ICategoryEntrySymbol, ErrorSymbols.ErrorCategoryEntrySymbol>(
             node, diagnostics, node.TargetId, LookupOptions.CategoryEntryOnly);
 
-    internal ICategoryEntrySymbol BindCategoryEntrySymbol(CategoryNode node, DiagnosticBag diagnostics) =>
+    internal ICategoryEntrySymbol BindCategoryEntrySymbol(CategoryNode node, BindingDiagnosticBag diagnostics) =>
         BindSimple<ICategoryEntrySymbol, ErrorSymbols.ErrorCategoryEntrySymbol>(
             node, diagnostics, node.EntryId, LookupOptions.CategoryEntryOnly);
 
     // TODO this definitely needs work, as it looks downward, into children
-    internal ISelectionEntrySymbol BindSelectionEntryGroupDefaultEntrySymbol(SelectionEntryGroupNode node, DiagnosticBag diagnostics) =>
+    internal ISelectionEntrySymbol BindSelectionEntryGroupDefaultEntrySymbol(SelectionEntryGroupNode node, BindingDiagnosticBag diagnostics) =>
         BindSimple<ISelectionEntrySymbol, ErrorSymbols.ErrorSelectionEntrySymbol>(
             node, diagnostics, node.DefaultSelectionEntryId, LookupOptions.SelectionEntryOnly);
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Code Analysis", "CA1822", Justification = "WIP")]
-    internal ISelectionEntrySymbol BindSelectionEntry(SelectionNode node, DiagnosticBag diagnostics)
+    internal ISelectionEntrySymbol BindSelectionEntry(SelectionNode node, BindingDiagnosticBag diagnostics)
     {
         // TODO implement selection binding
         diagnostics.Add(ErrorCode.ERR_GenericError, node.GetLocation(), "Selection binding is not yet implemented.");
         return new ErrorSymbols.ErrorSelectionEntrySymbol();
     }
 
-    private TSymbol BindSimple<TSymbol, TErrorSymbol>(SourceNode node, DiagnosticBag diagnostics, string? symbolId, LookupOptions options)
+    private TSymbol BindSimple<TSymbol, TErrorSymbol>(SourceNode node, BindingDiagnosticBag diagnostics, string? symbolId, LookupOptions options)
         where TSymbol : ISymbol
         where TErrorSymbol : ErrorSymbols.ErrorSymbolBase, TSymbol, new()
     {
@@ -186,14 +186,14 @@ internal class Binder
         return LookupResult.Good(symbol);
     }
 
-    private static bool IsRootEntry(ISymbol symbol) => symbol.ContainingCatalogue is { } catalogue && symbol.Kind switch
+    private static bool IsRootEntry(ISymbol symbol) => symbol.ContainingModule is ICatalogueSymbol { } catalogue && symbol.Kind switch
     {
         SymbolKind.ContainerEntry => catalogue.RootContainerEntries.Contains(symbol),
         SymbolKind.Resource => catalogue.RootResourceEntries.Contains(symbol),
         _ => false,
     };
 
-    private static bool IsSharedEntry(ISymbol symbol) => symbol.ContainingCatalogue is { } catalogue && symbol.Kind switch
+    private static bool IsSharedEntry(ISymbol symbol) => symbol.ContainingModule is ICatalogueSymbol { } catalogue && symbol.Kind switch
     {
         SymbolKind.ContainerEntry => catalogue.SharedSelectionEntryContainers.Contains(symbol),
         SymbolKind.Resource => catalogue.SharedResourceEntries.Contains(symbol),
@@ -219,7 +219,7 @@ internal class Binder
         LookupResult result,
         string symbolId,
         SourceNode where,
-        DiagnosticBag diagnostics,
+        BindingDiagnosticBag diagnostics,
         out bool wasError,
         LookupOptions options = LookupOptions.Default)
     {

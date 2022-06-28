@@ -5,17 +5,17 @@ namespace WarHub.ArmouryModel.Concrete;
 /// <summary>
 /// Separate symbol that is essentially a child of <see cref="EntrySymbol"/>.
 /// </summary>
-internal class PublicationReferenceSymbol : Symbol, IPublicationReferenceSymbol
+internal class PublicationReferenceSymbol : SourceDeclaredSymbol, IPublicationReferenceSymbol
 {
     private IPublicationSymbol? lazyPublication;
 
-    public PublicationReferenceSymbol(
+    private PublicationReferenceSymbol(
         SourceDeclaredSymbol containingSymbol,
         IPublicationReferencingNode declaration,
         DiagnosticBag diagnostics)
+        : base(containingSymbol, (SourceNode)declaration)
     {
-        Declaration = declaration;
-        ContainingSymbol = containingSymbol;
+        PublicationRefDeclaration = declaration;
         if (declaration.PublicationId is null)
         {
             // that's not what should happen, if publicationId is null,
@@ -30,13 +30,15 @@ internal class PublicationReferenceSymbol : Symbol, IPublicationReferenceSymbol
 
     public static PublicationReferenceSymbol? Create(
         SourceDeclaredSymbol containingSymbol,
-        IPublicationReferencingNode declaration,
+        SourceNode declaration,
         DiagnosticBag diagnostics)
     {
-        return declaration.PublicationId is null ? null : new PublicationReferenceSymbol(containingSymbol, declaration, diagnostics);
+        return declaration is IPublicationReferencingNode { PublicationId: { } pubId } node
+            ? new PublicationReferenceSymbol(containingSymbol, node, diagnostics)
+            : null;
     }
 
-    public IPublicationReferencingNode Declaration { get; }
+    public IPublicationReferencingNode PublicationRefDeclaration { get; }
 
     public override SymbolKind Kind => SymbolKind.Link;
 
@@ -46,21 +48,13 @@ internal class PublicationReferenceSymbol : Symbol, IPublicationReferenceSymbol
 
     public override string? Comment => null;
 
-    public override SourceDeclaredSymbol ContainingSymbol { get; }
-
-    internal override WhamCompilation DeclaringCompilation => ContainingSymbol.DeclaringCompilation;
-
     public IPublicationSymbol Publication => GetBoundField(ref lazyPublication);
 
-    public string Page => Declaration.Page ?? "";
+    public string Page => PublicationRefDeclaration.Page ?? string.Empty;
 
-    internal override bool RequiresCompletion => true;
-
-    protected override void BindReferences(WhamCompilation compilation, DiagnosticBag diagnostics)
+    protected override void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)
     {
-        base.BindReferences(compilation, diagnostics);
-
-        var binder = compilation.GetBinder(ContainingSymbol.Declaration, ContainingSymbol);
-        lazyPublication = binder.BindPublicationSymbol(Declaration, diagnostics);
+        base.BindReferencesCore(binder, diagnostics);
+        lazyPublication = binder.BindPublicationSymbol(PublicationRefDeclaration, diagnostics);
     }
 }

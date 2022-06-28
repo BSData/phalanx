@@ -2,20 +2,20 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class ForceCatalogueReferenceSymbol : Symbol, ICatalogueReferenceSymbol
+internal class ForceCatalogueReferenceSymbol : SourceDeclaredSymbol, ICatalogueReferenceSymbol
 {
     private ICatalogueSymbol? lazyCatalogue;
 
     public ForceCatalogueReferenceSymbol(
-        ISymbol? containingSymbol,
+        Symbol? containingSymbol,
         ForceNode declaration,
         DiagnosticBag diagnostics)
+        : base(containingSymbol, declaration)
     {
         Declaration = declaration;
-        ContainingSymbol = containingSymbol;
     }
 
-    public ForceNode Declaration { get; }
+    public override ForceNode Declaration { get; }
 
     public override SymbolKind Kind => SymbolKind.Link;
 
@@ -25,20 +25,13 @@ internal class ForceCatalogueReferenceSymbol : Symbol, ICatalogueReferenceSymbol
 
     public int CatalogueRevision => Declaration.CatalogueRevision;
 
-    public override string? Comment => null;
-
-    public override ISymbol? ContainingSymbol { get; }
-
     public bool ImportsRootEntries => false;
 
     public ICatalogueSymbol Catalogue => GetBoundField(ref lazyCatalogue);
 
-    internal override bool RequiresCompletion => true;
-
-    protected override void BindReferences(WhamCompilation compilation, DiagnosticBag diagnostics)
+    protected override void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)
     {
-        base.BindReferences(compilation, diagnostics);
-        var binder = compilation.GetBinder(Declaration, ContainingSymbol);
+        base.BindReferencesCore(binder, diagnostics);
         lazyCatalogue = binder.BindCatalogueSymbol(Declaration, diagnostics);
     }
 }

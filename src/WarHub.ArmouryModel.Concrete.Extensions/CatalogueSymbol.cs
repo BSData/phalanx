@@ -15,7 +15,7 @@ internal class CatalogueSymbol : CatalogueBaseSymbol, INodeDeclaredSymbol<Catalo
         Declaration = declaration;
         CatalogueReferences = CreateLinks().ToImmutableArray();
 
-        IEnumerable<ICatalogueReferenceSymbol> CreateLinks()
+        IEnumerable<CatalogueReferenceSymbol> CreateLinks()
         {
             foreach (var item in declaration.CatalogueLinks)
             {
@@ -32,20 +32,14 @@ internal class CatalogueSymbol : CatalogueBaseSymbol, INodeDeclaredSymbol<Catalo
 
     public override ICatalogueSymbol Gamesystem => GetBoundField(ref lazyGamesystem);
 
-    public override ImmutableArray<ICatalogueReferenceSymbol> CatalogueReferences { get; }
+    public override ImmutableArray<CatalogueReferenceSymbol> CatalogueReferences { get; }
 
     CatalogueNode INodeDeclaredSymbol<CatalogueNode>.Declaration => Declaration;
 
-    protected override void BindReferencesCore(Binder binder, DiagnosticBag diagnostics)
+    protected override void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)
     {
         base.BindReferencesCore(binder, diagnostics);
 
         lazyGamesystem = binder.BindGamesystemSymbol(Declaration, diagnostics);
-    }
-
-    protected override void InvokeForceCompleteOnChildren()
-    {
-        base.InvokeForceCompleteOnChildren();
-        InvokeForceComplete(CatalogueReferences);
     }
 }
