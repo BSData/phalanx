@@ -4,7 +4,7 @@ internal class CatalogueBaseBinder : Binder
 {
     public CatalogueBaseSymbol Catalogue { get; }
 
-    private ImmutableArray<ICatalogueSymbol> lazyRootClosure;
+    private ImmutableArray<ICatalogueSymbol>? lazyRootClosure;
 
     internal CatalogueBaseBinder(Binder next, CatalogueBaseSymbol catalogue) : base(next)
     {
@@ -13,31 +13,22 @@ internal class CatalogueBaseBinder : Binder
 
     internal override Symbol? ContainingSymbol => Catalogue;
 
-    public ImmutableArray<ICatalogueSymbol> RootClosure =>
-        lazyRootClosure.IsDefault ? (lazyRootClosure = CalculateRootClosure()) : lazyRootClosure;
+    public ImmutableArray<ICatalogueSymbol> RootClosure => lazyRootClosure ??= CalculateRootClosure(Catalogue);
 
-    internal ImmutableArray<ICatalogueSymbol> CalculateRootClosure()
+    internal static ImmutableArray<ICatalogueSymbol> CalculateRootClosure(ICatalogueSymbol catalogue)
     {
-        var processed = new HashSet<ICatalogueSymbol>();
-        var closureItems = new List<ICatalogueSymbol>
-        {
-            // this is required, it's the base catalogue
-            Catalogue,
-        };
+        var closureItems = new List<ICatalogueSymbol>();
         var queuedForProcessing = new Queue<ICatalogueSymbol>();
-        queuedForProcessing.Enqueue(Catalogue);
-        while (queuedForProcessing.TryDequeue(out var item))
+        queuedForProcessing.Enqueue(catalogue);
+        while (queuedForProcessing.TryDequeue(out var item) && !closureItems.Contains(item))
         {
-            if (processed.Add(item))
+            closureItems.Add(item);
+            foreach (var import in item.CatalogueReferences)
             {
-                closureItems.Add(item);
-                foreach (var import in item.CatalogueReferences)
-                {
-                    queuedForProcessing.Enqueue(import.Catalogue);
-                }
+                queuedForProcessing.Enqueue(import.Catalogue);
             }
         }
-        closureItems.Add(Catalogue.Gamesystem);
+        closureItems.Add(catalogue.Gamesystem);
         // TODO consider filtering out "missing"/error items
         return closureItems.ToImmutableArray();
     }

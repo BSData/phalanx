@@ -56,8 +56,8 @@ internal class BinderFactory
 
         public override Binder VisitRoster(RosterNode node)
         {
-            // TODO custom roster binder
-            return Compilation.GlobalNamespaceBinder;
+            var next = Compilation.GlobalNamespaceBinder;
+            return new RosterBinder(next, GetRosterSymbol(node));
         }
 
         public override Binder VisitCatalogue(CatalogueNode node)
@@ -111,6 +111,12 @@ internal class BinderFactory
         private CatalogueBaseSymbol GetCatalogueSymbol(CatalogueBaseNode node)
         {
             return Compilation.SourceGlobalNamespace.Catalogues
+                .First(x => x.Declaration == node);
+        }
+
+        private RosterSymbol GetRosterSymbol(RosterNode node)
+        {
+            return Compilation.SourceGlobalNamespace.Rosters
                 .First(x => x.Declaration == node);
         }
     }
