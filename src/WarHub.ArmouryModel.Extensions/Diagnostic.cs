@@ -36,8 +36,217 @@ public abstract partial class Diagnostic : IEquatable<Diagnostic?>, IFormattable
         Location? location,
         params object?[]? messageArgs)
     {
-        // TODO that's infinite recursion! there's a missing factory method
         return Create(descriptor, location, null, null, messageArgs);
+    }
+
+    /// <summary>
+    /// Creates a <see cref="Diagnostic"/> instance.
+    /// </summary>
+    /// <param name="descriptor">A <see cref="DiagnosticDescriptor"/> describing the diagnostic.</param>
+    /// <param name="location">An optional primary location of the diagnostic. If null, <see cref="Location"/> will return <see cref="Location.None"/>.</param>
+    /// <param name="properties">
+    /// An optional set of name-value pairs by means of which the analyzer that creates the diagnostic
+    /// can convey more detailed information to the fixer. If null, <see cref="Properties"/> will return
+    /// <see cref="ImmutableDictionary{TKey, TValue}.Empty"/>.
+    /// </param>
+    /// <param name="messageArgs">Arguments to the message of the diagnostic.</param>
+    /// <returns>The <see cref="Diagnostic"/> instance.</returns>
+    public static Diagnostic Create(
+        DiagnosticDescriptor descriptor,
+        Location? location,
+        ImmutableDictionary<string, string?>? properties,
+        params object?[]? messageArgs)
+    {
+        return Create(descriptor, location, null, properties, messageArgs);
+    }
+
+    /// <summary>
+    /// Creates a <see cref="Diagnostic"/> instance.
+    /// </summary>
+    /// <param name="descriptor">A <see cref="DiagnosticDescriptor"/> describing the diagnostic.</param>
+    /// <param name="location">An optional primary location of the diagnostic. If null, <see cref="Location"/> will return <see cref="Location.None"/>.</param>
+    /// <param name="additionalLocations">
+    /// An optional set of additional locations related to the diagnostic.
+    /// Typically, these are locations of other items referenced in the message.
+    /// If null, <see cref="AdditionalLocations"/> will return an empty list.
+    /// </param>
+    /// <param name="messageArgs">Arguments to the message of the diagnostic.</param>
+    /// <returns>The <see cref="Diagnostic"/> instance.</returns>
+    public static Diagnostic Create(
+        DiagnosticDescriptor descriptor,
+        Location? location,
+        IEnumerable<Location>? additionalLocations,
+        params object?[]? messageArgs)
+    {
+        return Create(descriptor, location, additionalLocations, properties: null, messageArgs: messageArgs);
+    }
+
+    /// <summary>
+    /// Creates a <see cref="Diagnostic"/> instance.
+    /// </summary>
+    /// <param name="descriptor">A <see cref="DiagnosticDescriptor"/> describing the diagnostic.</param>
+    /// <param name="location">An optional primary location of the diagnostic. If null, <see cref="Location"/> will return <see cref="Location.None"/>.</param>
+    /// <param name="additionalLocations">
+    /// An optional set of additional locations related to the diagnostic.
+    /// Typically, these are locations of other items referenced in the message.
+    /// If null, <see cref="AdditionalLocations"/> will return an empty list.
+    /// </param>
+    /// <param name="properties">
+    /// An optional set of name-value pairs by means of which the analyzer that creates the diagnostic
+    /// can convey more detailed information to the fixer. If null, <see cref="Properties"/> will return
+    /// <see cref="ImmutableDictionary{TKey, TValue}.Empty"/>.
+    /// </param>
+    /// <param name="messageArgs">Arguments to the message of the diagnostic.</param>
+    /// <returns>The <see cref="Diagnostic"/> instance.</returns>
+    public static Diagnostic Create(
+        DiagnosticDescriptor descriptor,
+        Location? location,
+        IEnumerable<Location>? additionalLocations,
+        ImmutableDictionary<string, string?>? properties,
+        params object?[]? messageArgs)
+    {
+        return Create(descriptor, location, effectiveSeverity: descriptor.DefaultSeverity, additionalLocations, properties, messageArgs);
+    }
+
+    /// <summary>
+    /// Creates a <see cref="Diagnostic"/> instance.
+    /// </summary>
+    /// <param name="descriptor">A <see cref="DiagnosticDescriptor"/> describing the diagnostic.</param>
+    /// <param name="location">An optional primary location of the diagnostic. If null, <see cref="Location"/> will return <see cref="Location.None"/>.</param>
+    /// <param name="effectiveSeverity">Effective severity of the diagnostic.</param>
+    /// <param name="additionalLocations">
+    /// An optional set of additional locations related to the diagnostic.
+    /// Typically, these are locations of other items referenced in the message.
+    /// If null, <see cref="AdditionalLocations"/> will return an empty list.
+    /// </param>
+    /// <param name="properties">
+    /// An optional set of name-value pairs by means of which the analyzer that creates the diagnostic
+    /// can convey more detailed information to the fixer. If null, <see cref="Properties"/> will return
+    /// <see cref="ImmutableDictionary{TKey, TValue}.Empty"/>.
+    /// </param>
+    /// <param name="messageArgs">Arguments to the message of the diagnostic.</param>
+    /// <returns>The <see cref="Diagnostic"/> instance.</returns>
+    public static Diagnostic Create(
+        DiagnosticDescriptor descriptor,
+        Location? location,
+        DiagnosticSeverity effectiveSeverity,
+        IEnumerable<Location>? additionalLocations,
+        ImmutableDictionary<string, string?>? properties,
+        params object?[]? messageArgs)
+    {
+        ArgumentNullException.ThrowIfNull(descriptor);
+        var warningLevel = GetDefaultWarningLevel(effectiveSeverity);
+        return SimpleDiagnostic.Create(
+            descriptor,
+            severity: effectiveSeverity,
+            warningLevel: warningLevel,
+            location: location ?? Location.None,
+            additionalLocations: additionalLocations,
+            messageArgs: messageArgs,
+            properties: properties);
+    }
+
+    /// <summary>
+    /// Creates a <see cref="Diagnostic"/> instance which is localizable.
+    /// </summary>
+    /// <param name="id">An identifier for the diagnostic. For diagnostics generated by the compiler, this will be a numeric code with a prefix such as "CS1001".</param>
+    /// <param name="category">The category of the diagnostic. For diagnostics generated by the compiler, the category will be "Compiler".</param>
+    /// <param name="message">The diagnostic message text.</param>
+    /// <param name="severity">The diagnostic's effective severity.</param>
+    /// <param name="defaultSeverity">The diagnostic's default severity.</param>
+    /// <param name="isEnabledByDefault">True if the diagnostic is enabled by default</param>
+    /// <param name="warningLevel">The warning level, greater than 0 if severity is <see cref="DiagnosticSeverity.Warning"/>; otherwise 0.</param>
+    /// <param name="title">An optional short localizable title describing the diagnostic.</param>
+    /// <param name="description">An optional longer localizable description for the diagnostic.</param>
+    /// <param name="helpLink">An optional hyperlink that provides more detailed information regarding the diagnostic.</param>
+    /// <param name="location">An optional primary location of the diagnostic. If null, <see cref="Location"/> will return <see cref="Location.None"/>.</param>
+    /// <param name="additionalLocations">
+    /// An optional set of additional locations related to the diagnostic.
+    /// Typically, these are locations of other items referenced in the message.
+    /// If null, <see cref="AdditionalLocations"/> will return an empty list.
+    /// </param>
+    /// <param name="customTags">
+    /// An optional set of custom tags for the diagnostic. See <see cref="WellKnownDiagnosticTags"/> for some well known tags.
+    /// If null, <see cref="CustomTags"/> will return an empty list.
+    /// </param>
+    /// <param name="properties">
+    /// An optional set of name-value pairs by means of which the analyzer that creates the diagnostic
+    /// can convey more detailed information to the fixer. If null, <see cref="Properties"/> will return
+    /// <see cref="ImmutableDictionary{TKey, TValue}.Empty"/>.
+    /// </param>
+    /// <returns>The <see cref="Diagnostic"/> instance.</returns>
+    public static Diagnostic Create(
+        string id,
+        string category,
+        LocalizableString message,
+        DiagnosticSeverity severity,
+        DiagnosticSeverity defaultSeverity,
+        bool isEnabledByDefault,
+        int warningLevel,
+        LocalizableString? title = null,
+        LocalizableString? description = null,
+        string? helpLink = null,
+        Location? location = null,
+        IEnumerable<Location>? additionalLocations = null,
+        IEnumerable<string>? customTags = null,
+        ImmutableDictionary<string, string?>? properties = null)
+    {
+        return Create(id, category, message, severity, defaultSeverity, isEnabledByDefault, warningLevel, false,
+            title, description, helpLink, location, additionalLocations, customTags, properties);
+    }
+
+    /// <summary>
+    /// Creates a <see cref="Diagnostic"/> instance which is localizable.
+    /// </summary>
+    /// <param name="id">An identifier for the diagnostic. For diagnostics generated by the compiler, this will be a numeric code with a prefix such as "CS1001".</param>
+    /// <param name="category">The category of the diagnostic. For diagnostics generated by the compiler, the category will be "Compiler".</param>
+    /// <param name="message">The diagnostic message text.</param>
+    /// <param name="severity">The diagnostic's effective severity.</param>
+    /// <param name="defaultSeverity">The diagnostic's default severity.</param>
+    /// <param name="isEnabledByDefault">True if the diagnostic is enabled by default</param>
+    /// <param name="warningLevel">The warning level, greater than 0 if severity is <see cref="DiagnosticSeverity.Warning"/>; otherwise 0.</param>
+    /// <param name="isSuppressed">Flag indicating whether the diagnostic is suppressed by a source suppression.</param>
+    /// <param name="title">An optional short localizable title describing the diagnostic.</param>
+    /// <param name="description">An optional longer localizable description for the diagnostic.</param>
+    /// <param name="helpLink">An optional hyperlink that provides more detailed information regarding the diagnostic.</param>
+    /// <param name="location">An optional primary location of the diagnostic. If null, <see cref="Location"/> will return <see cref="Location.None"/>.</param>
+    /// <param name="additionalLocations">
+    /// An optional set of additional locations related to the diagnostic.
+    /// Typically, these are locations of other items referenced in the message.
+    /// If null, <see cref="AdditionalLocations"/> will return an empty list.
+    /// </param>
+    /// <param name="customTags">
+    /// An optional set of custom tags for the diagnostic. See <see cref="WellKnownDiagnosticTags"/> for some well known tags.
+    /// If null, <see cref="CustomTags"/> will return an empty list.
+    /// </param>
+    /// <param name="properties">
+    /// An optional set of name-value pairs by means of which the analyzer that creates the diagnostic
+    /// can convey more detailed information to the fixer. If null, <see cref="Properties"/> will return
+    /// <see cref="ImmutableDictionary{TKey, TValue}.Empty"/>.
+    /// </param>
+    /// <returns>The <see cref="Diagnostic"/> instance.</returns>
+    public static Diagnostic Create(
+        string id,
+        string category,
+        LocalizableString message,
+        DiagnosticSeverity severity,
+        DiagnosticSeverity defaultSeverity,
+        bool isEnabledByDefault,
+        int warningLevel,
+        bool isSuppressed,
+        LocalizableString? title = null,
+        LocalizableString? description = null,
+        string? helpLink = null,
+        Location? location = null,
+        IEnumerable<Location>? additionalLocations = null,
+        IEnumerable<string>? customTags = null,
+        ImmutableDictionary<string, string?>? properties = null)
+    {
+        ArgumentNullException.ThrowIfNull(id);
+        ArgumentNullException.ThrowIfNull(category);
+        ArgumentNullException.ThrowIfNull(message);
+        return SimpleDiagnostic.Create(id, title ?? string.Empty, category, message, description ?? string.Empty, helpLink ?? string.Empty,
+            severity, defaultSeverity, isEnabledByDefault, warningLevel, location ?? Location.None, additionalLocations, customTags, properties, isSuppressed);
     }
 
     /// <summary>
