@@ -1,11 +1,8 @@
 using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
-
 internal class SelectionSymbol : RosterEntryBasedSymbol, ISelectionSymbol, INodeDeclaredSymbol<SelectionNode>
 {
-    private ISelectionEntrySymbol? lazySelectionEntry;
-
     public SelectionSymbol(
         ISymbol? containingSymbol,
         SelectionNode declaration,
@@ -13,6 +10,7 @@ internal class SelectionSymbol : RosterEntryBasedSymbol, ISelectionSymbol, INode
         : base(containingSymbol, declaration, diagnostics)
     {
         Declaration = declaration;
+        SourceEntryPath = new(this, declaration);
         Costs = declaration.Costs.Select(x => new CostSymbol(this, x, diagnostics)).ToImmutableArray();
         Resources = Costs.Cast<CostSymbol, ResourceEntryBaseSymbol>().AddRange(CreateRosterEntryResources(diagnostics));
         Categories = declaration.Categories.Select(x => new CategorySymbol(this, x, diagnostics)).ToImmutableArray();
@@ -26,7 +24,10 @@ internal class SelectionSymbol : RosterEntryBasedSymbol, ISelectionSymbol, INode
 
     public int Count => Declaration.Number;
 
-    public override ISelectionEntrySymbol SourceEntry => GetBoundField(ref lazySelectionEntry);
+    public SelectionReferencePathSymbol SourceEntryPath { get; }
+
+    public override ISelectionEntrySymbol SourceEntry =>
+        (ISelectionEntrySymbol)SourceEntryPath.SourceEntries.Last();
 
     public ImmutableArray<SelectionSymbol> ChildSelections { get; }
 
@@ -40,6 +41,8 @@ internal class SelectionSymbol : RosterEntryBasedSymbol, ISelectionSymbol, INode
 
     public ImmutableArray<CostSymbol> Costs { get; }
 
+    ISelectionReferencePathSymbol ISelectionSymbol.SourceEntryPath => SourceEntryPath;
+
     ImmutableArray<ICategorySymbol> ISelectionSymbol.Categories =>
         Categories.Cast<CategorySymbol, ICategorySymbol>();
 
@@ -49,14 +52,9 @@ internal class SelectionSymbol : RosterEntryBasedSymbol, ISelectionSymbol, INode
     ImmutableArray<ISelectionSymbol> IRosterSelectionTreeElementSymbol.ChildSelections =>
         ChildSelections.Cast<SelectionSymbol, ISelectionSymbol>();
 
-    protected override void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)
-    {
-        base.BindReferencesCore(binder, diagnostics);
-        lazySelectionEntry = binder.BindSelectionEntry(Declaration, diagnostics);
-    }
-
     protected override ImmutableArray<Symbol> MakeAllMembers(BindingDiagnosticBag diagnostics) =>
         base.MakeAllMembers(diagnostics)
+        .Add(SourceEntryPath)
         .AddRange(Categories)
         .AddRange(ChildSelections);
 }

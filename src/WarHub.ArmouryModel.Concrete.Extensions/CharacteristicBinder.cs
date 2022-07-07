@@ -1,3 +1,5 @@
+using WarHub.ArmouryModel.Source;
+
 namespace WarHub.ArmouryModel.Concrete;
 
 internal class CharacteristicBinder : Binder
@@ -11,7 +13,13 @@ internal class CharacteristicBinder : Binder
 
     internal override Symbol? ContainingSymbol => profileSymbol;
 
-    internal override void LookupSymbolsInSingleBinder(LookupResult result, string symbolId, LookupOptions options, Binder originalBinder, bool diagnose)
+    internal override void LookupSymbolsInSingleBinder(
+        LookupResult result,
+        string symbolId,
+        LookupOptions options,
+        Binder originalBinder,
+        bool diagnose,
+        ISymbol? qualifier)
     {
         if (options.CanConsiderResourceDefinitions())
         {

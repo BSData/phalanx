@@ -5,6 +5,9 @@ namespace WarHub.ArmouryModel;
 
 public static class WhamSymbolDeclarationExtensions
 {
+    public static SourceNode? GetDeclaration(this ISymbol symbol) =>
+        GetDeclarationCore<SourceDeclaredSymbol, SourceNode>(symbol);
+
     public static RosterNode? GetDeclaration(this IRosterSymbol symbol) =>
         GetDeclarationCore<RosterSymbol, RosterNode>(symbol);
 
@@ -56,10 +59,10 @@ public static class WhamSymbolDeclarationExtensions
     public static ForceEntryNode? GetDeclaration(this IForceEntrySymbol symbol) =>
         GetDeclarationCore<ForceEntrySymbol, ForceEntryNode>(symbol);
 
-    public static SelectionEntryNode? GetEntryDeclaration(this ISelectionEntrySymbol symbol) =>
+    public static SelectionEntryNode? GetEntryDeclaration(this ISelectionEntryContainerSymbol symbol) =>
         GetDeclarationCore<SelectionEntrySymbol, SelectionEntryNode>(symbol);
 
-    public static SelectionEntryGroupNode? GetEntryGroupDeclaration(this ISelectionEntryGroupSymbol symbol) =>
+    public static SelectionEntryGroupNode? GetEntryGroupDeclaration(this ISelectionEntryContainerSymbol symbol) =>
         GetDeclarationCore<SelectionEntryGroupSymbol, SelectionEntryGroupNode>(symbol);
 
     public static EntryLinkNode? GetEntryLinkDeclaration(this ISelectionEntryContainerSymbol symbol) =>
@@ -79,9 +82,7 @@ public static class WhamSymbolDeclarationExtensions
 
     private static TNode? GetDeclarationCore<TSymbol, TNode>(ISymbol symbol)
         where TSymbol : ISymbol, INodeDeclaredSymbol<TNode>
-        where TNode : SourceNode
-    {
-        return symbol is TSymbol { Declaration: var decl } ? decl : null;
-    }
+        where TNode : SourceNode =>
+        symbol is TSymbol { Declaration: var decl } ? decl : null;
 
 }

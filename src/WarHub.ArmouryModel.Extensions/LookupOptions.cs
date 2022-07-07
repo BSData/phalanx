@@ -63,4 +63,10 @@ internal static class LookupOptionsExtensions
 
     internal static bool CanConsiderContainerEntries(this LookupOptions options) =>
         (options & (LookupOptions.CatalogueOnly | LookupOptions.ResoureDefinitionOnly | LookupOptions.ResourceOnly)) == 0;
+
+    internal static bool CanConsiderSharedEntries(this LookupOptions options) =>
+        (options & (LookupOptions.CatalogueOnly | LookupOptions.ResoureDefinitionOnly | LookupOptions.RootOnly)) == 0;
+
+    internal static bool CanConsiderRootEntries(this LookupOptions options) =>
+        (options & (LookupOptions.CatalogueOnly | LookupOptions.ResoureDefinitionOnly | LookupOptions.SharedOnly)) == 0;
 }

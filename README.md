@@ -38,8 +38,14 @@ The main app to run is in `src/Phalanx.App` - select this project as startup pro
 - symbol layer:
   - symbolinfo that might be an error
   - implementation for: constraints, logic (conditions, modifiers)
-  - binder factory
+  - Roster binding:
+    - ~~Selection Entry Path on roster selection~~ (done)
+    - `(No Category)` category
+    - CostType on roster costs
+    - ForceEntry on roster force
+    - Profile/Rule on roster selection
   - binders for sub-catalogue levels
+  - usage/references (UseSiteInfo?)
 - add default subselections:
   - for entries with constraints min > 0 (constraints need symbols?)
   - entry groups

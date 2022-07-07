@@ -16,6 +16,8 @@ public interface ISelectionSymbol : IRosterSelectionTreeElementSymbol
 
     SelectionEntryKind EntryKind { get; }
 
+    ISelectionReferencePathSymbol SourceEntryPath { get; }
+
     new ISelectionEntrySymbol SourceEntry { get; }
 
     ICategorySymbol? PrimaryCategory { get; }

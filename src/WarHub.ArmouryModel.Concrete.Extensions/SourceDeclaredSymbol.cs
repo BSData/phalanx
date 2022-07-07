@@ -132,13 +132,22 @@ internal abstract class SourceDeclaredSymbol : Symbol, INodeDeclaredSymbol<Sourc
     {
     }
 
-    protected T GetBoundField<T>(ref T? field) where T : class
+    protected T GetBoundField<T>(ref T? field) where T : notnull
     {
         if (!state.HasComplete(CompletionPart.ReferencesCompleted))
         {
             BindReferences();
         }
         return field ?? throw new InvalidOperationException("Bound field was null after binding.");
+    }
+
+    protected ImmutableArray<T> GetBoundField<T>(ref ImmutableArray<T> field)
+    {
+        if (!state.HasComplete(CompletionPart.ReferencesCompleted))
+        {
+            BindReferences();
+        }
+        return !field.IsDefault ? field : throw new InvalidOperationException("Bound field still had default value after binding.");
     }
 
 

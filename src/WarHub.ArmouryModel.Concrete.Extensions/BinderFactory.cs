@@ -40,6 +40,8 @@ internal class BinderFactory
 
         public override Binder DefaultVisit(SourceNode node)
         {
+            // no support for detached nodes (e.g. withoug root like roster or catalogue node)
+            // can we add such support?
             return VisitCore(node.Parent);
         }
 
@@ -80,6 +82,20 @@ internal class BinderFactory
             return new CharacteristicBinder(next, profileSymbol);
         }
 
+        public override Binder VisitForce(ForceNode node)
+        {
+            var next = DefaultVisit(node);
+            var symbol = GetAncestorSymbol<ForceSymbol>(node);
+            return symbol is null ? next : new ForceBinder(next, symbol);
+        }
+
+        public override Binder VisitSelection(SelectionNode node)
+        {
+            var next = DefaultVisit(node);
+            var symbol = GetAncestorSymbol<SelectionSymbol>(node);
+            return symbol is null ? next : new SelectionBinder(next, symbol);
+        }
+
         private ProfileSymbol? GetProfileSymbol(ProfileNode node, Binder outerBinder)
         {
             if (containingSymbol is ProfileSymbol profileSymbol && profileSymbol.Declaration == node)
@@ -108,16 +124,32 @@ internal class BinderFactory
             return null;
         }
 
-        private CatalogueBaseSymbol GetCatalogueSymbol(CatalogueBaseNode node)
+        private CatalogueBaseSymbol GetCatalogueSymbol(CatalogueBaseNode node) =>
+            GetAncestorModule<CatalogueBaseSymbol>(node);
+
+        private RosterSymbol GetRosterSymbol(RosterNode node) =>
+            GetAncestorModule<RosterSymbol>(node);
+
+        private T? GetAncestorSymbol<T>(SourceNode node) where T : Symbol
         {
-            return Compilation.SourceGlobalNamespace.Catalogues
-                .First(x => x.Declaration == node);
+            return _(containingSymbol);
+
+            T? _(ISymbol? symbol) => (symbol as T ?? symbol?.ContainingSymbol as T) is { } ancestor
+                ? ancestor
+                : symbol?.ContainingSymbol is ISymbol parent
+                ? _(parent)
+                : null;
         }
 
-        private RosterSymbol GetRosterSymbol(RosterNode node)
+        private T GetAncestorModule<T>(SourceNode node) where T : Symbol
         {
-            return Compilation.SourceGlobalNamespace.Rosters
-                .First(x => x.Declaration == node);
+            if ((containingSymbol as T ?? containingSymbol?.ContainingModule as T) is { } module)
+            {
+                return module;
+            }
+            return Compilation.SourceGlobalNamespace.AllRootSymbols
+                .OfType<T>()
+                .First(x => (x as SourceDeclaredSymbol)?.Declaration == node);
         }
     }
 }

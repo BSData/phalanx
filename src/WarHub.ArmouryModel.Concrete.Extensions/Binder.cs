@@ -32,6 +32,12 @@ internal class Binder
     internal virtual EntrySymbol? ContainingEntrySymbol =>
         ContainingSymbol as EntrySymbol ?? NextRequired.ContainingEntrySymbol;
 
+    internal virtual ForceSymbol? ContainingForceSymbol =>
+        ContainingSymbol as ForceSymbol ?? NextRequired.ContainingForceSymbol;
+
+    internal virtual SelectionSymbol? ContainingSelectionSymbol =>
+        ContainingSymbol as SelectionSymbol ?? NextRequired.ContainingSelectionSymbol;
+
     internal IProfileTypeSymbol BindProfileTypeSymbol(ProfileNode node, BindingDiagnosticBag diagnostics) =>
         BindSimple<IProfileTypeSymbol, ErrorSymbols.ErrorProfileTypeSymbol>(
             node, diagnostics, node.TypeId, LookupOptions.ProfileTypeOnly);
@@ -104,21 +110,64 @@ internal class Binder
         BindSimple<ISelectionEntrySymbol, ErrorSymbols.ErrorSelectionEntrySymbol>(
             node, diagnostics, node.DefaultSelectionEntryId, LookupOptions.SelectionEntryOnly);
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Code Analysis", "CA1822", Justification = "WIP")]
-    internal ISelectionEntrySymbol BindSelectionEntry(SelectionNode node, BindingDiagnosticBag diagnostics)
+    internal ImmutableArray<ISelectionEntryContainerSymbol> BindSelectionSourcePathSymbol(SelectionNode node, BindingDiagnosticBag diagnostics)
     {
-        // TODO implement selection binding
-        diagnostics.Add(ErrorCode.ERR_GenericError, node.GetLocation(), "Selection binding is not yet implemented.");
-        return new ErrorSymbols.ErrorSelectionEntrySymbol();
+        Debug.Assert(!string.IsNullOrWhiteSpace(node.EntryId));
+        var parentSelection = ContainingSelectionSymbol?.Declaration == node
+            ? ContainingSelectionSymbol.ContainingSymbol as ISelectionSymbol
+            : ContainingSelectionSymbol;
+        Debug.Assert((parentSelection as SourceDeclaredSymbol)?.Declaration != node); // we're not causing infinite recursion
+        var ids = node.EntryId.Split("::").ToImmutableArray();
+        if (ids.Length == 0)
+        {
+            return ImmutableArray.Create<ISelectionEntryContainerSymbol>(new ErrorSymbols.ErrorSelectionEntrySymbol()
+            {
+                ErrorInfo = diagnostics.Add(ErrorCode.ERR_NoBindingCandidates, node.GetLocation(), "Selection's entry ID was empty."),
+            });
+        }
+        if (ids.Any(string.IsNullOrWhiteSpace))
+        {
+            diagnostics.Add(ErrorCode.ERR_GenericError, node.GetLocation(), "Empty element(s) in split EntryId.");
+        }
+        ISelectionEntryContainerSymbol? qualifier = null;
+        var resultBuilder = ImmutableArray.CreateBuilder<ISelectionEntryContainerSymbol>();
+        // copy over already resolved links from containing selection
+        if (parentSelection is { SourceEntryPath: { SourceEntries.Length: > 1 } path })
+        {
+            resultBuilder.AddRange(path.SourceEntries.SkipLast(1));
+            qualifier = path.SourceEntries[^2].ReferencedEntry;
+        }
+        var idsLeft = ids.AsSpan()[resultBuilder.Count..];
+        for (var i = 0; i < idsLeft.Length; i++)
+        {
+            var idToBind = idsLeft[i];
+            var opts = LookupOptions.SelectionEntryOnly | (qualifier is null ? LookupOptions.RootOnly : LookupOptions.Default);
+            var entrySymbol = BindSimple<ISelectionEntryContainerSymbol, ErrorSymbols.ErrorSelectionEntrySymbol>(
+                node, diagnostics, idToBind, opts, qualifier);
+            resultBuilder.Add(entrySymbol);
+            qualifier = entrySymbol.ReferencedEntry;
+        }
+        return resultBuilder.ToImmutable();
     }
 
-    private TSymbol BindSimple<TSymbol, TErrorSymbol>(SourceNode node, BindingDiagnosticBag diagnostics, string? symbolId, LookupOptions options)
+    private TSymbol BindSimple<TSymbol, TErrorSymbol>(
+        SourceNode node,
+        BindingDiagnosticBag diagnostics,
+        string? symbolId,
+        LookupOptions options,
+        ISymbol? qualifier = null)
         where TSymbol : ISymbol
         where TErrorSymbol : ErrorSymbols.ErrorSymbolBase, TSymbol, new()
     {
-        Debug.Assert(symbolId is not null);
+        if (symbolId is null)
+        {
+            return new TErrorSymbol()
+            {
+                ErrorInfo = diagnostics.Add(ErrorCode.ERR_NoBindingCandidates, node.GetLocation(), "Symbol ID was null."),
+            };
+        }
         var result = LookupResult.GetInstance();
-        LookupSymbolsWithDelayedDiagnosing(result, symbolId, options);
+        LookupSymbolsWithDelayedDiagnosing(result, symbolId, options, qualifier);
         var bindingResult = ResultSymbol(result, symbolId, node, diagnostics, out _, options);
         result.Free();
         if (bindingResult is ErrorSymbols.ErrorSymbolBase error and not TSymbol)
@@ -186,20 +235,6 @@ internal class Binder
         return LookupResult.Good(symbol);
     }
 
-    private static bool IsRootEntry(ISymbol symbol) => symbol.ContainingModule is ICatalogueSymbol { } catalogue && symbol.Kind switch
-    {
-        SymbolKind.ContainerEntry => catalogue.RootContainerEntries.Contains(symbol),
-        SymbolKind.Resource => catalogue.RootResourceEntries.Contains(symbol),
-        _ => false,
-    };
-
-    private static bool IsSharedEntry(ISymbol symbol) => symbol.ContainingModule is ICatalogueSymbol { } catalogue && symbol.Kind switch
-    {
-        SymbolKind.ContainerEntry => catalogue.SharedSelectionEntryContainers.Contains(symbol),
-        SymbolKind.Resource => catalogue.SharedResourceEntries.Contains(symbol),
-        _ => false,
-    };
-
     internal void CheckViability<TSymbol>(
         LookupResult result,
         ImmutableArray<TSymbol> symbols,
@@ -213,6 +248,109 @@ internal class Binder
             result.MergeEqual(CheckViability(symbol, symbolId, options, diagnose));
         }
     }
+
+    internal static ImmutableArray<ICatalogueSymbol> CalculateRootClosure(ICatalogueSymbol catalogue)
+    {
+        var closureItems = new List<ICatalogueSymbol>();
+        var queuedForProcessing = new Queue<ICatalogueSymbol>();
+        queuedForProcessing.Enqueue(catalogue);
+        while (queuedForProcessing.TryDequeue(out var item) && !closureItems.Contains(item))
+        {
+            closureItems.Add(item);
+            foreach (var import in item.CatalogueReferences)
+            {
+                queuedForProcessing.Enqueue(import.Catalogue);
+            }
+        }
+        closureItems.Add(catalogue.Gamesystem);
+        // TODO consider filtering out "missing"/error items
+        return closureItems.ToImmutableArray();
+    }
+
+    internal static void LookupSymbolsInSingleCatalogue(
+        ICatalogueSymbol catalogue,
+        LookupResult result,
+        string symbolId,
+        LookupOptions options,
+        Binder originalBinder,
+        bool diagnose)
+    {
+        if (options.CanConsiderResourceDefinitions())
+        {
+            originalBinder.CheckViability(result, catalogue.ResourceDefinitions, symbolId, options, diagnose);
+        }
+        if (options.CanConsiderRootEntries())
+        {
+            if (options.CanConsiderContainerEntries())
+            {
+                originalBinder.CheckViability(result, catalogue.RootContainerEntries, symbolId, options, diagnose);
+            }
+            if (options.CanConsiderResourceEntries())
+            {
+                originalBinder.CheckViability(result, catalogue.RootResourceEntries, symbolId, options, diagnose);
+            }
+        }
+        if (options.CanConsiderSharedEntries())
+        {
+            if (options.CanConsiderContainerEntries())
+            {
+                originalBinder.CheckViability(result, catalogue.SharedSelectionEntryContainers, symbolId, options, diagnose);
+            }
+            if (options.CanConsiderResourceEntries())
+            {
+                originalBinder.CheckViability(result, catalogue.SharedResourceEntries, symbolId, options, diagnose);
+            }
+        }
+    }
+
+    internal static void LookupSymbolInQualifyingEntryContainer(
+        ISelectionEntryContainerSymbol qualifier,
+        LookupResult result,
+        string symbolId,
+        LookupOptions options,
+        Binder originalBinder,
+        bool diagnose,
+        ImmutableArray<ICatalogueSymbol> rootClosure)
+    {
+        var unreferenced = qualifier.ContainingModule is not ICatalogueSymbol containingCatalogue || !rootClosure.Contains(containingCatalogue);
+        if (unreferenced && !diagnose)
+        {
+            return;
+        }
+        var queue = ImmutableQueue.Create(qualifier);
+        while (!queue.IsEmpty && !result.IsMultiViable)
+        {
+            queue = queue.Dequeue(out var symbolToCheck);
+            var singleResult = originalBinder.CheckViability(symbolToCheck, symbolId, options, diagnose);
+            if (singleResult is not { Kind: LookupResultKind.Empty })
+            {
+                singleResult = !unreferenced ? singleResult : singleResult with
+                {
+                    Kind = LookupResultKind.Unreferenced,
+                };
+                result.MergeEqual(singleResult);
+            }
+            if (!result.IsMultiViable)
+            {
+                foreach (var child in symbolToCheck.ChildSelectionEntries)
+                    queue = queue.Enqueue(child);
+            }
+        }
+    }
+
+    private static bool IsRootEntry(ISymbol symbol) => symbol.ContainingModule is ICatalogueSymbol { } catalogue && symbol.Kind switch
+    {
+        SymbolKind.ContainerEntry => catalogue.RootContainerEntries.Contains(symbol),
+        SymbolKind.Resource => catalogue.RootResourceEntries.Contains(symbol),
+        _ => false,
+    };
+
+    private static bool IsSharedEntry(ISymbol symbol) => symbol.ContainingModule is ICatalogueSymbol { } catalogue && symbol.Kind switch
+    {
+        SymbolKind.ContainerEntry => catalogue.SharedSelectionEntryContainers.Contains(symbol),
+        SymbolKind.Resource => catalogue.SharedResourceEntries.Contains(symbol),
+        _ => false,
+    };
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Method is WIP")]
     internal ISymbol ResultSymbol(
@@ -239,27 +377,35 @@ internal class Binder
                 // TODO multi-result analysis
                 // TODO report possible warnings or errors
                 // TODO candidate-containing result
-                diagnostics.Add(ErrorCode.ERR_MultipleViableBindingCandidates, where.GetLocation(), result.Symbols.ToImmutableArray(), symbolId);
-                return new ErrorSymbols.ErrorSymbolBase();
+                var diag = diagnostics.Add(ErrorCode.ERR_MultipleViableBindingCandidates, where.GetLocation(), result.Symbols.ToImmutableArray(), symbolId);
+                return new ErrorSymbols.ErrorSymbolBase()
+                {
+                    ErrorInfo = diag,
+                };
             }
         }
         wasError = true;
         if (result.Kind is LookupResultKind.Empty)
         {
             // TODO diagnostics, specific type?
-            diagnostics.Add(ErrorCode.ERR_NoBindingCandidates, where.GetLocation(), symbolId);
-            return new ErrorSymbols.ErrorSymbolBase();
+            var diag = diagnostics.Add(ErrorCode.ERR_NoBindingCandidates, where.GetLocation(), symbolId);
+            return new ErrorSymbols.ErrorSymbolBase()
+            {
+                ErrorInfo = diag,
+            };
         }
 
         Debug.Assert(symbols.Count > 0);
 
+        DiagnosticInfo? errorDiag;
         if (result.Error is { } error)
         {
+            errorDiag = error;
             diagnostics.Add(new WhamDiagnostic(error, where.GetLocation()));
         }
         else
         {
-            diagnostics.Add(ErrorCode.ERR_UnviableBindingCandidates, where.GetLocation(), result.Symbols.ToImmutableArray(), symbolId);
+            errorDiag = diagnostics.Add(ErrorCode.ERR_UnviableBindingCandidates, where.GetLocation(), result.Symbols.ToImmutableArray(), symbolId);
         }
 
         if (result.SingleSymbolOrDefault is { } singleUnviable)
@@ -271,7 +417,10 @@ internal class Binder
         {
             // multiple - package up
             // TODO candidate-containing result
-            return new ErrorSymbols.ErrorSymbolBase();
+            return new ErrorSymbols.ErrorSymbolBase()
+            {
+                ErrorInfo = errorDiag,
+            };
         }
     }
 
@@ -280,23 +429,25 @@ internal class Binder
         string symbolId,
         LookupOptions options,
         Binder originalBinder,
-        bool diagnose)
+        bool diagnose,
+        ISymbol? qualifier)
     {
     }
 
     private Binder? LookupSymbolsWithDelayedDiagnosing(
         LookupResult result,
         string symbolId,
-        LookupOptions options = LookupOptions.Default)
+        LookupOptions options = LookupOptions.Default,
+        ISymbol? qualifier = null)
     {
-        var binder = LookupSymbolsWithScopeTraversal(result, symbolId, options, diagnose: false);
+        var binder = LookupSymbolsWithScopeTraversal(result, symbolId, options, diagnose: false, qualifier);
         Debug.Assert(binder is not null || result.IsClear);
 
         if (result.Kind is not LookupResultKind.Empty and not LookupResultKind.Viable)
         {
             result.Clear();
             // retry to get diagnosis
-            var otherBinder = LookupSymbolsWithScopeTraversal(result, symbolId, options, diagnose: true);
+            var otherBinder = LookupSymbolsWithScopeTraversal(result, symbolId, options, diagnose: true, qualifier);
             Debug.Assert(binder == otherBinder);
         }
         Debug.Assert(result.IsMultiViable || result.IsClear || result.Error is not null);
@@ -307,7 +458,8 @@ internal class Binder
         LookupResult result,
         string symbolId,
         LookupOptions options,
-        bool diagnose)
+        bool diagnose,
+        ISymbol? qualifier)
     {
         Debug.Assert(result.IsClear);
         Binder? binder = null;
@@ -318,7 +470,7 @@ internal class Binder
             if (binder is null)
             {
                 // we didn't yet get any results
-                scope.LookupSymbolsInSingleBinder(result, symbolId, options, this, diagnose);
+                scope.LookupSymbolsInSingleBinder(result, symbolId, options, this, diagnose, qualifier);
                 if (!result.IsClear)
                 {
                     // first binder to set non-empty-result, save it to return
@@ -329,7 +481,7 @@ internal class Binder
             {
                 // we already set some non-empty result, so we create a temporary to merge with it
                 var tmpResult = LookupResult.GetInstance();
-                scope.LookupSymbolsInSingleBinder(tmpResult, symbolId, options, this, diagnose);
+                scope.LookupSymbolsInSingleBinder(tmpResult, symbolId, options, this, diagnose, qualifier);
                 result.MergeEqual(tmpResult);
                 tmpResult.Free();
             }
