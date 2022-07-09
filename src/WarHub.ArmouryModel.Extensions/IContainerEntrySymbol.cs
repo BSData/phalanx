@@ -13,5 +13,11 @@ public interface IContainerEntrySymbol : IEntrySymbol
     ContainerEntryKind ContainerKind { get; }
 
     ImmutableArray<IConstraintSymbol> Constraints { get; }
+
     ImmutableArray<IResourceEntrySymbol> Resources { get; }
+
+    /// <summary>
+    /// Costs, extracted from <see cref="Resources"/> (but still included there).
+    /// </summary>
+    ImmutableArray<ICostSymbol> Costs { get; }
 }

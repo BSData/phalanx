@@ -17,7 +17,7 @@ internal class ForceSymbol : RosterEntryBasedSymbol, IForceSymbol, INodeDeclared
         Resources = CreateRosterEntryResources(diagnostics).ToImmutableArray();
         Categories = declaration.Categories.Select(x => new CategorySymbol(this, x, diagnostics)).ToImmutableArray();
         Publications = declaration.Publications.Select(x => new PublicationSymbol(this, x, diagnostics)).ToImmutableArray();
-        ChildForces = declaration.Forces.Select(x => new ForceSymbol(this, x, diagnostics)).ToImmutableArray();
+        Forces = declaration.Forces.Select(x => new ForceSymbol(this, x, diagnostics)).ToImmutableArray();
         ChildSelections = declaration.Selections.Select(x => new SelectionSymbol(this, x, diagnostics)).ToImmutableArray();
     }
 
@@ -27,7 +27,7 @@ internal class ForceSymbol : RosterEntryBasedSymbol, IForceSymbol, INodeDeclared
 
     public override IForceEntrySymbol SourceEntry => GetBoundField(ref lazyForceEntry);
 
-    public ImmutableArray<ForceSymbol> ChildForces { get; }
+    public ImmutableArray<ForceSymbol> Forces { get; }
 
     public ImmutableArray<SelectionSymbol> ChildSelections { get; }
 
@@ -41,8 +41,8 @@ internal class ForceSymbol : RosterEntryBasedSymbol, IForceSymbol, INodeDeclared
 
     ICatalogueReferenceSymbol IForceSymbol.CatalogueReference => CatalogueReference;
 
-    ImmutableArray<IForceSymbol> IForceSymbol.ChildForces =>
-        ChildForces.Cast<ForceSymbol, IForceSymbol>();
+    ImmutableArray<IForceSymbol> IForceSymbol.Forces =>
+        Forces.Cast<ForceSymbol, IForceSymbol>();
 
     ImmutableArray<ICategorySymbol> IForceSymbol.Categories =>
         Categories.Cast<CategorySymbol, ICategorySymbol>();
@@ -50,7 +50,7 @@ internal class ForceSymbol : RosterEntryBasedSymbol, IForceSymbol, INodeDeclared
     ImmutableArray<IPublicationSymbol> IForceSymbol.Publications =>
         Publications.Cast<PublicationSymbol, IPublicationSymbol>();
 
-    ImmutableArray<ISelectionSymbol> IRosterSelectionTreeElementSymbol.ChildSelections =>
+    ImmutableArray<ISelectionSymbol> ISelectionContainerSymbol.Selections =>
         ChildSelections.Cast<SelectionSymbol, ISelectionSymbol>();
 
     protected override void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)
@@ -64,6 +64,6 @@ internal class ForceSymbol : RosterEntryBasedSymbol, IForceSymbol, INodeDeclared
         .Add(CatalogueReference)
         .AddRange(Categories)
         .AddRange(Publications)
-        .AddRange(ChildForces)
+        .AddRange(Forces)
         .AddRange(ChildSelections);
 }

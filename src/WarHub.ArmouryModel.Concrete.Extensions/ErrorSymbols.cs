@@ -223,6 +223,8 @@ internal static class ErrorSymbols
 
         public virtual ContainerEntryKind ContainerKind { get; init; } = ContainerEntryKind.Error;
 
+        public ImmutableArray<ICostSymbol> Costs => ImmutableArray<ICostSymbol>.Empty;
+
         ImmutableArray<IConstraintSymbol> IContainerEntrySymbol.Constraints =>
             ImmutableArray<IConstraintSymbol>.Empty;
 

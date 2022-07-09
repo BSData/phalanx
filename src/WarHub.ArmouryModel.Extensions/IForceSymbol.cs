@@ -5,16 +5,13 @@ namespace WarHub.ArmouryModel;
 /// BS Force.
 /// WHAM <see cref="Source.ForceNode" />.
 /// </summary>
-public interface IForceSymbol : IRosterSelectionTreeElementSymbol
+public interface IForceSymbol : ISelectionContainerSymbol, IForceContainerSymbol
 {
     new IForceEntrySymbol SourceEntry { get; }
 
     ICatalogueReferenceSymbol CatalogueReference { get; }
 
-    // TODO research how child forces interact
-    ImmutableArray<IForceSymbol> ChildForces { get; }
-
-    // TODO catalogue reference: id, name, revision
+    // TODO catalogue reference: id, name, revision?
 
     /// <summary>
     /// Categories declared in the <see cref="SourceEntry"/>.

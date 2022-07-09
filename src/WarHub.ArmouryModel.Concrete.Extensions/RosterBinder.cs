@@ -18,4 +18,16 @@ internal class RosterBinder : Binder
     internal override ForceSymbol? ContainingForceSymbol => null;
 
     internal override SelectionSymbol? ContainingSelectionSymbol => null;
+
+    internal override void LookupSymbolsInSingleBinder(LookupResult result, string symbolId, LookupOptions options, Binder originalBinder, bool diagnose, ISymbol? qualifier)
+    {
+        base.LookupSymbolsInSingleBinder(result, symbolId, options, originalBinder, diagnose, qualifier);
+    }
+
+    internal IEnumerable<ICatalogueSymbol> GetRosterCatalogues()
+    {
+        yield return Roster.Gamesystem;
+        var forceQueue = ImmutableQueue<IForceSymbol>.Empty;
+        
+    }
 }

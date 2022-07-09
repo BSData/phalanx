@@ -5,11 +5,10 @@ namespace WarHub.ArmouryModel;
 /// BS Roster.
 /// WHAM <see cref="Source.RosterNode" />.
 /// </summary>
-public interface IRosterSymbol : IModuleSymbol
+public interface IRosterSymbol : IModuleSymbol, IForceContainerSymbol
 {
     string? CustomNotes { get; }
     ImmutableArray<IRosterCostSymbol> Costs { get; }
-    ImmutableArray<IForceSymbol> Forces { get; }
 }
 
 /// <summary>
@@ -19,4 +18,11 @@ public interface IRosterSymbol : IModuleSymbol
 public interface IModuleSymbol : ISymbol
 {
     ICatalogueSymbol Gamesystem { get; }
+}
+
+public interface IForceContainerSymbol : ISymbol
+{
+    
+    // TODO research how child forces interact
+    ImmutableArray<IForceSymbol> Forces { get; }
 }

@@ -11,9 +11,10 @@ internal abstract class ContainerEntryBaseSymbol : EntrySymbol, IContainerEntryS
         : base(containingSymbol, declaration, diagnostics)
     {
         Constraints = ImmutableArray<IConstraintSymbol>.Empty; // TODO map
+        Costs = CreateCosts().ToImmutableArray();
         Resources = CreateResourceEntries().ToImmutableArray();
 
-        IEnumerable<ResourceEntryBaseSymbol> CreateResourceEntries()
+        IEnumerable<CostSymbol> CreateCosts()
         {
             var costs = declaration switch
             {
@@ -24,6 +25,14 @@ internal abstract class ContainerEntryBaseSymbol : EntrySymbol, IContainerEntryS
             foreach (var item in costs)
             {
                 yield return CreateEntry(this, item, diagnostics);
+            }
+        }
+
+        IEnumerable<ResourceEntryBaseSymbol> CreateResourceEntries()
+        {
+            foreach (var item in Costs)
+            {
+                yield return item;
             }
             foreach (var item in declaration.InfoGroups)
             {
@@ -52,8 +61,13 @@ internal abstract class ContainerEntryBaseSymbol : EntrySymbol, IContainerEntryS
 
     public ImmutableArray<ResourceEntryBaseSymbol> Resources { get; }
 
+    public ImmutableArray<CostSymbol> Costs { get; }
+
     ImmutableArray<IResourceEntrySymbol> IContainerEntrySymbol.Resources =>
         Resources.Cast<ResourceEntryBaseSymbol, IResourceEntrySymbol>();
+
+    ImmutableArray<ICostSymbol> IContainerEntrySymbol.Costs =>
+        Costs.Cast<CostSymbol, ICostSymbol>();
 
     protected override ImmutableArray<Symbol> MakeAllMembers(BindingDiagnosticBag diagnostics) =>
         base.MakeAllMembers(diagnostics)

@@ -49,7 +49,7 @@ internal class SelectionSymbol : RosterEntryBasedSymbol, ISelectionSymbol, INode
     ImmutableArray<ICostSymbol> ISelectionSymbol.Costs =>
         Costs.Cast<CostSymbol, ICostSymbol>();
 
-    ImmutableArray<ISelectionSymbol> IRosterSelectionTreeElementSymbol.ChildSelections =>
+    ImmutableArray<ISelectionSymbol> ISelectionContainerSymbol.Selections =>
         ChildSelections.Cast<SelectionSymbol, ISelectionSymbol>();
 
     protected override ImmutableArray<Symbol> MakeAllMembers(BindingDiagnosticBag diagnostics) =>

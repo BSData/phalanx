@@ -6,8 +6,8 @@ namespace WarHub.ArmouryModel;
 /// WHAM <see cref="Source.ForceNode" />
 /// and <see cref="Source.SelectionNode" />.
 /// </summary>
-public interface IRosterSelectionTreeElementSymbol : IRosterEntrySymbol
+public interface ISelectionContainerSymbol : IRosterEntrySymbol
 {
 
-    ImmutableArray<ISelectionSymbol> ChildSelections { get; }
+    ImmutableArray<ISelectionSymbol> Selections { get; }
 }
