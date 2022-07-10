@@ -126,6 +126,7 @@ internal abstract class SourceDeclaredSymbol : Symbol, INodeDeclaredSymbol<Sourc
             AddDeclarationDiagnostics(diagnostics);
             state.NotePartComplete(CompletionPart.FinishBindingReferences);
         }
+        state.SpinWaitComplete(CompletionPart.ReferencesCompleted, default);
     }
 
     protected virtual void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)

@@ -4,6 +4,8 @@ namespace WarHub.ArmouryModel;
 
 public abstract class Compilation
 {
+    internal static string NoCategorySymbolId => "(No Category)";
+
     internal Compilation(
         string? name,
         ImmutableArray<SourceTree> sourceTrees,
@@ -21,6 +23,8 @@ public abstract class Compilation
     public CompilationOptions Options { get; }
 
     public abstract IGamesystemNamespaceSymbol GlobalNamespace { get; }
+
+    public abstract ICategoryEntrySymbol NoCategoryEntrySymbol { get; }
 
     public abstract SemanticModel GetSemanticModel(SourceTree tree);
 

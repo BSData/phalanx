@@ -7,6 +7,7 @@ public class WhamCompilation : Compilation
     private SourceGlobalNamespaceSymbol? lazyGlobalNamespace;
     private Binder? lazyGlobalNamespaceBinder;
     private DiagnosticBag? lazyDeclarationDiagnostics;
+    private ICategoryEntrySymbol? lazyNoCategoryEntrySymbol;
 
     internal WhamCompilation(string? name, ImmutableArray<SourceTree> sourceTrees, CompilationOptions options)
         : base(name, sourceTrees, options)
@@ -111,5 +112,23 @@ public class WhamCompilation : Compilation
             }
             return lazyDeclarationDiagnostics;
         }
+    }
+
+    public override ICategoryEntrySymbol NoCategoryEntrySymbol
+    {
+        get
+        {
+            if (lazyNoCategoryEntrySymbol is null)
+            {
+                Interlocked.CompareExchange(ref lazyNoCategoryEntrySymbol, CreateNoCategoryEntrySymbol(), null);
+            }
+            return lazyNoCategoryEntrySymbol;
+        }
+    }
+
+    private CategoryEntrySymbol CreateNoCategoryEntrySymbol()
+    {
+        var node = NodeFactory.CategoryEntry("Uncategorised", "(No Category)");
+        return new CategoryEntrySymbol(SourceGlobalNamespace, node, DeclarationDiagnostics);
     }
 }

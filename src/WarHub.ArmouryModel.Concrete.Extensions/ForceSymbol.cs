@@ -41,7 +41,7 @@ internal class ForceSymbol : RosterEntryBasedSymbol, IForceSymbol, INodeDeclared
 
     ICatalogueReferenceSymbol IForceSymbol.CatalogueReference => CatalogueReference;
 
-    ImmutableArray<IForceSymbol> IForceSymbol.Forces =>
+    ImmutableArray<IForceSymbol> IForceContainerSymbol.Forces =>
         Forces.Cast<ForceSymbol, IForceSymbol>();
 
     ImmutableArray<ICategorySymbol> IForceSymbol.Categories =>

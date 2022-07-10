@@ -35,6 +35,11 @@ internal class ForceBinder : Binder
             // no catalogues to bind here
             return;
         }
+        if (options.HasFlag(LookupOptions.CategoryEntryOnly) && symbolId == Compilation.NoCategorySymbolId)
+        {
+            result.MergeEqual(LookupResult.Good(Compilation.NoCategoryEntrySymbol));
+            return;
+        }
         if (qualifier is SelectionEntryBaseSymbol sourceEntrySymbol)
         {
             LookupSymbolInQualifyingEntryContainer(sourceEntrySymbol, result, symbolId, options, originalBinder, diagnose, RootClosure);
