@@ -52,7 +52,7 @@ internal class BinderFactory
         private Binder VisitCore(SourceNode? node)
         {
             // binding a null node is unexpected, can throw
-            return node!.Accept(this);
+            return node!.Accept(this)!;
         }
 
         public override Binder VisitRoster(RosterNode node)
