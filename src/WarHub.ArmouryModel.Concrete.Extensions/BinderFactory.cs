@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
@@ -134,7 +133,7 @@ internal class BinderFactory
         {
             return _(containingSymbol);
 
-            T? _(ISymbol? symbol) => (symbol as T ?? symbol?.ContainingSymbol as T) is { } ancestor
+            static T? _(ISymbol? symbol) => (symbol as T ?? symbol?.ContainingSymbol as T) is { } ancestor
                 ? ancestor
                 : symbol?.ContainingSymbol is ISymbol parent
                 ? _(parent)

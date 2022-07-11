@@ -29,7 +29,6 @@ internal class CategorySymbol : RosterEntryBasedSymbol, ICategorySymbol, INodeDe
     protected override void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)
     {
         base.BindReferencesCore(binder, diagnostics);
-        // TODO handle the special `(No Category)` here, or in binder?
         lazyCategoryEntry = binder.BindCategoryEntrySymbol(Declaration, diagnostics);
     }
 }

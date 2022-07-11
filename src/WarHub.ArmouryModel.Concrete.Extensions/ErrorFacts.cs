@@ -5,10 +5,10 @@ namespace WarHub.ArmouryModel.Concrete;
 
 internal static partial class ErrorFacts
 {
-    private static string GetId(ErrorCode errorCode)
-    {
-        return WhamMessageProvider.Instance.GetIdForErrorCode((int)errorCode);
-    }
+    // private static string GetId(ErrorCode errorCode)
+    // {
+    //     return WhamMessageProvider.Instance.GetIdForErrorCode((int)errorCode);
+    // }
 
     internal static DiagnosticSeverity GetSeverity(ErrorCode code)
     {

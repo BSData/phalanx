@@ -1,5 +1,3 @@
-using WarHub.ArmouryModel.Source;
-
 namespace WarHub.ArmouryModel.Concrete;
 
 internal class CatalogueBaseBinder : Binder

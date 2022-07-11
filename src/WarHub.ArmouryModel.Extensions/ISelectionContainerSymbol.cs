@@ -8,6 +8,8 @@ namespace WarHub.ArmouryModel;
 /// </summary>
 public interface ISelectionContainerSymbol : IRosterEntrySymbol
 {
-
+    /// <summary>
+    /// Child selections of this symbol.
+    /// </summary>
     ImmutableArray<ISelectionSymbol> Selections { get; }
 }
