@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class ForceSymbol : RosterEntryBasedSymbol, IForceSymbol, INodeDeclaredSymbol<ForceNode>
+internal class ForceSymbol : EntryInstanceSymbol, IForceSymbol, INodeDeclaredSymbol<ForceNode>
 {
     private IForceEntrySymbol? lazyForceEntry;
 
@@ -14,7 +14,6 @@ internal class ForceSymbol : RosterEntryBasedSymbol, IForceSymbol, INodeDeclared
     {
         Declaration = declaration;
         CatalogueReference = new ForceCatalogueReferenceSymbol(this, declaration, diagnostics);
-        Resources = CreateRosterEntryResources(diagnostics).ToImmutableArray();
         Categories = declaration.Categories.Select(x => new CategorySymbol(this, x, diagnostics)).ToImmutableArray();
         Publications = declaration.Publications.Select(x => new PublicationSymbol(this, x, diagnostics)).ToImmutableArray();
         Forces = declaration.Forces.Select(x => new ForceSymbol(this, x, diagnostics)).ToImmutableArray();
@@ -30,8 +29,6 @@ internal class ForceSymbol : RosterEntryBasedSymbol, IForceSymbol, INodeDeclared
     public ImmutableArray<ForceSymbol> Forces { get; }
 
     public ImmutableArray<SelectionSymbol> ChildSelections { get; }
-
-    public override ImmutableArray<ResourceEntryBaseSymbol> Resources { get; }
 
     public ImmutableArray<CategorySymbol> Categories { get; }
 

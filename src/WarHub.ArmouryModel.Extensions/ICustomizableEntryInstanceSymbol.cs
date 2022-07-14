@@ -5,11 +5,9 @@ namespace WarHub.ArmouryModel;
 /// BS BaseSelectable.
 /// WHAM <see cref="Source.RosterElementBaseNode"/>.
 /// </summary>
-public interface IRosterEntrySymbol : ISymbol
+public interface ICustomizableEntryInstanceSymbol : IEntryInstanceSymbol
 {
-    IEntrySymbol SourceEntry { get; }
     string? CustomName { get; }
+
     string? CustomNotes { get; }
-    IPublicationReferenceSymbol? PublicationReference { get; }
-    ImmutableArray<IResourceEntrySymbol> Resources { get; }
 }

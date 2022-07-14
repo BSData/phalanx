@@ -40,9 +40,9 @@ internal class ForceBinder : Binder
             result.MergeEqual(LookupResult.Good(Compilation.NoCategoryEntrySymbol));
             return;
         }
-        if (qualifier is SelectionEntryBaseSymbol sourceEntrySymbol)
+        if (qualifier is IEntrySymbol entrySymbol)
         {
-            LookupSymbolInQualifyingEntryContainer(sourceEntrySymbol, result, symbolId, options, originalBinder, diagnose, RootClosure);
+            LookupSymbolInQualifyingEntry(entrySymbol, result, symbolId, options, originalBinder, diagnose, RootClosure);
             if (result.IsMultiViable)
                 return;
         }

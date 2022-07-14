@@ -59,12 +59,9 @@ internal abstract class ContainerEntryBaseSymbol : EntrySymbol, IContainerEntryS
 
     public ImmutableArray<IConstraintSymbol> Constraints { get; }
 
-    public ImmutableArray<ResourceEntryBaseSymbol> Resources { get; }
+    public sealed override ImmutableArray<ResourceEntryBaseSymbol> Resources { get; }
 
     public ImmutableArray<CostSymbol> Costs { get; }
-
-    ImmutableArray<IResourceEntrySymbol> IContainerEntrySymbol.Resources =>
-        Resources.Cast<ResourceEntryBaseSymbol, IResourceEntrySymbol>();
 
     ImmutableArray<ICostSymbol> IContainerEntrySymbol.Costs =>
         Costs.Cast<CostSymbol, ICostSymbol>();
@@ -72,5 +69,5 @@ internal abstract class ContainerEntryBaseSymbol : EntrySymbol, IContainerEntryS
     protected override ImmutableArray<Symbol> MakeAllMembers(BindingDiagnosticBag diagnostics) =>
         base.MakeAllMembers(diagnostics)
         // TODO .AddRange(Constraints)
-        .AddRange(Resources);
+        ;
 }

@@ -34,7 +34,7 @@ internal static class ErrorSymbols
         ResourceKind.Profile => new ErrorProfileSymbol(),
         ResourceKind.Publication => new ErrorPublicationSymbol(),
         ResourceKind.Rule => new ErrorRuleSymbol(),
-        ResourceKind.Group => new ErrorResourceGroupSymbol(),
+        ResourceKind.Group => new ErrorResourceEntrySymbol(),
         ResourceKind.Error => new ErrorResourceEntrySymbol(),
         _ => throw new NotSupportedException($"Can't instantiate error symbol for '{kind}' resource."),
     };
@@ -138,14 +138,6 @@ internal static class ErrorSymbols
         string IRuleSymbol.DescriptionText => string.Empty;
     }
 
-    internal record ErrorResourceGroupSymbol : ErrorResourceEntrySymbol, IResourceGroupSymbol
-    {
-        public override ResourceKind ResourceKind => ResourceKind.Group;
-
-        ImmutableArray<IResourceEntrySymbol> IResourceGroupSymbol.Resources =>
-            ImmutableArray<IResourceEntrySymbol>.Empty;
-    }
-
     internal record ErrorCategoryEntrySymbol : ErrorContainerEntrySymbol, ICategoryEntrySymbol
     {
         public override ContainerEntryKind ContainerKind => ContainerEntryKind.Category;
@@ -204,6 +196,8 @@ internal static class ErrorSymbols
         IPublicationReferenceSymbol? IEntrySymbol.PublicationReference => null;
 
         ImmutableArray<IEffectSymbol> IEntrySymbol.Effects => ImmutableArray<IEffectSymbol>.Empty;
+
+        ImmutableArray<IResourceEntrySymbol> IEntrySymbol.Resources => ImmutableArray<IResourceEntrySymbol>.Empty;
     }
 
     internal record ErrorResourceEntrySymbol : ErrorEntryBaseSymbol, IResourceEntrySymbol
@@ -227,9 +221,6 @@ internal static class ErrorSymbols
 
         ImmutableArray<IConstraintSymbol> IContainerEntrySymbol.Constraints =>
             ImmutableArray<IConstraintSymbol>.Empty;
-
-        ImmutableArray<IResourceEntrySymbol> IContainerEntrySymbol.Resources =>
-            ImmutableArray<IResourceEntrySymbol>.Empty;
     }
 
     internal record ErrorGamesystemSymbol : ErrorCatalogueBaseSymbol

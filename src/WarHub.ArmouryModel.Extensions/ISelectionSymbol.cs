@@ -16,8 +16,6 @@ public interface ISelectionSymbol : ISelectionContainerSymbol
 
     SelectionEntryKind EntryKind { get; }
 
-    ISelectionReferencePathSymbol SourceEntryPath { get; }
-
     new ISelectionEntrySymbol SourceEntry { get; }
 
     ICategorySymbol? PrimaryCategory { get; }
@@ -27,7 +25,6 @@ public interface ISelectionSymbol : ISelectionContainerSymbol
     /// <summary>
     /// Costs for this selection (with <see cref="Count"/> taken into account).
     /// Doesn't include costs of <see cref="ISelectionContainerSymbol.Selections"/>.
-    /// These are extracted from <see cref="IRosterEntrySymbol.Resources"/>.
     /// </summary>
     ImmutableArray<ICostSymbol> Costs { get; }
 }

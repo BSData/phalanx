@@ -37,7 +37,7 @@ public enum ResourceKind
     Rule,
 
     /// <summary>
-    /// A set of resources, <see cref="IResourceGroupSymbol"/>.
+    /// A set of resources, <see cref="IResourceEntrySymbol"/>, <see cref="Source.InfoGroupNode"/>.
     /// </summary>
     Group,
 }

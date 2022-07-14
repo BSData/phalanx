@@ -34,9 +34,15 @@ internal abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol
 
     ImmutableArray<IEffectSymbol> IEntrySymbol.Effects => Effects.Cast<EffectSymbol, IEffectSymbol>();
 
+    public abstract ImmutableArray<ResourceEntryBaseSymbol> Resources { get; }
+
+    ImmutableArray<IResourceEntrySymbol> IEntrySymbol.Resources =>
+        Resources.Cast<ResourceEntryBaseSymbol, IResourceEntrySymbol>();
+
     protected override ImmutableArray<Symbol> MakeAllMembers(BindingDiagnosticBag diagnostics) =>
         (PublicationReference is null ? ImmutableArray<Symbol>.Empty : ImmutableArray.Create<Symbol>(PublicationReference))
         .AddRange(base.MakeAllMembers(diagnostics))
+        .AddRange(Resources.Cast<ResourceEntryBaseSymbol, Symbol>())
         .AddRange(Effects.Cast<EffectSymbol, Symbol>());
 
     public static SelectionEntryLinkSymbol CreateEntry(

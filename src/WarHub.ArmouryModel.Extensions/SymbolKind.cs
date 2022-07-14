@@ -13,7 +13,7 @@ public enum SymbolKind
     // catalogue, gamesystem ("root" catalogue)
     Catalogue,
 
-    // selection entry, selection entry group, force entry, category entry
+    // selection entry, selection entry group, force entry, category entry, entry links
     ContainerEntry,
 
     // condition, constraint, modifier, modifier group, repeat
@@ -22,10 +22,10 @@ public enum SymbolKind
     // characteristic type, cost type, profile type
     ResourceDefinition,
 
-    // characteristics, costs, profiles, rules, info groups, publications
+    // characteristics, costs, profiles, rules, info groups, publications, info links
     Resource,
 
-    // all kinds of links
+    // all kinds of links (references): catalogue reference, publication reference, entry path reference
     Link,
 
     // roster

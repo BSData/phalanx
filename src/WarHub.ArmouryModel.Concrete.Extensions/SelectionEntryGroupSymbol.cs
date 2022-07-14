@@ -27,7 +27,7 @@ internal class SelectionEntryGroupSymbol : SelectionEntryBaseSymbol, ISelectionE
 
         if (Declaration.DefaultSelectionEntryId is not null)
         {
-            lazyDefaultEntry = binder.BindSelectionEntryGroupDefaultEntrySymbol(Declaration, diagnostics);
+            lazyDefaultEntry = binder.BindSelectionEntryGroupDefaultEntrySymbol(Declaration, this, diagnostics);
         }
     }
 }

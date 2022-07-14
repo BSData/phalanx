@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class CategorySymbol : RosterEntryBasedSymbol, ICategorySymbol, INodeDeclaredSymbol<CategoryNode>
+internal class CategorySymbol : EntryInstanceSymbol, ICategorySymbol, INodeDeclaredSymbol<CategoryNode>
 {
     private ICategoryEntrySymbol? lazyCategoryEntry;
 
@@ -13,14 +13,11 @@ internal class CategorySymbol : RosterEntryBasedSymbol, ICategorySymbol, INodeDe
         : base(containingSymbol, declaration, diagnostics)
     {
         Declaration = declaration;
-        Resources = CreateRosterEntryResources(diagnostics).ToImmutableArray();
     }
 
     public override CategoryNode Declaration { get; }
 
     public override ICategoryEntrySymbol SourceEntry => GetBoundField(ref lazyCategoryEntry);
-
-    public override ImmutableArray<ResourceEntryBaseSymbol> Resources { get; }
 
     public override SymbolKind Kind => SymbolKind.Category;
 

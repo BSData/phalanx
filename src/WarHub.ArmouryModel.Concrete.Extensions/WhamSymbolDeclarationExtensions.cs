@@ -11,6 +11,9 @@ public static class WhamSymbolDeclarationExtensions
     public static RosterNode? GetDeclaration(this IRosterSymbol symbol) =>
         GetDeclarationCore<RosterSymbol, RosterNode>(symbol);
 
+    public static SelectionNode? GetDeclaration(this ISelectionSymbol symbol) =>
+        GetDeclarationCore<SelectionSymbol, SelectionNode>(symbol);
+
     public static GamesystemNode? GetGamesystemDeclaration(this ICatalogueSymbol symbol) =>
         GetDeclarationCore<GamesystemSymbol, GamesystemNode>(symbol);
 
@@ -44,7 +47,7 @@ public static class WhamSymbolDeclarationExtensions
     public static ProfileNode? GetEntryDeclaration(this IProfileSymbol symbol) =>
         GetDeclarationCore<ProfileSymbol, ProfileNode>(symbol);
 
-    public static InfoGroupNode? GetGroupDeclaration(this IResourceGroupSymbol symbol) =>
+    public static InfoGroupNode? GetGroupDeclaration(this IResourceEntrySymbol symbol) =>
         GetDeclarationCore<ResourceGroupSymbol, InfoGroupNode>(symbol);
 
     public static InfoLinkNode? GetLinkDeclaration(this IResourceEntrySymbol symbol) =>

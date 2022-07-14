@@ -28,6 +28,12 @@ internal class CatalogueBaseBinder : Binder
             // no catalogues to bind here
             return;
         }
+        if (qualifier is IEntrySymbol entrySymbol)
+        {
+            LookupSymbolInQualifyingEntry(entrySymbol, result, symbolId, options, originalBinder, diagnose, RootClosure);
+            if (result.IsMultiViable)
+                return;
+        }
         foreach (var catalogue in RootClosure)
         {
             LookupSymbolsInSingleCatalogue(catalogue, result, symbolId, options, originalBinder, diagnose);

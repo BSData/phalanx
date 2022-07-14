@@ -5,7 +5,7 @@ namespace WarHub.ArmouryModel;
 /// BS Category.
 /// WHAM <see cref="Source.CategoryNode"/>.
 /// </summary>
-public interface ICategorySymbol : IRosterEntrySymbol
+public interface ICategorySymbol : ICustomizableEntryInstanceSymbol
 {
     bool IsPrimaryCategory { get; }
 

@@ -1,7 +1,8 @@
 namespace WarHub.ArmouryModel;
 
 /// <summary>
-/// A roster-visible entry that has publication reference and might have some effects associated with it.
+/// A roster-visible entry that has publication reference,
+/// migth contain resources, and might have some associated effects.
 /// WHAM <see cref="Source.EntryBaseCore" />.
 /// </summary>
 public interface IEntrySymbol : ISymbol
@@ -22,4 +23,6 @@ public interface IEntrySymbol : ISymbol
     IPublicationReferenceSymbol? PublicationReference { get; }
 
     ImmutableArray<IEffectSymbol> Effects { get; }
+
+    ImmutableArray<IResourceEntrySymbol> Resources { get; }
 }

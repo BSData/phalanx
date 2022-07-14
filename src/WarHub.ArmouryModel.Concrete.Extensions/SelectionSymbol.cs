@@ -1,7 +1,8 @@
 using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
-internal class SelectionSymbol : RosterEntryBasedSymbol, ISelectionSymbol, INodeDeclaredSymbol<SelectionNode>
+
+internal class SelectionSymbol : EntryInstanceSymbol, ISelectionSymbol, INodeDeclaredSymbol<SelectionNode>
 {
     public SelectionSymbol(
         ISymbol? containingSymbol,
@@ -10,12 +11,10 @@ internal class SelectionSymbol : RosterEntryBasedSymbol, ISelectionSymbol, INode
         : base(containingSymbol, declaration, diagnostics)
     {
         Declaration = declaration;
-        SourceEntryPath = new(this, declaration);
         Costs = declaration.Costs.Select(x => new CostSymbol(this, x, diagnostics)).ToImmutableArray();
-        Resources = Costs.Cast<CostSymbol, ResourceEntryBaseSymbol>().AddRange(CreateRosterEntryResources(diagnostics));
         Categories = declaration.Categories.Select(x => new CategorySymbol(this, x, diagnostics)).ToImmutableArray();
         ChildSelections = declaration.Selections.Select(x => new SelectionSymbol(this, x, diagnostics)).ToImmutableArray();
-        PrimaryCategory = Categories.FirstOrDefault(x => x.IsPrimaryCategory); // TODO diagnostic if count != 1 for root selection? (also what about NoCategory)
+        PrimaryCategory = Categories.FirstOrDefault(x => x.IsPrimaryCategory); // TODO diagnostic if count != 1 for root selection?
     }
 
     public override SelectionNode Declaration { get; }
@@ -24,14 +23,10 @@ internal class SelectionSymbol : RosterEntryBasedSymbol, ISelectionSymbol, INode
 
     public int Count => Declaration.Number;
 
-    public SelectionReferencePathSymbol SourceEntryPath { get; }
-
     public override ISelectionEntrySymbol SourceEntry =>
         (ISelectionEntrySymbol)SourceEntryPath.SourceEntries.Last();
 
     public ImmutableArray<SelectionSymbol> ChildSelections { get; }
-
-    public override ImmutableArray<ResourceEntryBaseSymbol> Resources { get; }
 
     public SelectionEntryKind EntryKind => Declaration.Type;
 
@@ -40,8 +35,6 @@ internal class SelectionSymbol : RosterEntryBasedSymbol, ISelectionSymbol, INode
     public ImmutableArray<CategorySymbol> Categories { get; }
 
     public ImmutableArray<CostSymbol> Costs { get; }
-
-    ISelectionReferencePathSymbol ISelectionSymbol.SourceEntryPath => SourceEntryPath;
 
     ImmutableArray<ICategorySymbol> ISelectionSymbol.Categories =>
         Categories.Cast<CategorySymbol, ICategorySymbol>();
@@ -54,7 +47,7 @@ internal class SelectionSymbol : RosterEntryBasedSymbol, ISelectionSymbol, INode
 
     protected override ImmutableArray<Symbol> MakeAllMembers(BindingDiagnosticBag diagnostics) =>
         base.MakeAllMembers(diagnostics)
-        .Add(SourceEntryPath)
-        .AddRange(Categories)
-        .AddRange(ChildSelections);
+        .AddRange(Costs.Cast<CostSymbol, Symbol>())
+        .AddRange(Categories.Cast<CategorySymbol, Symbol>())
+        .AddRange(ChildSelections.Cast<SelectionSymbol, Symbol>());
 }

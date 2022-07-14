@@ -7,7 +7,7 @@ internal class CharacteristicSymbol : ResourceEntryBaseSymbol, ICharacteristicSy
     private ICharacteristicTypeSymbol? lazyType;
 
     public CharacteristicSymbol(
-        IProfileSymbol containingSymbol,
+        ISymbol containingSymbol,
         CharacteristicNode declaration,
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration, diagnostics)

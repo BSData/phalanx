@@ -41,7 +41,7 @@ internal class BinderFactory
         {
             // no support for detached nodes (e.g. withoug root like roster or catalogue node)
             // can we add such support?
-            return VisitCore(node.Parent);
+            return node.Parent is { } parent ? VisitCore(parent) : Compilation.GlobalNamespaceBinder;
         }
 
         public override Binder Visit(SourceNode? node)
@@ -57,28 +57,34 @@ internal class BinderFactory
 
         public override Binder VisitRoster(RosterNode node)
         {
-            var next = Compilation.GlobalNamespaceBinder;
+            var next = DefaultVisit(node);
             return new RosterBinder(next, GetRosterSymbol(node));
         }
 
         public override Binder VisitCatalogue(CatalogueNode node)
         {
-            var next = Compilation.GlobalNamespaceBinder;
+            var next = DefaultVisit(node);
             return new CatalogueBaseBinder(next, GetCatalogueSymbol(node));
         }
 
         public override Binder VisitGamesystem(GamesystemNode node)
         {
-            var next = Compilation.GlobalNamespaceBinder;
+            var next = DefaultVisit(node);
             return new CatalogueBaseBinder(next, GetCatalogueSymbol(node));
         }
 
         public override Binder VisitCharacteristic(CharacteristicNode node)
         {
             var next = DefaultVisit(node);
-            var profileSymbol = GetProfileSymbol(node.FirstAncestorOrSelf<ProfileNode>()!, next)
-                ?? throw new InvalidOperationException("Profile symbol required.");
-            return new CharacteristicBinder(next, profileSymbol);
+            if (GetAncestorSymbol<ProfileSymbol>(node) is { } profile)
+            {
+                return new CharacteristicBinder(next, profile, profile.Type);
+            }
+            if (GetAncestorSymbol<RosterProfileSymbol>(node) is { } rosterProfile)
+            {
+                return new CharacteristicBinder(next, rosterProfile, rosterProfile.Type);
+            }
+            return next; // throw?
         }
 
         public override Binder VisitForce(ForceNode node)
@@ -95,34 +101,6 @@ internal class BinderFactory
             return symbol is null ? next : new SelectionBinder(next, symbol);
         }
 
-        private ProfileSymbol? GetProfileSymbol(ProfileNode node, Binder outerBinder)
-        {
-            if (containingSymbol is ProfileSymbol profileSymbol && profileSymbol.Declaration == node)
-            {
-                return profileSymbol;
-            }
-            var container = GetContainerEntry(outerBinder, node);
-            return container?.Resources.OfType<ProfileSymbol>().FirstOrDefault(x => x.Declaration == node);
-        }
-
-        // TODO group binder
-        // public override Binder VisitSelectionEntryGroup(SelectionEntryGroupNode node)
-        // {
-        //     var next = DefaultVisit(node);
-        //     return new SelectionGroupBinder(next, node);
-        // }
-
-        private static IContainerEntrySymbol? GetContainerEntry(Binder binder, SourceNode node)
-        {
-            if (binder.ContainingContainerSymbol is { } container)
-            {
-                return container;
-            }
-            _ = node.FirstAncestorOrSelf<ContainerEntryBaseNode>();
-            // TODO not sure what to do here
-            return null;
-        }
-
         private CatalogueBaseSymbol GetCatalogueSymbol(CatalogueBaseNode node) =>
             GetAncestorModule<CatalogueBaseSymbol>(node);
 
@@ -135,7 +113,7 @@ internal class BinderFactory
 
             static T? _(ISymbol? symbol) => (symbol as T ?? symbol?.ContainingSymbol as T) is { } ancestor
                 ? ancestor
-                : symbol?.ContainingSymbol is ISymbol parent
+                : symbol?.ContainingSymbol is { } parent
                 ? _(parent)
                 : null;
         }
