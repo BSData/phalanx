@@ -8,6 +8,4 @@ namespace WarHub.ArmouryModel;
 public interface ICharacteristicSymbol : IResourceEntrySymbol
 {
     string Value { get; }
-
-    new ICharacteristicTypeSymbol Type { get; }
 }

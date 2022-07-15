@@ -64,7 +64,7 @@ public class SimpleIntegrationTests
         var catalogue = result.GlobalNamespace.Catalogues.Single(x => !x.IsGamesystem);
         var profile = catalogue.RootContainerEntries.Single()
             .Resources.OfType<IProfileSymbol>().Single();
-        var charTypeSymbol = catalogue.Gamesystem.ResourceDefinitions.OfType<IProfileTypeSymbol>().Single().CharacteristicTypes.Single();
+        var charTypeSymbol = catalogue.Gamesystem.ResourceDefinitions.Single(x => x.ResourceKind == ResourceKind.Profile).Definitions.Single();
         profile.Characteristics.Single().Type.Should().Be(charTypeSymbol);
     }
 

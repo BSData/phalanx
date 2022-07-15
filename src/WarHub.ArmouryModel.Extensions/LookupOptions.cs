@@ -27,7 +27,7 @@ internal enum LookupOptions
     PublicationOnly = 1 << 3 | ResoureDefinitionOnly,
 
     /// <summary>
-    /// Look only for <see cref="ICostTypeSymbol"/>s.
+    /// Look only for <see cref="IResourceDefinitionSymbol"/> with <see cref="ResourceKind.Cost"/>.
     /// </summary>
     CostTypeOnly = 1 << 4 | ResoureDefinitionOnly,
     ProfileTypeOnly = 1 << 5 | ResoureDefinitionOnly,

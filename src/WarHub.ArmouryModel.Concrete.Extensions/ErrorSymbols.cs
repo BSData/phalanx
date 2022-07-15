@@ -19,9 +19,9 @@ internal static class ErrorSymbols
     public static ErrorSymbolBase CreateResourceDefinition(ResourceKind kind) => kind switch
 
     {
-        ResourceKind.Characteristic => new ErrorCharacteristicTypeSymbol(),
-        ResourceKind.Cost => new ErrorCostTypeSymbol(),
-        ResourceKind.Profile => new ErrorProfileTypeSymbol(),
+        ResourceKind.Characteristic => new ErrorResourceDefinitionSymbol(),
+        ResourceKind.Cost => new ErrorResourceDefinitionSymbol(),
+        ResourceKind.Profile => new ErrorResourceDefinitionSymbol(),
         ResourceKind.Error => new ErrorResourceDefinitionSymbol(),
         _ => throw new NotSupportedException($"Can't instantiate error symbol for '{kind}' resource definition."),
     };
@@ -29,8 +29,8 @@ internal static class ErrorSymbols
     public static ErrorSymbolBase CreateResourceEntry(ResourceKind kind) => kind switch
 
     {
-        ResourceKind.Characteristic => new ErrorCharacteristicTypeSymbol(),
-        ResourceKind.Cost => new ErrorCostTypeSymbol(),
+        ResourceKind.Characteristic => new ErrorCharacteristicSymbol(),
+        ResourceKind.Cost => new ErrorCostSymbol(),
         ResourceKind.Profile => new ErrorProfileSymbol(),
         ResourceKind.Publication => new ErrorPublicationSymbol(),
         ResourceKind.Rule => new ErrorRuleSymbol(),
@@ -76,14 +76,25 @@ internal static class ErrorSymbols
         public DiagnosticInfo? ErrorInfo { get; init; }
 
         public bool ErrorUnreported { get; init; }
+
+        public void Accept(SymbolVisitor visitor)
+        {
+            visitor.VisitError(this);
+        }
+
+        public TResult Accept<TResult>(SymbolVisitor<TResult> visitor)
+        {
+            return visitor.VisitError(this);
+        }
+
+        public TResult Accept<TArgument, TResult>(SymbolVisitor<TArgument, TResult> visitor, TArgument argument)
+        {
+            return visitor.VisitError(this, argument);
+        }
     }
 
-    internal record ErrorPublicationSymbol : ErrorSymbolBase, IPublicationSymbol
+    internal record ErrorPublicationSymbol : ErrorResourceDefinitionSymbol, IPublicationSymbol
     {
-        public override SymbolKind Kind => SymbolKind.Resource;
-
-        public ResourceKind ResourceKind => ResourceKind.Publication;
-
         string? IPublicationSymbol.ShortName => null;
 
         string? IPublicationSymbol.Publisher => null;
@@ -95,36 +106,27 @@ internal static class ErrorSymbols
 
     internal record ErrorResourceDefinitionSymbol : ErrorSymbolBase, IResourceDefinitionSymbol
     {
-        public override SymbolKind Kind => SymbolKind.ResourceDefinition;
-
         public virtual ResourceKind ResourceKind { get; init; } = ResourceKind.Error;
+
+        ImmutableArray<IResourceDefinitionSymbol> IResourceDefinitionSymbol.Definitions =>
+            ImmutableArray<IResourceDefinitionSymbol>.Empty;
     }
 
-    internal record ErrorCharacteristicTypeSymbol : ErrorResourceDefinitionSymbol, ICharacteristicTypeSymbol
+    internal record ErrorCostSymbol : ErrorResourceEntrySymbol, ICostSymbol
     {
-        public override ResourceKind ResourceKind => ResourceKind.Characteristic;
+        decimal ICostSymbol.Value => default;
     }
 
-    internal record ErrorCostTypeSymbol : ErrorResourceDefinitionSymbol, ICostTypeSymbol
+    internal record ErrorCharacteristicSymbol : ErrorResourceEntrySymbol, ICharacteristicSymbol
     {
-        public override ResourceKind ResourceKind => ResourceKind.Cost;
-    }
-
-    internal record ErrorProfileTypeSymbol : ErrorResourceDefinitionSymbol, IProfileTypeSymbol
-    {
-        public override ResourceKind ResourceKind => ResourceKind.Profile;
-
-        ImmutableArray<ICharacteristicTypeSymbol> IProfileTypeSymbol.CharacteristicTypes =>
-            ImmutableArray<ICharacteristicTypeSymbol>.Empty;
+        string ICharacteristicSymbol.Value => string.Empty;
     }
 
     internal record ErrorProfileSymbol : ErrorResourceEntrySymbol, IProfileSymbol
     {
         public override ResourceKind ResourceKind => ResourceKind.Profile;
 
-        IProfileTypeSymbol Type { get; init; } = new ErrorProfileTypeSymbol();
-
-        IProfileTypeSymbol IProfileSymbol.Type => Type;
+        IResourceDefinitionSymbol Type { get; init; } = new ErrorResourceDefinitionSymbol();
 
         IResourceDefinitionSymbol? IResourceEntrySymbol.Type => Type;
 

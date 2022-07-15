@@ -10,5 +10,5 @@ public interface IRosterCostSymbol : ISymbol
 {
     decimal Value { get; }
     decimal? Limit { get; }
-    ICostTypeSymbol CostType { get; }
+    IResourceDefinitionSymbol CostType { get; }
 }

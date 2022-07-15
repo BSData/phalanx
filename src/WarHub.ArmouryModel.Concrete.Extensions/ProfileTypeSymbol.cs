@@ -2,7 +2,12 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class ProfileTypeSymbol : ResourceDefinitionBaseSymbol, IProfileTypeSymbol, INodeDeclaredSymbol<ProfileTypeNode>
+/// <summary>
+/// Defines profile type.
+/// BS ProfileType.
+/// WHAM <see cref="ProfileTypeNode" />.
+/// </summary>
+internal class ProfileTypeSymbol : ResourceDefinitionBaseSymbol, INodeDeclaredSymbol<ProfileTypeNode>, IResourceDefinitionSymbol
 {
     public ProfileTypeSymbol(
         ICatalogueSymbol containingSymbol,
@@ -11,7 +16,7 @@ internal class ProfileTypeSymbol : ResourceDefinitionBaseSymbol, IProfileTypeSym
         : base(containingSymbol, declaration)
     {
         Declaration = declaration;
-        CharacteristicTypes = declaration.CharacteristicTypes
+        Definitions = declaration.CharacteristicTypes
             .Select(x => new CharacteristicTypeSymbol(this, x, diagnostics))
             .ToImmutableArray();
     }
@@ -20,12 +25,12 @@ internal class ProfileTypeSymbol : ResourceDefinitionBaseSymbol, IProfileTypeSym
 
     public override ResourceKind ResourceKind => ResourceKind.Profile;
 
-    public ImmutableArray<CharacteristicTypeSymbol> CharacteristicTypes { get; }
+    public ImmutableArray<CharacteristicTypeSymbol> Definitions { get; }
 
-    ImmutableArray<ICharacteristicTypeSymbol> IProfileTypeSymbol.CharacteristicTypes =>
-        CharacteristicTypes.Cast<CharacteristicTypeSymbol, ICharacteristicTypeSymbol>();
+    ImmutableArray<IResourceDefinitionSymbol> IResourceDefinitionSymbol.Definitions =>
+        Definitions.Cast<CharacteristicTypeSymbol, IResourceDefinitionSymbol>();
 
     protected override ImmutableArray<Symbol> MakeAllMembers(BindingDiagnosticBag diagnostics) =>
         base.MakeAllMembers(diagnostics)
-        .AddRange(CharacteristicTypes.Cast<CharacteristicTypeSymbol, Symbol>());
+        .AddRange(Definitions.Cast<CharacteristicTypeSymbol, Symbol>());
 }

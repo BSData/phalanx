@@ -38,16 +38,16 @@ internal class Binder
     internal virtual SelectionSymbol? ContainingSelectionSymbol =>
         ContainingSymbol as SelectionSymbol ?? NextRequired.ContainingSelectionSymbol;
 
-    internal IProfileTypeSymbol BindProfileTypeSymbol(ProfileNode node, BindingDiagnosticBag diagnostics) =>
-        BindSimple<IProfileTypeSymbol, ErrorSymbols.ErrorProfileTypeSymbol>(
+    internal IResourceDefinitionSymbol BindProfileTypeSymbol(ProfileNode node, BindingDiagnosticBag diagnostics) =>
+        BindSimple<IResourceDefinitionSymbol, ErrorSymbols.ErrorResourceDefinitionSymbol>(
             node, diagnostics, node.TypeId, LookupOptions.ProfileTypeOnly);
 
     internal IPublicationSymbol BindPublicationSymbol(IPublicationReferencingNode node, BindingDiagnosticBag diagnostics) =>
         BindSimple<IPublicationSymbol, ErrorSymbols.ErrorPublicationSymbol>(
             (SourceNode)node, diagnostics, node.PublicationId, LookupOptions.PublicationOnly);
 
-    internal ICharacteristicTypeSymbol BindCharacteristicTypeSymbol(CharacteristicNode node, BindingDiagnosticBag diagnostics) =>
-        BindSimple<ICharacteristicTypeSymbol, ErrorSymbols.ErrorCharacteristicTypeSymbol>(
+    internal IResourceDefinitionSymbol BindCharacteristicTypeSymbol(CharacteristicNode node, BindingDiagnosticBag diagnostics) =>
+        BindSimple<IResourceDefinitionSymbol, ErrorSymbols.ErrorResourceDefinitionSymbol>(
             node, diagnostics, node.TypeId, LookupOptions.CharacteristicTypeOnly);
 
     internal IForceEntrySymbol BindForceEntrySymbol(ForceNode node, BindingDiagnosticBag diagnostics) =>
@@ -70,8 +70,8 @@ internal class Binder
         BindSimple<ICatalogueSymbol, ErrorSymbols.ErrorGamesystemSymbol>(
             node, diagnostics, node.GameSystemId, LookupOptions.CatalogueOnly);
 
-    internal ICostTypeSymbol BindCostTypeSymbol(CostNode node, BindingDiagnosticBag diagnostics) =>
-        BindSimple<ICostTypeSymbol, ErrorSymbols.ErrorCostTypeSymbol>(
+    internal IResourceDefinitionSymbol BindCostTypeSymbol(CostNode node, BindingDiagnosticBag diagnostics) =>
+        BindSimple<IResourceDefinitionSymbol, ErrorSymbols.ErrorResourceDefinitionSymbol>(
             node, diagnostics, node.TypeId, LookupOptions.CostTypeOnly);
 
     internal IResourceEntrySymbol BindSharedResourceEntrySymbol(InfoLinkNode node, BindingDiagnosticBag diagnostics) =>

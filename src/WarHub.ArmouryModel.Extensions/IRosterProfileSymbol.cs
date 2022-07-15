@@ -11,7 +11,7 @@ public interface IRosterProfileSymbol : IResourceSymbol
     /// <summary>
     /// The type of profile that defines name and characteristic types for this profile.
     /// </summary>
-    IProfileTypeSymbol Type { get; }
+    IResourceDefinitionSymbol Type { get; }
 
     ImmutableArray<ICharacteristicSymbol> Characteristics { get; }
 

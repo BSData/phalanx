@@ -66,11 +66,8 @@ to the link target.
   - `IRosterSymbol`
 
 - `ICatalogueReferenceSymbol` - references other catalogues from a catalogue.
-- `IResourceDefinitionSymbol` - defines a resource type.
-  - `ICharacteristicTypeSymbol`
-  - `ICostTypeSymbol`
-  - `IProfileTypeSymbol`
-  - `IPublicationSymbol`
+- `IResourceDefinitionSymbol` - defines a resource type: publication, cost, profile, characteristic.
+  - `IPublicationSymbol` - special resource definition with additional details, like publisher.
 - `IEntrySymbol` // contains effects
   - `IResourceEntrySymbol` (can be a group, or group link)
     - `ICharacteristicSymbol`

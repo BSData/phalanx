@@ -4,7 +4,7 @@ namespace WarHub.ArmouryModel.Concrete;
 
 internal class RosterCostSymbol : SourceDeclaredSymbol, IRosterCostSymbol
 {
-    private ICostTypeSymbol? lazyCostType;
+    private IResourceDefinitionSymbol? lazyType;
 
     public RosterCostSymbol(
         ISymbol? containingSymbol,
@@ -42,11 +42,11 @@ internal class RosterCostSymbol : SourceDeclaredSymbol, IRosterCostSymbol
         }
     }
 
-    public ICostTypeSymbol CostType => GetBoundField(ref lazyCostType);
+    public IResourceDefinitionSymbol CostType => GetBoundField(ref lazyType);
 
     protected override void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)
     {
         base.BindReferencesCore(binder, diagnostics);
-        lazyCostType = binder.BindCostTypeSymbol(CostDeclaration, diagnostics);
+        lazyType = binder.BindCostTypeSymbol(CostDeclaration, diagnostics);
     }
 }

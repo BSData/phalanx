@@ -11,4 +11,7 @@ internal abstract class ResourceDefinitionBaseSymbol : SourceDeclaredSymbol, IRe
     public sealed override SymbolKind Kind => SymbolKind.ResourceDefinition;
 
     public abstract ResourceKind ResourceKind { get; }
+
+    ImmutableArray<IResourceDefinitionSymbol> IResourceDefinitionSymbol.Definitions =>
+        ImmutableArray<IResourceDefinitionSymbol>.Empty;
 }

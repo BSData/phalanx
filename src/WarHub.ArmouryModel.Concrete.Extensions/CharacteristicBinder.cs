@@ -2,13 +2,13 @@ namespace WarHub.ArmouryModel.Concrete;
 
 internal class CharacteristicBinder : Binder
 {
-    public CharacteristicBinder(Binder next, Symbol containingSymbol, IProfileTypeSymbol profileTypeSymbol) : base(next)
+    public CharacteristicBinder(Binder next, Symbol containingSymbol, IResourceDefinitionSymbol profileTypeSymbol) : base(next)
     {
         ContainingSymbol = containingSymbol;
         ProfileTypeSymbol = profileTypeSymbol;
     }
 
-    public IProfileTypeSymbol ProfileTypeSymbol { get; }
+    public IResourceDefinitionSymbol ProfileTypeSymbol { get; }
 
     internal override Symbol? ContainingSymbol { get; }
 
@@ -22,7 +22,7 @@ internal class CharacteristicBinder : Binder
     {
         if (options.CanConsiderResourceDefinitions())
         {
-            originalBinder.CheckViability(result, ProfileTypeSymbol.CharacteristicTypes, symbolId, options, diagnose);
+            originalBinder.CheckViability(result, ProfileTypeSymbol.Definitions, symbolId, options, diagnose);
         }
     }
 }

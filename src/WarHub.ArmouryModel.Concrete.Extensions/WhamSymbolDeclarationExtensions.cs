@@ -29,20 +29,26 @@ public static class WhamSymbolDeclarationExtensions
     public static CategoryLinkNode? GetLinkDeclaration(this ICategoryEntrySymbol symbol) =>
         GetDeclarationCore<CategoryLinkSymbol, CategoryLinkNode>(symbol);
 
-    public static CharacteristicTypeNode? GetDeclaration(this ICharacteristicTypeSymbol symbol) =>
+    public static CostTypeNode? GetCostTypeDeclaration(this IResourceDefinitionSymbol symbol) =>
+        GetDeclarationCore<CostTypeSymbol, CostTypeNode>(symbol);
+
+    public static CharacteristicTypeNode? GetCharacteristicTypeDeclaration(this IResourceDefinitionSymbol symbol) =>
         GetDeclarationCore<CharacteristicTypeSymbol, CharacteristicTypeNode>(symbol);
 
-    public static CharacteristicNode? GetDeclaration(this ICharacteristicSymbol symbol) =>
-        GetDeclarationCore<CharacteristicSymbol, CharacteristicNode>(symbol);
+    public static ProfileTypeNode? GetProfileTypeDeclaration(this IResourceDefinitionSymbol symbol) =>
+        GetDeclarationCore<ProfileTypeSymbol, ProfileTypeNode>(symbol);
 
-    public static CostTypeNode? GetDeclaration(this ICostTypeSymbol symbol) =>
-        GetDeclarationCore<CostTypeSymbol, CostTypeNode>(symbol);
+    public static PublicationNode? GetPublicationDeclaration(this IResourceDefinitionSymbol symbol) =>
+        GetDeclarationCore<PublicationSymbol, PublicationNode>(symbol);
+
+    public static PublicationNode? GetDeclaration(this IPublicationSymbol symbol) =>
+        GetDeclarationCore<PublicationSymbol, PublicationNode>(symbol);
 
     public static CostNode? GetDeclaration(this ICostSymbol symbol) =>
         GetDeclarationCore<CostSymbol, CostNode>(symbol);
 
-    public static ProfileTypeNode? GetDeclaration(this IProfileTypeSymbol symbol) =>
-        GetDeclarationCore<ProfileTypeSymbol, ProfileTypeNode>(symbol);
+    public static CharacteristicNode? GetDeclaration(this ICharacteristicSymbol symbol) =>
+        GetDeclarationCore<CharacteristicSymbol, CharacteristicNode>(symbol);
 
     public static ProfileNode? GetEntryDeclaration(this IProfileSymbol symbol) =>
         GetDeclarationCore<ProfileSymbol, ProfileNode>(symbol);
@@ -55,9 +61,6 @@ public static class WhamSymbolDeclarationExtensions
 
     public static RuleNode? GetDeclaration(this IRuleSymbol symbol) =>
         GetDeclarationCore<RuleSymbol, RuleNode>(symbol);
-
-    public static PublicationNode? GetDeclaration(this IPublicationSymbol symbol) =>
-        GetDeclarationCore<PublicationSymbol, PublicationNode>(symbol);
 
     public static ForceEntryNode? GetDeclaration(this IForceEntrySymbol symbol) =>
         GetDeclarationCore<ForceEntrySymbol, ForceEntryNode>(symbol);

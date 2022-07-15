@@ -12,17 +12,19 @@ public enum ResourceKind
     Error,
 
     /// <summary>
-    /// Profile element, <see cref="ICharacteristicTypeSymbol"/> and <see cref="ICharacteristicSymbol"/>.
+    /// Profile element.
+    /// <see cref="IResourceDefinitionSymbol"/> and <see cref="ICharacteristicSymbol"/>.
     /// </summary>
     Characteristic,
 
     /// <summary>
-    /// Numeric cost of a selection, <see cref="ICostTypeSymbol"/> and <see cref="ICostSymbol"/>.
+    /// Numeric cost of a selection.
+    /// <see cref="IResourceDefinitionSymbol"/> and <see cref="ICostSymbol"/>.
     /// </summary>
     Cost,
 
     /// <summary>
-    /// Set of characteristics, <see cref="IProfileTypeSymbol"/> and <see cref="IProfileSymbol"/>.
+    /// Set of characteristics, <see cref="IResourceDefinitionSymbol"/> and <see cref="IProfileSymbol"/>.
     /// </summary>
     Profile,
 

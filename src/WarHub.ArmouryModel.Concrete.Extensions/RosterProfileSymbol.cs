@@ -4,7 +4,7 @@ namespace WarHub.ArmouryModel.Concrete;
 
 internal class RosterProfileSymbol : RosterResourceBaseSymbol, IRosterProfileSymbol, INodeDeclaredSymbol<ProfileNode>
 {
-    private IProfileTypeSymbol? lazyProfileType;
+    private IResourceDefinitionSymbol? lazyType;
 
     public RosterProfileSymbol(ISymbol? containingSymbol, ProfileNode declaration, DiagnosticBag diagnostics) : base(containingSymbol, declaration, diagnostics)
     {
@@ -16,7 +16,7 @@ internal class RosterProfileSymbol : RosterResourceBaseSymbol, IRosterProfileSym
 
     public override ResourceKind ResourceKind => ResourceKind.Profile;
 
-    public IProfileTypeSymbol Type => GetBoundField(ref lazyProfileType);
+    public IResourceDefinitionSymbol Type => GetBoundField(ref lazyType);
 
     public ImmutableArray<CharacteristicSymbol> Characteristics { get; }
 
@@ -28,7 +28,7 @@ internal class RosterProfileSymbol : RosterResourceBaseSymbol, IRosterProfileSym
     protected override void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)
     {
         base.BindReferencesCore(binder, diagnostics);
-        lazyProfileType = binder.BindProfileTypeSymbol(Declaration, diagnostics);
+        lazyType = binder.BindProfileTypeSymbol(Declaration, diagnostics);
     }
 
     protected override ImmutableArray<Symbol> MakeAllMembers(BindingDiagnosticBag diagnostics) =>
