@@ -17,7 +17,7 @@ internal class SelectionEntryGroupSymbol : SelectionEntryBaseSymbol, ISelectionE
 
     public override SelectionEntryGroupNode Declaration { get; }
 
-    public override ContainerEntryKind ContainerKind => ContainerEntryKind.SelectionGroup;
+    public override ContainerKind ContainerKind => ContainerKind.SelectionGroup;
 
     public ISelectionEntrySymbol? DefaultSelectionEntry => GetOptionalBoundField(ref lazyDefaultEntry);
 

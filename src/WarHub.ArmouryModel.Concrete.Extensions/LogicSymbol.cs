@@ -21,6 +21,15 @@ internal abstract class LogicSymbol : Symbol, IConditionSymbol
 
     public override SymbolKind Kind => SymbolKind.Logic;
 
+    public override void Accept(SymbolVisitor visitor) =>
+        visitor.VisitLogic(this);
+
+    public override TResult Accept<TResult>(SymbolVisitor<TResult> visitor) =>
+        visitor.VisitLogic(this);
+
+    public override TResult Accept<TArgument, TResult>(SymbolVisitor<TArgument, TResult> visitor, TArgument argument) =>
+        visitor.VisitLogic(this, argument);
+
     public static ImmutableArray<EffectSymbol> CreateEffects(
         EntrySymbol containingSymbol,
         EntryBaseNode declaration,

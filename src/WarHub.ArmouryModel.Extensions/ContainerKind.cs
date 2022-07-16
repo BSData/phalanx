@@ -3,7 +3,7 @@ namespace WarHub.ArmouryModel;
 /// <summary>
 /// Describes a kind of <see cref="IContainerEntrySymbol"/>.
 /// </summary>
-public enum ContainerEntryKind
+public enum ContainerKind
 {
     /// <summary>
     /// The kind is not known, or invalid.

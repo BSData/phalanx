@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal abstract class EntryInstanceSymbol : SourceDeclaredSymbol, ICustomizableEntryInstanceSymbol
+internal abstract class EntryInstanceSymbol : SourceDeclaredSymbol, IEntryInstanceSymbol
 {
     protected EntryInstanceSymbol(
         ISymbol? containingSymbol,
@@ -12,35 +12,15 @@ internal abstract class EntryInstanceSymbol : SourceDeclaredSymbol, ICustomizabl
     {
         SourceEntryPath = EntryReferencePathBaseSymbol.Create(this, declaration);
         PublicationReference = PublicationReferenceSymbol.Create(this, declaration, diagnostics);
-        Resources = CreateRosterEntryResources().ToImmutableArray();
-
-        IEnumerable<RosterResourceBaseSymbol> CreateRosterEntryResources()
-        {
-            if (declaration is RosterElementBaseNode rosterElement)
-            {
-                foreach (var item in rosterElement.Rules)
-                {
-                    yield return new RosterRuleSymbol(this, item, diagnostics);
-                }
-                foreach (var item in rosterElement.Profiles)
-                {
-                    yield return new RosterProfileSymbol(this, item, diagnostics);
-                }
-            }
-        }
     }
 
     public abstract IEntrySymbol SourceEntry { get; }
 
     public EntryReferencePathBaseSymbol SourceEntryPath { get; }
 
-    public string? CustomName => (Declaration as RosterElementBaseNode)?.CustomName;
-
-    public string? CustomNotes => (Declaration as RosterElementBaseNode)?.CustomNotes;
-
     public PublicationReferenceSymbol? PublicationReference { get; }
 
-    public ImmutableArray<RosterResourceBaseSymbol> Resources { get; }
+    public abstract ImmutableArray<RosterResourceBaseSymbol> Resources { get; }
 
     IEntrySymbol IEntryInstanceSymbol.SourceEntry => SourceEntry;
 

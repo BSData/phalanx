@@ -38,4 +38,10 @@ public interface ISymbol
     /// if the symbol doesn't belong to a namespace (e.g. is a namespace itself).
     /// </summary>
     IGamesystemNamespaceSymbol? ContainingNamespace { get; }
+
+    void Accept(SymbolVisitor visitor);
+
+    TResult Accept<TResult>(SymbolVisitor<TResult> visitor);
+
+    TResult Accept<TArgument, TResult>(SymbolVisitor<TArgument, TResult> visitor, TArgument argument);
 }

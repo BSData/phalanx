@@ -124,4 +124,13 @@ internal class SourceGlobalNamespaceSymbol : Symbol, IGamesystemNamespaceSymbol
         }
         throw new InvalidOperationException("Unreachable code.");
     }
+
+    public override void Accept(SymbolVisitor visitor) =>
+        visitor.VisitGamesystemNamespace(this);
+
+    public override TResult Accept<TResult>(SymbolVisitor<TResult> visitor) =>
+        visitor.VisitGamesystemNamespace(this);
+
+    public override TResult Accept<TArgument, TResult>(SymbolVisitor<TArgument, TResult> visitor, TArgument argument) =>
+        visitor.VisitGamesystemNamespace(this, argument);
 }

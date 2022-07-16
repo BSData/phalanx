@@ -55,7 +55,7 @@ internal abstract class ContainerEntryBaseSymbol : EntrySymbol, IContainerEntryS
 
     public sealed override SymbolKind Kind => SymbolKind.ContainerEntry;
 
-    public abstract ContainerEntryKind ContainerKind { get; }
+    public abstract ContainerKind ContainerKind { get; }
 
     public ImmutableArray<IConstraintSymbol> Constraints { get; }
 
@@ -65,6 +65,15 @@ internal abstract class ContainerEntryBaseSymbol : EntrySymbol, IContainerEntryS
 
     ImmutableArray<ICostSymbol> IContainerEntrySymbol.Costs =>
         Costs.Cast<CostSymbol, ICostSymbol>();
+
+    public override void Accept(SymbolVisitor visitor) =>
+        visitor.VisitContainerEntry(this);
+
+    public override TResult Accept<TResult>(SymbolVisitor<TResult> visitor) =>
+        visitor.VisitContainerEntry(this);
+
+    public override TResult Accept<TArgument, TResult>(SymbolVisitor<TArgument, TResult> visitor, TArgument argument) =>
+        visitor.VisitContainerEntry(this, argument);
 
     protected override ImmutableArray<Symbol> MakeAllMembers(BindingDiagnosticBag diagnostics) =>
         base.MakeAllMembers(diagnostics)

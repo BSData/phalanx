@@ -29,7 +29,7 @@ internal class RosterCostSymbol : SourceDeclaredSymbol, IRosterCostSymbol
 
     public CostLimitNode? LimitDeclaration { get; }
 
-    public override SymbolKind Kind => SymbolKind.Resource;
+    public override SymbolKind Kind => SymbolKind.ResourceEntry;
 
     public decimal Value => CostDeclaration.Value;
 
@@ -43,6 +43,15 @@ internal class RosterCostSymbol : SourceDeclaredSymbol, IRosterCostSymbol
     }
 
     public IResourceDefinitionSymbol CostType => GetBoundField(ref lazyType);
+
+    public override void Accept(SymbolVisitor visitor) =>
+        visitor.VisitRosterCost(this);
+
+    public override TResult Accept<TResult>(SymbolVisitor<TResult> visitor) =>
+        visitor.VisitRosterCost(this);
+
+    public override TResult Accept<TArgument, TResult>(SymbolVisitor<TArgument, TResult> visitor, TArgument argument) =>
+        visitor.VisitRosterCost(this, argument);
 
     protected override void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)
     {

@@ -57,6 +57,15 @@ internal class RosterSymbol : SourceDeclaredSymbol, IRosterSymbol, INodeDeclared
     ImmutableArray<IForceSymbol> IForceContainerSymbol.Forces =>
         Forces.Cast<ForceSymbol, IForceSymbol>();
 
+    public override void Accept(SymbolVisitor visitor) =>
+        visitor.VisitRoster(this);
+
+    public override TResult Accept<TResult>(SymbolVisitor<TResult> visitor) =>
+        visitor.VisitRoster(this);
+
+    public override TResult Accept<TArgument, TResult>(SymbolVisitor<TArgument, TResult> visitor, TArgument argument) =>
+        visitor.VisitRoster(this, argument);
+
     protected override void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)
     {
         base.BindReferencesCore(binder, diagnostics);

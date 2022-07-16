@@ -14,4 +14,13 @@ internal abstract class ResourceDefinitionBaseSymbol : SourceDeclaredSymbol, IRe
 
     ImmutableArray<IResourceDefinitionSymbol> IResourceDefinitionSymbol.Definitions =>
         ImmutableArray<IResourceDefinitionSymbol>.Empty;
+
+    public override void Accept(SymbolVisitor visitor) =>
+        visitor.VisitResourceDefinition(this);
+
+    public override TResult Accept<TResult>(SymbolVisitor<TResult> visitor) =>
+        visitor.VisitResourceDefinition(this);
+
+    public override TResult Accept<TArgument, TResult>(SymbolVisitor<TArgument, TResult> visitor, TArgument argument) =>
+        visitor.VisitResourceDefinition(this, argument);
 }

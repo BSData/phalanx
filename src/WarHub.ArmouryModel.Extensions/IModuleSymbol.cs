@@ -8,6 +8,7 @@ public interface IModuleSymbol : ISymbol
 {
     /// <summary>
     /// Game system catalogue (root), that this module is associated with.
+    /// For the root catalogue (gamesystem), it points to this symbol.
     /// </summary>
     ICatalogueSymbol Gamesystem { get; }
 }

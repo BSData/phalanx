@@ -29,6 +29,15 @@ internal class ForceCatalogueReferenceSymbol : SourceDeclaredSymbol, ICatalogueR
 
     public ICatalogueSymbol Catalogue => GetBoundField(ref lazyCatalogue);
 
+    public override void Accept(SymbolVisitor visitor) =>
+        visitor.VisitCatalogueReference(this);
+
+    public override TResult Accept<TResult>(SymbolVisitor<TResult> visitor) =>
+        visitor.VisitCatalogueReference(this);
+
+    public override TResult Accept<TArgument, TResult>(SymbolVisitor<TArgument, TResult> visitor, TArgument argument) =>
+        visitor.VisitCatalogueReference(this, argument);
+
     protected override void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)
     {
         base.BindReferencesCore(binder, diagnostics);

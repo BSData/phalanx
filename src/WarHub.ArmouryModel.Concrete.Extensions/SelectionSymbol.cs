@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class SelectionSymbol : EntryInstanceSymbol, ISelectionSymbol, INodeDeclaredSymbol<SelectionNode>
+internal class SelectionSymbol : ContainerSymbol, ISelectionSymbol, INodeDeclaredSymbol<SelectionNode>
 {
     public SelectionSymbol(
         ISymbol? containingSymbol,
@@ -17,11 +17,11 @@ internal class SelectionSymbol : EntryInstanceSymbol, ISelectionSymbol, INodeDec
         PrimaryCategory = Categories.FirstOrDefault(x => x.IsPrimaryCategory); // TODO diagnostic if count != 1 for root selection?
     }
 
-    public override SelectionNode Declaration { get; }
+    public new SelectionNode Declaration { get; }
 
-    public override SymbolKind Kind => SymbolKind.Selection;
+    public override ContainerKind ContainerKind => ContainerKind.Selection;
 
-    public int Count => Declaration.Number;
+    public int SelectedCount => Declaration.Number;
 
     public override ISelectionEntrySymbol SourceEntry =>
         (ISelectionEntrySymbol)SourceEntryPath.SourceEntries.Last();

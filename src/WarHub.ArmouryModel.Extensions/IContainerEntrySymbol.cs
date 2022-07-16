@@ -10,7 +10,7 @@ public interface IContainerEntrySymbol : IEntrySymbol
     /// <summary>
     /// Describes what kind of entry this is.
     /// </summary>
-    ContainerEntryKind ContainerKind { get; }
+    ContainerKind ContainerKind { get; }
 
     ImmutableArray<IConstraintSymbol> Constraints { get; }
 

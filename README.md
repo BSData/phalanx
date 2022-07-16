@@ -44,6 +44,13 @@ The main app to run is in `src/Phalanx.App` - select this project as startup pro
   - entry groups
   - should that be in a separate "RosterEditor" module?
 - implement Logic symbols
+- semantic model that retrieves symbols/symbol info from `SourceNode`s
+- use ObjectPool for performance
+- Analyzer-like API/plugin support
+- print nicer diagnostics + usable location
+- support for speculative semantic model (simulation)
+- more declaration diagnostics
+- diagnostic fixers
 
 ## Symbols
 
@@ -96,7 +103,7 @@ to the link target.
   - `IResourceSymbol`
     - `IRosterProfileSymbol`
     - `IRosterRuleSymbol`
-  - `ICustomizableEntryInstanceSymbol` // has custom name, notes
+  - `IContainerEntryInstanceSymbol` // has custom name, notes
     - `ICategorySymbol`
     - `ISelectionContainerSymbol` // has selections
       - `IForceSymbol`

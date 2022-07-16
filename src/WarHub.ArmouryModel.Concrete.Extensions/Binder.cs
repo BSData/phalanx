@@ -246,7 +246,7 @@ internal class Binder
                 return LookupResult.Empty();
             }
         }
-        if (options.HasFlag(LookupOptions.ResourceEntryOnly) && symbol.Kind != SymbolKind.Resource)
+        if (options.HasFlag(LookupOptions.ResourceEntryOnly) && symbol.Kind != SymbolKind.ResourceEntry)
         {
             return LookupResult.Empty();
         }
@@ -377,14 +377,14 @@ internal class Binder
     private static bool IsRootEntry(ISymbol symbol) => symbol.ContainingModule is ICatalogueSymbol { } catalogue && symbol.Kind switch
     {
         SymbolKind.ContainerEntry => catalogue.RootContainerEntries.Contains(symbol),
-        SymbolKind.Resource => catalogue.RootResourceEntries.Contains(symbol),
+        SymbolKind.ResourceEntry => catalogue.RootResourceEntries.Contains(symbol),
         _ => false,
     };
 
     private static bool IsSharedEntry(ISymbol symbol) => symbol.ContainingModule is ICatalogueSymbol { } catalogue && symbol.Kind switch
     {
         SymbolKind.ContainerEntry => catalogue.SharedSelectionEntryContainers.Contains(symbol),
-        SymbolKind.Resource => catalogue.SharedResourceEntries.Contains(symbol),
+        SymbolKind.ResourceEntry => catalogue.SharedResourceEntries.Contains(symbol),
         _ => false,
     };
 

@@ -23,6 +23,7 @@ internal static class ErrorSymbols
         ResourceKind.Cost => new ErrorResourceDefinitionSymbol(),
         ResourceKind.Profile => new ErrorResourceDefinitionSymbol(),
         ResourceKind.Error => new ErrorResourceDefinitionSymbol(),
+        ResourceKind.Publication => new ErrorPublicationSymbol(),
         _ => throw new NotSupportedException($"Can't instantiate error symbol for '{kind}' resource definition."),
     };
 
@@ -32,26 +33,25 @@ internal static class ErrorSymbols
         ResourceKind.Characteristic => new ErrorCharacteristicSymbol(),
         ResourceKind.Cost => new ErrorCostSymbol(),
         ResourceKind.Profile => new ErrorProfileSymbol(),
-        ResourceKind.Publication => new ErrorPublicationSymbol(),
         ResourceKind.Rule => new ErrorRuleSymbol(),
         ResourceKind.Group => new ErrorResourceEntrySymbol(),
         ResourceKind.Error => new ErrorResourceEntrySymbol(),
         _ => throw new NotSupportedException($"Can't instantiate error symbol for '{kind}' resource."),
     };
 
-    public static ErrorSymbolBase CreateContainerEntry(ContainerEntryKind kind) => kind switch
+    public static ErrorSymbolBase CreateContainerEntry(ContainerKind kind) => kind switch
     {
-        ContainerEntryKind.Selection => new ErrorSelectionEntrySymbol(),
-        ContainerEntryKind.SelectionGroup => new ErrorSelectionEntryGroupSymbol(),
-        ContainerEntryKind.Category => new ErrorCategoryEntrySymbol(),
-        ContainerEntryKind.Force => new ErrorForceEntrySymbol(),
-        ContainerEntryKind.Error => new ErrorContainerEntrySymbol(),
+        ContainerKind.Selection => new ErrorSelectionEntrySymbol(),
+        ContainerKind.SelectionGroup => new ErrorSelectionEntryGroupSymbol(),
+        ContainerKind.Category => new ErrorCategoryEntrySymbol(),
+        ContainerKind.Force => new ErrorForceEntrySymbol(),
+        ContainerKind.Error => new ErrorContainerEntrySymbol(),
         _ => throw new NotSupportedException($"Can't instantiate error symbol for '{kind}' resource."),
     };
 
     internal record ErrorSymbolBase : ISymbol, IErrorSymbol
     {
-        public virtual SymbolKind Kind => SymbolKind.Error;
+        SymbolKind ISymbol.Kind => SymbolKind.Error;
 
         public string? Id { get; init; }
 
@@ -77,17 +77,17 @@ internal static class ErrorSymbols
 
         public bool ErrorUnreported { get; init; }
 
-        public void Accept(SymbolVisitor visitor)
+        void ISymbol.Accept(SymbolVisitor visitor)
         {
             visitor.VisitError(this);
         }
 
-        public TResult Accept<TResult>(SymbolVisitor<TResult> visitor)
+        TResult ISymbol.Accept<TResult>(SymbolVisitor<TResult> visitor)
         {
             return visitor.VisitError(this);
         }
 
-        public TResult Accept<TArgument, TResult>(SymbolVisitor<TArgument, TResult> visitor, TArgument argument)
+        TResult ISymbol.Accept<TArgument, TResult>(SymbolVisitor<TArgument, TResult> visitor, TArgument argument)
         {
             return visitor.VisitError(this, argument);
         }
@@ -106,7 +106,7 @@ internal static class ErrorSymbols
 
     internal record ErrorResourceDefinitionSymbol : ErrorSymbolBase, IResourceDefinitionSymbol
     {
-        public virtual ResourceKind ResourceKind { get; init; } = ResourceKind.Error;
+        ResourceKind IResourceDefinitionSymbol.ResourceKind => ResourceKind.Error;
 
         ImmutableArray<IResourceDefinitionSymbol> IResourceDefinitionSymbol.Definitions =>
             ImmutableArray<IResourceDefinitionSymbol>.Empty;
@@ -124,8 +124,6 @@ internal static class ErrorSymbols
 
     internal record ErrorProfileSymbol : ErrorResourceEntrySymbol, IProfileSymbol
     {
-        public override ResourceKind ResourceKind => ResourceKind.Profile;
-
         IResourceDefinitionSymbol Type { get; init; } = new ErrorResourceDefinitionSymbol();
 
         IResourceDefinitionSymbol? IResourceEntrySymbol.Type => Type;
@@ -135,15 +133,11 @@ internal static class ErrorSymbols
 
     internal record ErrorRuleSymbol : ErrorResourceEntrySymbol, IRuleSymbol
     {
-        public override ResourceKind ResourceKind => ResourceKind.Rule;
-
         string IRuleSymbol.DescriptionText => string.Empty;
     }
 
     internal record ErrorCategoryEntrySymbol : ErrorContainerEntrySymbol, ICategoryEntrySymbol
     {
-        public override ContainerEntryKind ContainerKind => ContainerEntryKind.Category;
-
         bool ICategoryEntrySymbol.IsPrimaryCategory => false;
 
         ICategoryEntrySymbol? ICategoryEntrySymbol.ReferencedEntry => null;
@@ -151,8 +145,6 @@ internal static class ErrorSymbols
 
     internal record ErrorForceEntrySymbol : ErrorContainerEntrySymbol, IForceEntrySymbol
     {
-        public override ContainerEntryKind ContainerKind => ContainerEntryKind.Force;
-
         ImmutableArray<IForceEntrySymbol> IForceEntrySymbol.ChildForces =>
             ImmutableArray<IForceEntrySymbol>.Empty;
 
@@ -162,15 +154,11 @@ internal static class ErrorSymbols
 
     internal record ErrorSelectionEntrySymbol : ErrorSelectionEntryContainerSymbol, ISelectionEntrySymbol
     {
-        public override ContainerEntryKind ContainerKind => ContainerEntryKind.Selection;
-
         SelectionEntryKind ISelectionEntrySymbol.EntryKind => SelectionEntryKind.Upgrade;
     }
 
     internal record ErrorSelectionEntryGroupSymbol : ErrorSelectionEntryContainerSymbol, ISelectionEntryGroupSymbol
     {
-        public override ContainerEntryKind ContainerKind => ContainerEntryKind.SelectionGroup;
-
         ISelectionEntrySymbol? ISelectionEntryGroupSymbol.DefaultSelectionEntry => null;
     }
 
@@ -204,25 +192,22 @@ internal static class ErrorSymbols
 
     internal record ErrorResourceEntrySymbol : ErrorEntryBaseSymbol, IResourceEntrySymbol
     {
-        public override SymbolKind Kind => SymbolKind.Resource;
+        ResourceKind IResourceEntrySymbol.ResourceKind => ResourceKind.Error;
 
         IResourceEntrySymbol? IResourceEntrySymbol.ReferencedEntry => null;
 
         IResourceDefinitionSymbol? IResourceEntrySymbol.Type => null;
-
-        public virtual ResourceKind ResourceKind { get; init; } = ResourceKind.Error;
     }
 
     internal record ErrorContainerEntrySymbol : ErrorEntryBaseSymbol, IContainerEntrySymbol
     {
-        public override SymbolKind Kind => SymbolKind.ContainerEntry;
-
-        public virtual ContainerEntryKind ContainerKind { get; init; } = ContainerEntryKind.Error;
-
-        public ImmutableArray<ICostSymbol> Costs => ImmutableArray<ICostSymbol>.Empty;
+        ContainerKind IContainerEntrySymbol.ContainerKind => ContainerKind.Error;
 
         ImmutableArray<IConstraintSymbol> IContainerEntrySymbol.Constraints =>
             ImmutableArray<IConstraintSymbol>.Empty;
+
+        ImmutableArray<ICostSymbol> IContainerEntrySymbol.Costs =>
+            ImmutableArray<ICostSymbol>.Empty;
     }
 
     internal record ErrorGamesystemSymbol : ErrorCatalogueBaseSymbol
@@ -244,8 +229,6 @@ internal static class ErrorSymbols
 
     internal abstract record ErrorCatalogueBaseSymbol : ErrorSymbolBase, ICatalogueSymbol
     {
-        public override SymbolKind Kind => SymbolKind.Catalogue;
-
         bool ICatalogueSymbol.IsLibrary => false;
 
         public abstract bool IsGamesystem { get; }

@@ -12,7 +12,7 @@ public interface ISelectionSymbol : ISelectionContainerSymbol
     /// <summary>
     /// Selection count (number of times that selection is "taken").
     /// </summary>
-    int Count { get; }
+    int SelectedCount { get; }
 
     SelectionEntryKind EntryKind { get; }
 
@@ -23,7 +23,7 @@ public interface ISelectionSymbol : ISelectionContainerSymbol
     ImmutableArray<ICategorySymbol> Categories { get; }
 
     /// <summary>
-    /// Costs for this selection (with <see cref="Count"/> taken into account).
+    /// Costs for this selection (with <see cref="SelectedCount"/> taken into account).
     /// Doesn't include costs of <see cref="ISelectionContainerSymbol.Selections"/>.
     /// </summary>
     ImmutableArray<ICostSymbol> Costs { get; }

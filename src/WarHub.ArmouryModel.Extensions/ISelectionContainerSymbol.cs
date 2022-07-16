@@ -6,7 +6,7 @@ namespace WarHub.ArmouryModel;
 /// WHAM <see cref="Source.ForceNode" />
 /// and <see cref="Source.SelectionNode" />.
 /// </summary>
-public interface ISelectionContainerSymbol : ICustomizableEntryInstanceSymbol
+public interface ISelectionContainerSymbol : IContainerEntryInstanceSymbol
 {
     /// <summary>
     /// Child selections of this symbol.

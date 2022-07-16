@@ -103,4 +103,22 @@ internal abstract class Symbol : ISymbol
     }
 
     internal virtual ImmutableArray<ISymbol> GetMembers() => ImmutableArray<ISymbol>.Empty;
+
+    public virtual void Accept(SymbolVisitor visitor)
+    {
+        // TODO make abstract, implement in leaf classes
+        throw new NotImplementedException();
+    }
+
+    public virtual TResult Accept<TResult>(SymbolVisitor<TResult> visitor)
+    {
+        // TODO make abstract, implement in leaf classes
+        throw new NotImplementedException();
+    }
+
+    public virtual TResult Accept<TArgument, TResult>(SymbolVisitor<TArgument, TResult> visitor, TArgument argument)
+    {
+        // TODO make abstract, implement in leaf classes
+        throw new NotImplementedException();
+    }
 }

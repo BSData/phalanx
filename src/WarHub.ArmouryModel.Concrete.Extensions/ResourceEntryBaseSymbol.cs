@@ -35,7 +35,7 @@ internal abstract class ResourceEntryBaseSymbol : EntrySymbol, IResourceEntrySym
         }
     }
 
-    public sealed override SymbolKind Kind => SymbolKind.Resource;
+    public sealed override SymbolKind Kind => SymbolKind.ResourceEntry;
 
     public abstract ResourceKind ResourceKind { get; }
 
@@ -44,4 +44,13 @@ internal abstract class ResourceEntryBaseSymbol : EntrySymbol, IResourceEntrySym
     public override IResourceEntrySymbol? ReferencedEntry => null;
 
     public sealed override ImmutableArray<ResourceEntryBaseSymbol> Resources { get; }
+
+    public override void Accept(SymbolVisitor visitor) =>
+        visitor.VisitResourceEntry(this);
+
+    public override TResult Accept<TResult>(SymbolVisitor<TResult> visitor) =>
+        visitor.VisitResourceEntry(this);
+
+    public override TResult Accept<TArgument, TResult>(SymbolVisitor<TArgument, TResult> visitor, TArgument argument) =>
+        visitor.VisitResourceEntry(this, argument);
 }

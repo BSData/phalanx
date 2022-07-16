@@ -33,7 +33,7 @@ internal class ForceEntrySymbol : ContainerEntryBaseSymbol, IForceEntrySymbol, I
 
     public override ForceEntryNode Declaration { get; }
 
-    public override ContainerEntryKind ContainerKind => ContainerEntryKind.Force;
+    public override ContainerKind ContainerKind => ContainerKind.Force;
 
     public ImmutableArray<ForceEntrySymbol> ChildForces { get; }
 

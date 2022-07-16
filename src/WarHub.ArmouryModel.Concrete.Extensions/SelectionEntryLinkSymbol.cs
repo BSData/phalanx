@@ -15,11 +15,11 @@ internal class SelectionEntryLinkSymbol : SelectionEntryBaseSymbol, INodeDeclare
         Declaration = declaration;
         ContainerKind = Declaration.Type switch
         {
-            EntryLinkKind.SelectionEntry => ContainerEntryKind.Selection,
-            EntryLinkKind.SelectionEntryGroup => ContainerEntryKind.SelectionGroup,
-            _ => ContainerEntryKind.Error,
+            EntryLinkKind.SelectionEntry => ContainerKind.Selection,
+            EntryLinkKind.SelectionEntryGroup => ContainerKind.SelectionGroup,
+            _ => ContainerKind.Error,
         };
-        if (ContainerKind is ContainerEntryKind.Error)
+        if (ContainerKind is ContainerKind.Error)
         {
             diagnostics.Add(ErrorCode.ERR_UnknownEnumerationValue, Declaration);
         }
@@ -27,7 +27,7 @@ internal class SelectionEntryLinkSymbol : SelectionEntryBaseSymbol, INodeDeclare
 
     public override EntryLinkNode Declaration { get; }
 
-    public override ContainerEntryKind ContainerKind { get; }
+    public override ContainerKind ContainerKind { get; }
 
     public override ISelectionEntryContainerSymbol ReferencedEntry => GetBoundField(ref lazyReference);
 
