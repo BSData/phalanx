@@ -42,7 +42,22 @@ public abstract class SymbolVisitor
     public virtual void VisitCatalogueReference(ICatalogueReferenceSymbol symbol) =>
         DefaultVisit(symbol);
 
-    public virtual void VisitLogic(ILogicSymbol symbol) =>
+    public virtual void VisitPublicationReference(IPublicationReferenceSymbol symbol) =>
+        DefaultVisit(symbol);
+
+    public virtual void VisitEntryReferencePath(IEntryReferencePathSymbol symbol) =>
+        DefaultVisit(symbol);
+
+    public virtual void VisitConstraint(IConstraintSymbol symbol) =>
+        DefaultVisit(symbol);
+
+    public virtual void VisitCondition(IConditionSymbol symbol) =>
+        DefaultVisit(symbol);
+
+    public virtual void VisitEffect(IEffectSymbol symbol) =>
+        DefaultVisit(symbol);
+
+    public virtual void VisitQuery(IQuerySymbol symbol) =>
         DefaultVisit(symbol);
 
     public virtual void VisitRosterCost(IRosterCostSymbol symbol) =>
@@ -94,7 +109,22 @@ public abstract class SymbolVisitor<TResult>
     public virtual TResult VisitCatalogueReference(ICatalogueReferenceSymbol symbol) =>
         DefaultVisit(symbol);
 
-    public virtual TResult VisitLogic(ILogicSymbol symbol) =>
+    public virtual TResult VisitPublicationReference(IPublicationReferenceSymbol symbol) =>
+        DefaultVisit(symbol);
+
+    public virtual TResult VisitEntryReferencePath(IEntryReferencePathSymbol symbol) =>
+        DefaultVisit(symbol);
+
+    public virtual TResult VisitConstraint(IConstraintSymbol symbol) =>
+        DefaultVisit(symbol);
+
+    public virtual TResult VisitCondition(IConditionSymbol symbol) =>
+        DefaultVisit(symbol);
+
+    public virtual TResult VisitEffect(IEffectSymbol symbol) =>
+        DefaultVisit(symbol);
+
+    public virtual TResult VisitQuery(IQuerySymbol symbol) =>
         DefaultVisit(symbol);
 
     public virtual TResult VisitRosterCost(IRosterCostSymbol symbol) =>
@@ -147,7 +177,22 @@ public abstract class SymbolVisitor<TArgument, TResult>
     public virtual TResult VisitCatalogueReference(ICatalogueReferenceSymbol symbol, TArgument argument) =>
         DefaultVisit(symbol, argument);
 
-    public virtual TResult VisitLogic(ILogicSymbol symbol, TArgument argument) =>
+    public virtual TResult VisitPublicationReference(IPublicationReferenceSymbol symbol, TArgument argument) =>
+        DefaultVisit(symbol, argument);
+
+    public virtual TResult VisitEntryReferencePath(IEntryReferencePathSymbol symbol, TArgument argument) =>
+        DefaultVisit(symbol, argument);
+
+    public virtual TResult VisitConstraint(IConstraintSymbol symbol, TArgument argument) =>
+        DefaultVisit(symbol, argument);
+
+    public virtual TResult VisitCondition(IConditionSymbol symbol, TArgument argument) =>
+        DefaultVisit(symbol, argument);
+
+    public virtual TResult VisitEffect(IEffectSymbol symbol, TArgument argument) =>
+        DefaultVisit(symbol, argument);
+
+    public virtual TResult VisitQuery(IQuerySymbol symbol, TArgument argument) =>
         DefaultVisit(symbol, argument);
 
     public virtual TResult VisitRosterCost(IRosterCostSymbol symbol, TArgument argument) =>

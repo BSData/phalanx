@@ -37,4 +37,13 @@ internal abstract class ContainerSymbol : EntryInstanceSymbol, IContainerEntryIn
     public string? CustomNotes => Declaration.CustomNotes;
 
     public override ImmutableArray<RosterResourceBaseSymbol> Resources { get; }
+
+    public sealed override void Accept(SymbolVisitor visitor) =>
+        visitor.VisitContainerEntryInstance(this);
+
+    public sealed override TResult Accept<TResult>(SymbolVisitor<TResult> visitor) =>
+        visitor.VisitContainerEntryInstance(this);
+
+    public sealed override TResult Accept<TArgument, TResult>(SymbolVisitor<TArgument, TResult> visitor, TArgument argument) =>
+        visitor.VisitContainerEntryInstance(this, argument);
 }

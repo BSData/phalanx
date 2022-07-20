@@ -24,6 +24,15 @@ internal abstract class EntryReferencePathBaseSymbol : SourceDeclaredSymbol, IEn
 
     public ImmutableArray<IEntrySymbol> SourceEntries => GetBoundField(ref lazySourceEntries);
 
+    public sealed override void Accept(SymbolVisitor visitor) =>
+        visitor.VisitEntryReferencePath(this);
+
+    public sealed override TResult Accept<TResult>(SymbolVisitor<TResult> visitor) =>
+        visitor.VisitEntryReferencePath(this);
+
+    public sealed override TResult Accept<TArgument, TResult>(SymbolVisitor<TArgument, TResult> visitor, TArgument argument) =>
+        visitor.VisitEntryReferencePath(this, argument);
+
     protected sealed override void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)
     {
         base.BindReferencesCore(binder, diagnostics);

@@ -61,10 +61,24 @@ public enum SymbolKind
     Container,
 
     /// <summary>
-    /// Logic symbol.
-    /// Includes conditions, constraints, modifiers, modifier groups, repeats.
+    /// Constraint that creates boundaries of allowed counts.
     /// </summary>
-    Logic,
+    Constraint,
+
+    /// <summary>
+    /// Effect symbol conditionally applies modifications to a symbol.
+    /// </summary>
+    Effect,
+
+    /// <summary>
+    /// Defines a condition that can be satisfied or not.
+    /// </summary>
+    Condition,
+
+    /// <summary>
+    /// Defines a query that asks questions about a roster state and returns some results.
+    /// </summary>
+    Query,
 
     /// <summary>
     /// Symbol referring to some other element.

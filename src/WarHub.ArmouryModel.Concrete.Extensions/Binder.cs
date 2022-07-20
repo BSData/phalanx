@@ -74,6 +74,10 @@ internal class Binder
         BindSimple<IResourceDefinitionSymbol, ErrorSymbols.ErrorResourceDefinitionSymbol>(
             node, diagnostics, node.TypeId, LookupOptions.CostTypeOnly);
 
+    internal IResourceDefinitionSymbol BindCostTypeSymbol(SourceNode node, string? symbolId, BindingDiagnosticBag diagnostics) =>
+        BindSimple<IResourceDefinitionSymbol, ErrorSymbols.ErrorResourceDefinitionSymbol>(
+            node, diagnostics, symbolId, LookupOptions.CostTypeOnly);
+
     internal IResourceEntrySymbol BindSharedResourceEntrySymbol(InfoLinkNode node, BindingDiagnosticBag diagnostics) =>
         BindSimple<IResourceEntrySymbol, ErrorSymbols.ErrorResourceEntrySymbol>(
             node,
@@ -104,6 +108,31 @@ internal class Binder
     internal ICategoryEntrySymbol BindCategoryEntrySymbol(CategoryNode node, BindingDiagnosticBag diagnostics) =>
         BindSimple<ICategoryEntrySymbol, ErrorSymbols.ErrorCategoryEntrySymbol>(
             node, diagnostics, node.EntryId, LookupOptions.CategoryEntryOnly);
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Method is WIP")]
+    internal ISymbol? BindEntryMemberSymbol(SourceNode declaration, string? field, BindingDiagnosticBag diagnostics)
+    {
+        // TODO implement query/modifier field binding (constraint, cost, characteristic etc)
+        return null;
+    }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Method is WIP")]
+    internal ISymbol? BindFilterEntrySymbol(SourceNode node, string? symbolId, BindingDiagnosticBag diagnostics)
+    {
+        // TODO implement query filter binding
+        return null;
+    }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Method is WIP")]
+    internal ISymbol? BindScopeEntrySymbol(SourceNode node, string? symbolId, BindingDiagnosticBag diagnostics)
+    {
+        // TODO implement query scope binding
+        return null;
+    }
+
+    internal ICategoryEntrySymbol BindCategoryEntrySymbol(SourceNode node, string? symbolId, BindingDiagnosticBag diagnostics) =>
+        BindSimple<ICategoryEntrySymbol, ErrorSymbols.ErrorCategoryEntrySymbol>(
+            node, diagnostics, symbolId, LookupOptions.CategoryEntryOnly);
 
     internal ISelectionEntrySymbol BindSelectionEntryGroupDefaultEntrySymbol(
         SelectionEntryGroupNode node,

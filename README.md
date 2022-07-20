@@ -88,15 +88,10 @@ to the link target.
       - `ISelectionEntrySymbol` (can be a link)
       - `ISelectionEntryGroupSymbol` (can be a link)
 - `ILogicSymbol`
-  - `IConstraintSymbol` // contains effects
-  - `IEffectSymbol`
-    - `IConditionalEffectSymbol`
-    - `ILoopEffectSymbol`
-    - `IModifyingEffectSymbol`
-  - `IConditionSymbol`
-    - `IQueryConditionSymbol` // condition/constaint/repeat "query" part
-    - `ITupleOperationConditionSymbol` // condition groups
-  - `IQuerySymbol`
+  - `IConstraintSymbol` // constraint, contains query
+  - `IEffectSymbol` // modifier/modifier group/repeat, contains query and condition
+  - `IConditionSymbol` // condition/condition group, contains query
+  - `IQuerySymbol` // condition/constaint/repeat "query" part
 
 - `IRosterCostSymbol` // both value and limit (if set)
 - `IEntryInstanceSymbol` // has SourceEntry

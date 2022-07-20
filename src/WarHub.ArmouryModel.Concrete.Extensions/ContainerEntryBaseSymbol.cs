@@ -10,9 +10,17 @@ internal abstract class ContainerEntryBaseSymbol : EntrySymbol, IContainerEntryS
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration, diagnostics)
     {
-        Constraints = ImmutableArray<IConstraintSymbol>.Empty; // TODO map
+        Constraints = CreateConstraints().ToImmutableArray();
         Costs = CreateCosts().ToImmutableArray();
         Resources = CreateResourceEntries().ToImmutableArray();
+
+        IEnumerable<ConstraintSymbol> CreateConstraints()
+        {
+            foreach (var item in declaration.Constraints)
+            {
+                yield return new ConstraintSymbol(this, item, diagnostics);
+            }
+        }
 
         IEnumerable<CostSymbol> CreateCosts()
         {
@@ -57,11 +65,14 @@ internal abstract class ContainerEntryBaseSymbol : EntrySymbol, IContainerEntryS
 
     public abstract ContainerKind ContainerKind { get; }
 
-    public ImmutableArray<IConstraintSymbol> Constraints { get; }
+    public ImmutableArray<ConstraintSymbol> Constraints { get; }
 
     public sealed override ImmutableArray<ResourceEntryBaseSymbol> Resources { get; }
 
     public ImmutableArray<CostSymbol> Costs { get; }
+
+    ImmutableArray<IConstraintSymbol> IContainerEntrySymbol.Constraints =>
+        Constraints.Cast<ConstraintSymbol, IConstraintSymbol>();
 
     ImmutableArray<ICostSymbol> IContainerEntrySymbol.Costs =>
         Costs.Cast<CostSymbol, ICostSymbol>();
@@ -77,6 +88,5 @@ internal abstract class ContainerEntryBaseSymbol : EntrySymbol, IContainerEntryS
 
     protected override ImmutableArray<Symbol> MakeAllMembers(BindingDiagnosticBag diagnostics) =>
         base.MakeAllMembers(diagnostics)
-        // TODO .AddRange(Constraints)
-        ;
+        .AddRange(Constraints);
 }

@@ -74,21 +74,26 @@ public static class WhamSymbolDeclarationExtensions
     public static EntryLinkNode? GetEntryLinkDeclaration(this ISelectionEntryContainerSymbol symbol) =>
         GetDeclarationCore<SelectionEntryLinkSymbol, EntryLinkNode>(symbol);
 
-    public static ModifierNode? GetModifierDeclaration(this IConditionalEffectSymbol symbol) =>
+    public static ConstraintNode? GetDeclaration(this IConstraintSymbol symbol) =>
+        GetDeclarationCore<ConstraintSymbol, ConstraintNode>(symbol);
+
+    public static ModifierNode? GetModifierDeclaration(this IEffectSymbol symbol) =>
         GetDeclarationCore<ModifierEffectSymbol, ModifierNode>(symbol);
 
-    public static ModifierGroupNode? GetModifierGroupDeclaration(this IConditionalEffectSymbol symbol) =>
+    public static ModifierGroupNode? GetModifierGroupDeclaration(this IEffectSymbol symbol) =>
         GetDeclarationCore<ModifierGroupEffectSymbol, ModifierGroupNode>(symbol);
 
-    public static ConditionNode? GetConditionDeclaration(this ITupleOperationConditionSymbol symbol) =>
-        GetDeclarationCore<QueryConditionSymbol, ConditionNode>(symbol);
+    public static RepeatNode? GetRepeatDeclaration(this IEffectSymbol symbol) =>
+        GetDeclarationCore<RepeatEffectSymbol, RepeatNode>(symbol);
 
-    public static ConditionGroupNode? GetConditionGroupDeclaration(this ITupleOperationConditionSymbol symbol) =>
-        GetDeclarationCore<ConditionGroupConditionSymbol, ConditionGroupNode>(symbol);
+    public static ConditionNode? GetConditionDeclaration(this IConditionSymbol symbol) =>
+        GetDeclarationCore<ConditionSymbol, ConditionNode>(symbol);
+
+    public static ConditionGroupNode? GetConditionGroupDeclaration(this IConditionSymbol symbol) =>
+        GetDeclarationCore<ConditionGroupingBaseSymbol.ConditionGroupSymbol, ConditionGroupNode>(symbol);
 
     private static TNode? GetDeclarationCore<TSymbol, TNode>(ISymbol symbol)
         where TSymbol : ISymbol, INodeDeclaredSymbol<TNode>
         where TNode : SourceNode =>
         symbol is TSymbol { Declaration: var decl } ? decl : null;
-
 }

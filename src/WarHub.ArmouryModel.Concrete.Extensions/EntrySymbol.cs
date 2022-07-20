@@ -14,7 +14,19 @@ internal abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol
         if (declaration is EntryBaseNode entryNode)
         {
             IsHidden = entryNode.Hidden;
-            Effects = LogicSymbol.CreateEffects(this, entryNode, diagnostics);
+            Effects = CreateEffects().ToImmutableArray();
+
+            IEnumerable<ModifierEffectBaseSymbol> CreateEffects()
+            {
+                foreach (var item in entryNode.Modifiers)
+                {
+                    yield return ModifierEffectBaseSymbol.Create(this, item, diagnostics);
+                }
+                foreach (var item in entryNode.ModifierGroups)
+                {
+                    yield return ModifierEffectBaseSymbol.Create(this, item, diagnostics);
+                }
+            }
         }
     }
 
@@ -30,9 +42,10 @@ internal abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol
 
     IPublicationReferenceSymbol? IEntrySymbol.PublicationReference => PublicationReference;
 
-    public ImmutableArray<EffectSymbol> Effects { get; } = ImmutableArray<EffectSymbol>.Empty;
+    public ImmutableArray<ModifierEffectBaseSymbol> Effects { get; } =
+        ImmutableArray<ModifierEffectBaseSymbol>.Empty;
 
-    ImmutableArray<IEffectSymbol> IEntrySymbol.Effects => Effects.Cast<EffectSymbol, IEffectSymbol>();
+    ImmutableArray<IEffectSymbol> IEntrySymbol.Effects => Effects.Cast<ModifierEffectBaseSymbol, IEffectSymbol>();
 
     public abstract ImmutableArray<ResourceEntryBaseSymbol> Resources { get; }
 
@@ -43,7 +56,7 @@ internal abstract class EntrySymbol : SourceDeclaredSymbol, IEntrySymbol
         (PublicationReference is null ? ImmutableArray<Symbol>.Empty : ImmutableArray.Create<Symbol>(PublicationReference))
         .AddRange(base.MakeAllMembers(diagnostics))
         .AddRange(Resources.Cast<ResourceEntryBaseSymbol, Symbol>())
-        .AddRange(Effects.Cast<EffectSymbol, Symbol>());
+        .AddRange(Effects.Cast<ModifierEffectBaseSymbol, Symbol>());
 
     public static SelectionEntryLinkSymbol CreateEntry(
         ISymbol containingSymbol,
