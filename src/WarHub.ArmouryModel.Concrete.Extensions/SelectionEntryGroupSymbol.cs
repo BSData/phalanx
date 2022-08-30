@@ -4,7 +4,7 @@ namespace WarHub.ArmouryModel.Concrete;
 
 internal class SelectionEntryGroupSymbol : SelectionEntryBaseSymbol, ISelectionEntryGroupSymbol, INodeDeclaredSymbol<SelectionEntryGroupNode>
 {
-    private ISelectionEntrySymbol? lazyDefaultEntry;
+    private ISelectionEntryContainerSymbol? lazyDefaultEntry;
 
     public SelectionEntryGroupSymbol(
         ISymbol containingSymbol,
@@ -19,7 +19,7 @@ internal class SelectionEntryGroupSymbol : SelectionEntryBaseSymbol, ISelectionE
 
     public override ContainerKind ContainerKind => ContainerKind.SelectionGroup;
 
-    public ISelectionEntrySymbol? DefaultSelectionEntry => GetOptionalBoundField(ref lazyDefaultEntry);
+    public ISelectionEntryContainerSymbol? DefaultSelectionEntry => GetOptionalBoundField(ref lazyDefaultEntry);
 
     protected override void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)
     {

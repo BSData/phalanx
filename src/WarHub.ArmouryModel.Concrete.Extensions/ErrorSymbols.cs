@@ -159,7 +159,7 @@ internal static class ErrorSymbols
 
     internal record ErrorSelectionEntryGroupSymbol : ErrorSelectionEntryContainerSymbol, ISelectionEntryGroupSymbol
     {
-        ISelectionEntrySymbol? ISelectionEntryGroupSymbol.DefaultSelectionEntry => null;
+        ISelectionEntryContainerSymbol? ISelectionEntryGroupSymbol.DefaultSelectionEntry => null;
     }
 
     internal record ErrorSelectionEntryContainerSymbol : ErrorContainerEntrySymbol, ISelectionEntryContainerSymbol

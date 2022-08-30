@@ -7,5 +7,5 @@ namespace WarHub.ArmouryModel;
 /// </summary>
 public interface ISelectionEntryGroupSymbol : ISelectionEntryContainerSymbol
 {
-    ISelectionEntrySymbol? DefaultSelectionEntry { get; }
+    ISelectionEntryContainerSymbol? DefaultSelectionEntry { get; }
 }

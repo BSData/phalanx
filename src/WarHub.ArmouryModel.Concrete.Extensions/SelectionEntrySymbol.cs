@@ -15,7 +15,7 @@ internal class SelectionEntrySymbol : SelectionEntryBaseSymbol, ISelectionEntryS
 
     public override SelectionEntryNode Declaration { get; }
 
-    public override ContainerKind ContainerKind => ContainerKind.Category;
+    public override ContainerKind ContainerKind => ContainerKind.Selection;
 
     public SelectionEntryKind EntryKind => Declaration.Type;
 }

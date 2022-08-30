@@ -134,12 +134,12 @@ internal class Binder
         BindSimple<ICategoryEntrySymbol, ErrorSymbols.ErrorCategoryEntrySymbol>(
             node, diagnostics, symbolId, LookupOptions.CategoryEntryOnly);
 
-    internal ISelectionEntrySymbol BindSelectionEntryGroupDefaultEntrySymbol(
+    internal ISelectionEntryContainerSymbol BindSelectionEntryGroupDefaultEntrySymbol(
         SelectionEntryGroupNode node,
         IEntrySymbol entryGroupSymbol,
         BindingDiagnosticBag diagnostics)
     {
-        return BindSimple<ISelectionEntrySymbol, ErrorSymbols.ErrorSelectionEntrySymbol>(
+        return BindSimple<ISelectionEntryContainerSymbol, ErrorSymbols.ErrorSelectionEntrySymbol>(
             node, diagnostics, node.DefaultSelectionEntryId, LookupOptions.SelectionEntryOnly, entryGroupSymbol);
     }
 
