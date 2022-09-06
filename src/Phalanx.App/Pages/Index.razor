@@ -1,4 +1,6 @@
 ﻿@page "/"
+@using System.Net
+@using System.Text.Json
 
 <Phalanx.App.Pages.Home.WelcomeView></Phalanx.App.Pages.Home.WelcomeView>
 
@@ -6,3 +8,32 @@
     <FluentAnchor Appearance="Appearance.Accent" Href="/rosteredit">Edit sample roster</FluentAnchor>
     <FluentAnchor Appearance="Appearance.Accent" Href="/print">Format roster</FluentAnchor>
 </div>
+
+@code {
+    static readonly HttpClient client = new HttpClient();
+    public JsonElement repos;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        LoadDataIndex();
+    }
+
+    async void LoadDataIndex()
+    {
+    // Call asynchronous network methods in a try/catch block to handle exceptions.
+        try	
+        {
+            string responseBody = await client.GetStringAsync("https://phalanx-cors.bsdata.workers.dev/?https://github.com/BSData/gallery/releases/latest/download/bsdata.catpkg-gallery.json");
+            repos = JsonDocument.Parse(responseBody).RootElement.GetProperty("repositories");
+            Console.WriteLine(repos);
+
+        }
+        catch(HttpRequestException e)
+        {
+            Console.WriteLine("\nException Caught!");	
+            Console.WriteLine("Message :{0} ",e.Message);
+        }
+    }
+
+}
