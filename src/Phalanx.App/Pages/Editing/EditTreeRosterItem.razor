@@ -66,8 +66,8 @@
         </FluentTreeView>
 
         <FluentButton Appearance="Appearance.Accent" @onclick="ToggleAdd">Add Units</FluentButton>
-        <FluentButton Appearance="Appearance.Accent" @onclick='DownloadRoster'>Download .ros</FluentButton>
-        <FluentButton Appearance="Appearance.Accent" @onclick='DownloadRosterZ'>Download .rosz</FluentButton>
+        <FluentButton Appearance="Appearance.Accent" Disabled="this.Roster == null" @onclick='DownloadRoster'>Download .ros</FluentButton>
+        <FluentButton Appearance="Appearance.Accent" Disabled="this.Roster == null" @onclick='DownloadRosterZ'>Download .rosz</FluentButton>
     }
     else
     {
@@ -89,31 +89,38 @@
     }
 
     private async void DownloadRoster() {
-        var stringWriter = new StringWriter();
-        this.Roster.Serialize( stringWriter );
-        var bytes = System.Text.Encoding.UTF8.GetBytes(stringWriter.ToString());
+        if(this.Roster != null) {
+            var stringWriter = new StringWriter();
+            this.Roster.Serialize( stringWriter );
+            var bytes = System.Text.Encoding.UTF8.GetBytes(stringWriter.ToString());
 
-        await JS.InvokeAsync<object>(
-            "saveAsFile",
-            "roster.ros",
-            Convert.ToBase64String( bytes )
-             );
+            await JS.InvokeAsync<object>(
+                "saveAsFile",
+                "roster.ros",
+                Convert.ToBase64String( bytes )
+                 );
+        }
     }
 
     private async Task DownloadRosterZ() {
-        MemoryStream zipStream = new MemoryStream();
-        using (var zipArchive = new ZipArchive( zipStream, ZipArchiveMode.Create )) {
-            ZipArchiveEntry entry = zipArchive.CreateEntry( "roster.ros" );
-            using (StreamWriter writer = new StreamWriter( entry.Open() )) {
-                this.Roster.Serialize( writer );
+        if (this.Roster != null)
+        {
+            MemoryStream zipStream = new MemoryStream();
+            using (var zipArchive = new ZipArchive(zipStream, ZipArchiveMode.Create))
+            {
+                ZipArchiveEntry entry = zipArchive.CreateEntry("roster.ros");
+                using (StreamWriter writer = new StreamWriter(entry.Open()))
+                {
+                    this.Roster.Serialize(writer);
+                }
             }
-        }
 
-        await JS.InvokeAsync<object>(
-            "saveAsFile",
-            "roster.rosz",
-            Convert.ToBase64String( zipStream.ToArray() )
-                );
+            await JS.InvokeAsync<object>(
+                "saveAsFile",
+                "roster.rosz",
+                Convert.ToBase64String(zipStream.ToArray())
+                    );
+        }
     }
 
 
