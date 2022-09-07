@@ -3,11 +3,16 @@
 @inject GalleryHttpClient client
 @inject GalleryBrowserState state
 
-@if (CatpkgGallery is { InfoCache: { } galleryInfo })
+@if (CatpkgGallery is { InfoCache: { } galleryInfo } && _repositories is not null)
 {
     <h2>System:</h2>
-    <FluentSelect TValue="CatpkgRepositoryInfo" Items="repositories"></FluentSelect>
-    <FluentCheckbox @bind-Value="showArchived">
+    <FluentSelect @bind-Value="_selectedRepoName">
+        @foreach (var repo in _repositories)
+        {
+            <FluentOption Value="repo.Name">@repo.Name</FluentOption>
+        }
+    </FluentSelect>
+    <FluentCheckbox @bind-Value="_showArchived">
         Show Archived Repositories
     </FluentCheckbox>
 }
@@ -25,19 +30,21 @@ else
     [Parameter]
     public EventCallback<CatpkgGalleryCache> CatpkgGalleryChanged { get; set; }
 
-    bool showArchived;
+    string _selectedRepoName = "";
+
+    bool _showArchived;
 
     bool ShowArchived
     {
-        get => showArchived;
+        get => _showArchived;
         set
         {
-            showArchived = value;
+            _showArchived = value;
             UpdateRepositories();
         }
     }
 
-    List<CatpkgRepositoryInfo>? repositories;
+    List<CatpkgRepositoryInfo>? _repositories;
 
     List<ColumnDefinition<CatpkgRepositoryInfo>> ColumnDefinitions { get; } = new()
     {
@@ -49,11 +56,11 @@ else
 
     void UpdateRepositories()
     {
-        repositories = CatpkgGallery?.InfoCache?.Repositories
-            ?.Where(x => x.Archived is true ? ShowArchived : true)
+        _repositories = CatpkgGallery?.InfoCache?.Repositories
+            ?.Where(x => x.Archived is not true || ShowArchived)
             .OrderBy(x => x.Description)
             .ToList()
-                       ?? new();
+                        ?? new();
     }
 
     protected async override Task OnParametersSetAsync()
