@@ -39,9 +39,7 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Console.WriteLine("test");
-        Console.WriteLine(options.Value.DefaultGalleries);
-            
+
     // add if not already existing
         foreach (var galleryRefDto in options.Value.DefaultGalleries)
         {
@@ -52,7 +50,6 @@
             }
         }
         selectedGalleryName = options.Value.DefaultGalleries.FirstOrDefault()?.Name ?? "";
-        Console.WriteLine(state);
     }
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
