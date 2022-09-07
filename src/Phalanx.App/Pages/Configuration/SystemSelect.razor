@@ -1,0 +1,70 @@
+@using Microsoft.Extensions.Options
+@using WarHub.ArmoryModel.DataProviders
+@inject GalleryHttpClient client
+@inject GalleryBrowserState state
+
+@if (CatpkgGallery is { InfoCache: { } galleryInfo })
+{
+    <h2>System:</h2>
+    <FluentSelect TValue="CatpkgRepositoryInfo" Items="repositories"></FluentSelect>
+    <FluentCheckbox @bind-Value="showArchived">
+        Show Archived Repositories
+    </FluentCheckbox>
+}
+else
+{
+    <FluentProgressRing/>
+    <p>Loading catpkg gallery...</p>
+}
+
+@code {
+
+    [Parameter]
+    public CatpkgGalleryCache? CatpkgGallery { get; set; }
+
+    [Parameter]
+    public EventCallback<CatpkgGalleryCache> CatpkgGalleryChanged { get; set; }
+
+    bool showArchived;
+
+    bool ShowArchived
+    {
+        get => showArchived;
+        set
+        {
+            showArchived = value;
+            UpdateRepositories();
+        }
+    }
+
+    List<CatpkgRepositoryInfo>? repositories;
+
+    List<ColumnDefinition<CatpkgRepositoryInfo>> ColumnDefinitions { get; } = new()
+    {
+#nullable disable
+        new("Name", x => x.Description),
+        new("Latest Release", x => x.Version),
+#nullable restore
+    };
+
+    void UpdateRepositories()
+    {
+        repositories = CatpkgGallery?.InfoCache?.Repositories
+            ?.Where(x => x.Archived is true ? ShowArchived : true)
+            .OrderBy(x => x.Description)
+            .ToList()
+                       ?? new();
+    }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        if (CatpkgGallery is { Reference: { } galleryRef, InfoCache: null })
+        {
+            var result = await state.Cache.GetHydratedCatpkgGalleryCacheAsync(client, galleryRef);
+            await CatpkgGalleryChanged.InvokeAsync(result);
+        }
+        UpdateRepositories();
+    }
+
+}

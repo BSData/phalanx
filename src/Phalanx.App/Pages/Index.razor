@@ -1,6 +1,17 @@
 ﻿@page "/"
-@using System.Net
-@using System.Text.Json
+@using Microsoft.Extensions.Options
+@using WarHub.ArmoryModel.DataProviders
+@inject GalleryHttpClient httpClient
+@inject IOptions<GalleryBrowserOptions> options
+@inject GalleryBrowserState state
+
+<FluentSelect @bind-Value="selectedGalleryName">
+    @foreach (var galleryRef in state.Cache.GalleryReferences)
+    {
+        <FluentOption Value="galleryRef.Name">@galleryRef.Name</FluentOption>
+    }
+</FluentSelect>
+<Phalanx.App.Pages.Configuration.SystemSelect @bind-CatpkgGallery=SelectedGalleryCache></Phalanx.App.Pages.Configuration.SystemSelect>
 
 <Phalanx.App.Pages.Home.WelcomeView></Phalanx.App.Pages.Home.WelcomeView>
 
@@ -10,29 +21,46 @@
 </div>
 
 @code {
-    static readonly HttpClient client = new HttpClient();
-    public JsonElement repos;
+
+    private string selectedGalleryName = "";
+
+    private CatpkgGalleryCache? SelectedGalleryCache
+    {
+        get => state.Cache[selectedGalleryName];
+        set
+        {
+            if (value is not null)
+            {
+                state.Cache.Upsert(value);
+            }
+        }
+    }
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        LoadDataIndex();
+        Console.WriteLine("test");
+        Console.WriteLine(options.Value.DefaultGalleries);
+            
+    // add if not already existing
+        foreach (var galleryRefDto in options.Value.DefaultGalleries)
+        {
+            var galleryRef = galleryRefDto.ToRecord();
+            if (state.Cache[galleryRef] is null)
+            {
+                state.Cache.Upsert(new(galleryRef));
+            }
+        }
+        selectedGalleryName = options.Value.DefaultGalleries.FirstOrDefault()?.Name ?? "";
+        Console.WriteLine(state);
     }
 
-    async void LoadDataIndex()
+    protected async override Task OnAfterRenderAsync(bool firstRender)
     {
-    // Call asynchronous network methods in a try/catch block to handle exceptions.
-        try	
+        await base.OnAfterRenderAsync(firstRender);
+        foreach (var galleryRef in options.Value.DefaultGalleries)
         {
-            string responseBody = await client.GetStringAsync("https://phalanx-cors.bsdata.workers.dev/?https://github.com/BSData/gallery/releases/latest/download/bsdata.catpkg-gallery.json");
-            repos = JsonDocument.Parse(responseBody).RootElement.GetProperty("repositories");
-            Console.WriteLine(repos);
-
-        }
-        catch(HttpRequestException e)
-        {
-            Console.WriteLine("\nException Caught!");	
-            Console.WriteLine("Message :{0} ",e.Message);
+            var galleryInfo = await state.Cache.GetCatpkgGalleryInfoAsync(httpClient, galleryRef.ToRecord());
         }
     }
 
