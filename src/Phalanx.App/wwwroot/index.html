@@ -29,6 +29,17 @@
     <!-- turned off PWA for now to prevent cache issues - reenable when ready -->
     <!-- <script>navigator.serviceWorker.register('service-worker.js');</script> -->
     <script type="module" src="https://cdn.jsdelivr.net/npm/@fluentui/web-components@2.3.1/dist/web-components.min.js"></script>
+
+    <script type="text/javascript">
+        function saveAsFile(filename, bytesBase64) {
+            var link = document.createElement('a');
+            link.download = filename;
+            link.href = "data:application/octet-stream;base64," + bytesBase64;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
 </body>
 
 </html>
