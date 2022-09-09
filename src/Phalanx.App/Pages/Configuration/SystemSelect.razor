@@ -12,7 +12,7 @@
             <FluentOption Value="repo.Name">@repo.Name</FluentOption>
         }
     </FluentSelect>
-    <FluentCheckbox @bind-Value="_showArchived">
+    <FluentCheckbox @bind-Value="ShowArchived">
         Show Archived Repositories
     </FluentCheckbox>
 }
@@ -40,6 +40,7 @@ else
         set
         {
             _showArchived = value;
+            Console.WriteLine("Set_showArchive");
             UpdateRepositories();
         }
     }
@@ -56,11 +57,19 @@ else
 
     void UpdateRepositories()
     {
+        Console.WriteLine(ShowArchived);
         _repositories = CatpkgGallery?.InfoCache?.Repositories
-            ?.Where(x => x.Archived is not true || ShowArchived)
+            ?.Where(x => x.Archived != true || ShowArchived)
             .OrderBy(x => x.Description)
             .ToList()
                         ?? new();
+        // Clear value if we switch away from archived
+        if ((CatpkgGallery?.InfoCache?.Repositories
+            ?.Where(x => x.Description == _selectedRepoName)
+            .First()?.Archived ?? false) && !ShowArchived)
+        {
+            _selectedRepoName = "";
+        }
     }
 
     protected async override Task OnParametersSetAsync()
