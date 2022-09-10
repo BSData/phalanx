@@ -6,10 +6,13 @@
 @inject GalleryBrowserState state
 
 <FluentSelect @bind-Value="selectedGalleryName">
+    <FluentOption>Use Playground</FluentOption>
+
     @foreach (var galleryRef in state.Cache.GalleryReferences)
     {
         <FluentOption Value="galleryRef.Name">@galleryRef.Name</FluentOption>
     }
+
 </FluentSelect>
 <Phalanx.App.Pages.Configuration.SystemSelect @bind-CatpkgGallery=SelectedGalleryCache></Phalanx.App.Pages.Configuration.SystemSelect>
 
@@ -26,7 +29,8 @@
 
     private CatpkgGalleryCache? SelectedGalleryCache
     {
-        get => state.Cache[selectedGalleryName];
+        get => selectedGalleryName == "" ? new CatpkgGalleryCache(new GalleryReference("Phalanx Playground", new Uri("file://"))) :
+            state.Cache[selectedGalleryName];
         set
         {
             if (value is not null)
