@@ -24,11 +24,8 @@
 
     void RemoveSelf(SelectionNode node)
     {
-        @* var ops = new IRosterOperation[]{RosterOperations.RemoveSelection(node)}; *@
-        @* return OnRosterEdit.InvokeAsync(ops); *@
         Console.WriteLine("Remove Self called");
         Editor?.ApplyOperation(RosterOperations.RemoveSelection(node));
-
     }
 
 }

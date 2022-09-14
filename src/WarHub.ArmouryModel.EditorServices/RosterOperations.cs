@@ -10,7 +10,13 @@ public static class RosterOperations
     public static CreateRosterOperation CreateRoster() => new();
 
     public static ChangeCostLimitOperation ChangeCostLimit(CostLimitNode costLimit, decimal newValue) =>
-        new(costLimit, newValue);
+        new(costLimit.TypeId!, newValue);
+
+    public static ChangeCostLimitOperation ChangeCostLimit(string typeId, decimal newValue) =>
+        new(typeId, newValue);
+
+    public static ChangeRosterNameOperation ChangeRosterName(string name) =>
+        new(name);
 
     public static AddForceOperation AddForce(ForceEntryNode forceEntry) => new(forceEntry);
 
@@ -92,15 +98,37 @@ public record CreateRosterOperation : IRosterOperation
     }
 }
 
-public record ChangeCostLimitOperation(CostLimitNode CostLimit, decimal NewValue) : RosterOperationBase
+public record ChangeCostLimitOperation(string TypeId, decimal NewValue) : RosterOperationBase
 {
     protected override RosterOperationKind Kind => RosterOperationKind.ModifyCostLimits;
 
     protected override RosterNode TransformRoster(RosterState state)
     {
+
+        // TODO confirm TypeId is a valid Cost.TypeId
         var roster = state.RosterRequired;
-        return roster.Replace(roster.CostLimits.First(x => x.TypeId == CostLimit.TypeId), x => x.WithValue(NewValue));
+
+        if (roster.CostLimits.FirstOrDefault(x => x.TypeId == TypeId) is { } costLimit)
+        {
+            return roster.Replace(costLimit, x => x.WithValue(NewValue));
+
+        }
+        var costType = state.Gamesystem.CostTypes.First(type => type.Id == TypeId);
+        return roster.AddCostLimits(NodeFactory.CostLimit(costType));
     }
+}
+
+
+public record ChangeRosterNameOperation(String name) : RosterOperationBase
+{
+    protected override RosterOperationKind Kind => RosterOperationKind.RenameRoster;
+
+    protected override RosterNode TransformRoster(RosterState state)
+    {
+        var roster = state.RosterRequired;
+        return roster.WithName(name);
+    }
+
 }
 
 public record AddForceOperation(ForceEntryNode ForceEntry) : RosterOperationBase
@@ -158,7 +186,11 @@ public record AddSelectionFromLinkOp(SelectionEntryNode SelectionEntry, EntryLin
         var roster = state.RosterRequired;
         var selectionEntryId = SelectionEntry.Id;
         if (selectionEntryId is null)
+        {
+            Console.WriteLine("AddSelectionFromLinkOp: null selectionEntryId, no-op...");
             return roster; // TODO add diagnostic invalid data
+
+        }
         var selection =
             Selection(SelectionEntry, selectionEntryId)
             .AddCosts(entryLink.Costs);

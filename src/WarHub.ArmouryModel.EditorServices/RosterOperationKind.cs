@@ -15,4 +15,5 @@ public enum RosterOperationKind
     RemoveForce,
     ModifyCostLimits,
     ModifyTextField,
+    RenameRoster
 }

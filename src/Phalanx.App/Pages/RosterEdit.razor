@@ -5,6 +5,8 @@
 @using WarHub.ArmouryModel.EditorServices.Formatting
 @using WarHub.ArmouryModel.Source
 @using Phalanx.App.Pages.Editing
+@using WarHub.ArmouryModel.Concrete
+@using WarHub.ArmouryModel.Source
 
 @inject Phalanx.App.Pages.Printing.RosterFormatsProvider formatter
 
@@ -12,7 +14,7 @@
 {
     <TitlePart>@Roster.Name</TitlePart>
     <CascadingValue Value="@Editor">
-        <FluentTabs>
+        <FluentTabs OnTabCHange="HandleOnTabChange">
             <FluentTab>Edit</FluentTab>
             <FluentTabPanel>
                 @* TODO the editor should be injected rather than passed all over the place *@
@@ -20,17 +22,7 @@
             </FluentTabPanel>
             <FluentTab>Options</FluentTab>
             <FluentTabPanel>
-                <div>IOU - 1 functional page</div>
-                <br />
-                <div>Roster Name edit</div>
-                <br />
-                <div>Roster's Limits for costs and etc or whatever node decoration indicates that</div>
-                <br />
-                <div>Notes:</div>
-                <br />
-                <div>Edit Roster Forces Menu:</div>
-
-
+                <RosterOptions></RosterOptions>
             </FluentTabPanel>
             <FluentTab>Preview</FluentTab>
             <FluentTabPanel>
@@ -69,6 +61,7 @@ else
         //get roster from file
         var ws = SampleDataResources.CreateXmlWorkspace();
         var rosterState = RosterState.CreateFromNodes(ws.Documents.Select(x => x.GetRootAsync().Result!));
+
         Editor = new RosterEditor(rosterState);
         Editor.OperationApplied += (op, state) => StateHasChanged();
     }
