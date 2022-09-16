@@ -41,6 +41,34 @@ public class SimpleIntegrationTests
     }
 
     [Fact]
+    public void Compilation_connects_group_default_entry_id_to_entry_link()
+    {
+        // arrange
+        var gst = NodeFactory.Gamesystem("foo");
+        var cat = NodeFactory.Catalogue(gst, "bar")
+            .AddSharedSelectionEntries(
+                NodeFactory.SelectionEntry("entry").Tee(out var entry))
+            .AddSharedSelectionEntryGroups(
+                NodeFactory.SelectionEntryGroup("group").Tee(out var group)
+                .AddEntryLinks(
+                    NodeFactory.EntryLink(entry).Tee(out var entryLink))
+                .WithDefaultSelectionEntryId(entryLink.Id));
+        var compilation = WhamCompilation.Create();
+        // act
+        var result = compilation.AddSourceTrees(SourceTree.CreateForRoot(gst), SourceTree.CreateForRoot(cat));
+        // assert
+        result.GetDiagnostics().Should().BeEmpty();
+        var catalogue = result.GlobalNamespace.Catalogues.Single(x => !x.IsGamesystem);
+        var groupSymbol = catalogue.SharedSelectionEntryContainers.Single(x => x.ContainerKind is ContainerKind.SelectionGroup);
+        var groupChild = groupSymbol.ChildSelectionEntries.Single();
+        groupSymbol.Should().BeAssignableTo<ISelectionEntryGroupSymbol>()
+            .Which.DefaultSelectionEntry
+            .Should().BeSameAs(groupChild);
+        groupChild.ReferencedEntry
+            .Should().Be(catalogue.SharedSelectionEntryContainers.Single(x => x.ContainerKind is ContainerKind.Selection));
+    }
+
+    [Fact]
     public void Compilation_connects_characteristic_to_characteristic_type()
     {
         // arrange
@@ -64,7 +92,7 @@ public class SimpleIntegrationTests
         var catalogue = result.GlobalNamespace.Catalogues.Single(x => !x.IsGamesystem);
         var profile = catalogue.RootContainerEntries.Single()
             .Resources.OfType<IProfileSymbol>().Single();
-        var charTypeSymbol = catalogue.Gamesystem.ResourceDefinitions.OfType<IProfileTypeSymbol>().Single().CharacteristicTypes.Single();
+        var charTypeSymbol = catalogue.Gamesystem.ResourceDefinitions.Single(x => x.ResourceKind == ResourceKind.Profile).Definitions.Single();
         profile.Characteristics.Single().Type.Should().Be(charTypeSymbol);
     }
 

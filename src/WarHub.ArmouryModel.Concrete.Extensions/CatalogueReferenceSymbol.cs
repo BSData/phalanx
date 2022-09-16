@@ -22,6 +22,15 @@ internal class CatalogueReferenceSymbol : SourceDeclaredSymbol, ICatalogueRefere
 
     public override CatalogueLinkNode Declaration { get; }
 
+    public override void Accept(SymbolVisitor visitor) =>
+        visitor.VisitCatalogueReference(this);
+
+    public override TResult Accept<TResult>(SymbolVisitor<TResult> visitor) =>
+        visitor.VisitCatalogueReference(this);
+
+    public override TResult Accept<TArgument, TResult>(SymbolVisitor<TArgument, TResult> visitor, TArgument argument) =>
+        visitor.VisitCatalogueReference(this, argument);
+
     protected override void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)
     {
         base.BindReferencesCore(binder, diagnostics);

@@ -136,6 +136,15 @@ internal abstract class CatalogueBaseSymbol : SourceDeclaredSymbol, ICatalogueSy
     ImmutableArray<IResourceDefinitionSymbol> ICatalogueSymbol.ResourceDefinitions =>
         ResourceDefinitions.Cast<ResourceDefinitionBaseSymbol, IResourceDefinitionSymbol>();
 
+    public override void Accept(SymbolVisitor visitor) =>
+        visitor.VisitCatalogue(this);
+
+    public override TResult Accept<TResult>(SymbolVisitor<TResult> visitor) =>
+        visitor.VisitCatalogue(this);
+
+    public override TResult Accept<TArgument, TResult>(SymbolVisitor<TArgument, TResult> visitor, TArgument argument) =>
+        visitor.VisitCatalogue(this, argument);
+
     protected sealed override ImmutableArray<Symbol> MakeAllMembers(BindingDiagnosticBag diagnostics) =>
         base.MakeAllMembers(diagnostics)
         .AddRange(CatalogueReferences)

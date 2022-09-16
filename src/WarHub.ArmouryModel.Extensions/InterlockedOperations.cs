@@ -40,7 +40,7 @@ internal static class InterlockedOperations
     public static T Initialize<T>(ref T target, T initializedValue, T uninitializedValue) where T : class?
     {
         Debug.Assert(!ReferenceEquals(initializedValue, uninitializedValue));
-        T oldValue = Interlocked.CompareExchange(ref target, initializedValue, uninitializedValue);
+        var oldValue = Interlocked.CompareExchange(ref target, initializedValue, uninitializedValue);
         return ReferenceEquals(oldValue, uninitializedValue) ? initializedValue : oldValue;
     }
 

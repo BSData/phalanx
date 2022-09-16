@@ -103,4 +103,10 @@ internal abstract class Symbol : ISymbol
     }
 
     internal virtual ImmutableArray<ISymbol> GetMembers() => ImmutableArray<ISymbol>.Empty;
+
+    public abstract void Accept(SymbolVisitor visitor);
+
+    public abstract TResult Accept<TResult>(SymbolVisitor<TResult> visitor);
+
+    public abstract TResult Accept<TArgument, TResult>(SymbolVisitor<TArgument, TResult> visitor, TArgument argument);
 }

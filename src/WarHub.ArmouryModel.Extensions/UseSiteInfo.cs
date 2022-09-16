@@ -103,8 +103,8 @@ internal struct CompoundUseSiteInfo<TModuleSymbol> where TModuleSymbol : class, 
     private HashSet<TModuleSymbol>? _dependencies;
     private readonly TModuleSymbol? _assemblyBeingBuilt;
 
-    public static CompoundUseSiteInfo<TModuleSymbol> Discarded => new CompoundUseSiteInfo<TModuleSymbol>(DiscardLevel.DiagnosticsAndDependencies);
-    public static CompoundUseSiteInfo<TModuleSymbol> DiscardedDependencies => new CompoundUseSiteInfo<TModuleSymbol>(DiscardLevel.Dependencies);
+    public static CompoundUseSiteInfo<TModuleSymbol> Discarded => new(DiscardLevel.DiagnosticsAndDependencies);
+    public static CompoundUseSiteInfo<TModuleSymbol> DiscardedDependencies => new(DiscardLevel.Dependencies);
 
     private enum DiscardLevel : byte
     {
@@ -401,7 +401,7 @@ internal struct CompoundUseSiteInfo<TModuleSymbol> where TModuleSymbol : class, 
             {
                 self = other;
             }
-            else if (other is object)
+            else if (other is not null)
             {
                 self.AddAll(other);
             }
@@ -438,9 +438,9 @@ internal struct CachedUseSiteInfo<TModuleSymbol> where TModuleSymbol : class, IM
     /// </summary>
     private object? _info;
 
-    private static readonly object Sentinel = new object(); // Indicates unknown state.
+    private static readonly object Sentinel = new(); // Indicates unknown state.
 
-    public static readonly CachedUseSiteInfo<TModuleSymbol> Uninitialized = new CachedUseSiteInfo<TModuleSymbol>(Sentinel); // Indicates unknown state.
+    public static readonly CachedUseSiteInfo<TModuleSymbol> Uninitialized = new(Sentinel); // Indicates unknown state.
 
     private CachedUseSiteInfo(object info)
     {
@@ -514,15 +514,15 @@ internal struct CachedUseSiteInfo<TModuleSymbol> where TModuleSymbol : class, IM
     {
         if ((object?)_info == Sentinel)
         {
-            object? info = Compact(value.DiagnosticInfo, GetDependenciesToCache(primaryDependency, value));
+            var info = Compact(value.DiagnosticInfo, GetDependenciesToCache(primaryDependency, value));
             Interlocked.CompareExchange(ref _info, info, Sentinel);
         }
     }
 
     public UseSiteInfo<TModuleSymbol> InterlockedInitialize(TModuleSymbol? primaryDependency, UseSiteInfo<TModuleSymbol> value)
     {
-        object? info = Compact(value.DiagnosticInfo, GetDependenciesToCache(primaryDependency, value));
-        Debug.Assert(info is object);
+        var info = Compact(value.DiagnosticInfo, GetDependenciesToCache(primaryDependency, value));
+        Debug.Assert(info is not null);
 
         info = Interlocked.CompareExchange(ref _info, info, null);
         if (info == null)

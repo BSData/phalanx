@@ -2,7 +2,7 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class CategorySymbol : RosterEntryBasedSymbol, ICategorySymbol, INodeDeclaredSymbol<CategoryNode>
+internal class CategorySymbol : ContainerSymbol, ICategorySymbol, INodeDeclaredSymbol<CategoryNode>
 {
     private ICategoryEntrySymbol? lazyCategoryEntry;
 
@@ -13,23 +13,19 @@ internal class CategorySymbol : RosterEntryBasedSymbol, ICategorySymbol, INodeDe
         : base(containingSymbol, declaration, diagnostics)
     {
         Declaration = declaration;
-        Resources = CreateRosterEntryResources(diagnostics).ToImmutableArray();
     }
 
-    public override CategoryNode Declaration { get; }
+    public new CategoryNode Declaration { get; }
 
     public override ICategoryEntrySymbol SourceEntry => GetBoundField(ref lazyCategoryEntry);
 
-    public override ImmutableArray<ResourceEntryBaseSymbol> Resources { get; }
-
-    public override SymbolKind Kind => SymbolKind.Category;
+    public override ContainerKind ContainerKind => ContainerKind.Category;
 
     public bool IsPrimaryCategory => Declaration.Primary;
 
     protected override void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)
     {
         base.BindReferencesCore(binder, diagnostics);
-        // TODO handle the special `(No Category)` here, or in binder?
         lazyCategoryEntry = binder.BindCategoryEntrySymbol(Declaration, diagnostics);
     }
 }

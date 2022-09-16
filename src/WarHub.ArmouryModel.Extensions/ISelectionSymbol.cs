@@ -7,12 +7,12 @@ namespace WarHub.ArmouryModel;
 /// BS Selection.
 /// WHAM <see cref="Source.SelectionNode" />.
 /// </summary>
-public interface ISelectionSymbol : IRosterSelectionTreeElementSymbol
+public interface ISelectionSymbol : ISelectionContainerSymbol
 {
     /// <summary>
     /// Selection count (number of times that selection is "taken").
     /// </summary>
-    int Count { get; }
+    int SelectedCount { get; }
 
     SelectionEntryKind EntryKind { get; }
 
@@ -23,9 +23,8 @@ public interface ISelectionSymbol : IRosterSelectionTreeElementSymbol
     ImmutableArray<ICategorySymbol> Categories { get; }
 
     /// <summary>
-    /// Costs for this selection (with <see cref="Count"/> taken into account).
-    /// Doesn't include costs of <see cref="IRosterSelectionTreeElementSymbol.ChildSelections"/>.
-    /// These are extracted from <see cref="IRosterEntrySymbol.Resources"/>.
+    /// Costs for this selection (with <see cref="SelectedCount"/> taken into account).
+    /// Doesn't include costs of <see cref="ISelectionContainerSymbol.Selections"/>.
     /// </summary>
     ImmutableArray<ICostSymbol> Costs { get; }
 }

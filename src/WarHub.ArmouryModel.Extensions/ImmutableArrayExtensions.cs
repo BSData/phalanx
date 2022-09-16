@@ -337,6 +337,11 @@ internal static class ImmutableArrayExtensions
         return first.Add(second);
     }
 
+    internal static ImmutableArray<T> AddWhenNotNull<T>(this ImmutableArray<T> first, T? second) where T : class
+    {
+        return second is null ? first : first.Add(second);
+    }
+
     internal static bool HasDuplicates<T>(this ImmutableArray<T> array, IEqualityComparer<T> comparer)
     {
         switch (array.Length)

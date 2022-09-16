@@ -40,7 +40,7 @@ internal class PublicationReferenceSymbol : SourceDeclaredSymbol, IPublicationRe
 
     public IPublicationReferencingNode PublicationRefDeclaration { get; }
 
-    public override SymbolKind Kind => SymbolKind.Link;
+    public sealed override SymbolKind Kind => SymbolKind.Link;
 
     public override string? Id => null;
 
@@ -51,6 +51,15 @@ internal class PublicationReferenceSymbol : SourceDeclaredSymbol, IPublicationRe
     public IPublicationSymbol Publication => GetBoundField(ref lazyPublication);
 
     public string Page => PublicationRefDeclaration.Page ?? string.Empty;
+
+    public sealed override void Accept(SymbolVisitor visitor) =>
+        visitor.VisitPublicationReference(this);
+
+    public sealed override TResult Accept<TResult>(SymbolVisitor<TResult> visitor) =>
+        visitor.VisitPublicationReference(this);
+
+    public sealed override TResult Accept<TArgument, TResult>(SymbolVisitor<TArgument, TResult> visitor, TArgument argument) =>
+        visitor.VisitPublicationReference(this, argument);
 
     protected override void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)
     {

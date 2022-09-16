@@ -1,7 +1,9 @@
+using System.Text.Json;
 using Phalanx.SampleDataset;
 using WarHub.ArmouryModel;
 using WarHub.ArmouryModel.EditorServices;
 using WarHub.ArmouryModel.Source;
+using WarHub.ArmouryModel.Source.BattleScribe;
 using static WarHub.ArmouryModel.Source.NodeFactory;
 
 namespace Phalanx.PlaygroundTool;
@@ -77,6 +79,20 @@ class Program
         // add selection to marine force
         ChangeAndPrint("Selection added to Marine force:",
             change: x => RosterOperations.AddSelection(x.Catalogues[0].SelectionEntries[1], x.Roster.Forces[1]));
+        // print the roster XML
+        var rosterToPrint = rosterEditor.State.RosterRequired;
+        using (var stringWriter = new StringWriter())
+        {
+            rosterToPrint.Serialize(stringWriter);
+            Console.WriteLine(">>> XML roster:");
+            Console.WriteLine(stringWriter.ToString());
+            Console.WriteLine(">>> JSON roster:");
+            Console.WriteLine(JsonSerializer.Serialize(rosterToPrint.Core, new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault,
+            }));
+        }
         // remove marine force
         ChangeAndPrint("System force removed:",
             change: x => RosterOperations.RemoveForce(x.Roster.Forces[0]));

@@ -13,7 +13,7 @@ internal class CategoryEntrySymbol : ContainerEntryBaseSymbol, ICategoryEntrySym
         Declaration = declaration;
     }
 
-    public override ContainerEntryKind ContainerKind => ContainerEntryKind.Category;
+    public override ContainerKind ContainerKind => ContainerKind.Category;
 
     public bool IsPrimaryCategory => false;
 

@@ -10,10 +10,19 @@ internal abstract class ContainerEntryBaseSymbol : EntrySymbol, IContainerEntryS
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration, diagnostics)
     {
-        Constraints = ImmutableArray<IConstraintSymbol>.Empty; // TODO map
+        Constraints = CreateConstraints().ToImmutableArray();
+        Costs = CreateCosts().ToImmutableArray();
         Resources = CreateResourceEntries().ToImmutableArray();
 
-        IEnumerable<ResourceEntryBaseSymbol> CreateResourceEntries()
+        IEnumerable<ConstraintSymbol> CreateConstraints()
+        {
+            foreach (var item in declaration.Constraints)
+            {
+                yield return new ConstraintSymbol(this, item, diagnostics);
+            }
+        }
+
+        IEnumerable<CostSymbol> CreateCosts()
         {
             var costs = declaration switch
             {
@@ -24,6 +33,14 @@ internal abstract class ContainerEntryBaseSymbol : EntrySymbol, IContainerEntryS
             foreach (var item in costs)
             {
                 yield return CreateEntry(this, item, diagnostics);
+            }
+        }
+
+        IEnumerable<ResourceEntryBaseSymbol> CreateResourceEntries()
+        {
+            foreach (var item in Costs)
+            {
+                yield return item;
             }
             foreach (var item in declaration.InfoGroups)
             {
@@ -46,17 +63,30 @@ internal abstract class ContainerEntryBaseSymbol : EntrySymbol, IContainerEntryS
 
     public sealed override SymbolKind Kind => SymbolKind.ContainerEntry;
 
-    public abstract ContainerEntryKind ContainerKind { get; }
+    public abstract ContainerKind ContainerKind { get; }
 
-    public ImmutableArray<IConstraintSymbol> Constraints { get; }
+    public ImmutableArray<ConstraintSymbol> Constraints { get; }
 
-    public ImmutableArray<ResourceEntryBaseSymbol> Resources { get; }
+    public sealed override ImmutableArray<ResourceEntryBaseSymbol> Resources { get; }
 
-    ImmutableArray<IResourceEntrySymbol> IContainerEntrySymbol.Resources =>
-        Resources.Cast<ResourceEntryBaseSymbol, IResourceEntrySymbol>();
+    public ImmutableArray<CostSymbol> Costs { get; }
+
+    ImmutableArray<IConstraintSymbol> IContainerEntrySymbol.Constraints =>
+        Constraints.Cast<ConstraintSymbol, IConstraintSymbol>();
+
+    ImmutableArray<ICostSymbol> IContainerEntrySymbol.Costs =>
+        Costs.Cast<CostSymbol, ICostSymbol>();
+
+    public override void Accept(SymbolVisitor visitor) =>
+        visitor.VisitContainerEntry(this);
+
+    public override TResult Accept<TResult>(SymbolVisitor<TResult> visitor) =>
+        visitor.VisitContainerEntry(this);
+
+    public override TResult Accept<TArgument, TResult>(SymbolVisitor<TArgument, TResult> visitor, TArgument argument) =>
+        visitor.VisitContainerEntry(this, argument);
 
     protected override ImmutableArray<Symbol> MakeAllMembers(BindingDiagnosticBag diagnostics) =>
         base.MakeAllMembers(diagnostics)
-        // TODO .AddRange(Constraints)
-        .AddRange(Resources);
+        .AddRange(Constraints);
 }

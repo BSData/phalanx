@@ -12,7 +12,13 @@ internal class GamesystemNamespaceBinder : Binder
 
     public SourceGlobalNamespaceSymbol NamespaceSymbol { get; }
 
-    internal override void LookupSymbolsInSingleBinder(LookupResult result, string symbolId, LookupOptions options, Binder originalBinder, bool diagnose)
+    internal override void LookupSymbolsInSingleBinder(
+        LookupResult result,
+        string symbolId,
+        LookupOptions options,
+        Binder originalBinder,
+        bool diagnose,
+        ISymbol? qualifier)
     {
         if (options.CanConsiderCatalogues())
         {

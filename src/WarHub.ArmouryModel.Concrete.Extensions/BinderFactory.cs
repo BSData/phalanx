@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
@@ -40,7 +39,9 @@ internal class BinderFactory
 
         public override Binder DefaultVisit(SourceNode node)
         {
-            return VisitCore(node.Parent);
+            // no support for detached nodes (e.g. withoug root like roster or catalogue node)
+            // can we add such support?
+            return node.Parent is { } parent ? VisitCore(parent) : Compilation.GlobalNamespaceBinder;
         }
 
         public override Binder Visit(SourceNode? node)
@@ -51,73 +52,81 @@ internal class BinderFactory
         private Binder VisitCore(SourceNode? node)
         {
             // binding a null node is unexpected, can throw
-            return node!.Accept(this);
+            return node!.Accept(this)!;
         }
 
         public override Binder VisitRoster(RosterNode node)
         {
-            var next = Compilation.GlobalNamespaceBinder;
+            var next = DefaultVisit(node);
             return new RosterBinder(next, GetRosterSymbol(node));
         }
 
         public override Binder VisitCatalogue(CatalogueNode node)
         {
-            var next = Compilation.GlobalNamespaceBinder;
+            var next = DefaultVisit(node);
             return new CatalogueBaseBinder(next, GetCatalogueSymbol(node));
         }
 
         public override Binder VisitGamesystem(GamesystemNode node)
         {
-            var next = Compilation.GlobalNamespaceBinder;
+            var next = DefaultVisit(node);
             return new CatalogueBaseBinder(next, GetCatalogueSymbol(node));
         }
 
         public override Binder VisitCharacteristic(CharacteristicNode node)
         {
             var next = DefaultVisit(node);
-            var profileSymbol = GetProfileSymbol(node.FirstAncestorOrSelf<ProfileNode>()!, next)
-                ?? throw new InvalidOperationException("Profile symbol required.");
-            return new CharacteristicBinder(next, profileSymbol);
-        }
-
-        private ProfileSymbol? GetProfileSymbol(ProfileNode node, Binder outerBinder)
-        {
-            if (containingSymbol is ProfileSymbol profileSymbol && profileSymbol.Declaration == node)
+            if (GetAncestorSymbol<ProfileSymbol>(node) is { } profile)
             {
-                return profileSymbol;
+                return new CharacteristicBinder(next, profile, profile.Type);
             }
-            var container = GetContainerEntry(outerBinder, node);
-            return container?.Resources.OfType<ProfileSymbol>().FirstOrDefault(x => x.Declaration == node);
-        }
-
-        // TODO group binder
-        // public override Binder VisitSelectionEntryGroup(SelectionEntryGroupNode node)
-        // {
-        //     var next = DefaultVisit(node);
-        //     return new SelectionGroupBinder(next, node);
-        // }
-
-        private static IContainerEntrySymbol? GetContainerEntry(Binder binder, SourceNode node)
-        {
-            if (binder.ContainingContainerSymbol is { } container)
+            if (GetAncestorSymbol<RosterProfileSymbol>(node) is { } rosterProfile)
             {
-                return container;
+                return new CharacteristicBinder(next, rosterProfile, rosterProfile.Type);
             }
-            _ = node.FirstAncestorOrSelf<ContainerEntryBaseNode>();
-            // TODO not sure what to do here
-            return null;
+            return next; // throw?
         }
 
-        private CatalogueBaseSymbol GetCatalogueSymbol(CatalogueBaseNode node)
+        public override Binder VisitForce(ForceNode node)
         {
-            return Compilation.SourceGlobalNamespace.Catalogues
-                .First(x => x.Declaration == node);
+            var next = DefaultVisit(node);
+            var symbol = GetAncestorSymbol<ForceSymbol>(node);
+            return symbol is null ? next : new ForceBinder(next, symbol);
         }
 
-        private RosterSymbol GetRosterSymbol(RosterNode node)
+        public override Binder VisitSelection(SelectionNode node)
         {
-            return Compilation.SourceGlobalNamespace.Rosters
-                .First(x => x.Declaration == node);
+            var next = DefaultVisit(node);
+            var symbol = GetAncestorSymbol<SelectionSymbol>(node);
+            return symbol is null ? next : new SelectionBinder(next, symbol);
+        }
+
+        private CatalogueBaseSymbol GetCatalogueSymbol(CatalogueBaseNode node) =>
+            GetAncestorModule<CatalogueBaseSymbol>(node);
+
+        private RosterSymbol GetRosterSymbol(RosterNode node) =>
+            GetAncestorModule<RosterSymbol>(node);
+
+        private T? GetAncestorSymbol<T>(SourceNode node) where T : Symbol
+        {
+            return _(containingSymbol);
+
+            static T? _(ISymbol? symbol) => (symbol as T ?? symbol?.ContainingSymbol as T) is { } ancestor
+                ? ancestor
+                : symbol?.ContainingSymbol is { } parent
+                ? _(parent)
+                : null;
+        }
+
+        private T GetAncestorModule<T>(SourceNode node) where T : Symbol
+        {
+            if ((containingSymbol as T ?? containingSymbol?.ContainingModule as T) is { } module)
+            {
+                return module;
+            }
+            return Compilation.SourceGlobalNamespace.AllRootSymbols
+                .OfType<T>()
+                .First(x => (x as SourceDeclaredSymbol)?.Declaration == node);
         }
     }
 }

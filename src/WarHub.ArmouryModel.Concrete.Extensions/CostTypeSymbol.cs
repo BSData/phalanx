@@ -2,7 +2,12 @@ using WarHub.ArmouryModel.Source;
 
 namespace WarHub.ArmouryModel.Concrete;
 
-internal class CostTypeSymbol : ResourceDefinitionBaseSymbol, ICostTypeSymbol, INodeDeclaredSymbol<CostTypeNode>
+/// <summary>
+/// Defines cost type.
+/// BS CostType.
+/// WHAM <see cref="CostTypeNode" />.
+/// </summary>
+internal class CostTypeSymbol : ResourceDefinitionBaseSymbol, INodeDeclaredSymbol<CostTypeNode>
 {
     public CostTypeSymbol(
         ICatalogueSymbol containingSymbol,
