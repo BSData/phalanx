@@ -23,7 +23,7 @@ public static class RosterOperations
     public static AddSelectionOperation AddSelection(SelectionEntryNode selectionEntry, ForceNode force) =>
         new(selectionEntry, force);
 
-    public static AddSelectionFromLinkOp AddSelectionFromLink(SelectionEntryNode selectionEntry, EntryLinkNode link, ForceNode force) =>
+    public static AddSelectionFromLinkOp AddSelectionFromLink(SelectionEntryNode selectionEntry, EntryLinkNode link, string force) =>
         new(selectionEntry, link, force);
     public static RemoveForceOperation RemoveForce(ForceNode force) => new(force);
 
@@ -111,7 +111,6 @@ public record ChangeCostLimitOperation(string TypeId, decimal NewValue) : Roster
         if (roster.CostLimits.FirstOrDefault(x => x.TypeId == TypeId) is { } costLimit)
         {
             return roster.Replace(costLimit, x => x.WithValue(NewValue));
-
         }
         var costType = state.Gamesystem.CostTypes.First(type => type.Id == TypeId);
         return roster.AddCostLimits(NodeFactory.CostLimit(costType));
@@ -177,7 +176,7 @@ public record AddSelectionOperation(SelectionEntryNode SelectionEntry, ForceNode
     }
 }
 
-public record AddSelectionFromLinkOp(SelectionEntryNode SelectionEntry, EntryLinkNode entryLink, ForceNode Force) : RosterOperationBase
+public record AddSelectionFromLinkOp(SelectionEntryNode SelectionEntry, EntryLinkNode entryLink, string ForceId) : RosterOperationBase
 {
     protected override RosterOperationKind Kind => RosterOperationKind.AddSelection;
 
@@ -191,12 +190,40 @@ public record AddSelectionFromLinkOp(SelectionEntryNode SelectionEntry, EntryLin
             return roster; // TODO add diagnostic invalid data
 
         }
+
+
+        // var categories = entryLink.CategoryLinks.Select(cLink => Force.Categories.FirstOrDefault( cat => cat.Id == cLink.TargetId));
+
+        // foreach(var cat in entryLink.CategoryLinks){
+        //     Console.WriteLine("clinkId  = " +cat.TargetId);
+        // }
+        // foreach(var cat in Force.Categories){
+        //     Console.WriteLine("catId  = " +cat.Id);
+        // }
+
+        // NodeList<CategoryNode> catNodes = new NodeList<CategoryNode>();
+
+        // foreach(var cat in categories){
+        //     if(cat is not null){
+        //         catNodes.Add(cat);
+        //     }
+        // }
+
         var selection =
             Selection(SelectionEntry, selectionEntryId)
             .AddCosts(entryLink.Costs);
+            // .WithCategories(CategoryList( catNodes));
         // TODO add selection categories, rules, profiles
         // TODO add subselections
-        return roster.Replace(Force, x => x.AddSelections(selection));
+
+        // Use ID because the ForceNode object becomes invalid after other operations,
+        // such as a prior selectionAdd
+        var Force = state.Roster.Forces.FirstOrDefault(f => f.Id == ForceId);
+
+        if(Force != null)
+           return roster.Replace(Force, x => x.AddSelections(selection));
+        else 
+            return roster;
     }
 }
 

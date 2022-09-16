@@ -1,79 +1,73 @@
 @using WarHub.ArmouryModel.EditorServices
 @using WarHub.ArmouryModel.Source
-@using WarHub.ArmouryModel.Concrete;
+@using WarHub.ArmouryModel.Concrete
+@using WarHub.ArmouryModel
 
 @if (Editor is { State: { Roster: { } Roster, Catalogues: { } Catalogues } })
 {
+    @* TODO this render fires every time an add count gets modified 
+        fine for testing for now, but that probably gets expensive with bigger gamesystems *@
     <TitlePart>Add Units</TitlePart>
+
     @* TODO add a toggle button here for a Cat view (current) or a flat abc view of all entries*@
 
-    @* TODO - this is probably unnecessary with better cat management *@
-    AddEntries = new Dictionary<string, EntryLinkNode>();
-
     <FluentTreeView>
-        @* TODO this iteration scheme is probably incomplete *@
-        @foreach (var force in Roster.Forces)
+
+       @foreach (var force in Roster.Forces)
         {
-            @* // TODO need to get the entrylinks and entries, filter, and add those instead
-                // of copies of the current roster selections *@
-
-            var catalogues = Editor.State.Compilation.GlobalNamespace.Catalogues.Where(x => !x.IsGamesystem);
-
-            foreach(var catalogue in catalogues)
-            {
-                if(catalogue != null)
-                {
-                    @* Console.WriteLine("Getting catalogue via symbol! " + catalogue.Name); *@
-                    @* foreach(var entry in catalogue.RootResourceEntries) *@
-
-                    foreach(var entry in catalogue.SharedSelectionEntryContainers)
-                    {
-                        Console.WriteLine("Entry: " +entry.Name);
-                        
-                        if (!AddCounts.ContainsKey(entry.Id))
-                        {
-                            AddCounts[entry.Id] = 0;
-                        }
-
-                        @* AddEntries[entry.Id] = entry;
-                        AddCats[entry.Id] = catalogue;
-
-                        <FluentTreeItem Expanded="true">
-                            <input style="width:70px" type="number" @bind="AddCounts[item.Id]"/>
-
-                            <span>@item.Name</span>
-
-                            <CostDisplay Values="item.Costs" />
-                        </FluentTreeItem> *@
-                        
-                    }
-                }
-            }
             var catalog = Catalogues.FirstOrDefault(x => x.Id == force.CatalogueId);
 
             if (catalog != null)
             {
-                @* TODO this iteration scheme is probably incomplete *@
+
+                @* TODO this iteration scheme is probably incomplete  *@
                 foreach (var entryLink in catalog.EntryLinks)
                 {
                     if (entryLink.Id == null) // make the IDE happy
                         break;
 
-                    if (!AddCounts.ContainsKey(entryLink.Id))
-                    {
-                        AddCounts[entryLink.Id] = 0;
-                    }
-
-                    AddEntries[entryLink.Id] = entryLink;
-                    AddCats[entryLink.Id] = catalog;
-
                     <FluentTreeItem Expanded="true">
-                        <FluentNumberField TValue="int" @bind-Value="AddCounts[entryLink.Id]" Min="0" Size="2" /> 
+                        <FluentNumberField TValue="int" @bind-Value="RosterAddItems[entryLink.Id].Count" Min="0" Size="2" /> 
                         <span>@entryLink.Name</span>
                         <CostDisplay Values="entryLink.Costs" />
                     </FluentTreeItem>
                 }
-            }
+            } 
+
+            // TODO TODO WIP code for using Symbols to pull in adds - currently blocked by not knowing how to
+            // get the numeric values for Costs/Resources
+            @* // TODO need to get the entrylinks and entries, filter, and add those instead
+                // of copies of the current roster selections *@
+
+            @* var catalogues = Editor.State.Compilation.GlobalNamespace.Catalogues.Where(x => !x.IsGamesystem);
+
+            // Render by catalogue, then category within catalog
+            foreach(var catalogue in catalogues)
+            {
+                if(catalogue != null)
+                {
+                    foreach(var entry in catalogue.RootContainerEntries)
+                    {
+                        if (entry.Id == null) // make the IDE happy
+                            break;
+
+                        Console.WriteLine("Entry: " +entry.Name);
+
+                        var costs = entry.Resources.Where(res => res.ResourceKind == ResourceKind.Cost); *@
+
+                        // TODO, it's close to using costs now, but I don't know how to get the Values for these Costs/Resources
+                        @* foreach(var cost in costs){
+                            Console.WriteLine("Cost: " + cost.Name);
+                        } *@
+
+                        @* <FluentTreeItem Expanded="true">
+                            <FluentNumberField TValue="int" @bind-Value="AddCounts[entry.Id]" Min="0" Size="2" /> 
+                            <span>@entry.Name</span> *@
+                            @* <CostDisplay Values="entry.Costs" /> *@
+                        @* </FluentTreeItem>
+                    }
+                }
+            } *@
         }
     </FluentTreeView>
     <FluentButton Appearance="Appearance.Accent" @onclick="()=> AddSelected()">Add</FluentButton>
@@ -89,13 +83,78 @@
     public EventCallback<IRosterOperation[]> OnAddDone { get; set; }
 
 
-    private Dictionary<string, int> AddCounts = new Dictionary<string, int>();
+    private Dictionary<string, AddSelection> RosterAddItems = new Dictionary<string, AddSelection>();
 
-    @* TODO this parallel dict is probably, like, the worst thing ever. *@
-    private Dictionary<string, EntryLinkNode> AddEntries = new Dictionary<string, EntryLinkNode>();
-    @* TODO, either there's a nice way to make anonymous types for dicts, or byte the bullet and just make a class for Name,
-        Count+cat at this point *@
-    private Dictionary<string, CatalogueNode> AddCats = new Dictionary<string, CatalogueNode>();
+    protected class AddSelection{
+        public EntryLinkNode EntryLink {get; set;}
+        
+        // TODO with symbols, this val should become redundant since we can grab teh containing category/primary category
+        // it might be obe now and I just don't know it ...
+        public CatalogueNode Catalogue{get; set;}
+        public string ForceId{get;}
+
+        public int Count;
+        public AddSelection(EntryLinkNode node, ForceNode force, CatalogueNode cat){
+            EntryLink = node;
+            Catalogue = cat;
+            ForceId = force.Id is not null ? force.Id : "";
+            Count = 0;
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        RosterAddItems = new Dictionary<string, AddSelection>();
+
+        if (!(Editor is { State: { Roster: { } Roster, Catalogues: { } Catalogues } }))
+            return;
+
+        foreach (var force in Roster.Forces)
+        {
+            var catalog = Catalogues.FirstOrDefault(x => x.Id == force.CatalogueId);
+            if(catalog == null)
+                continue;
+            
+
+            foreach (var entryLink in catalog.EntryLinks)
+            {
+                if (entryLink.Id == null) // make the IDE happy
+                    continue;
+                
+                if (!RosterAddItems.ContainsKey(entryLink.Id))
+                {
+                    RosterAddItems[entryLink.Id] = new AddSelection(entryLink, force, catalog);
+                }
+            }
+
+
+            // TODO WIP for symbols, blocked by not getting Cost values
+            @* var catalogues = Editor.State.Compilation.GlobalNamespace.Catalogues.Where(x => !x.IsGamesystem);
+
+            // TODO this might be better as OnParametersSet call
+            // Get each catalogue, get all entries in catalogues, set counts for all entries to 0
+            foreach(var catalogue in catalogues)
+            {
+                if(catalogue != null)
+                {
+                    foreach(var entry in catalogue.RootContainerEntries)
+                    {
+                        if (entry.Id == null) // make the IDE happy
+                            continue;
+
+                        Console.WriteLine("Entry: " +entry.Name);
+                        
+                        if (!AddCounts.ContainsKey(entry.Id))
+                        {
+                            AddCounts[entryLink.Id] = new AddCount(entry, catalogue);
+                        }
+                    }
+                }
+            } *@
+        }
+    }
 
     Task AddSelected()
     {
@@ -106,34 +165,31 @@
 
         var operations = new List<IRosterOperation>();
 
-        foreach (string key in AddCounts.Keys)
+        foreach (string key in RosterAddItems.Keys)
         {
-            if (AddCounts[key] < 1)
+            if (RosterAddItems[key].Count < 1)
                 continue;
 
-            // TODO this is gross; it would be good to have a EntryLink.GetTarget() call
-            // though, this mess of iterations could also be optimized....
-            // TODO - can entrylinks point to things besides selections? If not, kill this comment ;)
             // TODO determine if other arrays need traversal besides SSE
             // Get the Selection this entrylink points to, then add it to the Roster
-            var theFind = AddCats[key].SharedSelectionEntries.Where(s => s.Id == AddEntries[key].TargetId).FirstOrDefault();
-
+            var theFind = RosterAddItems[key].Catalogue.SharedSelectionEntries.Where(s => s.Id == RosterAddItems[key].EntryLink.TargetId).FirstOrDefault();
             if (theFind != null)
             {
-                for (int i = 0; i < AddCounts[key]; i++)
+                for (int i = 0; i < RosterAddItems[key].Count; i++)
                 {
-                    // TODO hardcoded Force[0]
                     if (Editor?.State is { Roster: { } roster } state){
-                        Editor?.ApplyOperation(RosterOperations.AddSelectionFromLink(theFind, AddEntries[key], roster.Forces[0]));
+                        Editor?.ApplyOperation(RosterOperations.AddSelectionFromLink(theFind, RosterAddItems[key].EntryLink, RosterAddItems[key].ForceId));
                     }
                 }
             }
         }
         return OnAddDone.InvokeAsync();
     }
-
+    
     Task CloseMenu()
     {
         return OnAddDone.InvokeAsync(null);
     }
 }
+
+
