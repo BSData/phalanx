@@ -1,47 +1,21 @@
-@using WarHub.ArmouryModel.EditorServices
 @using WarHub.ArmouryModel.Source
-@using WarHub.ArmouryModel.Concrete
 @using WarHub.ArmouryModel
+@using WarHub.ArmouryModel.EditorServices
+
 
 @if (Editor is { State: { Roster: { } Roster, Catalogues: { } Catalogues } })
 {
     @* TODO this render fires every time an add count gets modified 
-        fine for testing for now, but that probably gets expensive with bigger gamesystems *@
+        fine for testing for now, but might expensive with bigger gamesystems *@
     <TitlePart>Add Units</TitlePart>
-
-    @* TODO add a toggle button here for a Cat view (current) or a flat abc view of all entries*@
 
     <FluentTreeView>
 
-       @foreach (var force in Roster.Forces)
+        @foreach (var force in Editor.State.Compilation.GlobalNamespace.Rosters[0].Forces)
         {
-            var catalog = Catalogues.FirstOrDefault(x => x.Id == force.CatalogueId);
+            var catalogues = Editor.State.Compilation.GlobalNamespace.Catalogues.Where(x => !x.IsGamesystem);
 
-            if (catalog != null)
-            {
-
-                @* TODO this iteration scheme is probably incomplete  *@
-                foreach (var entryLink in catalog.EntryLinks)
-                {
-                    if (entryLink.Id == null) // make the IDE happy
-                        break;
-
-                    <FluentTreeItem Expanded="true">
-                        <FluentNumberField TValue="int" @bind-Value="RosterAddItems[entryLink.Id].Count" Min="0" Size="2" /> 
-                        <span>@entryLink.Name</span>
-                        <CostDisplay Values="entryLink.Costs" />
-                    </FluentTreeItem>
-                }
-            } 
-
-            // TODO TODO WIP code for using Symbols to pull in adds - currently blocked by not knowing how to
-            // get the numeric values for Costs/Resources
-            @* // TODO need to get the entrylinks and entries, filter, and add those instead
-                // of copies of the current roster selections *@
-
-            @* var catalogues = Editor.State.Compilation.GlobalNamespace.Catalogues.Where(x => !x.IsGamesystem);
-
-            // Render by catalogue, then category within catalog
+            // Get each catalogue, get all entries in catalogues
             foreach(var catalogue in catalogues)
             {
                 if(catalogue != null)
@@ -51,23 +25,18 @@
                         if (entry.Id == null) // make the IDE happy
                             break;
 
-                        Console.WriteLine("Entry: " +entry.Name);
+                        var costs = entry.Resources.Where(res => res.ResourceKind == ResourceKind.Cost);
 
-                        var costs = entry.Resources.Where(res => res.ResourceKind == ResourceKind.Cost); *@
-
-                        // TODO, it's close to using costs now, but I don't know how to get the Values for these Costs/Resources
-                        @* foreach(var cost in costs){
-                            Console.WriteLine("Cost: " + cost.Name);
-                        } *@
-
-                        @* <FluentTreeItem Expanded="true">
-                            <FluentNumberField TValue="int" @bind-Value="AddCounts[entry.Id]" Min="0" Size="2" /> 
-                            <span>@entry.Name</span> *@
-                            @* <CostDisplay Values="entry.Costs" /> *@
-                        @* </FluentTreeItem>
+                        <FluentTreeItem Expanded="true" >
+                            <div style="display: flex; gap: 1em;">
+                                <FluentNumberField TValue="int" @bind-Value="RosterAddItems2[entry.Id].Count" Min="0" Size="2" /> 
+                                <span>@entry.Name</span>
+                                <CostDisplay Values="entry.Costs" />
+                            </div>
+                        </FluentTreeItem>
                     }
                 }
-            } *@
+            }
         }
     </FluentTreeView>
     <FluentButton Appearance="Appearance.Accent" @onclick="()=> AddSelected()">Add</FluentButton>
@@ -82,8 +51,8 @@
     [Parameter, EditorRequired]
     public EventCallback<IRosterOperation[]> OnAddDone { get; set; }
 
-
     private Dictionary<string, AddSelection> RosterAddItems = new Dictionary<string, AddSelection>();
+    private Dictionary<string, AddSelection2> RosterAddItems2 = new Dictionary<string, AddSelection2>();
 
     protected class AddSelection{
         public EntryLinkNode EntryLink {get; set;}
@@ -95,6 +64,23 @@
 
         public int Count;
         public AddSelection(EntryLinkNode node, ForceNode force, CatalogueNode cat){
+            EntryLink = node;
+            Catalogue = cat;
+            ForceId = force.Id is not null ? force.Id : "";
+            Count = 0;
+        }
+    }
+
+    protected class AddSelection2{
+        public IContainerEntrySymbol EntryLink {get; set;}
+        
+        // TODO with symbols, this val should become redundant since we can grab teh containing category/primary category
+        // it might be obe now and I just don't know it ...
+        public ICatalogueSymbol Catalogue{get; set;}
+        public string ForceId{get;}
+
+        public int Count;
+        public AddSelection2(IContainerEntrySymbol node, IForceSymbol force, ICatalogueSymbol cat){
             EntryLink = node;
             Catalogue = cat;
             ForceId = force.Id is not null ? force.Id : "";
@@ -128,12 +114,15 @@
                     RosterAddItems[entryLink.Id] = new AddSelection(entryLink, force, catalog);
                 }
             }
+        }
 
+        RosterAddItems2 = new Dictionary<string, AddSelection2>();
 
+        foreach (var force in Editor.State.Compilation.GlobalNamespace.Rosters[0].Forces)
+        {
             // TODO WIP for symbols, blocked by not getting Cost values
-            @* var catalogues = Editor.State.Compilation.GlobalNamespace.Catalogues.Where(x => !x.IsGamesystem);
-
-            // TODO this might be better as OnParametersSet call
+            var catalogues = Editor.State.Compilation.GlobalNamespace.Catalogues.Where(x => !x.IsGamesystem);
+            @* // TODO this might be better as OnParametersSet call *@
             // Get each catalogue, get all entries in catalogues, set counts for all entries to 0
             foreach(var catalogue in catalogues)
             {
@@ -143,16 +132,10 @@
                     {
                         if (entry.Id == null) // make the IDE happy
                             continue;
-
-                        Console.WriteLine("Entry: " +entry.Name);
-                        
-                        if (!AddCounts.ContainsKey(entry.Id))
-                        {
-                            AddCounts[entryLink.Id] = new AddCount(entry, catalogue);
-                        }
+                        RosterAddItems2[entry.Id] = new AddSelection2(entry, force, catalogue);
                     }
                 }
-            } *@
+            }
         }
     }
 
@@ -162,8 +145,6 @@
         {
             return Task.CompletedTask;
         }
-
-        var operations = new List<IRosterOperation>();
 
         foreach (string key in RosterAddItems.Keys)
         {
@@ -177,12 +158,26 @@
             {
                 for (int i = 0; i < RosterAddItems[key].Count; i++)
                 {
-                    if (Editor?.State is { Roster: { } roster } state){
-                        Editor?.ApplyOperation(RosterOperations.AddSelectionFromLink(theFind, RosterAddItems[key].EntryLink, RosterAddItems[key].ForceId));
-                    }
                 }
             }
         }
+
+
+        foreach (string key in RosterAddItems2.Keys)
+        {
+            if (RosterAddItems2[key].Count < 1)
+                continue;
+
+            // TODO determine if other arrays need traversal besides SSE
+            // Get the Selection this entrylink points to, then add it to the Roster
+            for (int i = 0; i < RosterAddItems2[key].Count; i++)
+            {
+                if (Editor?.State is { Roster: { } roster } state){
+                    Editor?.ApplyOperation(RosterOperations.AddRootEntryFromSymbol(RosterAddItems2[key].EntryLink, RosterAddItems2[key].ForceId));
+                }
+            }
+        }
+
         return OnAddDone.InvokeAsync();
     }
     

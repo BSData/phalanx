@@ -1,6 +1,6 @@
 using WarHub.ArmouryModel.Source;
 using static WarHub.ArmouryModel.Source.NodeFactory;
-
+using System.Collections;
 namespace WarHub.ArmouryModel.EditorServices;
 
 public static class RosterOperations
@@ -25,6 +25,8 @@ public static class RosterOperations
 
     public static AddSelectionFromLinkOp AddSelectionFromLink(SelectionEntryNode selectionEntry, EntryLinkNode link, string force) =>
         new(selectionEntry, link, force);
+
+
     public static RemoveForceOperation RemoveForce(ForceNode force) => new(force);
 
     public static RemoveSelectionOperation RemoveSelection(SelectionNode selection) =>
@@ -32,6 +34,10 @@ public static class RosterOperations
 
     public static ChangeSelectionCountOperation ChangeCountOf(SelectionNode selection, int newCount) =>
         new(selection, newCount);
+
+    public static AddRootEntryFromSymbol AddRootEntryFromSymbol(IContainerEntrySymbol link, string force) =>
+        new(link, force);
+
 
 }
 
@@ -190,25 +196,6 @@ public record AddSelectionFromLinkOp(SelectionEntryNode SelectionEntry, EntryLin
             return roster; // TODO add diagnostic invalid data
 
         }
-
-
-        // var categories = entryLink.CategoryLinks.Select(cLink => Force.Categories.FirstOrDefault( cat => cat.Id == cLink.TargetId));
-
-        // foreach(var cat in entryLink.CategoryLinks){
-        //     Console.WriteLine("clinkId  = " +cat.TargetId);
-        // }
-        // foreach(var cat in Force.Categories){
-        //     Console.WriteLine("catId  = " +cat.Id);
-        // }
-
-        // NodeList<CategoryNode> catNodes = new NodeList<CategoryNode>();
-
-        // foreach(var cat in categories){
-        //     if(cat is not null){
-        //         catNodes.Add(cat);
-        //     }
-        // }
-
         var selection =
             Selection(SelectionEntry, selectionEntryId)
             .AddCosts(entryLink.Costs);
@@ -218,10 +205,63 @@ public record AddSelectionFromLinkOp(SelectionEntryNode SelectionEntry, EntryLin
 
         // Use ID because the ForceNode object becomes invalid after other operations,
         // such as a prior selectionAdd
-        var Force = state.Roster.Forces.FirstOrDefault(f => f.Id == ForceId);
+        var Force = roster.Forces.FirstOrDefault(f => f.Id == ForceId);
 
         if(Force != null)
            return roster.Replace(Force, x => x.AddSelections(selection));
+        else 
+            return roster;
+    }
+}
+
+
+
+public record AddRootEntryFromSymbol(IContainerEntrySymbol entryLink, string ForceId) : RosterOperationBase
+{
+    protected override RosterOperationKind Kind => RosterOperationKind.AddSelection;
+
+    protected override RosterNode TransformRoster(RosterState state)
+    {
+        var roster = state.RosterRequired;
+
+        // Use ID because the ForceNode object becomes invalid after other operations,
+        // such as a prior selectionAdd
+        var Force = roster.Forces.FirstOrDefault(f => f.Id == ForceId);
+
+        // TODO hard-coded catalog
+        var entrySelection = state.Catalogues[1].SharedSelectionEntries.Where(s => s.Id == entryLink.ReferencedEntry.Id).FirstOrDefault();
+        if(entrySelection == null){
+            return roster;
+        }
+
+        var costNodes = new List<CostNode>();
+        foreach(var cost in entryLink.Costs){
+            var costType = state.Gamesystem.CostTypes.NodeList.FirstOrDefault(ct => ct.Id == cost.TypeId);
+            if(costType != null){
+                costNodes.Add(Cost(cost.Name, cost.TypeId, cost.Value));
+            }
+        }
+
+        var catList = new List<CategoryNode>();
+        foreach(var catLink in entrySelection.CategoryLinks){
+            var catEntry = state.Gamesystem.CategoryEntries.FirstOrDefault(c => c.Id == catLink.TargetId);
+            if(catEntry != null){
+                catList.Add(Category(catEntry, catLink.TargetId).WithPrimary(catLink.Primary));
+            }
+        }
+
+        var selection =
+            Selection(entrySelection, 
+                entrySelection.Id
+            ).AddCosts(costNodes)
+            .AddCategories(catList);
+
+    
+        // var Force = state.Roster.Forces.FirstOrDefault(f => f.Id == ForceId);
+
+        if(Force != null){
+           return roster.Replace(Force, x => x.AddSelections(selection));
+        }
         else 
             return roster;
     }

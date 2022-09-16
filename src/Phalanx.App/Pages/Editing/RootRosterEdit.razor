@@ -1,6 +1,7 @@
 @using WarHub.ArmouryModel.EditorServices
 @using WarHub.ArmouryModel.Source
 
+
 @if (Roster is not null)
 {
     <TitlePart>@Roster.Name</TitlePart>
@@ -27,7 +28,7 @@
     @* TODO make this a fab or etc *@
     @if (!AddMode)
     {
-        <TitlePart>Add Units</TitlePart>
+        <TitlePart>Roster Edit</TitlePart>
 
         <FluentTreeView>
             @foreach (var force in Roster.Forces)

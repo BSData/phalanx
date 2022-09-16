@@ -1,6 +1,6 @@
 using WarHub.ArmouryModel.Source;
 
-namespace Phalanx.App;
+namespace Phalanx.App.Util;
 
 class RosterDebugPrinter : SourceWalker
 {

@@ -1,13 +1,18 @@
 @using Phalanx.SampleDataset
 @using WarHub.ArmouryModel.EditorServices
 @using WarHub.ArmouryModel.Source
+@using Phalanx.App.Util
+
 @inject NavigationManager NavigationManager
+@inject RosterEditorService EditorService
+
+@page "/selection-edit/{*Id}"
 
 @if (Selection is not null)
 {
     <div style="display: flex; gap: 1em;" >
 
-        <span @onclick="() => EditSelf(Selection)">@Selection.Name</span>
+        <span>@Selection.Name</span>
 
         <CostNodeDisplay Values="Selection.Costs" />
 
@@ -21,17 +26,22 @@
     public SelectionNode? Selection { get; set; }
 
 
-    [CascadingParameter]
-    public RosterEditor? Editor { get; set; }
+    [Parameter]
+    public string Id { get; set; }
 
+    
+    public RosterEditor? Editor => EditorService.Editor; 
+
+    protected override void OnInitialized(){
+        base.OnInitialized();
+
+        Selection = Editor.State.Roster.Forces[0].Selections.FirstOrDefault(s => s.Id == Id);
+    }
     void RemoveSelf(SelectionNode node)
     {
         Editor?.ApplyOperation(RosterOperations.RemoveSelection(node));
+        NavigationManager.NavigateTo("rosteredit");
     }
 
-    void EditSelf(SelectionNode node)
-    {
-        NavigationManager.NavigateTo("selection-edit/" + Selection.Id);
-    }
 
 }

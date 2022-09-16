@@ -1,27 +1,27 @@
 ﻿@page "/rosteredit"
 
-@using Phalanx.SampleDataset
 @using WarHub.ArmouryModel.EditorServices
 @using WarHub.ArmouryModel.EditorServices.Formatting
 @using WarHub.ArmouryModel.Source
 @using Phalanx.App.Pages.Editing
 @using WarHub.ArmouryModel.Concrete
-@using WarHub.ArmouryModel.Source
+@using Phalanx.App.Util
 
 @inject Phalanx.App.Pages.Printing.RosterFormatsProvider formatter
+@inject Phalanx.App.Util.RosterEditorService EditorService
 
 @if (Roster is not null)
 {
     <TitlePart>@Roster.Name</TitlePart>
     <CascadingValue Value="@Editor">
-        <FluentTabs OnTabCHange="HandleOnTabChange">
+        <FluentTabs>
             <FluentTab>Edit</FluentTab>
             <FluentTabPanel>
-                <EditTreeRosterItem />
+                <RootRosterEdit/>
             </FluentTabPanel>
             <FluentTab>Options</FluentTab>
             <FluentTabPanel>
-                <RosterOptions></RosterOptions>
+                <RosterOptions/>
             </FluentTabPanel>
             <FluentTab>Preview</FluentTab>
             <FluentTabPanel>
@@ -44,7 +44,7 @@ else
 }
 
 @code {
-    public RosterEditor? Editor { get; set; }
+    public RosterEditor? Editor => EditorService.Editor; 
 
     public RosterFormat Format { get; set; } = RosterFormatter.BuiltinFormatters[0];
 
@@ -57,11 +57,7 @@ else
     }
     void LoadTestRoster()
     {
-        //get roster from file
-        var ws = SampleDataResources.CreateXmlWorkspace();
-        var rosterState = RosterState.CreateFromNodes(ws.Documents.Select(x => x.GetRootAsync().Result!));
-
-        Editor = new RosterEditor(rosterState);
         Editor.OperationApplied += (op, state) => StateHasChanged();
+
     }
 }

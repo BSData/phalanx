@@ -23,6 +23,9 @@ internal class CostSymbol : ResourceEntryBaseSymbol, ICostSymbol, INodeDeclaredS
 
     public decimal Value => Declaration.Value;
 
+    public string TypeId => Declaration.TypeId;
+
+
     protected override void BindReferencesCore(Binder binder, BindingDiagnosticBag diagnostics)
     {
         base.BindReferencesCore(binder, diagnostics);
