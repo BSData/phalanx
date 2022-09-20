@@ -1,6 +1,6 @@
+using System.Collections;
 using WarHub.ArmouryModel.Source;
 using static WarHub.ArmouryModel.Source.NodeFactory;
-using System.Collections;
 namespace WarHub.ArmouryModel.EditorServices;
 
 public static class RosterOperations
@@ -199,7 +199,7 @@ public record AddSelectionFromLinkOp(SelectionEntryNode SelectionEntry, EntryLin
         var selection =
             Selection(SelectionEntry, selectionEntryId)
             .AddCosts(entryLink.Costs);
-            // .WithCategories(CategoryList( catNodes));
+        // .WithCategories(CategoryList( catNodes));
         // TODO add selection categories, rules, profiles
         // TODO add subselections
 
@@ -207,9 +207,9 @@ public record AddSelectionFromLinkOp(SelectionEntryNode SelectionEntry, EntryLin
         // such as a prior selectionAdd
         var Force = roster.Forces.FirstOrDefault(f => f.Id == ForceId);
 
-        if(Force != null)
-           return roster.Replace(Force, x => x.AddSelections(selection));
-        else 
+        if (Force != null)
+            return roster.Replace(Force, x => x.AddSelections(selection));
+        else
             return roster;
     }
 }
@@ -230,39 +230,45 @@ public record AddRootEntryFromSymbol(IContainerEntrySymbol entryLink, string For
 
         // TODO hard-coded catalog
         var entrySelection = state.Catalogues[1].SharedSelectionEntries.Where(s => s.Id == entryLink.ReferencedEntry.Id).FirstOrDefault();
-        if(entrySelection == null){
+        if (entrySelection == null)
+        {
             return roster;
         }
 
         var costNodes = new List<CostNode>();
-        foreach(var cost in entryLink.Costs){
+        foreach (var cost in entryLink.Costs)
+        {
             var costType = state.Gamesystem.CostTypes.NodeList.FirstOrDefault(ct => ct.Id == cost.TypeId);
-            if(costType != null){
+            if (costType != null)
+            {
                 costNodes.Add(Cost(cost.Name, cost.TypeId, cost.Value));
             }
         }
 
         var catList = new List<CategoryNode>();
-        foreach(var catLink in entrySelection.CategoryLinks){
+        foreach (var catLink in entrySelection.CategoryLinks)
+        {
             var catEntry = state.Gamesystem.CategoryEntries.FirstOrDefault(c => c.Id == catLink.TargetId);
-            if(catEntry != null){
+            if (catEntry != null)
+            {
                 catList.Add(Category(catEntry, catLink.TargetId).WithPrimary(catLink.Primary));
             }
         }
 
         var selection =
-            Selection(entrySelection, 
+            Selection(entrySelection,
                 entrySelection.Id
             ).AddCosts(costNodes)
             .AddCategories(catList);
 
-    
+
         // var Force = state.Roster.Forces.FirstOrDefault(f => f.Id == ForceId);
 
-        if(Force != null){
-           return roster.Replace(Force, x => x.AddSelections(selection));
+        if (Force != null)
+        {
+            return roster.Replace(Force, x => x.AddSelections(selection));
         }
-        else 
+        else
             return roster;
     }
 }

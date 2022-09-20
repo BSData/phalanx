@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using WarHub.ArmouryModel.EditorServices;
 using Phalanx.App;
 using Phalanx.App.Pages.Printing;
 using Phalanx.App.Util;
 using Phalanx.SampleDataset;
+using WarHub.ArmouryModel.EditorServices;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

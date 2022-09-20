@@ -1,14 +1,17 @@
 namespace Phalanx.App.Util;
 using WarHub.ArmouryModel.EditorServices;
 
-public class RosterEditorService {
+public class RosterEditorService
+{
 
     public RosterEditor? Editor;
-    public RosterEditorService(){
+    public RosterEditorService()
+    {
         Editor = null;
     }
 
-    public void LoadRoster(RosterState rosterState){
+    public void LoadRoster(RosterState rosterState)
+    {
         Editor = new RosterEditor(rosterState);
 
     }
