@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<catalogue id="f702-88f3-aa96-b128" name="Grannies" revision="1" battleScribeVersion="2.03" authorName="Rylok" authorContact="@rylok3" library="false" gameSystemId="bc3d-3e2a-b2b3-fef7" gameSystemRevision="2" xmlns="http://www.battlescribe.net/schema/catalogueSchema">
+<catalogue id="f702-88f3-aa96-b128" name="Grannies" revision="2" battleScribeVersion="2.03" authorName="Rylok" authorContact="@rylok3" library="false" gameSystemId="bc3d-3e2a-b2b3-fef7" gameSystemRevision="2" xmlns="http://www.battlescribe.net/schema/catalogueSchema">
   <publications>
     <publication id="3284-fc7c-1d66-fe31" name="Grannybook 2021"/>
   </publications>
@@ -95,6 +95,24 @@
         <categoryLink id="129d-6a61-1694-750d" name="Support" hidden="false" targetId="2c8f-63d4-2b0c-01ad" primary="true"/>
         <categoryLink id="3684-b96a-92bf-f122" name="Attack" hidden="false" targetId="c735-947c-993c-e57d" primary="false"/>
       </categoryLinks>
+      <selectionEntries>
+        <selectionEntry id="1432-da0a-533e-546c" name="Wheel" hidden="false" collective="false" import="true" type="upgrade">
+          <constraints>
+            <constraint field="selections" scope="parent" value="16.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="afcd-1892-0078-cd9c" type="max"/>
+            <constraint field="selections" scope="parent" value="0.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="9340-577a-14be-577c" type="min"/>
+          </constraints>
+          <costs>
+            <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="1.0"/>
+            <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="1.0"/>
+          </costs>
+        </selectionEntry>
+        <selectionEntry id="58ae-10fd-32db-e1c3" name="Horn" hidden="false" collective="false" import="true" type="upgrade">
+          <constraints>
+            <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="d578-c50c-c25c-a331" type="max"/>
+            <constraint field="selections" scope="parent" value="0.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="2566-0f25-c2a6-bed6" type="min"/>
+          </constraints>
+        </selectionEntry>
+      </selectionEntries>
       <selectionEntryGroups>
         <selectionEntryGroup id="a564-f674-3227-15de" name="Driver" publicationId="2ea4-57c2-c067-7215" hidden="false" collective="false" import="true">
           <constraints>

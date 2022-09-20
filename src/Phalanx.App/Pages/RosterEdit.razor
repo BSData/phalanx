@@ -25,18 +25,13 @@
             </FluentTabPanel>
             <FluentTab>Preview</FluentTab>
             <FluentTabPanel>
-
-                <div>
-                    <ListSelect @bind-Value="Format" Items="formatter.Formats">
-                        @context.Name
-                    </ListSelect>
-                </div>
-
+                <ListSelect @bind-Value="Format" Items="formatter.Formats">
+                    @context.Name
+                </ListSelect>
                 <Phalanx.App.Pages.Printing.RosterPreviewer RosterNode="Roster" Format="Format" />
             </FluentTabPanel>
         </FluentTabs>
     </CascadingValue>
-
 }
 else
 {
@@ -57,7 +52,8 @@ else
     }
     void LoadTestRoster()
     {
-        Editor.OperationApplied += (op, state) => StateHasChanged();
-
+        if(Editor is not null){
+            Editor.OperationApplied += (op, state) => StateHasChanged();
+        }
     }
 }

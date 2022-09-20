@@ -2,30 +2,39 @@
 @using WarHub.ArmouryModel
 @using WarHub.ArmouryModel.EditorServices
 
-@if (Values is not null)
+@if (Values != null)
 {
-    @* TODO - might be good to do polymorphism/interface instead of using a CostLinkNode *@
+    @* TODO - this needs to take either a Selection/Symbol/Node to iterate + display the 
+    cost of the selection and all its children's costs (see if RosterOps for roster total has a Visitor for re-use) 
+    E.g. Truck(15) with Machine Gun(2) should have a cost of 17, currently displaying 15 *@
 
-    @foreach (ICostSymbol cost in Values)
+    @for ( int i=0; i< Values.Length; i++)
     {
+        var cost = Values[i];
         if (cost.Value != 0)
         {
-            <div>
-                <span>@cost.Value @cost.Name</span>
-                <span>, </span>
+            <div style="display: flex; gap: 1em;">
+                <span>
+                    <span>@cost.Value @cost.Name</span>
 
-                @* @if (cost != Values[^1])
-                {
-                    <span>, </span>
-                } *@
+                    @if (cost != Values[^1])
+                    {
+                        <span>, </span>
+                    }
+                </span>
             </div>
         }
     }
 }
 
 @code {
+    @* [Parameter]
+    public ISelectionSymbol Selection { get; set; } = default!; *@
+
+
     [Parameter]
-    public ImmutableArray<ICostSymbol>? Values { get; set; }
+
+    public ImmutableArray<ICostSymbol> Values { get; set; }
 
     protected override void OnInitialized()
     {

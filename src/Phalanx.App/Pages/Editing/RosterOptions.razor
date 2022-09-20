@@ -10,10 +10,12 @@
 
         @foreach (var cost in Roster.Costs)
         {
-            @* var limit = Roster.CostLimits.FirstOrDefault<CostLimitNode>(limit => limit.TypeId == cost.TypeId);
-            var limitValue = limit != null ? limit.Value : -1; *@
+            @* TODO seeing this error on increment/decrement button presses:
+            Uncaught TypeError: event.detail is null 
+            May or may not be causing the first Update attempt here to fail
+            *@
             <div style="display: flex; gap: 1em;">
-                <FluentNumberField @bind-Value="CostLimitInputs[cost.TypeId]" Min="-1" Size="4" ></FluentNumberField> 
+                <FluentNumberField TValue="decimal" @bind-Value="CostLimitInputs[cost.TypeId]" Min="-1" Size="4" ></FluentNumberField> 
                 <span>@cost.Name</span>
             </div>
         }
@@ -47,7 +49,7 @@ else
 
     private Dictionary<string, decimal> CostLimitInputs = new Dictionary<string, decimal>();
 
-    private string? rosterName;
+    private string rosterName = default!;
     
     protected override void OnParametersSet(){
         
@@ -87,8 +89,10 @@ else
             return Task.CompletedTask;
         }
 
-        Console.WriteLine("set roster name to " + rosterName);
-        Editor?.ApplyOperation(RosterOperations.ChangeRosterName(rosterName));
+        if(rosterState.Name != rosterName){
+            Console.WriteLine("set roster name to " + rosterName);
+            Editor?.ApplyOperation(RosterOperations.ChangeRosterName(rosterName));
+        }
         return Task.CompletedTask;
 
     }

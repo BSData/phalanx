@@ -1,0 +1,24 @@
+@using Phalanx.SampleDataset
+@using WarHub.ArmouryModel
+@using WarHub.ArmouryModel.Source
+@using Phalanx.App.Util
+@using WarHub.ArmouryModel.EditorServices
+
+@inject RosterEditorService EditorService
+
+@if (Selection is not null)
+{
+    <div style="display: flex; gap: 1em;" >
+
+        <span>@Selection.Name</span>
+
+        <CostDisplay Values="Selection.Costs" />
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public ISelectionSymbol? Selection { get; set; }
+    public RosterEditor? Editor => EditorService.Editor; 
+
+}

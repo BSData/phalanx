@@ -2,6 +2,8 @@
 @using WarHub.ArmouryModel.EditorServices
 @using WarHub.ArmouryModel.Source
 @inject NavigationManager NavigationManager
+@using WarHub.ArmouryModel
+
 
 @if (Selection is not null)
 {
@@ -9,29 +11,31 @@
 
         <span @onclick="() => EditSelf(Selection)">@Selection.Name</span>
 
-        <CostNodeDisplay Values="Selection.Costs" />
+        <CostDisplay Values="Selection.Costs" />
 
-        <FluentButton @onclick="() => RemoveSelf(Selection)">Remove</FluentButton>
+        @* <FluentButton @onclick="() => RemoveSelf(Selection)">Remove</FluentButton> *@
 
     </div>
 }
 
 @code {
+    @* TODO convert to symbols-driven? *@
     [Parameter, EditorRequired]
-    public SelectionNode? Selection { get; set; }
+    public ISelectionSymbol? Selection { get; set; }
 
 
     [CascadingParameter]
     public RosterEditor? Editor { get; set; }
 
-    void RemoveSelf(SelectionNode node)
+    void RemoveSelf(ISelectionSymbol node)
     {
-        Editor?.ApplyOperation(RosterOperations.RemoveSelection(node));
+        @* Editor?.ApplyOperation(RosterOperations.RemoveSelection(node)); *@
     }
 
-    void EditSelf(SelectionNode node)
+    
+    void EditSelf(ISelectionSymbol node)
     {
-        NavigationManager.NavigateTo("selection-edit/" + Selection.Id);
+        NavigationManager.NavigateTo("selection-edit/" + node.Id);
     }
 
 }

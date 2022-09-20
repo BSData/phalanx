@@ -29,9 +29,11 @@
     @if (!AddMode)
     {
         <TitlePart>Roster Edit</TitlePart>
+        // TODO roster idx hardcode
+        var forces = Editor.State.Compilation.GlobalNamespace.Rosters[0].Forces;
 
         <FluentTreeView>
-            @foreach (var force in Roster.Forces)
+            @foreach (var force in forces)
             {
                 <FluentTreeItem Expanded="true">
                     <span>@force.Name</span>
@@ -41,11 +43,11 @@
                         <FluentTreeItem Expanded="true">
                             <span>@category.Name</span>
 
-                            @foreach (var selections in force.Selections
-                           .Where(sel => sel.Categories.Any(x => x.Primary && x.EntryId == category.EntryId)))
+                            @foreach (var selection in force.Selections
+                           .Where(sel => sel.PrimaryCategory?.SourceEntry.Id == category.SourceEntry.Id))
                             {
                                 <FluentTreeItem Expanded="true">
-                                    <SelectionDisplay Selection="selections" />
+                                    <SelectionDisplay Selection="selection" />
                                 </FluentTreeItem>
                             }
                         </FluentTreeItem>

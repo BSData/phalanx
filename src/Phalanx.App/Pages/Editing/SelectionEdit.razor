@@ -1,6 +1,7 @@
 @using Phalanx.SampleDataset
 @using WarHub.ArmouryModel.EditorServices
 @using WarHub.ArmouryModel.Source
+@using WarHub.ArmouryModel
 @using Phalanx.App.Util
 
 @inject NavigationManager NavigationManager
@@ -14,28 +15,50 @@
 
         <span>@Selection.Name</span>
 
-        <CostNodeDisplay Values="Selection.Costs" />
+        <CostDisplay Values="Selection.Costs" />
 
-        <FluentButton @onclick="() => RemoveSelf(Selection)">Remove</FluentButton>
+        @* <FluentButton @onclick="() => RemoveSelf(Selection)">Remove</FluentButton> *@
 
+    </div>
+
+    @* TODO this is where a step should be taken back to figure out how to recurse our selections/editing/etc *@
+    <div style="display:flex; flex-direction:column"> 
+
+        @foreach(var selEntry in Selection.SourceEntry.ChildSelectionEntries ){
+            //var catalogues = Editor.State.Compilation.GlobalNamespace.Catalogues.Where(x => !x.IsGamesystem);
+
+            <span>@selEntry.Name</span>
+            
+        }
+        @* @foreach(var sel in Selection.Selections){
+            <SelectionSubDisplay Selection="sel"/>
+        } *@
     </div>
 }
 
 @code {
-    [Parameter, EditorRequired]
-    public SelectionNode? Selection { get; set; }
-
-
     [Parameter]
-    public string Id { get; set; }
+    public ISelectionSymbol? Selection { get; set; }
+
+
+    [Parameter, EditorRequired]
+    public string Id { get; set; } = default!;
 
     
     public RosterEditor? Editor => EditorService.Editor; 
 
     protected override void OnInitialized(){
+        if(Editor?.State?.Roster == null){
+            return;
+        }
+
         base.OnInitialized();
 
-        Selection = Editor.State.Roster.Forces[0].Selections.FirstOrDefault(s => s.Id == Id);
+        
+        Selection = Editor.State.Compilation.GlobalNamespace.Rosters[0].Forces[0].Selections.FirstOrDefault(s => s.Id == Id);
+        @* RosterDebugPrinter printer = new RosterDebugPrinter();
+        printer.Visit(Selection); *@
+
     }
     void RemoveSelf(SelectionNode node)
     {

@@ -29,7 +29,7 @@
 
                         <FluentTreeItem Expanded="true" >
                             <div style="display: flex; gap: 1em;">
-                                <FluentNumberField TValue="int" @bind-Value="RosterAddItems2[entry.Id].Count" Min="0" Size="2" /> 
+                                <FluentNumberField TValue="int" @bind-Value="RosterAddItems[entry.Id].Count" Min="0" Size="2" /> 
                                 <span>@entry.Name</span>
                                 <CostDisplay Values="entry.Costs" />
                             </div>
@@ -52,26 +52,8 @@
     public EventCallback<IRosterOperation[]> OnAddDone { get; set; }
 
     private Dictionary<string, AddSelection> RosterAddItems = new Dictionary<string, AddSelection>();
-    private Dictionary<string, AddSelection2> RosterAddItems2 = new Dictionary<string, AddSelection2>();
 
     protected class AddSelection{
-        public EntryLinkNode EntryLink {get; set;}
-        
-        // TODO with symbols, this val should become redundant since we can grab teh containing category/primary category
-        // it might be obe now and I just don't know it ...
-        public CatalogueNode Catalogue{get; set;}
-        public string ForceId{get;}
-
-        public int Count;
-        public AddSelection(EntryLinkNode node, ForceNode force, CatalogueNode cat){
-            EntryLink = node;
-            Catalogue = cat;
-            ForceId = force.Id is not null ? force.Id : "";
-            Count = 0;
-        }
-    }
-
-    protected class AddSelection2{
         public IContainerEntrySymbol EntryLink {get; set;}
         
         // TODO with symbols, this val should become redundant since we can grab teh containing category/primary category
@@ -80,7 +62,7 @@
         public string ForceId{get;}
 
         public int Count;
-        public AddSelection2(IContainerEntrySymbol node, IForceSymbol force, ICatalogueSymbol cat){
+        public AddSelection(IContainerEntrySymbol node, IForceSymbol force, ICatalogueSymbol cat){
             EntryLink = node;
             Catalogue = cat;
             ForceId = force.Id is not null ? force.Id : "";
@@ -92,31 +74,10 @@
     {
         base.OnParametersSet();
 
-        RosterAddItems = new Dictionary<string, AddSelection>();
-
         if (!(Editor is { State: { Roster: { } Roster, Catalogues: { } Catalogues } }))
             return;
 
-        foreach (var force in Roster.Forces)
-        {
-            var catalog = Catalogues.FirstOrDefault(x => x.Id == force.CatalogueId);
-            if(catalog == null)
-                continue;
-            
-
-            foreach (var entryLink in catalog.EntryLinks)
-            {
-                if (entryLink.Id == null) // make the IDE happy
-                    continue;
-                
-                if (!RosterAddItems.ContainsKey(entryLink.Id))
-                {
-                    RosterAddItems[entryLink.Id] = new AddSelection(entryLink, force, catalog);
-                }
-            }
-        }
-
-        RosterAddItems2 = new Dictionary<string, AddSelection2>();
+        RosterAddItems = new Dictionary<string, AddSelection>();
 
         foreach (var force in Editor.State.Compilation.GlobalNamespace.Rosters[0].Forces)
         {
@@ -132,7 +93,7 @@
                     {
                         if (entry.Id == null) // make the IDE happy
                             continue;
-                        RosterAddItems2[entry.Id] = new AddSelection2(entry, force, catalogue);
+                        RosterAddItems[entry.Id] = new AddSelection(entry, force, catalogue);
                     }
                 }
             }
@@ -153,27 +114,10 @@
 
             // TODO determine if other arrays need traversal besides SSE
             // Get the Selection this entrylink points to, then add it to the Roster
-            var theFind = RosterAddItems[key].Catalogue.SharedSelectionEntries.Where(s => s.Id == RosterAddItems[key].EntryLink.TargetId).FirstOrDefault();
-            if (theFind != null)
-            {
-                for (int i = 0; i < RosterAddItems[key].Count; i++)
-                {
-                }
-            }
-        }
-
-
-        foreach (string key in RosterAddItems2.Keys)
-        {
-            if (RosterAddItems2[key].Count < 1)
-                continue;
-
-            // TODO determine if other arrays need traversal besides SSE
-            // Get the Selection this entrylink points to, then add it to the Roster
-            for (int i = 0; i < RosterAddItems2[key].Count; i++)
+            for (int i = 0; i < RosterAddItems[key].Count; i++)
             {
                 if (Editor?.State is { Roster: { } roster } state){
-                    Editor?.ApplyOperation(RosterOperations.AddRootEntryFromSymbol(RosterAddItems2[key].EntryLink, RosterAddItems2[key].ForceId));
+                    Editor?.ApplyOperation(RosterOperations.AddRootEntryFromSymbol(RosterAddItems[key].EntryLink, RosterAddItems[key].ForceId));
                 }
             }
         }
