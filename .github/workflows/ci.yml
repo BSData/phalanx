@@ -61,7 +61,9 @@ jobs:
           force_orphan: true
 
   deploy_pr:
-    if: github.event_name == 'pull_request' && github.event.action != 'closed'
+    if: >-
+      github.event_name == 'pull_request' && github.event.action != 'closed'
+      && !github.event.pull_request.head.repo.fork
     needs: build
     runs-on: ubuntu-latest
     name: Build and Deploy PR
@@ -97,7 +99,9 @@ jobs:
           output_location: ./.build/pub/wwwroot
 
   close_pr:
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    if: >-
+      github.event_name == 'pull_request' && github.event.action == 'closed'
+      && !github.event.pull_request.head.repo.fork
     runs-on: ubuntu-latest
     name: Destroy PR deployment
     steps:
