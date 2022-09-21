@@ -1,14 +1,13 @@
-name: PR CI
+name: PR CD Cleanup
 on:
-  pull_request:
-    types: [closed]
-    branches:
-      - main
-
+  workflow_run:
+    workflows: [PR CI]
+    types: [completed]
 jobs:
   close_pr:
-    runs-on: ubuntu-latest
     name: Destroy PR deployment
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
     steps:
       - name: Remove Azure Static Webapp
         uses: Azure/static-web-apps-deploy@v1

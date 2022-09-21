@@ -3,14 +3,13 @@ on:
   workflow_run:
     workflows: [PR CI]
     types: [completed]
-
 defaults:
   run:
     shell: pwsh
 jobs:
   deploy_pr:
     name: Deploy PR webapp
-    needs: build
+    if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     env:
       wwwroot_path: ./wwwroot/
