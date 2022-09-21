@@ -31,7 +31,7 @@ jobs:
       - name: Checkout PR for Azure SWA action
         uses: actions/checkout@v3
         with:
-          ref: pull/${{ env.pr_number }}/merge
+          ref: refs/pull/${{ env.pr_number }}/merge
           clean: false
 
       - name: Add staticwebapp config
