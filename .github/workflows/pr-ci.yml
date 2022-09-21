@@ -33,9 +33,16 @@ jobs:
       - name: Publish
         run: dotnet publish src/Phalanx.App --output ./.build/pub --version-suffix "beta.pr.${{ github.run_number }}"
 
+      - name: Prepare artifacts
+        run: |
+          Compress-Archive ./.build/pub/wwwroot/* webapp.zip
+          Copy-Item $env:GITHUB_EVENT_PATH event.json
+
       - name: Upload published artifact
         uses: actions/upload-artifact@v3
         with:
-          name: blazorwasm
-          path: ./.build/pub/wwwroot/
+          name: pr-data
+          path: |
+            webapp.zip
+            event.json
           retention-days: 7

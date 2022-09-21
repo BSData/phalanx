@@ -17,9 +17,22 @@ jobs:
       - name: Download webapp from workflow artifacts
         uses: dawidd6/action-download-artifact@v2
         with:
-          name: blazorwasm
+          name: pr-data
           run_id: ${{ github.event.workflow_run.id }}
-          path: ${{ env.wwwroot_path }}
+      
+      - name: Prepare artifacts
+        uses: Amadevus/pwsh-script@v2
+        with:
+          script: |
+            Expand-Archive webapp.zip $env:wwwroot_path
+            $event = Get-Content event.json -Raw | ConvertFrom-Json
+            Set-ActionVariable pr_number $event.pull_request.number
+
+      - name: Checkout PR for Azure SWA action
+        uses: actions/checkout@v3
+        with:
+          ref: pull/${{ env.pr_number }}/merge
+          clean: false
 
       - name: Add staticwebapp config
         env:
