@@ -14,12 +14,14 @@ jobs:
     env:
       wwwroot_path: ./wwwroot/
     steps:
+      - uses: actions/checkout@v3
+
       - name: Download webapp from workflow artifacts
         uses: dawidd6/action-download-artifact@v2
         with:
           name: pr-data
           run_id: ${{ github.event.workflow_run.id }}
-      
+
       - name: Prepare artifacts
         uses: Amadevus/pwsh-script@v2
         with:
