@@ -1,0 +1,46 @@
+name: PR CD
+on:
+  workflow_run:
+    workflows: [PR CI]
+    types: [completed]
+
+defaults:
+  run:
+    shell: pwsh
+jobs:
+  deploy_pr:
+    name: Deploy PR webapp
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      wwwroot_path: ./wwwroot/
+    steps:
+      - name: Download webapp from workflow artifacts
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          name: blazorwasm
+          run_id: ${{ github.event.workflow_run.id }}
+          path: ${{ env.wwwroot_path }}
+
+      - name: Add staticwebapp config
+        env:
+          config_content: |
+            {
+              "navigationFallback": {
+                "rewrite": "/index.html",
+                "exclude": ["/*.{png,jpg,gif,ico,svg,js,json,dll,css}", "/css/*"]
+              }
+            }
+        run: |
+          $env:config_content > $env:wwwroot_path/staticwebapp.config.json
+
+      - name: Deploy Azure Static Webapp
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: upload
+          skip_app_build: true
+          skip_api_build: true
+          app_location: ${{ env.wwwroot_path }}
+          output_location: ${{ env.wwwroot_path }}
