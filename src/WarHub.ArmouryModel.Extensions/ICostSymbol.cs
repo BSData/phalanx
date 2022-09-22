@@ -8,6 +8,4 @@ namespace WarHub.ArmouryModel;
 public interface ICostSymbol : IResourceEntrySymbol
 {
     decimal Value { get; }
-
-    string TypeId { get; }
 }

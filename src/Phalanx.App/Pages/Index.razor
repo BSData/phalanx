@@ -1,8 +1,22 @@
 ﻿@page "/"
-
+@inject NavigationManager NavigationManager
+@inject Phalanx.App.Util.RosterEditorService EditorService
 <Phalanx.App.Pages.Home.WelcomeView></Phalanx.App.Pages.Home.WelcomeView>
 
 <div style="display: flex; justify-content: space-around;">
-    <FluentAnchor Appearance="Appearance.Accent" Href="/rosteredit">Edit sample roster</FluentAnchor>
+    <FluentButton Appearance="Appearance.Accent"@onclick="LoadRoster">Edit sample roster</FluentButton>
+
     <FluentAnchor Appearance="Appearance.Accent" Href="/print">Format roster</FluentAnchor>
 </div>
+
+
+@code {
+    public void LoadRoster(){
+
+        // TODO, this call should be parameterized
+        EditorService.LoadRoster();
+
+
+        NavigationManager.NavigateTo("rosteredit");
+    }
+}

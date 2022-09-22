@@ -13,6 +13,7 @@
 
         <CostDisplay Values="Selection.Costs" />
 
+        @* Disable remove until some best practices are made/learned for symbol-based operations *@
         @* <FluentButton @onclick="() => RemoveSelf(Selection)">Remove</FluentButton> *@
 
     </div>
@@ -27,15 +28,13 @@
     [CascadingParameter]
     public RosterEditor? Editor { get; set; }
 
-    void RemoveSelf(ISelectionSymbol node)
+    void RemoveSelf()
     {
-        @* Editor?.ApplyOperation(RosterOperations.RemoveSelection(node)); *@
+        @* Editor?.ApplyOperation(RosterOperations.RemoveSelection(Selection)); *@
     }
-
     
     void EditSelf(ISelectionSymbol node)
     {
         NavigationManager.NavigateTo("selection-edit/" + node.Id);
     }
-
 }

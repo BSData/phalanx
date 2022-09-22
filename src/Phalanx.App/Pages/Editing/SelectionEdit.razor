@@ -45,7 +45,7 @@
     public string Id { get; set; } = default!;
 
     
-    public RosterEditor? Editor => EditorService.Editor; 
+    public RosterEditor? Editor => RosterEditorService.Editor; 
 
     protected override void OnInitialized(){
         if(Editor?.State?.Roster == null){

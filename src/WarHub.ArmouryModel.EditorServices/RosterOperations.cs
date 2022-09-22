@@ -229,7 +229,7 @@ public record AddRootEntryFromSymbol(IContainerEntrySymbol entryLink, string For
         var Force = roster.Forces.FirstOrDefault(f => f.Id == ForceId);
 
         // TODO hard-coded catalog
-        var entrySelection = state.Catalogues[1].SharedSelectionEntries.Where(s => s.Id == entryLink.ReferencedEntry.Id).FirstOrDefault();
+        var entrySelection = state.Catalogues[1].SharedSelectionEntries.Where(s => s.Id == entryLink?.ReferencedEntry?.Id).FirstOrDefault();
         if (entrySelection == null)
         {
             return roster;
@@ -238,10 +238,13 @@ public record AddRootEntryFromSymbol(IContainerEntrySymbol entryLink, string For
         var costNodes = new List<CostNode>();
         foreach (var cost in entryLink.Costs)
         {
-            var costType = state.Gamesystem.CostTypes.NodeList.FirstOrDefault(ct => ct.Id == cost.TypeId);
+            if(cost.Type is null || cost.Type.Id is null ){
+                continue;
+            }
+            var costType = state.Gamesystem.CostTypes.NodeList.FirstOrDefault(ct => ct.Id == cost.Type.Id);
             if (costType != null)
             {
-                costNodes.Add(Cost(cost.Name, cost.TypeId, cost.Value));
+                costNodes.Add(Cost(cost.Name, cost.Type.Id, cost.Value));
             }
         }
 
@@ -255,17 +258,14 @@ public record AddRootEntryFromSymbol(IContainerEntrySymbol entryLink, string For
             }
         }
 
-        var selection =
-            Selection(entrySelection,
-                entrySelection.Id
-            ).AddCosts(costNodes)
-            .AddCategories(catList);
-
-
-        // var Force = state.Roster.Forces.FirstOrDefault(f => f.Id == ForceId);
-
-        if (Force != null)
+        if (Force != null && entrySelection.Id != null)
         {
+            var selection =
+                Selection(entrySelection,
+                    entrySelection.Id
+                ).AddCosts(costNodes)
+                .AddCategories(catList);
+
             return roster.Replace(Force, x => x.AddSelections(selection));
         }
         else

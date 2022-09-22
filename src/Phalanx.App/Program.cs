@@ -16,12 +16,8 @@ builder.Services.AddSingleton<RosterEditorService>();
 
 var host = builder.Build();
 
-//get roster from file
-var ws = SampleDataResources.CreateXmlWorkspace();
-var rosterState = RosterState.CreateFromNodes(ws.Documents.Select(x => x.GetRootAsync().Result!));
 
 var rosterService = host.Services.GetRequiredService<RosterEditorService>();
 
-rosterService.LoadRoster(rosterState);
 
 await host.RunAsync();

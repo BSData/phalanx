@@ -115,8 +115,6 @@ internal static class ErrorSymbols
     internal record ErrorCostSymbol : ErrorResourceEntrySymbol, ICostSymbol
     {
         decimal ICostSymbol.Value => default;
-        string ICostSymbol.TypeId => string.Empty;
-
     }
 
     internal record ErrorCharacteristicSymbol : ErrorResourceEntrySymbol, ICharacteristicSymbol

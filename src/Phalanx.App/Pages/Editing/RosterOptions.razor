@@ -10,14 +10,19 @@
 
         @foreach (var cost in Roster.Costs)
         {
+            if(cost.TypeId == null ){
+                continue;
+            }
             @* TODO seeing this error on increment/decrement button presses:
             Uncaught TypeError: event.detail is null 
             May or may not be causing the first Update attempt here to fail
             *@
-            <div style="display: flex; gap: 1em;">
-                <FluentNumberField TValue="decimal" @bind-Value="CostLimitInputs[cost.TypeId]" Min="-1" Size="4" ></FluentNumberField> 
-                <span>@cost.Name</span>
-            </div>
+            if(CostLimitInputs.ContainsKey(cost.TypeId)){
+                <div style="display: flex; gap: 1em;">
+                    <FluentNumberField TValue="decimal" @bind-Value="CostLimitInputs[cost.TypeId]" Min="-1" Size="4" ></FluentNumberField> 
+                    <span>@cost.Name</span>
+                </div>
+            }
         }
         
         <br />
@@ -56,16 +61,20 @@ else
         CostLimitInputs = new Dictionary<string, decimal>();
         if(Roster!=null){
 
-            rosterName = Roster.Name;
+            if(Roster.Name != null){
+                rosterName = Roster.Name;
+            }
 
-            foreach (var cost in Roster.Costs)
-            {
-                var limit = Roster.CostLimits.FirstOrDefault<CostLimitNode>(limit => limit.TypeId == cost.TypeId);
-                
-                var limitValue = limit != null ? limit.Value : -1;
-                if(cost.TypeId != null)
-                    CostLimitInputs.Add(cost.TypeId, limitValue);
-            } 
+            if(Roster.Costs != null){
+                foreach (var cost in Roster.Costs)
+                {
+                    var limit = Roster.CostLimits.FirstOrDefault<CostLimitNode>(limit => limit.TypeId == cost.TypeId);
+                    
+                    var limitValue = limit != null ? limit.Value : -1;
+                    if(cost.TypeId != null)
+                        CostLimitInputs.Add(cost.TypeId, limitValue);
+                } 
+            }
         }
     }
 

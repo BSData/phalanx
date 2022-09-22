@@ -39,8 +39,8 @@ else
 }
 
 @code {
-    public RosterEditor? Editor => EditorService.Editor; 
-
+    public RosterEditor? Editor => RosterEditorService.Editor; 
+ 
     public RosterFormat Format { get; set; } = RosterFormatter.BuiltinFormatters[0];
 
     private RosterNode? Roster => Editor?.State.Roster;

@@ -10,33 +10,18 @@
     <TitlePart>Add Units</TitlePart>
 
     <FluentTreeView>
-
-        @foreach (var force in Editor.State.Compilation.GlobalNamespace.Rosters[0].Forces)
-        {
-            var catalogues = Editor.State.Compilation.GlobalNamespace.Catalogues.Where(x => !x.IsGamesystem);
-
-            // Get each catalogue, get all entries in catalogues
-            foreach(var catalogue in catalogues)
-            {
-                if(catalogue != null)
-                {
-                    foreach(var entry in catalogue.RootContainerEntries)
-                    {
-                        if (entry.Id == null) // make the IDE happy
-                            break;
-
-                        var costs = entry.Resources.Where(res => res.ResourceKind == ResourceKind.Cost);
-
-                        <FluentTreeItem Expanded="true" >
-                            <div style="display: flex; gap: 1em;">
-                                <FluentNumberField TValue="int" @bind-Value="RosterAddItems[entry.Id].Count" Min="0" Size="2" /> 
-                                <span>@entry.Name</span>
-                                <CostDisplay Values="entry.Costs" />
-                            </div>
-                        </FluentTreeItem>
-                    }
-                }
+        @foreach(var addOption in RosterAddItems.Values){
+            var EntryLink = addOption.EntryLink;
+            if(EntryLink.Id is null){
+                continue;
             }
+            <FluentTreeItem Expanded="true" >
+                <div style="display: flex; gap: 1em;">
+                    <FluentNumberField TValue="int" @bind-Value="RosterAddItems[EntryLink.Id].Count" Min="0" Size="2" /> 
+                    <span>@EntryLink.Name</span>
+                    <CostDisplay Values="EntryLink.Costs" />
+                </div>
+            </FluentTreeItem>
         }
     </FluentTreeView>
     <FluentButton Appearance="Appearance.Accent" @onclick="()=> AddSelected()">Add</FluentButton>
@@ -51,7 +36,7 @@
     [Parameter, EditorRequired]
     public EventCallback<IRosterOperation[]> OnAddDone { get; set; }
 
-    private Dictionary<string, AddSelection> RosterAddItems = new Dictionary<string, AddSelection>();
+    private readonly Dictionary<string, AddSelection> RosterAddItems = new Dictionary<string, AddSelection>();
 
     protected class AddSelection{
         public IContainerEntrySymbol EntryLink {get; set;}
@@ -76,8 +61,6 @@
 
         if (!(Editor is { State: { Roster: { } Roster, Catalogues: { } Catalogues } }))
             return;
-
-        RosterAddItems = new Dictionary<string, AddSelection>();
 
         foreach (var force in Editor.State.Compilation.GlobalNamespace.Rosters[0].Forces)
         {
