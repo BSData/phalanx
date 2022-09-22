@@ -9,7 +9,7 @@ defaults:
 jobs:
   deploy_pr:
     name: Deploy PR webapp
-    if: github.event.action != 'closed'
+    if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     env:
       wwwroot_path: ./wwwroot/
@@ -58,3 +58,4 @@ jobs:
           skip_api_build: true
           app_location: ${{ env.wwwroot_path }}
           output_location: ${{ env.wwwroot_path }}
+          deployment_environment: pr-${{ env.pr_number }}
