@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       wwwroot_path: ./wwwroot/
+    permissions:
+      deployments: write
     steps:
       - uses: actions/checkout@v3
 
@@ -28,12 +30,26 @@ jobs:
           script: |
             Expand-Archive webapp.zip $env:wwwroot_path
             $event = Get-Content event.json -Raw | ConvertFrom-Json
-            Set-ActionVariable pr_number $event.pull_request.number
+            $prNumber = $event.pull_request.number
+            Set-ActionVariable env_name "pr-$prNumber"
+            Set-ActionVariable pr_ref "refs/pull/$prNumber/merge"
+
+      - name: Get this workflow's URL
+        uses: actions/github-script@v6
+        id: get_job_url
+        with:
+          script: |
+            const { data: job } = await github.rest.actions.getJobForWorkflowRun({
+              ...context.repo,
+              job_id: context.jobId,
+            });
+            console.log(job);
+            core.setOutput('job_url', job.html_url);
 
       - name: Checkout PR for Azure SWA action
         uses: actions/checkout@v3
         with:
-          ref: refs/pull/${{ env.pr_number }}/merge
+          ref: ${{ env.pr_ref }}
           clean: false
 
       - name: Add staticwebapp config
@@ -48,8 +64,20 @@ jobs:
         run: |
           $env:config_content > $env:wwwroot_path/staticwebapp.config.json
 
+      - name: Create GitHub deployment
+        uses: chrnorm/deployment-action@v2
+        id: create_deployment
+        with:
+          token: ${{ github.token }}
+          ref: ${{ env.pr_ref }}
+          environment: ${{ env.env_name }}
+          transient-environment: true
+          initial-status: in_progress
+          log-url: ${{ steps.get_job_url.outputs.job_url }}
+
       - name: Deploy Azure Static Webapp
         uses: Azure/static-web-apps-deploy@v1
+        id: deploy_swa
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
@@ -58,4 +86,13 @@ jobs:
           skip_api_build: true
           app_location: ${{ env.wwwroot_path }}
           output_location: ${{ env.wwwroot_path }}
-          deployment_environment: pr-${{ env.pr_number }}
+          deployment_environment: ${{ env.env_name }}
+
+      - name: Update deployment status
+        uses: chrnorm/deployment-status@v2
+        if: success() || (failure() && steps.deploy_swa.conclusion == 'failure')
+        with:
+          token: ${{ github.token }}
+          environment-url: ${{ steps.deploy_swa.outputs.static_web_app_url }}
+          deployment-id: ${{ steps.create_deployment.outputs.deployment_id }}
+          state: ${{ steps.deploy_swa.conclusion }}

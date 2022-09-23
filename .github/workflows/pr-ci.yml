@@ -1,7 +1,7 @@
 name: PR CI
 on:
   pull_request:
-    types: [opened, synchronize, reopened, closed]
+    types: [opened, synchronize, reopened]
     branches:
       - main
     paths-ignore:
@@ -18,7 +18,6 @@ defaults:
 jobs:
   build_and_publish:
     name: Build and Publish
-    if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
