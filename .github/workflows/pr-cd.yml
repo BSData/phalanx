@@ -34,17 +34,17 @@ jobs:
             Set-ActionVariable env_name "pr-$prNumber"
             Set-ActionVariable pr_ref "refs/pull/$prNumber/merge"
 
-      - name: Get this workflow's URL
+      - name: Get logs URL of this run
         uses: actions/github-script@v6
-        id: get_job_url
+        id: get_url
         with:
           script: |
-            const { data: job } = await github.rest.actions.getJobForWorkflowRun({
+            const { data } = await github.rest.actions.getWorkflowRun({
               ...context.repo,
-              job_id: context.jobId,
+              run_id: context.runId,
             });
-            console.log(job);
-            core.setOutput('job_url', job.html_url);
+            console.log(data);
+            core.setOutput('url', data.html_url);
 
       - name: Checkout PR for Azure SWA action
         uses: actions/checkout@v3
@@ -73,7 +73,7 @@ jobs:
           environment: ${{ env.env_name }}
           transient-environment: true
           initial-status: in_progress
-          log-url: ${{ steps.get_job_url.outputs.job_url }}
+          log-url: ${{ steps.get_url.outputs.url }}
 
       - name: Deploy Azure Static Webapp
         uses: Azure/static-web-apps-deploy@v1
