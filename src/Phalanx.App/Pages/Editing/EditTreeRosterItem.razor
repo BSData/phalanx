@@ -90,7 +90,7 @@
 
     private async void DownloadRoster() {
         if(this.Roster != null) {
-            var memStream = new MemoryStream();
+            using var memStream = new MemoryStream();
             this.Roster.Serialize( memStream );
             memStream.Position = 0;
 
@@ -102,7 +102,7 @@
     private async Task DownloadRosterZ() {
         if (this.Roster != null)
         {
-            MemoryStream zipStream = new MemoryStream();
+            using var zipStream = new MemoryStream();
             using (var zipArchive = new ZipArchive(zipStream, ZipArchiveMode.Create, true))
             {
                 ZipArchiveEntry entry = zipArchive.CreateEntry("roster.ros");
