@@ -1,5 +1,4 @@
-﻿
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Options;
 
@@ -65,7 +64,8 @@ public static class GalleryCacheExtensions
         {
             return repoInfo;
         }
-        var repoItem = gallery.InfoCache?.Repositories?.First(x => x.Name == repositoryRef.Name)
+        gallery.InfoCache?.Repositories.ForEach(x => Console.WriteLine(x.Name));
+        var repoItem = gallery.InfoCache?.Repositories?.FirstOrDefault(x => x.Name == repositoryRef.Name)
             ?? throw new InvalidOperationException("Failed to find referenced repository item.");
         var result = await client.GetCatpkgFromUrl(repoItem.RepositoryUrl ?? throw new InvalidOperationException("Repository has no repositoryUrl."));
         cache.Upsert(gallery with
@@ -155,8 +155,8 @@ public record CatpkgRepositoryInfo
     public string? BugTrackerUrl { get; init; }
     public string? ReportBugUrl { get; init; }
     public bool? Archived { get; init; }
-    public ImmutableList<CatpkgRepositoryInfo> RepositoryFiles { get; init; } =
-        ImmutableList<CatpkgRepositoryInfo>.Empty;
+    public ImmutableList<CatpkgFileInfo> RepositoryFiles { get; init; } =
+        ImmutableList<CatpkgFileInfo>.Empty;
 }
 
 [JsonSerializable(typeof(ImmutableList<string>))]

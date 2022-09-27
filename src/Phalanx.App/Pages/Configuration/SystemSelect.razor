@@ -6,7 +6,7 @@
 @if (CatpkgGallery is { InfoCache: { } galleryInfo } && _repositories is not null)
 {
     <h2>System:</h2>
-    <FluentSelect @bind-Value="_selectedRepoName">
+    <FluentSelect TValue=string Value="_selectedRepoName" ValueChanged="(x => SelectCatpkg(x))">
         @foreach (var repo in _repositories)
         {
             <FluentOption Value="repo.Name">@repo.Name</FluentOption>
@@ -66,10 +66,19 @@ else
         // Clear value if we switch away from archived
         if ((CatpkgGallery?.InfoCache?.Repositories
             ?.Where(x => x.Description == _selectedRepoName)
-            .First()?.Archived ?? false) && !ShowArchived)
+            .FirstOrDefault()?.Archived ?? false) && !ShowArchived)
         {
             _selectedRepoName = "";
         }
+    }
+
+    CatpkgRepositoryInfo? repositoryInfo;
+
+    async Task SelectCatpkg(string catName)
+    {
+        _selectedRepoName = catName;
+        repositoryInfo = CatpkgGallery?.InfoCache?.Repositories.Find(x => x.Name == catName);
+        repositoryInfo = await state.Cache.GetHydratedCatpkgAsync(client, new RepositoryReference(_selectedRepoName, CatpkgGallery.Reference));
     }
 
     protected async override Task OnParametersSetAsync()
