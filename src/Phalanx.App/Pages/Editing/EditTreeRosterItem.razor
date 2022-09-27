@@ -90,15 +90,12 @@
 
     private async void DownloadRoster() {
         if(this.Roster != null) {
-            var stringWriter = new StringWriter();
-            this.Roster.Serialize( stringWriter );
-            var bytes = System.Text.Encoding.UTF8.GetBytes(stringWriter.ToString());
+            var memStream = new MemoryStream();
+            this.Roster.Serialize( memStream );
+            memStream.Position = 0;
 
-            await JS.InvokeAsync<object>(
-                "saveAsFile",
-                "roster.ros",
-                Convert.ToBase64String( bytes )
-                 );
+            using var streamRef = new DotNetStreamReference( memStream );
+            await JS.InvokeAsync<object>("saveAsFile", "roster.ros", streamRef);
         }
     }
 
@@ -106,7 +103,7 @@
         if (this.Roster != null)
         {
             MemoryStream zipStream = new MemoryStream();
-            using (var zipArchive = new ZipArchive(zipStream, ZipArchiveMode.Create))
+            using (var zipArchive = new ZipArchive(zipStream, ZipArchiveMode.Create, true))
             {
                 ZipArchiveEntry entry = zipArchive.CreateEntry("roster.ros");
                 using (StreamWriter writer = new StreamWriter(entry.Open()))
@@ -114,15 +111,11 @@
                     this.Roster.Serialize(writer);
                 }
             }
-
-            await JS.InvokeAsync<object>(
-                "saveAsFile",
-                "roster.rosz",
-                Convert.ToBase64String(zipStream.ToArray())
-                    );
+            zipStream.Position = 0;
+            using var streamRef = new DotNetStreamReference( zipStream );
+            await JS.InvokeAsync<object>( "saveAsFile", "roster.rosz", streamRef );
         }
     }
-
 
     public void CloseAddMenu(IRosterOperation[] ops)
     {
