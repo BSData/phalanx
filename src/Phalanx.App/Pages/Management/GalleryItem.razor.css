@@ -1,0 +1,32 @@
+.gallery-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: thin solid #CCC;
+  min-height: 120px;
+  padding: 0.2em 0.4em;
+}
+
+.game-system-title {
+   font-size: 1.2em;
+   display: block;
+   margin: 0;
+   padding: 0;
+}
+
+.remote-version {
+  font-size: 1em;
+  display: block;
+  margin-top: 0.4em;
+}
+
+.remote-version-release-date, .local-version {
+  font-style: italic;
+  font-size: 0.8em;
+  display: block;
+}
+
+.game-system-info-container, .gallery-item-button-container {
+  margin-top: 0.6em;
+  margin-bottom: 0.6em;
+}
