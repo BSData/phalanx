@@ -5,6 +5,8 @@
   border: thin solid #CCC;
   min-height: 120px;
   padding: 0.2em 0.4em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
 }
 
 .game-system-title {
