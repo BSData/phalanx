@@ -6,9 +6,18 @@
   </div>
 
   <div class="gallery-item-button-container">
-    <FluentButton><span class="fas fa-save"></span> Save</FluentButton>
-    <FluentButton><span class="fas fa-circle-down"></span> Update</FluentButton>
-    <FluentButton><span class="fas fa-trash"></span> Remove</FluentButton>
+    <FluentButton>
+        <FluentIcon Name="@FluentIcons.Save" Filled="true" Size="@IconSize.Size16"/>
+        Save
+      </FluentButton>
+    <FluentButton>
+      <FluentIcon Name="@FluentIcons.ArrowDownload" Size="IconSize.Size16" Filled=true />
+      Update
+    </FluentButton>
+    <FluentButton>
+      <FluentIcon Name="@FluentIcons.Delete" Filled="true" Size="@IconSize.Size16"/>
+      Remove
+    </FluentButton>
     <span class="local-version">Local Version: 2.0</span>
   </div>
 </div>
