@@ -238,7 +238,8 @@ public record AddRootEntryFromSymbol(IContainerEntrySymbol entryLink, string For
         var costNodes = new List<CostNode>();
         foreach (var cost in entryLink.Costs)
         {
-            if(cost.Type is null || cost.Type.Id is null ){
+            if (cost.Type is null || cost.Type.Id is null)
+            {
                 continue;
             }
             var costType = state.Gamesystem.CostTypes.NodeList.FirstOrDefault(ct => ct.Id == cost.Type.Id);

@@ -1,6 +1,7 @@
-namespace Phalanx.App.Util;
-using WarHub.ArmouryModel.EditorServices;
 using Phalanx.SampleDataset;
+using WarHub.ArmouryModel.EditorServices;
+
+namespace Phalanx.App.Util;
 
 public class RosterEditorService
 {
