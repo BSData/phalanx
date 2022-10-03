@@ -66,8 +66,8 @@
         </FluentTreeView>
 
         <FluentButton Appearance="Appearance.Accent" @onclick="ToggleAdd">Add Units</FluentButton>
-        <FluentButton Appearance="Appearance.Accent" Disabled="this.Roster == null" @onclick='DownloadRoster'>Download .ros</FluentButton>
-        <FluentButton Appearance="Appearance.Accent" Disabled="this.Roster == null" @onclick='DownloadRosterZ'>Download .rosz</FluentButton>
+        <FluentButton Appearance="Appearance.Accent" @onclick='DownloadRoster'>Download .ros</FluentButton>
+        <FluentButton Appearance="Appearance.Accent" @onclick='DownloadRosterZ'>Download .rosz</FluentButton>
     }
     else
     {
@@ -86,19 +86,22 @@
         this.AddMode = !this.AddMode;
     }
 
-    private async void DownloadRoster() {
-        if(this.Roster != null) {
+    private async Task DownloadRoster()
+    {
+        if (Editor?.State.Roster is { } roster)
+        {
             using var memStream = new MemoryStream();
-            this.Roster.Serialize( memStream );
+            roster.Serialize(memStream);
             memStream.Position = 0;
 
-            using var streamRef = new DotNetStreamReference( memStream );
+            using var streamRef = new DotNetStreamReference(memStream);
             await JS.InvokeAsync<object>("saveAsFile", "roster.ros", streamRef);
         }
     }
 
-    private async Task DownloadRosterZ() {
-        if (this.Roster != null)
+    private async Task DownloadRosterZ()
+    {
+        if (Editor?.State.Roster is { } roster)
         {
             using var zipStream = new MemoryStream();
             using (var zipArchive = new ZipArchive(zipStream, ZipArchiveMode.Create, true))
@@ -106,12 +109,12 @@
                 ZipArchiveEntry entry = zipArchive.CreateEntry("roster.ros");
                 using (StreamWriter writer = new StreamWriter(entry.Open()))
                 {
-                    this.Roster.Serialize(writer);
+                    roster.Serialize(writer);
                 }
             }
             zipStream.Position = 0;
-            using var streamRef = new DotNetStreamReference( zipStream );
-            await JS.InvokeAsync<object>( "saveAsFile", "roster.rosz", streamRef );
+            using var streamRef = new DotNetStreamReference(zipStream);
+            await JS.InvokeAsync<object>("saveAsFile", "roster.rosz", streamRef);
         }
     }
 
