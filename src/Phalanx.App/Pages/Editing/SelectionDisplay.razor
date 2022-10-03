@@ -1,40 +1,46 @@
-@using Phalanx.SampleDataset
-@using WarHub.ArmouryModel.EditorServices
-@using WarHub.ArmouryModel.Source
-@inject NavigationManager NavigationManager
 @using WarHub.ArmouryModel
+@using WarHub.ArmouryModel.EditorServices
 
 
 @if (Selection is not null)
 {
-    <div style="display: flex; gap: 1em;" >
+    <div style="display: flex; gap: 1em;">
 
-        <span @onclick="() => EditSelf(Selection)">@Selection.Name</span>
+        <span>@Selection.Name</span>
 
         <CostDisplay Values="Selection.Costs" />
 
-        @* Disable remove until some best practices are made/learned for symbol-based operations *@
-        @* <FluentButton @onclick="() => RemoveSelf(Selection)">Remove</FluentButton> *@
+        <FluentButton @onclick=EditSelf>Edit</FluentButton>
 
+        <FluentButton @onclick=RemoveSelf>Remove</FluentButton>
     </div>
 }
 
 @code {
-    @* TODO convert to symbols-driven? *@
     [Parameter, EditorRequired]
     public ISelectionSymbol? Selection { get; set; }
 
+    [Parameter]
+    public EventCallback<ISelectionSymbol> SelectionClosed { get; set; }
+
+    [Parameter]
+    public EventCallback<ISelectionSymbol> EditRequested { get; set; }
 
     [CascadingParameter]
     public RosterEditor? Editor { get; set; }
 
-    void RemoveSelf()
+    async Task RemoveSelf()
     {
-        @* Editor?.ApplyOperation(RosterOperations.RemoveSelection(Selection)); *@
+        if (Selection is null)
+            return;
+        Editor?.ApplyOperation(RosterOperations.RemoveSelection(Selection.GetDeclaration()!));
+        await SelectionClosed.InvokeAsync(Selection);
     }
-    
-    void EditSelf(ISelectionSymbol node)
+
+    async Task EditSelf()
     {
-        NavigationManager.NavigateTo("selection-edit/" + node.Id);
+        if (Selection is null)
+            return;
+        await EditRequested.InvokeAsync(Selection);
     }
 }

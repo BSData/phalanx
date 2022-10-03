@@ -17,11 +17,11 @@
         <FluentTabs>
             <FluentTab>Edit</FluentTab>
             <FluentTabPanel>
-                <RootRosterEdit/>
+                <RootRosterEdit />
             </FluentTabPanel>
             <FluentTab>Options</FluentTab>
             <FluentTabPanel>
-                <RosterOptions/>
+                <RosterOptions />
             </FluentTabPanel>
             <FluentTab>Preview</FluentTab>
             <FluentTabPanel>
@@ -39,8 +39,8 @@ else
 }
 
 @code {
-    public RosterEditor? Editor => RosterEditorService.Editor; 
- 
+    public RosterEditor? Editor => EditorService.ActiveEditor;
+
     public RosterFormat Format { get; set; } = RosterFormatter.BuiltinFormatters[0];
 
     private RosterNode? Roster => Editor?.State.Roster;
@@ -48,11 +48,12 @@ else
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        LoadTestRoster();
-    }
-    void LoadTestRoster()
-    {
-        if(Editor is not null){
+        if (Editor is null)
+        {
+            EditorService.LoadSampleRoster();
+        }
+        if (Editor is not null)
+        {
             Editor.OperationApplied += (op, state) => StateHasChanged();
         }
     }

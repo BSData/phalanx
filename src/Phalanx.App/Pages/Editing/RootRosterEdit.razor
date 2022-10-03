@@ -1,8 +1,7 @@
 @using WarHub.ArmouryModel.EditorServices
 @using WarHub.ArmouryModel.Source
 
-
-@if (Roster is not null)
+@if (Editor is { State: { Roster: { } Roster, RosterSymbol: { } RosterSymbol } State })
 {
     <TitlePart>@Roster.Name</TitlePart>
 
@@ -29,11 +28,9 @@
     @if (!AddMode)
     {
         <TitlePart>Roster Edit</TitlePart>
-        // TODO roster idx hardcode
-        var forces = Editor.State.Compilation.GlobalNamespace.Rosters[0].Forces;
 
         <FluentTreeView>
-            @foreach (var force in forces)
+            @foreach (var force in RosterSymbol.Forces)
             {
                 <FluentTreeItem Expanded="true">
                     <span>@force.Name</span>
@@ -76,8 +73,6 @@
 @code {
     [CascadingParameter, EditorRequired]
     public RosterEditor? Editor { get; set; }
-
-    private RosterNode? Roster => Editor?.State.Roster;
 
     private bool AddMode { get; set; } = false;
 

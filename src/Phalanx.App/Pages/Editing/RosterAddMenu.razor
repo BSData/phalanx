@@ -5,19 +5,21 @@
 
 @if (Editor is { State: { Roster: { } Roster, Catalogues: { } Catalogues } })
 {
-    @* TODO this render fires every time an add count gets modified 
+    @* TODO this render fires every time an add count gets modified
         fine for testing for now, but might expensive with bigger gamesystems *@
     <TitlePart>Add Units</TitlePart>
 
     <FluentTreeView>
-        @foreach(var addOption in RosterAddItems.Values){
+        @foreach (var addOption in RosterAddItems.Values)
+        {
             var EntryLink = addOption.EntryLink;
-            if(EntryLink.Id is null){
+            if (EntryLink.Id is null)
+            {
                 continue;
             }
-            <FluentTreeItem Expanded="true" >
+            <FluentTreeItem Expanded="true">
                 <div style="display: flex; gap: 1em;">
-                    <FluentNumberField TValue="int" @bind-Value="RosterAddItems[EntryLink.Id].Count" Min="0" Size="2" /> 
+                    <FluentNumberField TValue="int" @bind-Value="RosterAddItems[EntryLink.Id].Count" Min="0" Size="2" />
                     <span>@EntryLink.Name</span>
                     <CostDisplay Values="EntryLink.Costs" />
                 </div>
@@ -38,16 +40,18 @@
 
     private readonly Dictionary<string, AddSelection> RosterAddItems = new Dictionary<string, AddSelection>();
 
-    protected class AddSelection{
-        public IContainerEntrySymbol EntryLink {get; set;}
-        
+    protected class AddSelection
+    {
+        public IContainerEntrySymbol EntryLink { get; set; }
+
         // TODO with symbols, this val should become redundant since we can grab teh containing category/primary category
         // it might be obe now and I just don't know it ...
-        public ICatalogueSymbol Catalogue{get; set;}
-        public string ForceId{get;}
+        public ICatalogueSymbol Catalogue { get; set; }
+        public string ForceId { get; }
 
         public int Count;
-        public AddSelection(IContainerEntrySymbol node, IForceSymbol force, ICatalogueSymbol cat){
+        public AddSelection(IContainerEntrySymbol node, IForceSymbol force, ICatalogueSymbol cat)
+        {
             EntryLink = node;
             Catalogue = cat;
             ForceId = force.Id is not null ? force.Id : "";
@@ -68,11 +72,11 @@
             var catalogues = Editor.State.Compilation.GlobalNamespace.Catalogues.Where(x => !x.IsGamesystem);
             @* // TODO this might be better as OnParametersSet call *@
             // Get each catalogue, get all entries in catalogues, set counts for all entries to 0
-            foreach(var catalogue in catalogues)
+            foreach (var catalogue in catalogues)
             {
-                if(catalogue != null)
+                if (catalogue != null)
                 {
-                    foreach(var entry in catalogue.RootContainerEntries)
+                    foreach (var entry in catalogue.RootContainerEntries)
                     {
                         if (entry.Id == null) // make the IDE happy
                             continue;
@@ -99,19 +103,19 @@
             // Get the Selection this entrylink points to, then add it to the Roster
             for (int i = 0; i < RosterAddItems[key].Count; i++)
             {
-                if (Editor?.State is { Roster: { } roster } state){
-                    Editor?.ApplyOperation(RosterOperations.AddRootEntryFromSymbol(RosterAddItems[key].EntryLink, RosterAddItems[key].ForceId));
+                if (Editor?.State is { Roster: { } roster } state)
+                {
+                    Editor?.ApplyOperation(RosterOperations.AddRootEntryFromSymbol(RosterAddItems[key].EntryLink,
+                    RosterAddItems[key].ForceId));
                 }
             }
         }
 
         return OnAddDone.InvokeAsync();
     }
-    
+
     Task CloseMenu()
     {
         return OnAddDone.InvokeAsync(null);
     }
 }
-
-

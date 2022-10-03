@@ -17,7 +17,9 @@ public record RosterState(Compilation Compilation)
             .Select(x => x.GetCatalogueDeclaration() ?? throw new InvalidOperationException())
             .ToImmutableArray();
 
-    public RosterNode? Roster => Compilation.GlobalNamespace.Rosters.SingleOrDefault()?.GetDeclaration();
+    public IRosterSymbol? RosterSymbol => Compilation.GlobalNamespace.Rosters.SingleOrDefault();
+
+    public RosterNode? Roster => RosterSymbol?.GetDeclaration();
 
     public RosterNode RosterRequired => Roster ?? throw new InvalidOperationException();
 
