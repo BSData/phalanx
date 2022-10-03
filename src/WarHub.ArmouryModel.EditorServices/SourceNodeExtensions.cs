@@ -19,7 +19,6 @@ public static class SourceNodeExtensions
         return (TRoot?)replacer.Visit(root) ?? throw new InvalidOperationException();
     }
 
-
     public static TRoot ReplaceFluent<TRoot, TNode>(this TRoot root, Func<TRoot, TNode> nodeSelector, Func<TNode, TNode?> computeReplacement)
         where TNode : SourceNode where TRoot : SourceNode
         => root.Replace(nodeSelector(root), computeReplacement);
