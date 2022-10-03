@@ -1,5 +1,9 @@
+@using System.IO.Compression
 @using WarHub.ArmouryModel.EditorServices
 @using WarHub.ArmouryModel.Source
+@using WarHub.ArmouryModel.Source.BattleScribe
+
+@inject IJSRuntime JS
 
 @if (Editor is { State: { Roster: { } Roster, RosterSymbol: { } RosterSymbol } State })
 {
@@ -62,7 +66,8 @@
         </FluentTreeView>
 
         <FluentButton Appearance="Appearance.Accent" @onclick="ToggleAdd">Add Units</FluentButton>
-        @* <FluentButton Appearance="Appearance.Accent" @onclick="ExportRoster">Export Roster</FluentButton> *@
+        <FluentButton Appearance="Appearance.Accent" Disabled="this.Roster == null" @onclick='DownloadRoster'>Download .ros</FluentButton>
+        <FluentButton Appearance="Appearance.Accent" Disabled="this.Roster == null" @onclick='DownloadRosterZ'>Download .rosz</FluentButton>
     }
     else
     {
@@ -79,6 +84,35 @@
     private void ToggleAdd()
     {
         this.AddMode = !this.AddMode;
+    }
+
+    private async void DownloadRoster() {
+        if(this.Roster != null) {
+            using var memStream = new MemoryStream();
+            this.Roster.Serialize( memStream );
+            memStream.Position = 0;
+
+            using var streamRef = new DotNetStreamReference( memStream );
+            await JS.InvokeAsync<object>("saveAsFile", "roster.ros", streamRef);
+        }
+    }
+
+    private async Task DownloadRosterZ() {
+        if (this.Roster != null)
+        {
+            using var zipStream = new MemoryStream();
+            using (var zipArchive = new ZipArchive(zipStream, ZipArchiveMode.Create, true))
+            {
+                ZipArchiveEntry entry = zipArchive.CreateEntry("roster.ros");
+                using (StreamWriter writer = new StreamWriter(entry.Open()))
+                {
+                    this.Roster.Serialize(writer);
+                }
+            }
+            zipStream.Position = 0;
+            using var streamRef = new DotNetStreamReference( zipStream );
+            await JS.InvokeAsync<object>( "saveAsFile", "roster.rosz", streamRef );
+        }
     }
 
     public void CloseAddMenu(IRosterOperation[] ops)

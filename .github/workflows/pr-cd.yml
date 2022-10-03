@@ -1,0 +1,98 @@
+name: PR CD
+on:
+  workflow_run:
+    workflows: [PR CI]
+    types: [completed]
+defaults:
+  run:
+    shell: pwsh
+jobs:
+  deploy_pr:
+    name: Deploy PR webapp
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    env:
+      wwwroot_path: ./wwwroot/
+    permissions:
+      deployments: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download webapp from workflow artifacts
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          name: pr-data
+          run_id: ${{ github.event.workflow_run.id }}
+
+      - name: Prepare artifacts
+        uses: Amadevus/pwsh-script@v2
+        with:
+          script: |
+            Expand-Archive webapp.zip $env:wwwroot_path
+            $event = Get-Content event.json -Raw | ConvertFrom-Json
+            $prNumber = $event.pull_request.number
+            Set-ActionVariable env_name "pr-$prNumber"
+            Set-ActionVariable pr_ref "refs/pull/$prNumber/merge"
+
+      - name: Get logs URL of this run
+        uses: actions/github-script@v6
+        id: get_url
+        with:
+          script: |
+            const { data } = await github.rest.actions.getWorkflowRun({
+              ...context.repo,
+              run_id: context.runId,
+            });
+            console.log(data);
+            core.setOutput('url', data.html_url);
+
+      - name: Checkout PR for Azure SWA action
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ env.pr_ref }}
+          clean: false
+
+      - name: Add staticwebapp config
+        env:
+          config_content: |
+            {
+              "navigationFallback": {
+                "rewrite": "/index.html",
+                "exclude": ["/*.{png,jpg,gif,ico,svg,js,json,dll,css}", "/css/*"]
+              }
+            }
+        run: |
+          $env:config_content > $env:wwwroot_path/staticwebapp.config.json
+
+      - name: Create GitHub deployment
+        uses: chrnorm/deployment-action@v2
+        id: create_deployment
+        with:
+          token: ${{ github.token }}
+          ref: ${{ env.pr_ref }}
+          environment: ${{ env.env_name }}
+          transient-environment: true
+          initial-status: in_progress
+          log-url: ${{ steps.get_url.outputs.url }}
+
+      - name: Deploy Azure Static Webapp
+        uses: Azure/static-web-apps-deploy@v1
+        id: deploy_swa
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: upload
+          skip_app_build: true
+          skip_api_build: true
+          app_location: ${{ env.wwwroot_path }}
+          output_location: ${{ env.wwwroot_path }}
+          deployment_environment: ${{ env.env_name }}
+
+      - name: Update deployment status
+        uses: chrnorm/deployment-status@v2
+        if: success() || (failure() && steps.deploy_swa.conclusion == 'failure')
+        with:
+          token: ${{ github.token }}
+          environment-url: ${{ steps.deploy_swa.outputs.static_web_app_url }}
+          deployment-id: ${{ steps.create_deployment.outputs.deployment_id }}
+          state: ${{ steps.deploy_swa.conclusion }}

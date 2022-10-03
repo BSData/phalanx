@@ -1,0 +1,47 @@
+name: PR CI
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+    paths-ignore:
+      - "**/*.md"
+      - "**/*.gitignore"
+      - "**/*.gitattributes"
+      - "**/*.yml"
+env:
+  DOTNET_NOLOGO: 1
+  Configuration: Release
+defaults:
+  run:
+    shell: pwsh
+jobs:
+  build_and_publish:
+    name: Build and Publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-dotnet@v1
+      - run: dotnet --info
+      - run: dotnet tool restore
+      - run: dotnet restore
+      - run: dotnet build --no-restore
+      - run: dotnet test --no-build
+      - run: dotnet format --no-restore --verify-no-changes --verbosity normal
+
+      - name: Publish
+        run: dotnet publish src/Phalanx.App --output ./.build/pub --version-suffix "beta.pr.${{ github.run_number }}"
+
+      - name: Prepare artifacts
+        run: |
+          Compress-Archive ./.build/pub/wwwroot/* webapp.zip
+          Copy-Item $env:GITHUB_EVENT_PATH event.json
+
+      - name: Upload published artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: pr-data
+          path: |
+            webapp.zip
+            event.json
+          retention-days: 7
