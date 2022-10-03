@@ -1,5 +1,7 @@
 @using Microsoft.Extensions.Options
 @using WarHub.ArmoryModel.DataProviders
+@using WarHub.ArmouryModel.Workspaces.BattleScribe;
+
 @inject GalleryHttpClient client
 @inject GalleryBrowserState state
 
@@ -24,30 +26,31 @@ else
 
 @code {
 
-    [Parameter]
-    public CatpkgGalleryCache? CatpkgGallery { get; set; }
+        [Parameter]
+        public CatpkgGalleryCache? CatpkgGallery { get; set; }
 
-    [Parameter]
-    public EventCallback<CatpkgGalleryCache> CatpkgGalleryChanged { get; set; }
+        [Parameter]
+        public EventCallback<CatpkgGalleryCache> CatpkgGalleryChanged { get; set; }
 
-    string _selectedRepoName = "";
+        XmlWorkspace? workspace;
 
-    bool _showArchived;
+        string _selectedRepoName = "";
 
-    bool ShowArchived
+        bool _showArchived;
+
+        bool ShowArchived
     {
-        get => _showArchived;
-        set
-        {
-            _showArchived = value;
-            Console.WriteLine("Set_showArchive");
-            UpdateRepositories();
+            get => _showArchived;
+            set
+    {
+                _showArchived = value;
+                UpdateRepositories();
+            }
         }
-    }
 
-    List<CatpkgRepositoryInfo>? _repositories;
+        List<CatpkgRepositoryInfo>? _repositories;
 
-    List<ColumnDefinition<CatpkgRepositoryInfo>> ColumnDefinitions { get; } = new()
+        List<ColumnDefinition<CatpkgRepositoryInfo>> ColumnDefinitions { get; } = new()
     {
 #nullable disable
         new("Name", x => x.Description),
@@ -55,30 +58,31 @@ else
 #nullable restore
     };
 
-    void UpdateRepositories()
-    {
-        Console.WriteLine(ShowArchived);
-        _repositories = CatpkgGallery?.InfoCache?.Repositories
-            ?.Where(x => x.Archived != true || ShowArchived)
-            .OrderBy(x => x.Description)
-            .ToList()
-                        ?? new();
-        // Clear value if we switch away from archived
-        if ((CatpkgGallery?.InfoCache?.Repositories
-            ?.Where(x => x.Description == _selectedRepoName)
-            .FirstOrDefault()?.Archived ?? false) && !ShowArchived)
+        void UpdateRepositories()
         {
-            _selectedRepoName = "";
+            _repositories = CatpkgGallery?.InfoCache?.Repositories
+                ?.Where(x => x.Archived != true || ShowArchived)
+                .OrderBy(x => x.Description)
+                .ToList()
+                            ?? new();
+            // Clear value if we switch away from archived
+            if ((CatpkgGallery?.InfoCache?.Repositories
+                ?.Where(x => x.Description == _selectedRepoName)
+                .FirstOrDefault()?.Archived ?? false) && !ShowArchived)
+            {
+                _selectedRepoName = "";
+            }
         }
-    }
 
-    CatpkgRepositoryInfo? repositoryInfo;
+        CatpkgRepositoryInfo? repositoryInfo;
 
-    async Task SelectCatpkg(string catName)
-    {
-        _selectedRepoName = catName;
-        repositoryInfo = CatpkgGallery?.InfoCache?.Repositories.Find(x => x.Name == catName);
-        repositoryInfo = await state.Cache.GetHydratedCatpkgAsync(client, new RepositoryReference(_selectedRepoName, CatpkgGallery.Reference));
+        async Task SelectCatpkg(string catName)
+        {
+            _selectedRepoName = catName;
+            repositoryInfo = CatpkgGallery?.InfoCache?.Repositories.Find(x => x.Name == catName);
+            repositoryInfo = await state.Cache.GetHydratedCatpkgAsync(client, new RepositoryReference(_selectedRepoName, CatpkgGallery.Reference));
+            workspace = await state.Cache.GetXMLWorkspaceAsync(client, new RepositoryReference(_selectedRepoName, CatpkgGallery.Reference));
+            Console.WriteLine(workspace);
     }
 
     protected async override Task OnParametersSetAsync()

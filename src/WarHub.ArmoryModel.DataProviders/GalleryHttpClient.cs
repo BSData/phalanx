@@ -1,6 +1,8 @@
-﻿using System.Net.Http.Json;
+using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Options;
+using WarHub.ArmouryModel.Workspaces.BattleScribe;
+
 
 namespace WarHub.ArmoryModel.DataProviders;
 
@@ -64,7 +66,6 @@ public static class GalleryCacheExtensions
         {
             return repoInfo;
         }
-        gallery.InfoCache?.Repositories.ForEach(x => Console.WriteLine(x.Name));
         var repoItem = gallery.InfoCache?.Repositories?.FirstOrDefault(x => x.Name == repositoryRef.Name)
             ?? throw new InvalidOperationException("Failed to find referenced repository item.");
         var result = await client.GetCatpkgFromUrl(repoItem.RepositoryUrl ?? throw new InvalidOperationException("Repository has no repositoryUrl."));
@@ -72,6 +73,21 @@ public static class GalleryCacheExtensions
         {
             RepositoryInfoCache = gallery.RepositoryInfoCache.SetItem(repositoryRef, result)
         });
+        return result;
+    }
+
+    public static async Task<XmlWorkspace> GetXMLWorkspaceAsync(this GalleryCache cache, GalleryHttpClient client, RepositoryReference repositoryRef)
+    {
+        var repositoryInfo = await cache.GetHydratedCatpkgAsync(client, repositoryRef);
+        var docList = new List<XmlDocument>();
+        repositoryInfo.RepositoryFiles.ForEach(async fileInfo =>
+        {
+            Console.WriteLine(fileInfo);
+            var doc = await client.GetXmlDoc(fileInfo);
+            docList.Add(doc);
+
+        });
+        var result = XmlWorkspace.CreateFromDocuments(docList.ToImmutableArray());
         return result;
     }
 }
@@ -114,6 +130,14 @@ public sealed class GalleryHttpClient : IDisposable
     {
         var result = await client.GetFromJsonAsync<CatpkgRepositoryInfo>("?" + url);
         return result!;
+    }
+
+    public async Task<XmlDocument> GetXmlDoc(CatpkgFileInfo catpkgFileInfo)
+    {
+        var stream = await client.GetStreamAsync("?" + catpkgFileInfo.FileUrl);
+        var file = stream.LoadSourceAuto(catpkgFileInfo?.FileUrl ?? "");
+        var result = XmlDocument.Create(file);
+        return result;
     }
 
     public class Options

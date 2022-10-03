@@ -1,21 +1,23 @@
 ﻿@page "/"
 @using Microsoft.Extensions.Options
 @using WarHub.ArmoryModel.DataProviders
+@using WarHub.ArmouryModel.Workspaces.BattleScribe
 @inject GalleryHttpClient httpClient
 @inject IOptions<GalleryBrowserOptions> options
 @inject GalleryBrowserState state
 
-<FluentSelect @bind-Value="selectedGalleryName">
-    <FluentOption>Use Playground</FluentOption>
-
+<FluentSelect TValue=string Value="_selectedGalleryName" ValueChanged="(x => onSelectedGalleryChanged(x))">
+    <FluentOption>Phalanx Playground</FluentOption>
     @foreach (var galleryRef in state.Cache.GalleryReferences)
     {
         <FluentOption Value="galleryRef.Name">@galleryRef.Name</FluentOption>
     }
 
 </FluentSelect>
-<Phalanx.App.Pages.Configuration.SystemSelect @bind-CatpkgGallery=SelectedGalleryCache></Phalanx.App.Pages.Configuration.SystemSelect>
-
+@if (_selectedGalleryName.Length > 0)
+{
+    <Phalanx.App.Pages.Configuration.SystemSelect @bind-CatpkgGallery=SelectedGalleryCache></Phalanx.App.Pages.Configuration.SystemSelect>
+}
 <Phalanx.App.Pages.Home.WelcomeView></Phalanx.App.Pages.Home.WelcomeView>
 
 <div style="display: flex; justify-content: space-around;">
@@ -25,12 +27,12 @@
 
 @code {
 
-    private string selectedGalleryName = "";
+    private string _selectedGalleryName = "";
 
     private CatpkgGalleryCache? SelectedGalleryCache
     {
-        get => selectedGalleryName == "" ? new CatpkgGalleryCache(new GalleryReference("Phalanx Playground", new Uri("file://"))) :
-            state.Cache[selectedGalleryName];
+        get => _selectedGalleryName == "" ? new CatpkgGalleryCache(new GalleryReference("Phalanx Playground", new Uri("file://"))) :
+            state.Cache[_selectedGalleryName];
         set
         {
             if (value is not null)
@@ -44,7 +46,7 @@
     {
         base.OnInitialized();
 
-    // add if not already existing
+        // add if not already existing
         foreach (var galleryRefDto in options.Value.DefaultGalleries)
         {
             var galleryRef = galleryRefDto.ToRecord();
@@ -53,7 +55,7 @@
                 state.Cache.Upsert(new(galleryRef));
             }
         }
-        selectedGalleryName = options.Value.DefaultGalleries.FirstOrDefault()?.Name ?? "";
+        _selectedGalleryName = options.Value.DefaultGalleries.FirstOrDefault()?.Name ?? "";
     }
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
@@ -64,5 +66,9 @@
             var galleryInfo = await state.Cache.GetCatpkgGalleryInfoAsync(httpClient, galleryRef.ToRecord());
         }
     }
-
+    protected async Task onSelectedGalleryChanged(string galleryName)
+    {
+        await base.OnParametersSetAsync();
+        _selectedGalleryName = galleryName;
+    }
 }
