@@ -9,21 +9,19 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.8" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
     <PackageReference Include="Microsoft.Fast.Components.FluentUI" Version="1.5.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NuGet.Versioning" Version="6.3.0" />
     <PackageReference Include="PublishSPAforGitHubPages.Build" Version="2.0.1" />
+    <PackageReference Include="WarHub.ArmouryModel.Workspaces.BattleScribe" Version="0.13.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Phalanx.SampleDataset\Phalanx.SampleDataset.csproj" />
     <ProjectReference Include="..\WarHub.ArmouryModel.Concrete.Extensions\WarHub.ArmouryModel.Concrete.Extensions.csproj" />
+    <ProjectReference Include="..\Warhub.ArmouryModel.DataProviders\Warhub.ArmouryModel.DataProviders.csproj" />
     <ProjectReference Include="..\WarHub.ArmouryModel.EditorServices\WarHub.ArmouryModel.EditorServices.csproj" />
     <ProjectReference Include="..\WarHub.ArmouryModel.Extensions\WarHub.ArmouryModel.Extensions.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <!-- <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" /> -->
-  </ItemGroup>
-
 </Project>
