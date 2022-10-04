@@ -7,22 +7,22 @@
 
 @if (Editor is { State: { Roster: { } Roster, RosterSymbol: { } RosterSymbol } State })
 {
-    <TitlePart>@Roster.Name</TitlePart>
+    <TitlePart>@RosterSymbol.Name</TitlePart>
 
-    <h2>@Roster.Name</h2>
+    <h2>@RosterSymbol.Name</h2>
     @* Total Roster Costs *@
     <p>
-        @foreach (var cost in Roster.Costs)
+        @foreach (var cost in RosterSymbol.Costs)
         {
-            if (Roster.CostLimits.FirstOrDefault(x => x.TypeId == cost.TypeId) is { } limit)
+            if (cost.Limit is { } limit)
             {
-                <span>@cost.Value / @limit.Value @cost.Name</span>
+                <span>@cost.Value / @limit @cost.Name</span>
             }
             else
             {
                 <span>@cost.Value @cost.Name</span>
             }
-            if (cost != Roster.Costs[^1])
+            if (cost != RosterSymbol.Costs[^1])
             {
                 <span>, </span>
             }
@@ -53,25 +53,27 @@
                             }
                         </FluentTreeItem>
                     }
-                    @* TODO kludge for now *@
-                    @foreach (var selections in force.Selections
-                   .Where(sel => sel.Categories.Count() < 1))
-                    {
-                        <FluentTreeItem Expanded="true">
-                            <SelectionDisplay Selection="selections" />
-                        </FluentTreeItem>
-                    }
+                    <FluentTreeItem Expanded="true">
+                        <span>Uncategorized</span>
+                        @foreach (var selections in force.Selections
+                       .Where(sel => sel.PrimaryCategory is null))
+                        {
+                            <FluentTreeItem Expanded="true">
+                                <SelectionDisplay Selection="selections" />
+                            </FluentTreeItem>
+                        }
+                    </FluentTreeItem>
                 </FluentTreeItem>
             }
         </FluentTreeView>
 
-        <FluentButton Appearance="Appearance.Accent" @onclick="ToggleAdd">Add Units</FluentButton>
-        <FluentButton Appearance="Appearance.Accent" @onclick='DownloadRoster'>Download .ros</FluentButton>
-        <FluentButton Appearance="Appearance.Accent" @onclick='DownloadRosterZ'>Download .rosz</FluentButton>
+        <FluentButton Appearance="Appearance.Accent" @onclick=ToggleAdd>Add Units</FluentButton>
+        <FluentButton Appearance="Appearance.Accent" @onclick=DownloadRoster>Download .ros</FluentButton>
+        <FluentButton Appearance="Appearance.Accent" @onclick=DownloadRosterZ>Download .rosz</FluentButton>
     }
     else
     {
-        <RosterAddMenu OnAddDone="CloseAddMenu"></RosterAddMenu>
+        <RosterAddMenu OnAddDone="ToggleAdd"></RosterAddMenu>
     }
 }
 
@@ -116,10 +118,5 @@
             using var streamRef = new DotNetStreamReference(zipStream);
             await JS.InvokeAsync<object>("saveAsFile", "roster.rosz", streamRef);
         }
-    }
-
-    public void CloseAddMenu(IRosterOperation[] ops)
-    {
-        ToggleAdd();
     }
 }

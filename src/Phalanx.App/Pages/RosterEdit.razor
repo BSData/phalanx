@@ -1,5 +1,7 @@
 ﻿@page "/rosteredit"
 
+@implements IDisposable
+
 @using WarHub.ArmouryModel.EditorServices
 @using WarHub.ArmouryModel.EditorServices.Formatting
 @using WarHub.ArmouryModel.Source
@@ -56,5 +58,11 @@ else
         {
             Editor.OperationApplied += (op, state) => StateHasChanged();
         }
+    }
+
+    public void Dispose()
+    {
+        if (Editor is { } editor)
+            editor.OperationApplied -= (op, state) => StateHasChanged();
     }
 }

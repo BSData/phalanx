@@ -34,8 +34,8 @@ public static class RosterOperations
     public static ChangeSelectionCountOperation ChangeCountOf(SelectionNode selection, int newCount) =>
         new(selection, newCount);
 
-    public static AddRootEntryFromSymbol AddRootEntryFromSymbol(IContainerEntrySymbol link, string force) =>
-        new(link, force);
+    public static AddRootEntryFromSymbol AddRootEntryFromSymbol(ISelectionEntryContainerSymbol link, string force, int count = 1) =>
+        new(link, force, count);
 }
 
 public class IdentityRosterOperation : IRosterOperation
@@ -207,61 +207,48 @@ public record AddSelectionFromLinkOp(SelectionEntryNode SelectionEntry, EntryLin
     }
 }
 
-public record AddRootEntryFromSymbol(IContainerEntrySymbol Entry, string ForceId) : RosterOperationBase
+public record AddRootEntryFromSymbol(ISelectionEntryContainerSymbol Entry, string ForceId, int Count = 1) : RosterOperationBase
 {
     protected override RosterOperationKind Kind => RosterOperationKind.AddSelection;
 
     protected override RosterNode TransformRoster(RosterState state)
     {
         var roster = state.RosterRequired;
-
-        // Use ID because the ForceNode object becomes invalid after other operations,
-        // such as a prior selectionAdd
-        var force = roster.Forces.FirstOrDefault(f => f.Id == ForceId);
-
-        // TODO hard-coded catalog
-        var entrySelection = state.Catalogues[1].SharedSelectionEntries.Where(s => s.Id == Entry?.ReferencedEntry?.Id).FirstOrDefault();
-        if (entrySelection == null)
+        // hack for referencing symbols from previous compilations, until SymbolReference is done
+        var entryLocal = state.Compilation.GlobalNamespace.Catalogues
+            .First(x => x.Id == Entry.ContainingModule!.Id)
+            .RootContainerEntries
+            .Where(x => x.IsContainerKind(ContainerKind.Selection))
+            .OfType<ISelectionEntryContainerSymbol>()
+            .First(x => x.Id == Entry.Id);
+        var entries = !entryLocal.IsReference
+            ? new[] { entryLocal }
+            : new[] { entryLocal, entryLocal.ReferencedEntry! };
+        // TODO how does BS work when Link declares costs as well as the Target entry?
+        var costNodes = entries
+            .SelectMany(x => x.Costs)
+            .Where(x => x.Value > 0 && x.Type?.Id is not null)
+            .Select(x => Cost(x.Name, x.Type!.Id, x.Value))
+            .ToList();
+        // TODO handle primary set in both link and target entry, deduplicate categories
+        var catList = entries
+            .SelectMany(x => x.Categories)
+            .Select(x => Category(x.ReferencedEntry!.GetEntryDeclaration()!, x.ReferencedEntry!.Id).WithPrimary(x.IsPrimaryCategory))
+            .ToList();
+        var selectionEntryNode = (entryLocal.IsReference ? entryLocal.ReferencedEntry! : entryLocal).GetEntryDeclaration()!;
+        for (var i = 0; i < Count; i++)
         {
-            return roster;
-        }
-
-        var costNodes = new List<CostNode>();
-        foreach (var cost in Entry.Costs)
-        {
-            if (cost.Type is null || cost.Type.Id is null)
-            {
-                continue;
-            }
-            var costType = state.Gamesystem.CostTypes.NodeList.FirstOrDefault(ct => ct.Id == cost.Type.Id);
-            if (costType != null)
-            {
-                costNodes.Add(Cost(cost.Name, cost.Type.Id, cost.Value));
-            }
-        }
-
-        var catList = new List<CategoryNode>();
-        foreach (var catLink in entrySelection.CategoryLinks)
-        {
-            var catEntry = state.Gamesystem.CategoryEntries.FirstOrDefault(c => c.Id == catLink.TargetId);
-            if (catEntry != null)
-            {
-                catList.Add(Category(catEntry, catLink.TargetId).WithPrimary(catLink.Primary));
-            }
-        }
-
-        if (force != null && entrySelection.Id != null)
-        {
+            // Use ID because the ForceNode object becomes invalid after other operations,
+            // such as a prior selectionAdd
+            var force = roster.Forces.First(f => f.Id == ForceId);
             var selection =
-                Selection(entrySelection,
-                    entrySelection.Id
-                ).AddCosts(costNodes)
+                Selection(selectionEntryNode, selectionEntryNode.Id!)
+                .AddCosts(costNodes)
                 .AddCategories(catList);
 
-            return roster.Replace(force, x => x.AddSelections(selection));
+            roster = roster.Replace(force, x => x.AddSelections(selection));
         }
-        else
-            return roster;
+        return roster;
     }
 }
 
