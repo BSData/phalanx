@@ -8,18 +8,8 @@ on:
       - "**/*.gitignore"
       - "**/*.gitattributes"
       - "**/*.yml"
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
-    branches:
-      - main
-    paths-ignore:
-      - "**/*.md"
-      - "**/*.gitignore"
-      - "**/*.gitattributes"
-      - "**/*.yml"
 env:
   DOTNET_NOLOGO: 1
-  DOTNET_CLI_TELEMETRY_OPTOUT: 1
   Configuration: Release
   PagesCname: www.phalanx.tools
 defaults:
@@ -27,10 +17,9 @@ defaults:
     shell: pwsh
 jobs:
   build:
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: actions/setup-dotnet@v1
       - run: dotnet --info
       - run: dotnet tool restore
@@ -40,11 +29,11 @@ jobs:
       - run: dotnet format --no-restore --verify-no-changes --verbosity normal
 
   deploy_main:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: actions/setup-dotnet@v1
       - run: dotnet --info
       - run: dotnet tool restore
@@ -59,50 +48,3 @@ jobs:
           publish_dir: ./.build/pub/wwwroot
           cname: ${{ env.PagesCname }}
           force_orphan: true
-
-  deploy_pr:
-    if: github.event_name == 'pull_request' && github.event.action != 'closed'
-    needs: build
-    runs-on: ubuntu-latest
-    name: Build and Deploy PR
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-dotnet@v1
-      - run: dotnet --info
-      - run: dotnet tool restore
-
-      - name: Publish
-        run: dotnet publish src/Phalanx.App --output ./.build/pub --version-suffix "beta.${{ github.run_number }}"
-
-      - name: Add staticwebapp config
-        env:
-          config_content: |
-            {
-              "navigationFallback": {
-                "rewrite": "/index.html",
-                "exclude": ["/*.{png,jpg,gif,ico,svg,js,json,dll,css}", "/css/*"]
-              }
-            }
-        run: "$env:config_content > ./.build/pub/wwwroot/staticwebapp.config.json"
-
-      - name: Deploy Azure Static Webapp
-        uses: Azure/static-web-apps-deploy@v1
-        with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          action: upload
-          skip_app_build: true
-          skip_api_build: true
-          app_location: ./.build/pub/wwwroot
-          output_location: ./.build/pub/wwwroot
-
-  close_pr:
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
-    runs-on: ubuntu-latest
-    name: Destroy PR deployment
-    steps:
-      - name: Remove Azure Static Webapp
-        uses: Azure/static-web-apps-deploy@v1
-        with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
-          action: close

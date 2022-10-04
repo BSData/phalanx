@@ -1,70 +1,43 @@
-@using Phalanx.SampleDataset
-@using WarHub.ArmouryModel.EditorServices
-@using WarHub.ArmouryModel.Source
 @using WarHub.ArmouryModel
-@using Phalanx.App.Util
-
-@inject NavigationManager NavigationManager
-@inject RosterEditorService EditorService
-
-@page "/selection-edit/{*Id}"
+@using WarHub.ArmouryModel.EditorServices
 
 @if (Selection is not null)
 {
-    <div style="display: flex; gap: 1em;" >
+    <div style="display: flex; gap: 1em;">
 
         <span>@Selection.Name</span>
 
         <CostDisplay Values="Selection.Costs" />
 
-        @* <FluentButton @onclick="() => RemoveSelf(Selection)">Remove</FluentButton> *@
-
+        <FluentButton @onclick=RemoveSelf>Remove</FluentButton>
     </div>
 
     @* TODO this is where a step should be taken back to figure out how to recurse our selections/editing/etc *@
-    <div style="display:flex; flex-direction:column"> 
-
-        @foreach(var selEntry in Selection.SourceEntry.ChildSelectionEntries ){
+    <div style="display:flex; flex-direction:column">
+        @foreach (var selEntry in Selection.SourceEntry.ChildSelectionEntries)
+        {
             //var catalogues = Editor.State.Compilation.GlobalNamespace.Catalogues.Where(x => !x.IsGamesystem);
 
             <span>@selEntry.Name</span>
-            
         }
-        @* @foreach(var sel in Selection.Selections){
-            <SelectionSubDisplay Selection="sel"/>
-        } *@
     </div>
 }
 
 @code {
-    [Parameter]
+    [Parameter, EditorRequired]
     public ISelectionSymbol? Selection { get; set; }
 
+    [Parameter]
+    public EventCallback<ISelectionSymbol> SelectionClosed { get; set; }
 
-    [Parameter, EditorRequired]
-    public string Id { get; set; } = default!;
+    [CascadingParameter]
+    public RosterEditor? Editor { get; set; }
 
-    
-    public RosterEditor? Editor => RosterEditorService.Editor; 
-
-    protected override void OnInitialized(){
-        if(Editor?.State?.Roster == null){
-            return;
-        }
-
-        base.OnInitialized();
-
-        
-        Selection = Editor.State.Compilation.GlobalNamespace.Rosters[0].Forces[0].Selections.FirstOrDefault(s => s.Id == Id);
-        @* RosterDebugPrinter printer = new RosterDebugPrinter();
-        printer.Visit(Selection); *@
-
-    }
-    void RemoveSelf(SelectionNode node)
+    async Task RemoveSelf()
     {
-        Editor?.ApplyOperation(RosterOperations.RemoveSelection(node));
-        NavigationManager.NavigateTo("rosteredit");
+        if (Selection is null)
+            return;
+        Editor?.ApplyOperation(RosterOperations.RemoveSelection(Selection.GetDeclaration()!));
+        await SelectionClosed.InvokeAsync(Selection);
     }
-
-
 }

@@ -1,117 +1,120 @@
-@using WarHub.ArmouryModel.Source
 @using WarHub.ArmouryModel
 @using WarHub.ArmouryModel.EditorServices
 
 
 @if (Editor is { State: { Roster: { } Roster, Catalogues: { } Catalogues } })
 {
-    @* TODO this render fires every time an add count gets modified 
+    @* TODO this render fires every time an add count gets modified
         fine for testing for now, but might expensive with bigger gamesystems *@
     <TitlePart>Add Units</TitlePart>
 
     <FluentTreeView>
-        @foreach(var addOption in RosterAddItems.Values){
-            var EntryLink = addOption.EntryLink;
-            if(EntryLink.Id is null){
-                continue;
-            }
-            <FluentTreeItem Expanded="true" >
-                <div style="display: flex; gap: 1em;">
-                    <FluentNumberField TValue="int" @bind-Value="RosterAddItems[EntryLink.Id].Count" Min="0" Size="2" /> 
-                    <span>@EntryLink.Name</span>
-                    <CostDisplay Values="EntryLink.Costs" />
-                </div>
+        @foreach (var forceOpts in Forces)
+        {
+            <FluentTreeItem Expanded=true>
+                <h3>@forceOpts.Force.Name</h3>
+                @foreach (var categoryOpts in forceOpts.Categories)
+                {
+                    <FluentTreeItem Expanded=true>
+                        <h3>@categoryOpts.Category.Name</h3>
+                        @foreach (var selectionOpts in categoryOpts.Selections)
+                        {
+                            <FluentTreeItem Expanded="true">
+                                <div style="display: flex; gap: 1em;">
+                                    <FluentNumberField TValue="int" @bind-Value="selectionOpts.Count" Min="0" Size="2" />
+                                    <span>@selectionOpts.Entry.Name</span>
+                                    <CostDisplay Values="selectionOpts.Entry.Costs" />
+                                </div>
+                            </FluentTreeItem>
+                        }
+                    </FluentTreeItem>
+                }
             </FluentTreeItem>
         }
     </FluentTreeView>
-    <FluentButton Appearance="Appearance.Accent" @onclick="()=> AddSelected()">Add</FluentButton>
-    <FluentButton Appearance="Appearance.Accent" @onclick="()=> CloseMenu()">Cancel</FluentButton>
+    <FluentButton Appearance="Appearance.Accent" @onclick=AddSelected>Add</FluentButton>
+    <FluentButton Appearance="Appearance.Accent" @onclick=OnAddDone>Cancel</FluentButton>
 }
 
 @code {
-
     [CascadingParameter, EditorRequired]
     public RosterEditor? Editor { get; set; }
 
     [Parameter, EditorRequired]
-    public EventCallback<IRosterOperation[]> OnAddDone { get; set; }
+    public EventCallback OnAddDone { get; set; }
 
-    private readonly Dictionary<string, AddSelection> RosterAddItems = new Dictionary<string, AddSelection>();
+    private List<ForceOptions> Forces { get; set; } = new();
 
-    protected class AddSelection{
-        public IContainerEntrySymbol EntryLink {get; set;}
-        
-        // TODO with symbols, this val should become redundant since we can grab teh containing category/primary category
-        // it might be obe now and I just don't know it ...
-        public ICatalogueSymbol Catalogue{get; set;}
-        public string ForceId{get;}
+    record AddSelection(ISelectionEntryContainerSymbol Entry, IForceSymbol Force)
+    {
+        public int Count { get; set; }
+    }
 
-        public int Count;
-        public AddSelection(IContainerEntrySymbol node, IForceSymbol force, ICatalogueSymbol cat){
-            EntryLink = node;
-            Catalogue = cat;
-            ForceId = force.Id is not null ? force.Id : "";
-            Count = 0;
-        }
+    record ForceOptions(IForceSymbol Force)
+    {
+        public List<CategoryOptions> Categories { get; } = new();
+    }
+
+    record CategoryOptions(ICategoryEntrySymbol Category)
+    {
+        public List<AddSelection> Selections { get; } = new();
     }
 
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-
-        if (!(Editor is { State: { Roster: { } Roster, Catalogues: { } Catalogues } }))
-            return;
-
-        foreach (var force in Editor.State.Compilation.GlobalNamespace.Rosters[0].Forces)
+        Forces.Clear();
+        if (Editor is { State: { RosterSymbol: { } Roster } })
         {
-            // TODO WIP for symbols, blocked by not getting Cost values
-            var catalogues = Editor.State.Compilation.GlobalNamespace.Catalogues.Where(x => !x.IsGamesystem);
-            @* // TODO this might be better as OnParametersSet call *@
-            // Get each catalogue, get all entries in catalogues, set counts for all entries to 0
-            foreach(var catalogue in catalogues)
+            foreach (var force in Roster.Forces)
             {
-                if(catalogue != null)
+                var forceOpts = new ForceOptions(force);
+                foreach (var category in force.SourceEntry.Categories)
                 {
-                    foreach(var entry in catalogue.RootContainerEntries)
+                    var categoryOpts = new CategoryOptions(category);
+                    var categoryId = category.ReferencedEntry!.Id!;
+                    // TODO include entries from imported catalogues + game system
+                    // TODO handle No Category entries
+                    foreach (var entry in force.CatalogueReference.Catalogue.RootContainerEntries)
                     {
-                        if (entry.Id == null) // make the IDE happy
-                            continue;
-                        RosterAddItems[entry.Id] = new AddSelection(entry, force, catalogue);
+                        if (entry.ContainerKind is ContainerKind.Selection &&
+                        entry is ISelectionEntryContainerSymbol selectionEntry &&
+                        (selectionEntry.PrimaryCategory?.ReferencedEntry?.Id == categoryId ||
+                        selectionEntry.IsReference && selectionEntry.ReferencedEntry!.PrimaryCategory?.ReferencedEntry?.Id == categoryId))
+                        {
+                            categoryOpts.Selections.Add(new(selectionEntry, force));
+                        }
                     }
+                    forceOpts.Categories.Add(categoryOpts);
                 }
+                Forces.Add(forceOpts);
             }
         }
     }
 
     Task AddSelected()
     {
-        if (Editor?.State is not { Roster: { } rosterState })
+        if (Editor is { } editor)
         {
-            return Task.CompletedTask;
-        }
-
-        foreach (string key in RosterAddItems.Keys)
-        {
-            if (RosterAddItems[key].Count < 1)
-                continue;
-
-            // TODO determine if other arrays need traversal besides SSE
-            // Get the Selection this entrylink points to, then add it to the Roster
-            for (int i = 0; i < RosterAddItems[key].Count; i++)
+            foreach (var forceOpts in Forces)
             {
-                if (Editor?.State is { Roster: { } roster } state){
-                    Editor?.ApplyOperation(RosterOperations.AddRootEntryFromSymbol(RosterAddItems[key].EntryLink, RosterAddItems[key].ForceId));
+                foreach (var categoryOpts in forceOpts.Categories)
+                {
+                    foreach (var selectionOpts in categoryOpts.Selections)
+                    {
+                        if (selectionOpts.Count > 0)
+                        {
+                            AddSelectionOp(editor, selectionOpts);
+                        }
+                    }
                 }
             }
         }
-
         return OnAddDone.InvokeAsync();
     }
-    
-    Task CloseMenu()
+
+    static void AddSelectionOp(RosterEditor editor, AddSelection opts)
     {
-        return OnAddDone.InvokeAsync(null);
+        editor.ApplyOperation(RosterOperations.AddRootEntryFromSymbol(opts.Entry, opts.Force.Id!, opts.Count));
     }
 }
-
-

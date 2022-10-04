@@ -1,13 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<catalogue id="fccc-3ddb-779a-4e99" name="Babies" revision="1" battleScribeVersion="2.03" authorName="Rylok" authorContact="@rylok3" library="false" gameSystemId="bc3d-3e2a-b2b3-fef7" gameSystemRevision="2" xmlns="http://www.battlescribe.net/schema/catalogueSchema">
+<catalogue id="fccc-3ddb-779a-4e99" name="Babies" revision="3" battleScribeVersion="2.03" authorName="Rylok" authorContact="@rylok3" library="false" gameSystemId="bc3d-3e2a-b2b3-fef7" gameSystemRevision="2" xmlns="http://www.battlescribe.net/schema/catalogueSchema">
   <publications>
     <publication id="1ee7-1cb3-868f-a153" name="BabyBook 2022"/>
   </publications>
+  <entryLinks>
+    <entryLink id="e70f-3ec7-1f39-b4fe" name="test selections" hidden="false" collective="false" import="true" targetId="264c-c1e5-bd35-2764" type="selectionEntry"/>
+    <entryLink id="0fa8-5355-9880-f951" name="test profiles and rules" hidden="false" collective="false" import="true" targetId="ba2b-ef5c-a370-63a9" type="selectionEntry"/>
+  </entryLinks>
+  <rules>
+    <rule id="2531-5fcb-d76f-e67d" name="Who sent all these babies to fight??" hidden="false">
+      <description>babies are considered babies</description>
+    </rule>
+  </rules>
   <sharedSelectionEntries>
     <selectionEntry id="209b-ff54-3ea6-3651" name="BabyBuggy" publicationId="1ee7-1cb3-868f-a153" hidden="false" collective="false" import="true" type="unit">
       <categoryLinks>
         <categoryLink id="3ee6-bce5-3dd3-f479" name="New CategoryLink" hidden="false" targetId="2c8f-63d4-2b0c-01ad" primary="true"/>
       </categoryLinks>
+      <costs>
+        <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
+        <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="0.0"/>
+      </costs>
     </selectionEntry>
     <selectionEntry id="7d6e-e84a-1220-8e97" name="Wheeled Bassinet" publicationId="1ee7-1cb3-868f-a153" hidden="false" collective="false" import="true" type="unit">
       <categoryLinks>
@@ -15,8 +28,168 @@
         <categoryLink id="aa98-84fe-f980-8b75" name="Support Vehicles" hidden="false" targetId="2c8f-63d4-2b0c-01ad" primary="false"/>
         <categoryLink id="f4d2-5e18-ee94-4954" name="Lead Vehicles" hidden="false" targetId="1f30-56d0-ac83-1212" primary="false"/>
       </categoryLinks>
+      <costs>
+        <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
+        <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="0.0"/>
+      </costs>
+    </selectionEntry>
+    <selectionEntry id="264c-c1e5-bd35-2764" name="test selections" hidden="false" collective="false" import="true" type="unit">
+      <selectionEntries>
+        <selectionEntry id="5142-4cca-14ed-37ef" name="test model default" hidden="false" collective="false" import="true" type="model">
+          <constraints>
+            <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="6d4a-9abc-caba-dc07" type="min"/>
+            <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="9cc9-df36-84d1-12b9" type="max"/>
+          </constraints>
+          <selectionEntries>
+            <selectionEntry id="d57e-699a-dfbe-e0da" name="Bottle" hidden="false" collective="false" import="true" type="upgrade">
+              <constraints>
+                <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="021c-7f15-3223-ff65" type="min"/>
+                <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="6468-6acb-0d34-67d7" type="max"/>
+              </constraints>
+              <infoLinks>
+                <infoLink id="de3d-a16d-474f-fe5f" name="Bottle" hidden="false" targetId="7dfd-7679-54e8-7cfd" type="profile"/>
+              </infoLinks>
+            </selectionEntry>
+          </selectionEntries>
+          <costs>
+            <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
+            <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="0.0"/>
+          </costs>
+        </selectionEntry>
+        <selectionEntry id="01e8-8107-d0bc-4d8e" name="test model selection" hidden="false" collective="false" import="true" type="upgrade">
+          <constraints>
+            <constraint field="selections" scope="parent" value="0.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="dc1d-0d91-6961-2861" type="min"/>
+            <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="b6a0-a767-42dc-8be5" type="max"/>
+          </constraints>
+          <selectionEntries>
+            <selectionEntry id="b31c-616a-5a1e-a15b" name="Bottle" hidden="false" collective="false" import="true" type="upgrade">
+              <constraints>
+                <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="da89-86fb-6d69-acb8" type="min"/>
+                <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="2dd8-82ca-05d4-41e9" type="max"/>
+              </constraints>
+              <infoLinks>
+                <infoLink id="4caa-cf38-dd9a-80f8" name="Bottle" hidden="false" targetId="7dfd-7679-54e8-7cfd" type="profile"/>
+              </infoLinks>
+            </selectionEntry>
+          </selectionEntries>
+          <costs>
+            <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
+            <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="0.0"/>
+          </costs>
+        </selectionEntry>
+        <selectionEntry id="3bdd-bc75-1fef-da66" name="test model collective" hidden="false" collective="false" import="true" type="model">
+          <selectionEntries>
+            <selectionEntry id="b42b-c1ad-8ff6-b60c" name="Bottle" hidden="false" collective="true" import="true" type="upgrade">
+              <constraints>
+                <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="71b1-1ddb-da81-02dd" type="min"/>
+                <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="3c52-c50a-d6e1-ae2f" type="max"/>
+              </constraints>
+              <infoLinks>
+                <infoLink id="bd9a-e090-254f-a125" name="Bottle" hidden="false" targetId="7dfd-7679-54e8-7cfd" type="profile"/>
+              </infoLinks>
+            </selectionEntry>
+          </selectionEntries>
+        </selectionEntry>
+        <selectionEntry id="3e97-5889-f26b-1bf8" name="test model non collective" hidden="false" collective="false" import="true" type="upgrade">
+          <selectionEntries>
+            <selectionEntry id="73b1-84f2-f78a-979c" name="Bottle" hidden="false" collective="false" import="true" type="upgrade">
+              <constraints>
+                <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="3ddb-0907-2a59-bf1e" type="min"/>
+                <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="8fcd-e5b2-a45b-f603" type="max"/>
+              </constraints>
+              <infoLinks>
+                <infoLink id="e16d-617b-6f77-6800" name="Bottle" hidden="false" targetId="7dfd-7679-54e8-7cfd" type="profile"/>
+              </infoLinks>
+            </selectionEntry>
+          </selectionEntries>
+        </selectionEntry>
+      </selectionEntries>
+      <costs>
+        <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
+        <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="0.0"/>
+      </costs>
+    </selectionEntry>
+    <selectionEntry id="ba2b-ef5c-a370-63a9" name="test profiles and rules" hidden="false" collective="false" import="true" type="upgrade">
+      <infoLinks>
+        <infoLink id="10bf-ec6a-d06a-b328" name="test infogroup" hidden="false" targetId="04cc-c65b-a54f-2971" type="infoGroup"/>
+      </infoLinks>
+      <selectionEntries>
+        <selectionEntry id="2325-ed29-9560-3f4d" name="test profiles" hidden="false" collective="false" import="true" type="upgrade">
+          <constraints>
+            <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="2b63-1822-61a4-78c0" type="max"/>
+          </constraints>
+          <profiles>
+            <profile id="8f4c-c5c2-1438-4a10" name="linline profile" hidden="false" typeId="a6e8-411d-f765-546a" typeName="Character">
+              <characteristics>
+                <characteristic name="Attack Power" typeId="1744-8129-95a0-536e">1</characteristic>
+                <characteristic name="Evasion" typeId="9aab-d556-7966-cc13">1</characteristic>
+                <characteristic name="Driving Skill" typeId="8b10-f201-846f-ab9f">1</characteristic>
+                <characteristic name="Navigation Skill" typeId="3f4b-aa15-3364-134b">1</characteristic>
+              </characteristics>
+            </profile>
+          </profiles>
+          <infoLinks>
+            <infoLink id="846f-8612-cbcb-76f9" name="shared profile" hidden="false" targetId="fc80-cfdb-e4bb-1091" type="profile"/>
+          </infoLinks>
+        </selectionEntry>
+        <selectionEntry id="04d8-ab2d-4ca9-acc1" name="test rules" hidden="false" collective="false" import="true" type="upgrade">
+          <constraints>
+            <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="bbba-b562-a675-8bc0" type="max"/>
+          </constraints>
+          <rules>
+            <rule id="ab5b-eb25-cab9-9683" name="test rules" hidden="false">
+              <description>i am in inline rule</description>
+            </rule>
+          </rules>
+          <infoLinks>
+            <infoLink id="70ac-e921-0493-af74" name="shared rule" hidden="false" targetId="5033-a833-88a2-c2f8" type="rule"/>
+          </infoLinks>
+        </selectionEntry>
+        <selectionEntry id="145e-803d-6a83-5405" name="test unit level rules group" hidden="false" collective="false" import="true" type="upgrade">
+          <constraints>
+            <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" id="d5e9-5623-d474-7230" type="max"/>
+          </constraints>
+          <infoGroups>
+            <infoGroup id="37a8-ac32-799d-8388" name="unit level group" hidden="false">
+              <rules>
+                <rule id="9892-9c43-ebb0-a99e" name="inline group rule inline 1" hidden="false">
+                  <description>inline in the inline group part 1</description>
+                </rule>
+                <rule id="9a45-6014-1fcf-4eb7" name="inline group rule inline 2" hidden="false">
+                  <description>inline in the inline group part 2</description>
+                </rule>
+              </rules>
+            </infoGroup>
+          </infoGroups>
+        </selectionEntry>
+      </selectionEntries>
     </selectionEntry>
   </sharedSelectionEntries>
+  <sharedRules>
+    <rule id="d11e-658b-8f47-6ed2" name="The Rule of Cool" hidden="false">
+      <description>This allows you to do whatever you like, as long as its cool</description>
+    </rule>
+    <rule id="2f34-aa8f-2582-d6ff" name="Markdown Rules" hidden="false">
+      <description># title
+
+three reasons why markdown is cool
+
+- its got lists (see this point)
+- it can do things
+- i dunno i kinda ran out of things
+
+## section 2
+
+&gt; block quote are also usefull sometimes
+
+we can also link to things [like this](https://github.com/BSData/phalanx)
+
+</description>
+    </rule>
+    <rule id="5033-a833-88a2-c2f8" name="shared rule" hidden="false">
+      <description>i am a shared rule</description>
+    </rule>
+  </sharedRules>
   <sharedProfiles>
     <profile id="7dfd-7679-54e8-7cfd" name="Bottle" publicationId="1ee7-1cb3-868f-a153" hidden="false" typeId="6cfe-fe74-1a3d-6d17" typeName="Weapon">
       <characteristics>
@@ -36,5 +209,32 @@
         <characteristic name="Range" typeId="b352-1258-db4f-2de1">10</characteristic>
       </characteristics>
     </profile>
+    <profile id="fc80-cfdb-e4bb-1091" name="shared profile" hidden="false" typeId="a6e8-411d-f765-546a" typeName="Character">
+      <characteristics>
+        <characteristic name="Attack Power" typeId="1744-8129-95a0-536e">2</characteristic>
+        <characteristic name="Evasion" typeId="9aab-d556-7966-cc13">2</characteristic>
+        <characteristic name="Driving Skill" typeId="8b10-f201-846f-ab9f">2</characteristic>
+        <characteristic name="Navigation Skill" typeId="3f4b-aa15-3364-134b">2</characteristic>
+      </characteristics>
+    </profile>
   </sharedProfiles>
+  <sharedInfoGroups>
+    <infoGroup id="04cc-c65b-a54f-2971" name="test infogroup" hidden="false">
+      <profiles>
+        <profile id="064d-f3e5-bec7-a650" name="inline profile (info group)" hidden="false" typeId="a6e8-411d-f765-546a" typeName="Character">
+          <characteristics>
+            <characteristic name="Attack Power" typeId="1744-8129-95a0-536e">3</characteristic>
+            <characteristic name="Evasion" typeId="9aab-d556-7966-cc13">3</characteristic>
+            <characteristic name="Driving Skill" typeId="8b10-f201-846f-ab9f">3</characteristic>
+            <characteristic name="Navigation Skill" typeId="3f4b-aa15-3364-134b">3</characteristic>
+          </characteristics>
+        </profile>
+      </profiles>
+      <rules>
+        <rule id="00a0-354e-4aa5-eacf" name="inline rule (info group)" hidden="false">
+          <description>i&apos;m in an info group</description>
+        </rule>
+      </rules>
+    </infoGroup>
+  </sharedInfoGroups>
 </catalogue>

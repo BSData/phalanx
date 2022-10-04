@@ -1,8 +1,4 @@
-@using WarHub.ArmouryModel.Source
 @using WarHub.ArmouryModel
-@using WarHub.ArmouryModel.EditorServices
-
-@* TODO - might be good to do polymorphism/interface instead of using a CostLinkNode *@
 
 @foreach (ICostSymbol cost in Values)
 {
@@ -22,14 +18,6 @@
 }
 
 @code {
-    [Parameter]
+    [Parameter, EditorRequired]
     public ImmutableArray<ICostSymbol> Values { get; set; }
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-    }
 }
-
-
-

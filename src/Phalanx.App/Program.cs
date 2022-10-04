@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Phalanx.App;
 using Phalanx.App.Pages.Printing;
 using Phalanx.App.Util;
-using Phalanx.SampleDataset;
-using WarHub.ArmouryModel.EditorServices;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -15,9 +13,5 @@ builder.Services.AddScoped<RosterFormatsProvider>();
 builder.Services.AddSingleton<RosterEditorService>();
 
 var host = builder.Build();
-
-
-var rosterService = host.Services.GetRequiredService<RosterEditorService>();
-
 
 await host.RunAsync();

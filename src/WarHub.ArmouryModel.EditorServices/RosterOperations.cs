@@ -1,6 +1,6 @@
-using System.Collections;
 using WarHub.ArmouryModel.Source;
 using static WarHub.ArmouryModel.Source.NodeFactory;
+
 namespace WarHub.ArmouryModel.EditorServices;
 
 public static class RosterOperations
@@ -26,7 +26,6 @@ public static class RosterOperations
     public static AddSelectionFromLinkOp AddSelectionFromLink(SelectionEntryNode selectionEntry, EntryLinkNode link, string force) =>
         new(selectionEntry, link, force);
 
-
     public static RemoveForceOperation RemoveForce(ForceNode force) => new(force);
 
     public static RemoveSelectionOperation RemoveSelection(SelectionNode selection) =>
@@ -35,10 +34,8 @@ public static class RosterOperations
     public static ChangeSelectionCountOperation ChangeCountOf(SelectionNode selection, int newCount) =>
         new(selection, newCount);
 
-    public static AddRootEntryFromSymbol AddRootEntryFromSymbol(IContainerEntrySymbol link, string force) =>
-        new(link, force);
-
-
+    public static AddRootEntryFromSymbol AddRootEntryFromSymbol(ISelectionEntryContainerSymbol link, string force, int count = 1) =>
+        new(link, force, count);
 }
 
 public class IdentityRosterOperation : IRosterOperation
@@ -110,8 +107,6 @@ public record ChangeCostLimitOperation(string TypeId, decimal NewValue) : Roster
 
     protected override RosterNode TransformRoster(RosterState state)
     {
-
-        // TODO confirm TypeId is a valid Cost.TypeId
         var roster = state.RosterRequired;
 
         if (roster.CostLimits.FirstOrDefault(x => x.TypeId == TypeId) is { } costLimit)
@@ -119,21 +114,19 @@ public record ChangeCostLimitOperation(string TypeId, decimal NewValue) : Roster
             return roster.Replace(costLimit, x => x.WithValue(NewValue));
         }
         var costType = state.Gamesystem.CostTypes.First(type => type.Id == TypeId);
-        return roster.AddCostLimits(NodeFactory.CostLimit(costType));
+        return roster.AddCostLimits(CostLimit(costType));
     }
 }
 
-
-public record ChangeRosterNameOperation(String name) : RosterOperationBase
+public record ChangeRosterNameOperation(string Name) : RosterOperationBase
 {
     protected override RosterOperationKind Kind => RosterOperationKind.RenameRoster;
 
     protected override RosterNode TransformRoster(RosterState state)
     {
         var roster = state.RosterRequired;
-        return roster.WithName(name);
+        return roster.WithName(Name);
     }
-
 }
 
 public record AddForceOperation(ForceEntryNode ForceEntry) : RosterOperationBase
@@ -182,7 +175,7 @@ public record AddSelectionOperation(SelectionEntryNode SelectionEntry, ForceNode
     }
 }
 
-public record AddSelectionFromLinkOp(SelectionEntryNode SelectionEntry, EntryLinkNode entryLink, string ForceId) : RosterOperationBase
+public record AddSelectionFromLinkOp(SelectionEntryNode SelectionEntry, EntryLinkNode EntryLink, string ForceId) : RosterOperationBase
 {
     protected override RosterOperationKind Kind => RosterOperationKind.AddSelection;
 
@@ -191,85 +184,67 @@ public record AddSelectionFromLinkOp(SelectionEntryNode SelectionEntry, EntryLin
         var roster = state.RosterRequired;
         var selectionEntryId = SelectionEntry.Id;
         if (selectionEntryId is null)
-        {
-            Console.WriteLine("AddSelectionFromLinkOp: null selectionEntryId, no-op...");
             return roster; // TODO add diagnostic invalid data
-
-        }
         var selection =
             Selection(SelectionEntry, selectionEntryId)
-            .AddCosts(entryLink.Costs);
+            .AddCosts(EntryLink.Costs);
         // .WithCategories(CategoryList( catNodes));
         // TODO add selection categories, rules, profiles
         // TODO add subselections
 
         // Use ID because the ForceNode object becomes invalid after other operations,
         // such as a prior selectionAdd
-        var Force = roster.Forces.FirstOrDefault(f => f.Id == ForceId);
+        var force = roster.Forces.FirstOrDefault(f => f.Id == ForceId);
 
-        if (Force != null)
-            return roster.Replace(Force, x => x.AddSelections(selection));
+        if (force != null)
+            return roster.Replace(force, x => x.AddSelections(selection));
         else
             return roster;
     }
 }
 
-
-
-public record AddRootEntryFromSymbol(IContainerEntrySymbol entryLink, string ForceId) : RosterOperationBase
+public record AddRootEntryFromSymbol(ISelectionEntryContainerSymbol Entry, string ForceId, int Count = 1) : RosterOperationBase
 {
     protected override RosterOperationKind Kind => RosterOperationKind.AddSelection;
 
     protected override RosterNode TransformRoster(RosterState state)
     {
         var roster = state.RosterRequired;
-
-        // Use ID because the ForceNode object becomes invalid after other operations,
-        // such as a prior selectionAdd
-        var Force = roster.Forces.FirstOrDefault(f => f.Id == ForceId);
-
-        // TODO hard-coded catalog
-        var entrySelection = state.Catalogues[1].SharedSelectionEntries.Where(s => s.Id == entryLink?.ReferencedEntry?.Id).FirstOrDefault();
-        if (entrySelection == null)
+        // hack for referencing symbols from previous compilations, until SymbolReference is done
+        var entryLocal = state.Compilation.GlobalNamespace.Catalogues
+            .First(x => x.Id == Entry.ContainingModule!.Id)
+            .RootContainerEntries
+            .Where(x => x.IsContainerKind(ContainerKind.Selection))
+            .OfType<ISelectionEntryContainerSymbol>()
+            .First(x => x.Id == Entry.Id);
+        var entries = !entryLocal.IsReference
+            ? new[] { entryLocal }
+            : new[] { entryLocal, entryLocal.ReferencedEntry! };
+        // TODO how does BS work when Link declares costs as well as the Target entry?
+        var costNodes = entries
+            .SelectMany(x => x.Costs)
+            .Where(x => x.Value > 0 && x.Type?.Id is not null)
+            .Select(x => Cost(x.Name, x.Type!.Id, x.Value))
+            .ToList();
+        // TODO handle primary set in both link and target entry, deduplicate categories
+        var catList = entries
+            .SelectMany(x => x.Categories)
+            .Select(x => Category(x.ReferencedEntry!.GetEntryDeclaration()!, x.ReferencedEntry!.Id).WithPrimary(x.IsPrimaryCategory))
+            .ToList();
+        var selectionEntryNode = (entryLocal.IsReference ? entryLocal.ReferencedEntry! : entryLocal).GetEntryDeclaration()!;
+        for (var i = 0; i < Count; i++)
         {
-            return roster;
-        }
-
-        var costNodes = new List<CostNode>();
-        foreach (var cost in entryLink.Costs)
-        {
-            if(cost.Type is null || cost.Type.Id is null ){
-                continue;
-            }
-            var costType = state.Gamesystem.CostTypes.NodeList.FirstOrDefault(ct => ct.Id == cost.Type.Id);
-            if (costType != null)
-            {
-                costNodes.Add(Cost(cost.Name, cost.Type.Id, cost.Value));
-            }
-        }
-
-        var catList = new List<CategoryNode>();
-        foreach (var catLink in entrySelection.CategoryLinks)
-        {
-            var catEntry = state.Gamesystem.CategoryEntries.FirstOrDefault(c => c.Id == catLink.TargetId);
-            if (catEntry != null)
-            {
-                catList.Add(Category(catEntry, catLink.TargetId).WithPrimary(catLink.Primary));
-            }
-        }
-
-        if (Force != null && entrySelection.Id != null)
-        {
+            // Use ID because the ForceNode object becomes invalid after other operations,
+            // such as a prior selectionAdd
+            var force = roster.Forces.First(f => f.Id == ForceId);
             var selection =
-                Selection(entrySelection,
-                    entrySelection.Id
-                ).AddCosts(costNodes)
+                Selection(selectionEntryNode, selectionEntryNode.Id!)
+                .AddCosts(costNodes)
                 .AddCategories(catList);
 
-            return roster.Replace(Force, x => x.AddSelections(selection));
+            roster = roster.Replace(force, x => x.AddSelections(selection));
         }
-        else
-            return roster;
+        return roster;
     }
 }
 
