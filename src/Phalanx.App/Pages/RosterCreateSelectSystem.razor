@@ -17,22 +17,25 @@
     {
         <FluentOption Value="galleryRef.Name">@galleryRef.Name</FluentOption>
     }
-
 </FluentSelect>
+
 @if (_selectedGalleryName.Length > 0)
 {
-    <Phalanx.App.Pages.Configuration.SystemSelect @bind-CatpkgGallery=SelectedGalleryCache></Phalanx.App.Pages.Configuration.SystemSelect>
+    <Phalanx.App.Pages.Configuration.SystemSelect @bind-CatpkgGallery=SelectedGalleryCache>
+    </Phalanx.App.Pages.Configuration.SystemSelect>
 }
 
-
 @code {
-
     private string _selectedGalleryName = "";
 
     private CatpkgGalleryCache? SelectedGalleryCache
     {
-        get => _selectedGalleryName == "" ? new CatpkgGalleryCache(new GalleryReference("Phalanx Playground", new Uri("file://"))) :
-            state.Cache[_selectedGalleryName];
+        get
+        {
+            return _selectedGalleryName == ""
+                ? new CatpkgGalleryCache(new GalleryReference("Phalanx Playground", new Uri("file://")))
+                : state.Cache[_selectedGalleryName];
+        }
         set
         {
             if (value is not null)
