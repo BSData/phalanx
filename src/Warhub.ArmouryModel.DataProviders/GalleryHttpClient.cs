@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 using WarHub.ArmouryModel.Workspaces.BattleScribe;
 
 
-namespace WarHub.ArmoryModel.DataProviders;
+namespace WarHub.ArmouryModel.DataProviders;
 
 public sealed class GalleryCache
 {

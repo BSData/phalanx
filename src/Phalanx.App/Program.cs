@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Phalanx.App;
 using Phalanx.App.Pages.Printing;
-using WarHub.ArmoryModel.DataProviders;
+using WarHub.ArmouryModel.DataProviders;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
