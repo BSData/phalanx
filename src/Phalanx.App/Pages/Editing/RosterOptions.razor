@@ -54,7 +54,6 @@ else
     [CascadingParameter, EditorRequired]
     public RosterEditor? Editor { get; set; }
 
-
     private RosterNode? Roster => Editor?.State.Roster;
 
     private Dictionary<string, decimal> CostLimitInputs = new Dictionary<string, decimal>();
@@ -63,16 +62,13 @@ else
 
     protected override void OnParametersSet()
     {
-
         CostLimitInputs = new Dictionary<string, decimal>();
         if (Roster != null)
         {
-
             if (Roster.Name != null)
             {
                 rosterName = Roster.Name;
             }
-
             if (Roster.Costs != null)
             {
                 foreach (var cost in Roster.Costs)
@@ -89,17 +85,14 @@ else
 
     Task UpdateCostLimits()
     {
-
         if (Editor is null || Editor?.State is not { Roster: { } rosterState })
         {
             return Task.CompletedTask;
         }
-
         foreach (string key in CostLimitInputs.Keys)
         {
             Editor?.ApplyOperation(RosterOperations.ChangeCostLimit(key, CostLimitInputs[key]));
         }
-
         return Task.CompletedTask;
     }
 
@@ -117,7 +110,5 @@ else
             Editor?.ApplyOperation(RosterOperations.ChangeRosterName(rosterName));
         }
         return Task.CompletedTask;
-
     }
-
 }

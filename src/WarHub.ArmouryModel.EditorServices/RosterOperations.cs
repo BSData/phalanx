@@ -184,11 +184,7 @@ public record AddSelectionFromLinkOp(SelectionEntryNode SelectionEntry, EntryLin
         var roster = state.RosterRequired;
         var selectionEntryId = SelectionEntry.Id;
         if (selectionEntryId is null)
-        {
-            Console.WriteLine("AddSelectionFromLinkOp: null selectionEntryId, no-op...");
             return roster; // TODO add diagnostic invalid data
-
-        }
         var selection =
             Selection(SelectionEntry, selectionEntryId)
             .AddCosts(EntryLink.Costs);
