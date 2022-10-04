@@ -1,0 +1,77 @@
+﻿@page "/rostercreateselectsystem"
+
+@using WarHub.ArmouryModel.Source
+@using Microsoft.Extensions.Options
+@using WarHub.ArmouryModel.DataProviders
+@using WarHub.ArmouryModel.Workspaces.BattleScribe
+
+@inject GalleryHttpClient httpClient
+@inject IOptions<GalleryBrowserOptions> options
+@inject GalleryBrowserState state
+
+<h1>Select System for Roster</h1>
+
+<FluentSelect TValue=string Value="_selectedGalleryName" ValueChanged="(x => onSelectedGalleryChanged(x))">
+    <FluentOption>Phalanx Playground</FluentOption>
+    @foreach (var galleryRef in state.Cache.GalleryReferences)
+    {
+        <FluentOption Value="galleryRef.Name">@galleryRef.Name</FluentOption>
+    }
+</FluentSelect>
+
+@if (_selectedGalleryName.Length > 0)
+{
+    <Phalanx.App.Pages.Configuration.SystemSelect @bind-CatpkgGallery=SelectedGalleryCache>
+    </Phalanx.App.Pages.Configuration.SystemSelect>
+}
+
+@code {
+    private string _selectedGalleryName = "";
+
+    private CatpkgGalleryCache? SelectedGalleryCache
+    {
+        get
+        {
+            return _selectedGalleryName == ""
+                ? new CatpkgGalleryCache(new GalleryReference("Phalanx Playground", new Uri("file://")))
+                : state.Cache[_selectedGalleryName];
+        }
+        set
+        {
+            if (value is not null)
+            {
+                state.Cache.Upsert(value);
+            }
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        // add if not already existing
+        foreach (var galleryRefDto in options.Value.DefaultGalleries)
+        {
+            var galleryRef = galleryRefDto.ToRecord();
+            if (state.Cache[galleryRef] is null)
+            {
+                state.Cache.Upsert(new(galleryRef));
+            }
+        }
+        _selectedGalleryName = options.Value.DefaultGalleries.FirstOrDefault()?.Name ?? "";
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        foreach (var galleryRef in options.Value.DefaultGalleries)
+        {
+            var galleryInfo = await state.Cache.GetCatpkgGalleryInfoAsync(httpClient, galleryRef.ToRecord());
+        }
+    }
+    protected async Task onSelectedGalleryChanged(string galleryName)
+    {
+        await base.OnParametersSetAsync();
+        _selectedGalleryName = galleryName;
+    }
+}
