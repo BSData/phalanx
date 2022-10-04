@@ -24,15 +24,4 @@
     <ProjectReference Include="..\WarHub.ArmouryModel.EditorServices\WarHub.ArmouryModel.EditorServices.csproj" />
     <ProjectReference Include="..\WarHub.ArmouryModel.Extensions\WarHub.ArmouryModel.Extensions.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <None Include="appsettings.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="wwwroot\appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
 </Project>
