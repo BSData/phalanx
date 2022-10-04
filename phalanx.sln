@@ -24,9 +24,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Phalanx.App", "src\Phalanx.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{3FBE741E-1ACA-4907-AEDA-610F32175AEF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarHub.ArmouryModel.Concrete.Extensions.Tests", "test\WarHub.ArmouryModel.Concrete.Extensions.Tests\WarHub.ArmouryModel.Concrete.Extensions.Tests.csproj", "{20B48EC9-3C85-4748-A6CF-6A5E20769BA5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WarHub.ArmouryModel.Concrete.Extensions.Tests", "test\WarHub.ArmouryModel.Concrete.Extensions.Tests\WarHub.ArmouryModel.Concrete.Extensions.Tests.csproj", "{20B48EC9-3C85-4748-A6CF-6A5E20769BA5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warhub.ArmoryModel.DataProviders", "src\Warhub.ArmoryModel.DataProviders\Warhub.ArmoryModel.DataProviders.csproj", "{471CC761-6982-48D4-88F7-969C31999A78}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warhub.ArmouryModel.DataProviders", "src\Warhub.ArmoryModel.DataProviders\Warhub.ArmouryModel.DataProviders.csproj", "{471CC761-6982-48D4-88F7-969C31999A78}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
