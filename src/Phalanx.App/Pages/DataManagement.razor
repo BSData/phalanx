@@ -6,38 +6,16 @@
 
 <div>
     <h1>Data Management</h1>
-
-    <FluentSelect @bind-Value="@selectValue">
-        @foreach (var dataSourceOption in dataSourceOptions)
-        {
-           <FluentOption 
-                Key="@dataSourceOption.Key" 
-                Value="@dataSourceOption.Value">
-                    @dataSourceOption.Value
-            </FluentOption> 
-        }
-    </FluentSelect>
-    <br/>
-    <FluentButton>
-        <FluentIcon Name="@FluentIcons.Add" Slot="start" Filled="true" Size="@IconSize.Size16"/>
-        Add Data Source
-    </FluentButton>
-    <br/>
-    <FluentSearch Placeholder="Search Game Systems"/>
-    <br/>
-    <FluentCheckbox>Show Saved Game Systems</FluentCheckbox>
+    <div class="control-container">
+        <FluentSearch Placeholder="Search Packages"/>
+        <div class="checkbox-container">
+            <FluentCheckbox>Show Pulled Packages</FluentCheckbox>
+            <FluentCheckbox>Show Archived Packages</FluentCheckbox>
+        </div>
+    </div>
 
     <div class="data-gallery">
         <GalleryItem/>
         <GalleryItem/>
     </div>
 </div>
-
-@code {
-    string? selectValue;
-    List<Option<string>> dataSourceOptions = new()
-        {
-            { new Option<string> { Key="1", Value="Test"} },
-            { new Option<string> { Key="2", Value="Test2" } }
-        };
-}
