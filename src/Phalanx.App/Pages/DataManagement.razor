@@ -6,14 +6,13 @@
 
 <div>
     <h1>Data Management</h1>
-    <div class="control-container">
-        <FluentSearch Placeholder="Search Packages"/>
-        <div class="checkbox-container">
-            <FluentCheckbox>Show Pulled Packages</FluentCheckbox>
-            <FluentCheckbox>Show Archived Packages</FluentCheckbox>
-        </div>
-    </div>
-
+    <FluentCard class="p-2">
+        <FluentSearch Placeholder="Search Packages" class="w-100 mt-2 mb-3"/>
+        <br />
+        <FluentCheckbox>Show Pulled Packages</FluentCheckbox>
+        <FluentCheckbox>Show Archived Packages</FluentCheckbox>
+    </FluentCard>
+    <hr/>
     <div class="data-gallery">
         <GalleryItem/>
         <GalleryItem/>
