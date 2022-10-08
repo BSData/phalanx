@@ -1,0 +1,85 @@
+@using WarHub.ArmouryModel.EditorServices
+@using WarHub.ArmouryModel.Source
+@using WarHub.ArmouryModel.Source.BattleScribe
+
+@inject IJSRuntime JS
+
+@if (Roster is not null)
+{
+    <TitlePart>@Roster.Name</TitlePart>
+
+    <h2>@Roster.Name</h2>
+    <p />
+
+    <FluentTreeView>
+        <FluentTreeItem Expanded="true">
+            <div style="display: flex; gap: 1em;">
+                <span>Name</span>
+
+                <input style="width:210px" type="text" value=@Roster.Name />
+            </div>
+        </FluentTreeItem>
+
+        <FluentTreeItem Expanded="true">
+            <span>Costs</span>
+
+            @foreach (var cost in Roster.Costs)
+            {
+                if (Roster.CostLimits.FirstOrDefault(x => x.TypeId == cost.TypeId) is { } limit)
+                {
+                    if(!UpdateLimits.ContainsKey(limit))
+                    {
+                        UpdateLimits[limit] = limit.Value;
+                    }
+
+                    <FluentTreeItem Expanded="true">
+                        <div style="display: flex; gap: 1em;">
+                            <span>@cost.Value / </span>
+
+                            <input style="width:70px" type="number" @bind="@UpdateLimits[limit]" />
+                            
+                            <span>@cost.Name</span>
+                        </div>
+                    </FluentTreeItem>
+                }
+                else
+                {
+                    <FluentTreeItem Expanded="true">
+                        <span>@cost.Value @cost.Name</span>
+                    </FluentTreeItem>
+                }
+            }
+        </FluentTreeItem>
+
+    </FluentTreeView>
+    <FluentButton Appearance="Appearance.Accent" @onclick="()=> UpdateRoster()">Update</FluentButton>
+
+}
+
+@code {
+    [CascadingParameter, EditorRequired]
+    public RosterEditor? Editor { get; set; }
+
+    private RosterNode? Roster => Editor?.State.Roster;
+    
+    [Parameter, EditorRequired]
+    public EventCallback<IRosterOperation[]> ChangeCostLimit { get; set; }
+
+    private Dictionary<CostLimitNode, decimal> UpdateLimits = new Dictionary<CostLimitNode, decimal>();
+
+    Task UpdateRoster()
+    {
+        if (Editor?.State is not { Roster: { } roster } state)
+        {
+            return Task.CompletedTask;
+        }
+
+        foreach (CostLimitNode limit in UpdateLimits.Keys)
+        {
+            Editor?.ApplyOperation(RosterOperations.ChangeCostLimit(limit, UpdateLimits[limit]));
+        }
+
+        return ChangeCostLimit.InvokeAsync();
+    }
+
+}
