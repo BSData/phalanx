@@ -1,8 +1,6 @@
 name: CI
 on:
   push:
-    branches:
-      - main
     paths-ignore:
       - "**/*.md"
       - "**/*.gitignore"
@@ -20,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v1
+      - uses: actions/setup-dotnet@v3
       - run: dotnet --info
       - run: dotnet tool restore
       - run: dotnet restore
@@ -34,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v1
+      - uses: actions/setup-dotnet@v3
       - run: dotnet --info
       - run: dotnet tool restore
 
