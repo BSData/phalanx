@@ -4,6 +4,7 @@
 @using Microsoft.Extensions.Options
 @using WarHub.ArmouryModel.DataProviders
 @using WarHub.ArmouryModel.Workspaces.BattleScribe
+@using Phalanx.App.Pages.Configuration
 
 @inject GalleryHttpClient httpClient
 @inject IOptions<GalleryBrowserOptions> options
@@ -21,8 +22,8 @@
 
 @if (_selectedGalleryName.Length > 0)
 {
-    <Phalanx.App.Pages.Configuration.SystemSelect @bind-CatpkgGallery=SelectedGalleryCache>
-    </Phalanx.App.Pages.Configuration.SystemSelect>
+    <SelectedGalleryList @bind-CatpkgGallery=SelectedGalleryCache>
+    </SelectedGalleryList>
 }
 
 @code {
