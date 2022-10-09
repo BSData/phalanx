@@ -8,29 +8,21 @@
 
 @if (CatpkgGallery is { InfoCache: { } galleryInfo })
 {
-    <h2>System:</h2>
-    <FluentSelect TValue=string Value="_selectedRepoName" ValueChanged="(x => SelectCatpkg(x))">
-        @foreach (var repo in _repositories)
-        {
-            <FluentOption Value="repo.Name">@repo.Name</FluentOption>
-        }
-    </FluentSelect>
-
     <div>
-    <FluentCard class="p-2">
-        <FluentSearch Placeholder="Search Packages" class="w-100 mt-2 mb-3"/>
-        <br />
-        <FluentCheckbox>Show Pulled Packages</FluentCheckbox>
-        <FluentCheckbox @bind-Value="ShowArchived">Show Archived Packages</FluentCheckbox>
-    </FluentCard>
-    <hr/>
-    <div class="data-gallery">
-        @foreach (var repo in _repositories)
-        {
-            <GalleryItem/>
-        }
+        <FluentCard class="p-2">
+            <FluentSearch Placeholder="Search Repositories" class="w-100 mt-2 mb-3"/>
+            <br />
+            <FluentCheckbox>Show Pulled Repositories</FluentCheckbox>
+            <FluentCheckbox @bind-Value="ShowArchived">Show Archived Repositories</FluentCheckbox>
+        </FluentCard>
+        <hr/>
+        <div class="data-gallery">
+            @foreach (var repo in _repositories)
+            {
+                <GalleryItem Repository=repo/>
+            }
+        </div>
     </div>
-</div>
 }
 else
 {
@@ -65,10 +57,10 @@ else
 
     List<ColumnDefinition<CatpkgRepositoryInfo>> ColumnDefinitions { get; } = new()
     {
-#nullable disable
+        #nullable disable
         new("Name", x => x.Description),
         new("Latest Release", x => x.Version),
-#nullable restore
+        #nullable restore
     };
 
     void UpdateRepositories()
