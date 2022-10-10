@@ -1,7 +1,6 @@
 @using WarHub.ArmouryModel
 @using WarHub.ArmouryModel.EditorServices
 
-
 @if (Selection is not null)
 {
     <div style="display: flex; gap: 1em;">
@@ -10,9 +9,17 @@
 
         <CostDisplay Values="Selection.Costs" />
 
-        <FluentButton @onclick=EditSelf>Edit</FluentButton>
-
         <FluentButton @onclick=RemoveSelf>Remove</FluentButton>
+    </div>
+
+    @* TODO this is where a step should be taken back to figure out how to recurse our selections/editing/etc *@
+    <div style="display:flex; flex-direction:column">
+        @foreach (var selEntry in Selection.SourceEntry.ChildSelectionEntries)
+        {
+            //var catalogues = Editor.State.Compilation.GlobalNamespace.Catalogues.Where(x => !x.IsGamesystem);
+
+            <span>@selEntry.Name</span>
+        }
     </div>
 }
 
@@ -23,9 +30,6 @@
     [Parameter]
     public EventCallback<ISelectionSymbol> SelectionClosed { get; set; }
 
-    [Parameter]
-    public EventCallback<ISelectionSymbol> EditRequested { get; set; }
-
     [CascadingParameter]
     public RosterEditor? Editor { get; set; }
 
@@ -35,12 +39,5 @@
             return;
         Editor?.ApplyOperation(RosterOperations.RemoveSelection(Selection.GetDeclaration()!));
         await SelectionClosed.InvokeAsync(Selection);
-    }
-
-    async Task EditSelf()
-    {
-        if (Selection is null)
-            return;
-        await EditRequested.InvokeAsync(Selection);
     }
 }

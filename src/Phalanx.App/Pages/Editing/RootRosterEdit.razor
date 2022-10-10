@@ -1,0 +1,122 @@
+@using System.IO.Compression
+@using WarHub.ArmouryModel.EditorServices
+@using WarHub.ArmouryModel.Source
+@using WarHub.ArmouryModel.Source.BattleScribe
+
+@inject IJSRuntime JS
+
+@if (Editor is { State: { Roster: { } Roster, RosterSymbol: { } RosterSymbol } State })
+{
+    <TitlePart>@RosterSymbol.Name</TitlePart>
+
+    <h2>@RosterSymbol.Name</h2>
+    @* Total Roster Costs *@
+    <p>
+        @foreach (var cost in RosterSymbol.Costs)
+        {
+            if (cost.Limit is { } limit)
+            {
+                <span>@cost.Value / @limit @cost.Name</span>
+            }
+            else
+            {
+                <span>@cost.Value @cost.Name</span>
+            }
+            if (cost != RosterSymbol.Costs[^1])
+            {
+                <span>, </span>
+            }
+        }
+    </p>
+    @* TODO make this a fab or etc *@
+    @if (!AddMode)
+    {
+        <TitlePart>Roster Edit</TitlePart>
+
+        <FluentTreeView>
+            @foreach (var force in RosterSymbol.Forces)
+            {
+                <FluentTreeItem Expanded="true">
+                    <span>@force.Name</span>
+
+                    @foreach (var category in force.Categories)
+                    {
+                        <FluentTreeItem Expanded="true">
+                            <span>@category.Name</span>
+
+                            @foreach (var selection in force.Selections
+                           .Where(sel => sel.PrimaryCategory?.SourceEntry.Id == category.SourceEntry.Id))
+                            {
+                                <FluentTreeItem Expanded="true">
+                                    <SelectionDisplay Selection="selection" />
+                                </FluentTreeItem>
+                            }
+                        </FluentTreeItem>
+                    }
+                    <FluentTreeItem Expanded="true">
+                        <span>Uncategorized</span>
+                        @foreach (var selections in force.Selections
+                       .Where(sel => sel.PrimaryCategory is null))
+                        {
+                            <FluentTreeItem Expanded="true">
+                                <SelectionDisplay Selection="selections" />
+                            </FluentTreeItem>
+                        }
+                    </FluentTreeItem>
+                </FluentTreeItem>
+            }
+        </FluentTreeView>
+
+        <FluentButton Appearance="Appearance.Accent" @onclick=ToggleAdd>Add Units</FluentButton>
+        <FluentButton Appearance="Appearance.Accent" @onclick=DownloadRoster>Download .ros</FluentButton>
+        <FluentButton Appearance="Appearance.Accent" @onclick=DownloadRosterZ>Download .rosz</FluentButton>
+    }
+    else
+    {
+        <RosterAddMenu OnAddDone="ToggleAdd"></RosterAddMenu>
+    }
+}
+
+@code {
+    [CascadingParameter, EditorRequired]
+    public RosterEditor? Editor { get; set; }
+
+    private bool AddMode { get; set; } = false;
+
+    private void ToggleAdd()
+    {
+        this.AddMode = !this.AddMode;
+    }
+
+    private async Task DownloadRoster()
+    {
+        if (Editor?.State.Roster is { } roster)
+        {
+            using var memStream = new MemoryStream();
+            roster.Serialize(memStream);
+            memStream.Position = 0;
+
+            using var streamRef = new DotNetStreamReference(memStream);
+            await JS.InvokeAsync<object>("saveAsFile", "roster.ros", streamRef);
+        }
+    }
+
+    private async Task DownloadRosterZ()
+    {
+        if (Editor?.State.Roster is { } roster)
+        {
+            using var zipStream = new MemoryStream();
+            using (var zipArchive = new ZipArchive(zipStream, ZipArchiveMode.Create, true))
+            {
+                ZipArchiveEntry entry = zipArchive.CreateEntry("roster.ros");
+                using (StreamWriter writer = new StreamWriter(entry.Open()))
+                {
+                    roster.Serialize(writer);
+                }
+            }
+            zipStream.Position = 0;
+            using var streamRef = new DotNetStreamReference(zipStream);
+            await JS.InvokeAsync<object>("saveAsFile", "roster.rosz", streamRef);
+        }
+    }
+}

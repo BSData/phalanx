@@ -1,0 +1,114 @@
+@using WarHub.ArmouryModel.Source
+@using WarHub.ArmouryModel.EditorServices
+
+@if (Roster is not null)
+{
+    <div>
+        <div>Roster Name:</div>
+        <FluentTextField @bind-Value="rosterName"></FluentTextField>
+        <br />
+        <div>Cost Limits (-1 for no limit)</div>
+
+        @foreach (var cost in Roster.Costs)
+        {
+            if (cost.TypeId == null)
+            {
+                continue;
+            }
+            @* TODO seeing this error on increment/decrement button presses:
+                Uncaught TypeError: event.detail is null
+                May or may not be causing the first Update attempt here to fail
+            *@
+            if (CostLimitInputs.ContainsKey(cost.TypeId))
+            {
+                <div style="display: flex; gap: 1em;">
+                    <FluentNumberField TValue="decimal" @bind-Value="CostLimitInputs[cost.TypeId]" Min="-1" Size="4">
+                    </FluentNumberField>
+                    <span>@cost.Name</span>
+                </div>
+            }
+        }
+
+        <br />
+        <div>Notes:</div>
+        <FluentTextArea></FluentTextArea>
+
+        @* TODO make this fire on tab change, rather than this update button
+            for now, get code committed and cycle back to best practices w Fluent
+        *@
+
+        <FluentButton Appearance="Appearance.Accent" @onclick="()=>{ UpdateCostLimits();  ChangeRosterName();}">Update
+        </FluentButton>
+
+        <br />
+        <div>TODO: Edit Roster Forces Menu:</div>
+
+    </div>
+}
+else
+{
+    <span>No roster selected</span>
+}
+
+@code {
+    [CascadingParameter, EditorRequired]
+    public RosterEditor? Editor { get; set; }
+
+    private RosterNode? Roster => Editor?.State.Roster;
+
+    private Dictionary<string, decimal> CostLimitInputs = new Dictionary<string, decimal>();
+
+    private string rosterName = default!;
+
+    protected override void OnParametersSet()
+    {
+        CostLimitInputs = new Dictionary<string, decimal>();
+        if (Roster != null)
+        {
+            if (Roster.Name != null)
+            {
+                rosterName = Roster.Name;
+            }
+            if (Roster.Costs != null)
+            {
+                foreach (var cost in Roster.Costs)
+                {
+                    var limit = Roster.CostLimits.FirstOrDefault<CostLimitNode>(limit => limit.TypeId == cost.TypeId);
+
+                    var limitValue = limit != null ? limit.Value : -1;
+                    if (cost.TypeId != null)
+                        CostLimitInputs.Add(cost.TypeId, limitValue);
+                }
+            }
+        }
+    }
+
+    Task UpdateCostLimits()
+    {
+        if (Editor is null || Editor?.State is not { Roster: { } rosterState })
+        {
+            return Task.CompletedTask;
+        }
+        foreach (string key in CostLimitInputs.Keys)
+        {
+            Editor?.ApplyOperation(RosterOperations.ChangeCostLimit(key, CostLimitInputs[key]));
+        }
+        return Task.CompletedTask;
+    }
+
+    Task ChangeRosterName()
+    {
+
+        if (Editor is null || Editor?.State is not { Roster: { } rosterState })
+        {
+            return Task.CompletedTask;
+        }
+
+        if (rosterState.Name != rosterName)
+        {
+            Console.WriteLine("set roster name to " + rosterName);
+            Editor?.ApplyOperation(RosterOperations.ChangeRosterName(rosterName));
+        }
+        return Task.CompletedTask;
+    }
+}
