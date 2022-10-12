@@ -1,51 +1,36 @@
 ﻿@page "/rosteredit"
 
-@using Phalanx.SampleDataset
+@using Phalanx.App.Pages.Editing
 @using WarHub.ArmouryModel.EditorServices
 @using WarHub.ArmouryModel.EditorServices.Formatting
-@using WarHub.ArmouryModel.Source
-@using Phalanx.App.Pages.Editing
+
+@implements IDisposable
 
 @inject Phalanx.App.Pages.Printing.RosterFormatsProvider formatter
+@inject Phalanx.App.Util.RosterEditorService EditorService
 
-@if (Roster is not null)
+@if (Editor?.State.Roster is { } roster)
 {
-    <TitlePart>@Roster.Name</TitlePart>
+    <TitlePart>@roster.Name</TitlePart>
     <CascadingValue Value="@Editor">
         <FluentTabs>
             <FluentTab>Edit</FluentTab>
             <FluentTabPanel>
-                @* TODO the editor should be injected rather than passed all over the place *@
-                <EditTreeRosterItem />
+                <RootRosterEdit />
             </FluentTabPanel>
             <FluentTab>Options</FluentTab>
             <FluentTabPanel>
-                <div>IOU - 1 functional page</div>
-                <br />
-                <div>Roster Name edit</div>
-                <br />
-                <div>Roster's Limits for costs and etc or whatever node decoration indicates that</div>
-                <br />
-                <div>Notes:</div>
-                <br />
-                <div>Edit Roster Forces Menu:</div>
-
-
+                <RosterOptions />
             </FluentTabPanel>
             <FluentTab>Preview</FluentTab>
             <FluentTabPanel>
-
-                <div>
-                    <ListSelect @bind-Value="Format" Items="formatter.Formats">
-                        @context.Name
-                    </ListSelect>
-                </div>
-
-                <Phalanx.App.Pages.Printing.RosterPreviewer RosterNode="Roster" Format="Format" />
+                <ListSelect @bind-Value="Format" Items="formatter.Formats">
+                    @context.Name
+                </ListSelect>
+                <Phalanx.App.Pages.Printing.RosterPreviewer RosterNode="roster" Format="Format" />
             </FluentTabPanel>
         </FluentTabs>
     </CascadingValue>
-
 }
 else
 {
@@ -53,23 +38,26 @@ else
 }
 
 @code {
-    public RosterEditor? Editor { get; set; }
+    public RosterEditor? Editor => EditorService.ActiveEditor;
 
     public RosterFormat Format { get; set; } = RosterFormatter.BuiltinFormatters[0];
-
-    private RosterNode? Roster => Editor?.State.Roster;
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        LoadTestRoster();
+        if (Editor is null)
+        {
+            EditorService.LoadSampleRoster();
+        }
+        if (Editor is not null)
+        {
+            Editor.OperationApplied += (op, state) => StateHasChanged();
+        }
     }
-    void LoadTestRoster()
+
+    public void Dispose()
     {
-        //get roster from file
-        var ws = SampleDataResources.CreateXmlWorkspace();
-        var rosterState = RosterState.CreateFromNodes(ws.Documents.Select(x => x.GetRootAsync().Result!));
-        Editor = new RosterEditor(rosterState);
-        Editor.OperationApplied += (op, state) => StateHasChanged();
+        if (Editor is { } editor)
+            editor.OperationApplied -= (op, state) => StateHasChanged();
     }
 }
