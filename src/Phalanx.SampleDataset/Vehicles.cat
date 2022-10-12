@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<catalogue id="e575-7f1f-8217-743c" name="Vehicles" revision="1" battleScribeVersion="2.03" authorName="Noah Haskell" authorContact="" library="true" gameSystemId="bc3d-3e2a-b2b3-fef7" gameSystemRevision="2" xmlns="http://www.battlescribe.net/schema/catalogueSchema">
+  <readme>This is a library used to test the copy functionality I&apos;m working on.</readme>
+  <sharedSelectionEntries>
+    <selectionEntry id="a7f1-92aa-8c72-5a9a" name="Sedan" hidden="false" collective="false" import="true" type="upgrade"/>
+    <selectionEntry id="765c-d369-28c2-393f" name="Truck" hidden="false" collective="false" import="true" type="upgrade"/>
+    <selectionEntry id="2f65-d317-50de-6504" name="Van" hidden="false" collective="false" import="true" type="upgrade"/>
+  </sharedSelectionEntries>
+</catalogue>

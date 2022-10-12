@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<catalogue id="c9b5-253e-582c-8499" name="Vehicles - Green" revision="1" battleScribeVersion="2.03" library="false" gameSystemId="bc3d-3e2a-b2b3-fef7" gameSystemRevision="2" xmlns="http://www.battlescribe.net/schema/catalogueSchema">
+  <selectionEntries>
+    <selectionEntry id="b2d5-b72a-24eb-db51" name="New SelectionEntry" hidden="false" collective="false" import="true" type="upgrade">
+      <costs>
+        <cost name="Fuel" typeId="f129-c6bb-02e0-923e" value="0.0"/>
+        <cost name="Points" typeId="a66b-3b27-93dd-68ce" value="0.0"/>
+      </costs>
+    </selectionEntry>
+  </selectionEntries>
+  <entryLinks>
+    <entryLink id="3e3b-0dbf-0e5e-f510" name="Sedan" hidden="false" collective="false" import="true" targetId="a7f1-92aa-8c72-5a9a" type="selectionEntry">
+      <modifiers>
+        <modifier type="set" field="name" value="Good Condition Sedan">
+          <conditions>
+            <condition field="selections" scope="force" value="0.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" childId="7b3c-c570-876d-6dbe" type="equalTo"/>
+          </conditions>
+        </modifier>
+      </modifiers>
+    </entryLink>
+    <entryLink id="7b3c-c570-876d-6dbe" name="Granny Trooper" hidden="false" collective="false" import="true" targetId="4191-729e-affc-9637" type="selectionEntry"/>
+  </entryLinks>
+  <catalogueLinks>
+    <catalogueLink id="176b-d202-e16b-f97d" name="Vehicles" targetId="e575-7f1f-8217-743c" type="catalogue" importRootEntries="false"/>
+    <catalogueLink id="a8ca-bcc7-e922-34ca" name="Grannies" targetId="f702-88f3-aa96-b128" type="catalogue" importRootEntries="true"/>
+  </catalogueLinks>
+</catalogue>
