@@ -26,20 +26,17 @@
 
 @if (_selectedGalleryName.Length > 0)
 {
-    <SelectedGalleryList @bind-CatpkgGallery=SelectedGalleryCache>
-    </SelectedGalleryList>
+    <SelectedGalleryList @bind-CatpkgGallery=SelectedGalleryCache />
 }
 
 @code {
     private string _selectedGalleryName = "";
-
+    
     private CatpkgGalleryCache? SelectedGalleryCache
     {
         get
         {
-            return _selectedGalleryName == ""
-                ? new CatpkgGalleryCache(new GalleryReference("Phalanx Playground", new Uri("file://")))
-                : state.Cache[_selectedGalleryName];
+            return state.Cache[_selectedGalleryName];
         }
         set
         {

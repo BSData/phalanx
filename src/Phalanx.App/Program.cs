@@ -15,6 +15,7 @@ builder.Services.AddScoped<RosterFormatsProvider>();
 builder.Services.AddSingleton<RosterEditorService>();
 builder.Services.AddOptions<GalleryBrowserOptions>().BindConfiguration("GalleryBrowser");
 builder.Services.AddSingleton<GalleryBrowserState>();
+
 builder.Services.AddScoped<GalleryHttpClient>();
 builder.Services.AddFluentUIComponents();
 
