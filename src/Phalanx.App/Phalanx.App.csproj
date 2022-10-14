@@ -10,7 +10,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.8" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Fast.Components.FluentUI" Version="1.5.1" />
+    <PackageReference Include="Microsoft.Fast.Components.FluentUI" Version="1.5.3" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NuGet.Versioning" Version="6.3.0" />
     <PackageReference Include="PublishSPAforGitHubPages.Build" Version="2.0.1" />
