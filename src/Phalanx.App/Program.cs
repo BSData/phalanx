@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Fast.Components.FluentUI;
 using Phalanx.App;
 using Phalanx.App.Pages.Printing;
-using Microsoft.Fast.Components.FluentUI;
 using Phalanx.App.Util;
 using WarHub.ArmouryModel.DataProviders;
 
