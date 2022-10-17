@@ -6,46 +6,49 @@
 
 <FluentCard class="my-3">
     <div class="gallery-item">
-        <div class="game-system-info-container">
-            <h2 class="game-system-title">@Repository.Description</h2>
-            <span class="remote-version">@Repository.Version</span>
-            <span class="remote-version-release-date">@Repository.LastUpdated</span>
-            @if (Repository.Archived ?? false)
-            {
-                <span class="remote-version-archived">Archived</span>
-            }
-
-        </div>
-
-        <div class="gallery-item-button-container">
-            @*
-                TODO: Dynamically enable/disable repos based on status
-                - Repos loaded into memory and are up to date have pull and update disabled
-                - Repos loaded into memory, but are not up to date have pull disabled
-                - Repos not loaded into memory have remove and update disabled
-
-                span.local-version only shows if the repo is loaded into memory
-            *@
-            <FluentButton class="mx-1 mb-1" @onclick="HydrateCat" Disabled="repo?.RepositoryFiles is not null">
-                <FluentIcon Name="@FluentIcons.Save" Slot="start" Filled="true" Size="@IconSize.Size16" />
-                Pull
-            </FluentButton>
-            <FluentButton class="mx-1 mb-1" Disabled="true">
-                <FluentIcon Name="@FluentIcons.ArrowUp" Slot="start" Size="IconSize.Size16" Filled=true />
-                Update
-            </FluentButton>
-            <FluentButton class="mx-1 mb-1" Disabled="!(repo?.RepositoryFiles is not null)">
-                <FluentIcon Name="@FluentIcons.Delete" Slot="start" Filled="true" Size="@IconSize.Size16" />
-                Remove
-            </FluentButton>
-        </div>
-        @* TODO: Show local version when repo is loaded into memory *@
-
-        @if (repo?.RepositoryFiles is not null)
+        @if (CachedRepo is { } repository)
         {
-            <p>File List Loaded</p>
+            <div class="game-system-info-container">
+                <h2 class="game-system-title">@repository.Description</h2>
+                <span class="remote-version">@repository.Version</span>
+                <span class="remote-version-release-date">@repository.LastUpdated</span>
+                @if (repository.Archived ?? false)
+                {
+                    <span class="remote-version-archived">Archived</span>
+                }
+
+            </div>
+
+            <div class="gallery-item-button-container">
+                @*
+                    TODO: Dynamically enable/disable repos based on status
+                    - Repos loaded into memory and are up to date have pull and update disabled
+                    - Repos loaded into memory, but are not up to date have pull disabled
+                    - Repos not loaded into memory have remove and update disabled
+
+                    span.local-version only shows if the repo is loaded into memory
+                *@
+                <FluentButton class="mx-1 mb-1" @onclick="HydrateCat" Disabled="HasFiles">
+                    <FluentIcon Name="@FluentIcons.Save" Slot="start" Filled="true" Size="@IconSize.Size16" />
+                    Pull
+                </FluentButton>
+                <FluentButton class="mx-1 mb-1" Disabled="true">
+                    <FluentIcon Name="@FluentIcons.ArrowUp" Slot="start" Size="IconSize.Size16" Filled=true />
+                    Update
+                </FluentButton>
+                <FluentButton class="mx-1 mb-1" Disabled="!HasFiles">
+                    <FluentIcon Name="@FluentIcons.Delete" Slot="start" Filled="true" Size="@IconSize.Size16" />
+                    Remove
+                </FluentButton>
+            </div>
+            @* TODO: Show local version when repo is loaded into memory *@
+
+            @if (HasFiles)
+            {
+                <p>File List Loaded</p>
+            }
+            @* <span class="local-version">Local Version: 2.0</span> *@
         }
-        @* <span class="local-version">Local Version: 2.0</span> *@
     </div>
 </FluentCard>
 
@@ -56,20 +59,18 @@
     [Parameter, EditorRequired]
     public CatpkgGalleryCache? CatpkgGallery { get; set; }
 
-    private CatpkgRepositoryInfo? repo;
+    private bool HasFiles => hydratedRepo?.RepositoryFiles is { };
+
+    private CatpkgRepositoryInfo? hydratedRepo;
+
+    private CatpkgRepositoryInfo? CachedRepo => hydratedRepo ?? Repository;
 
     async Task HydrateCat()
     {
-        Console.WriteLine("Attempting to hydrate {0} from {1}", Repository?.Name, CatpkgGallery);
-        if (Repository?.Name is not null && CatpkgGallery is not null)
+        if (hydratedRepo is null && Repository?.Name is { } name && CatpkgGallery is { Reference: { } catpkgRef })
         {
-            var repoRef = new RepositoryReference(Repository.Name, CatpkgGallery.Reference);
-            repo = await state.Cache.GetHydratedCatpkgAsync(client, repoRef);
-            Console.WriteLine(repo);
+            var repoRef = new RepositoryReference(name, catpkgRef);
+            hydratedRepo = await state.Cache.GetHydratedCatpkgAsync(client, repoRef);
         }
-    }
-    protected async override Task OnParametersSetAsync()
-    {
-        await base.OnParametersSetAsync();
     }
 }
