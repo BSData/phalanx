@@ -10,7 +10,8 @@
             <h2 class="game-system-title">@Repository.Description</h2>
             <span class="remote-version">@Repository.Version</span>
             <span class="remote-version-release-date">@Repository.LastUpdated</span>
-            @if(Repository.Archived ?? false){
+            @if (Repository.Archived ?? false)
+            {
                 <span class="remote-version-archived">Archived</span>
             }
 
@@ -18,12 +19,12 @@
 
         <div class="gallery-item-button-container">
             @*
-            TODO: Dynamically enable/disable repos based on status
-            - Repos loaded into memory and are up to date have pull and update disabled
-            - Repos loaded into memory, but are not up to date have pull disabled
-            - Repos not loaded into memory have remove and update disabled
+                TODO: Dynamically enable/disable repos based on status
+                - Repos loaded into memory and are up to date have pull and update disabled
+                - Repos loaded into memory, but are not up to date have pull disabled
+                - Repos not loaded into memory have remove and update disabled
 
-            span.local-version only shows if the repo is loaded into memory
+                span.local-version only shows if the repo is loaded into memory
             *@
             <FluentButton class="mx-1 mb-1" @onclick="HydrateCat" Disabled="repo?.RepositoryFiles is not null">
                 <FluentIcon Name="@FluentIcons.Save" Slot="start" Filled="true" Size="@IconSize.Size16" />
@@ -44,7 +45,7 @@
         {
             <p>File List Loaded</p>
         }
-        @* <span class="local-version">Local Version: 2.0</span>  *@
+        @* <span class="local-version">Local Version: 2.0</span> *@
     </div>
 </FluentCard>
 
@@ -72,5 +73,3 @@
         await base.OnParametersSetAsync();
     }
 }
-
-
