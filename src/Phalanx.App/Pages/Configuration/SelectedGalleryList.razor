@@ -1,0 +1,75 @@
+@using Microsoft.Extensions.Options
+@using WarHub.ArmouryModel.DataProviders
+@using WarHub.ArmouryModel.Workspaces.BattleScribe;
+@using Phalanx.App.Pages.Management
+
+@inject GalleryHttpClient client
+@inject GalleryBrowserState state
+
+
+@if (CatpkgGallery is { InfoCache: { } galleryInfo })
+{
+    <div>
+        <FluentCard class="p-2">
+            <FluentSearch Placeholder="Search Repositories" class="w-100 mt-2 mb-3" />
+            <br />
+            <FluentCheckbox>Show Pulled Repositories</FluentCheckbox>
+            <FluentCheckbox @bind-Value="ShowArchived">Show Archived Repositories</FluentCheckbox>
+        </FluentCard>
+        <hr />
+        <div class="data-gallery">
+            @foreach (var repo in _repositories)
+            {
+                <GalleryItem Repository=repo CatpkgGallery="CatpkgGallery" />
+            }
+        </div>
+    </div>
+}
+else
+{
+    <FluentProgressRing />
+    <p>Loading catpkg gallery...</p>
+}
+
+@code {
+    [Parameter]
+    public CatpkgGalleryCache? CatpkgGallery { get; set; }
+
+    [Parameter]
+    public EventCallback<CatpkgGalleryCache> CatpkgGalleryChanged { get; set; }
+
+    bool _showArchived;
+
+    bool ShowArchived
+    {
+        get => _showArchived;
+        set
+        {
+            _showArchived = value;
+            UpdateRepositories();
+        }
+    }
+
+    readonly List<CatpkgRepositoryInfo> _repositories = new();
+
+    void UpdateRepositories()
+    {
+        _repositories.Clear();
+        if (CatpkgGallery?.InfoCache?.Repositories is { } repos)
+        {
+            _repositories.AddRange(repos.Where(x => x.Archived != true || ShowArchived).OrderBy(x => x.Description));
+        }
+    }
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        if (CatpkgGallery is { Reference: { } galleryRef, InfoCache: null })
+        {
+            var result = await state.Cache.GetHydratedCatpkgGalleryCacheAsync(client, galleryRef);
+            await CatpkgGalleryChanged.InvokeAsync(result);
+        }
+        UpdateRepositories();
+    }
+}

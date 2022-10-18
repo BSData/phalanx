@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Fast.Components.FluentUI;
 using Phalanx.App;
 using Phalanx.App.Pages.Printing;
 using Phalanx.App.Util;
@@ -14,6 +15,8 @@ builder.Services.AddScoped<RosterFormatsProvider>();
 builder.Services.AddSingleton<RosterEditorService>();
 builder.Services.AddOptions<GalleryBrowserOptions>().BindConfiguration("GalleryBrowser");
 builder.Services.AddSingleton<GalleryBrowserState>();
+
 builder.Services.AddScoped<GalleryHttpClient>();
+builder.Services.AddFluentUIComponents();
 
 await builder.Build().RunAsync();
