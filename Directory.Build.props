@@ -1,15 +1,15 @@
 <Project>
 
   <PropertyGroup>
-    <LangVersion>10</LangVersion>
+    <LangVersion>11</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <Authors>Amadeusz Sadowski and contributors</Authors>
     <Company>BSData</Company>
     <Copyright>Copyright © $(Authors)</Copyright>
     <IsPackable>false</IsPackable>
-    <CommonTargetFramework>net6.0</CommonTargetFramework>
-    <VersionPrefix>1.0.0</VersionPrefix>
+    <CommonTargetFramework>net7.0</CommonTargetFramework>
+    <VersionPrefix>1.1.0</VersionPrefix>
     <EnforceCodeStyleOnBuild>true</EnforceCodeStyleOnBuild>
     <AnalysisMode>Recommended</AnalysisMode>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>

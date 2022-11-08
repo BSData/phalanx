@@ -1,6 +1,6 @@
 @typeparam TItem
 
-<FluentSelect TValue="int" Value="@selectedIndex" ValueChanged="OnValueChanged">
+<FluentSelect @bind-Value=SelectedIndex @bind-Value:after=IndexChanged>
     @for (int i = 0; i < Items.Count; i++)
     {
         var index = i;
@@ -14,22 +14,18 @@
             {
                 @item?.ToString()
             }
-    </FluentOption>
+        </FluentOption>
     }
 </FluentSelect>
 
 @code {
-    int selectedIndex;
+    private int? SelectedIndex { get; set; }
 
     [Parameter, EditorRequired]
     public IReadOnlyList<TItem> Items { get; set; } = Array.Empty<TItem>();
 
     [Parameter]
-    public TItem? Value
-    {
-        get => selectedIndex >= Items.Count ? default : Items[selectedIndex];
-        set => SetValue(value);
-    }
+    public TItem? Value { get; set; }
 
     [Parameter]
     public EventCallback<TItem> ValueChanged { get; set; }
@@ -37,25 +33,33 @@
     [Parameter]
     public RenderFragment<TItem>? ChildContent { get; set; }
 
-    void SetValue(TItem? value)
+    protected override void OnParametersSet()
     {
-        if (!object.ReferenceEquals(value, Value))
-        {
-            for (int i = 0; i < Items.Count; i++)
-            {
-                if (object.ReferenceEquals(Items[i], value))
-                {
-                    selectedIndex = i;
-                    OnValueChanged(i);
-                    return;
-                }
-            }
-            OnValueChanged(0);
-        }
+        base.OnParametersSet();
+        SetValue(Value);
     }
 
-    Task OnValueChanged(int index)
+    Task IndexChanged()
     {
-        return ValueChanged.InvokeAsync(Items[index]);
+        return ValueChanged.InvokeAsync(SelectedIndex is { } index && index >= 0 && index < Items.Count ? Items[index] : default);
+    }
+
+    Task SetValue(TItem? value)
+    {
+        int? index = null;
+        for (int i = 0; i < Items.Count; i++)
+        {
+            if (object.ReferenceEquals(Items[i], value))
+            {
+                index = i;
+                break;
+            }
+        }
+        if (index != SelectedIndex)
+        {
+            SelectedIndex = index;
+            return IndexChanged();
+        }
+        return Task.CompletedTask;
     }
 }
