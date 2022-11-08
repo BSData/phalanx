@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="WarHub.ArmouryModel.Workspaces.BattleScribe" Version="0.13.0" />
+    <PackageReference Include="WarHub.ArmouryModel.Workspaces.BattleScribe" />
   </ItemGroup>
 
 </Project>
