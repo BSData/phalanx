@@ -25,7 +25,7 @@ The following stack of app layers is currently (at least partially) implemented:
 You need one of the following setups:
 
 - Visual Studio 2022 (latest) - open the `Phalanx.sln` with it.
-- VSCode and .NET 6 SDK (latest) - open the repository folder in it.
+- VSCode and .NET 7 SDK (latest) - open the repository folder in it.
 
 The main app to run is in `src/Phalanx.App` - select this project as startup project in Visual Studio. VSCode has a defined debug configuration.
 
