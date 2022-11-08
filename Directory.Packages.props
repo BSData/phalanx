@@ -1,0 +1,24 @@
+<Project>
+  <ItemGroup>
+    <PackageVersion Include="Handlebars.Net" Version="2.1.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.10" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.10" PrivateAssets="all" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="6.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
+    <PackageVersion Include="Microsoft.Fast.Components.FluentUI" Version="1.5.3" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageVersion Include="NuGet.Versioning" Version="6.3.1" />
+    <PackageVersion Include="PublishSPAforGitHubPages.Build" Version="2.0.2" />
+    <PackageVersion Include="WarHub.ArmouryModel.Source" Version="0.13.0" />
+    <PackageVersion Include="WarHub.ArmouryModel.Workspaces.BattleScribe" Version="0.13.0" />
+    <GlobalPackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
+  </ItemGroup>
+
+  <ItemGroup Label="Tests">
+    <PackageVersion Include="coverlet.collector" Version="3.2.0" PrivateAssets="all" />
+    <PackageVersion Include="FluentAssertions" Version="6.8.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+    <PackageVersion Include="xunit" Version="2.4.2" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.4.5" PrivateAssets="all" />
+  </ItemGroup>
+</Project>

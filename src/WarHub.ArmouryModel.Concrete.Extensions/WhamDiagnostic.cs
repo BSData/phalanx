@@ -13,7 +13,7 @@ internal sealed class WhamDiagnostic : DiagnosticWithInfo
     }
 
     public override string ToString() =>
-        DiagnosticFormatter.Instance.Format(this);
+        DiagnosticFormatter.Instance.Format(this, formatter: null);
 
     internal override Diagnostic WithLocation(Location location)
     {
