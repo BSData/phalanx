@@ -23,8 +23,10 @@
     <BaseIntermediateOutputPath>$([MSBuild]::MakeRelative($(MSBuildProjectDirectory), $(BaseIntermediateOutputPath)))</BaseIntermediateOutputPath>
     <!-- Don't warn on API docs -->
     <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <!-- Don't warn on Type can be sealed -->
+    <NoWarn>$(NoWarn);CA1852</NoWarn>
     <!-- Error out on warnings when releasing -->
-    <MSBuildTreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</MSBuildTreatWarningsAsErrors>
+    <TreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
