@@ -24,10 +24,9 @@
             </FluentTabPanel>
             <FluentTab>Preview</FluentTab>
             <FluentTabPanel>
-                <ListSelect @bind-Value="Format" Items="formatter.Formats">
-                    @context.Name
-                </ListSelect>
-                <Phalanx.App.Pages.Printing.RosterPreviewer RosterNode="roster" Format="Format" />
+                <FluentSelect Items=formatter.Formats @bind-SelectedOption=@Format OptionText="@(x => x.Name)" />
+
+                <Phalanx.App.Pages.Printing.RosterPreviewer RosterNode=roster Format=Format />
             </FluentTabPanel>
         </FluentTabs>
     </CascadingValue>

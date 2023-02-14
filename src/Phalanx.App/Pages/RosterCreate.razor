@@ -14,14 +14,9 @@
             </label>
             <label>
                 Game system
-                <FluentSelect @bind-Value="@Model.GamesystemIndex">
-                    @foreach (var (item, idx) in Gamesystems.Select((item, idx) => (item, idx)))
-                    {
-                        <FluentOption Value="@idx">@item.Name</FluentOption>
-                    }
-                </FluentSelect>
+                <FluentSelect Items="@Gamesystems" @bind-SelectedOption="@Model.Gamesystem" OptionText="@(x => x?.Name)" />
             </label>
-            <FluentButton Appearance="Appearance.Accent">Create</FluentButton>
+            <FluentButton Appearance="@Appearance.Accent">Create</FluentButton>
         </fieldset>
     </EditForm>
 </FluentCard>
@@ -32,7 +27,7 @@
     {
         public string? Name { get; set; } = "New Roster";
 
-        public int? GamesystemIndex { get; set; }
+        public GamesystemNode? Gamesystem { get; set; }
     }
 
     // TODO load the list

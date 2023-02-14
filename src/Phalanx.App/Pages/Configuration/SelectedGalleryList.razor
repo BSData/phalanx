@@ -1,26 +1,20 @@
-@using Microsoft.Extensions.Options
 @using WarHub.ArmouryModel.DataProviders
-@using WarHub.ArmouryModel.Workspaces.BattleScribe;
 @using Phalanx.App.Pages.Management
 
-@inject GalleryHttpClient client
-@inject GalleryBrowserState state
-
-
-@if (CatpkgGallery is { InfoCache: { } galleryInfo })
+@if (CatpkgGallery is { InfoCache: { Repositories: var repos } galleryInfo } gallery)
 {
     <div>
         <FluentCard class="p-2">
-            <FluentSearch Placeholder="Search Repositories" class="w-100 mt-2 mb-3" />
+            <FluentSearch Placeholder="Search Repositories" class="w-100 mt-2 mb-3" @bind-Value=@SearchText />
             <br />
             <FluentCheckbox>Show Pulled Repositories</FluentCheckbox>
-            <FluentCheckbox @bind-Value="ShowArchived">Show Archived Repositories</FluentCheckbox>
+            <FluentCheckbox @bind-Value=@ShowArchived>Show Archived Repositories</FluentCheckbox>
         </FluentCard>
         <hr />
         <div class="data-gallery">
-            @foreach (var repo in _repositories)
+            @foreach (var repo in RepositoryInfos)
             {
-                <GalleryItem Repository=repo CatpkgGallery="CatpkgGallery" />
+                <GalleryItem Repository="@repo" CatpkgGallery="@CatpkgGallery" />
             }
         </div>
     </div>
@@ -35,41 +29,29 @@ else
     [Parameter]
     public CatpkgGalleryCache? CatpkgGallery { get; set; }
 
-    [Parameter]
-    public EventCallback<CatpkgGalleryCache> CatpkgGalleryChanged { get; set; }
+    bool ShowArchived { get; set; }
 
-    bool _showArchived;
+    string? SearchText { get; set; }
 
-    bool ShowArchived
+    IEnumerable<CatpkgRepositoryInfo> RepositoryInfos
     {
-        get => _showArchived;
-        set
+        get
         {
-            _showArchived = value;
-            UpdateRepositories();
+            return CatpkgGallery?.InfoCache?.Repositories
+            ?.Where(x => ShowArchived || !(x.Archived ?? false))
+            .Where(x => RepoMatchesSearch(x, SearchText))
+            .OrderBy(x => x.Description)
+            ?? Enumerable.Empty<CatpkgRepositoryInfo>();
         }
     }
 
-    readonly List<CatpkgRepositoryInfo> _repositories = new();
-
-    void UpdateRepositories()
+    static bool RepoMatchesSearch(CatpkgRepositoryInfo info, string? text)
     {
-        _repositories.Clear();
-        if (CatpkgGallery?.InfoCache?.Repositories is { } repos)
+        if (string.IsNullOrWhiteSpace(text))
         {
-            _repositories.AddRange(repos.Where(x => x.Archived != true || ShowArchived).OrderBy(x => x.Description));
+            return true;
         }
-    }
-
-
-    protected async override Task OnParametersSetAsync()
-    {
-        await base.OnParametersSetAsync();
-        if (CatpkgGallery is { Reference: { } galleryRef, InfoCache: null })
-        {
-            var result = await state.Cache.GetHydratedCatpkgGalleryCacheAsync(client, galleryRef);
-            await CatpkgGalleryChanged.InvokeAsync(result);
-        }
-        UpdateRepositories();
+        return (info.Name?.Contains(text, StringComparison.OrdinalIgnoreCase) ?? true)
+            || (info.Description?.Contains(text, StringComparison.OrdinalIgnoreCase) ?? true);
     }
 }
