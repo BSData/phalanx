@@ -13,14 +13,17 @@
     <EnforceCodeStyleOnBuild>true</EnforceCodeStyleOnBuild>
     <AnalysisMode>Recommended</AnalysisMode>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <!-- Uncomment for debugging blazor/razor generated sources -->
+    <!-- <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles> -->
   </PropertyGroup>
 
   <PropertyGroup>
+    <!-- Disabled path fiddling to enable using Blazor in VSCode -->
     <!-- Put stuff into a common directory ./.build (bin,obj) -->
-    <BaseOutputPath>$(MSBuildThisFileDirectory).build/bin/$(MSBuildProjectName)/</BaseOutputPath>
-    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory).build/obj/$(MSBuildProjectName)/</BaseIntermediateOutputPath>
+    <!-- <BaseOutputPath>$(MSBuildThisFileDirectory).build/bin/$(MSBuildProjectName)/</BaseOutputPath> -->
+    <!-- <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory).build/obj/$(MSBuildProjectName)/</BaseIntermediateOutputPath> -->
     <!-- Due to https://github.com/dotnet/aspnetcore/issues/25959 we need it relative -->
-    <BaseIntermediateOutputPath>$([MSBuild]::MakeRelative($(MSBuildProjectDirectory), $(BaseIntermediateOutputPath)))</BaseIntermediateOutputPath>
+    <!-- <BaseIntermediateOutputPath>$([MSBuild]::MakeRelative($(MSBuildProjectDirectory), $(BaseIntermediateOutputPath)))</BaseIntermediateOutputPath> -->
     <!-- Don't warn on API docs -->
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <!-- Don't warn on Type can be sealed -->
