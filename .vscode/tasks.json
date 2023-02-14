@@ -11,10 +11,7 @@
         "/consoleloggerparameters:NoSummary"
       ],
       "problemMatcher": "$msCompile",
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      }
+      "group": "build"
     },
     {
       "label": "test",
@@ -26,10 +23,7 @@
         "/consoleloggerparameters:NoSummary"
       ],
       "problemMatcher": "$msCompile",
-      "group": {
-        "kind": "test",
-        "isDefault": true
-      }
+      "group": "test"
     },
     {
       "label": "publish",
@@ -46,12 +40,25 @@
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "watch",
+      "label": "watch run",
       "command": "dotnet",
       "type": "process",
       "args": [
         "watch",
         "run"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/src/Phalanx.App/"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "watch build",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "watch",
+        "build"
       ],
       "options": {
         "cwd": "${workspaceFolder}/src/Phalanx.App/"
