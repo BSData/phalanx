@@ -2,29 +2,19 @@
 
 <label>
     Name
-    <FluentTextField Placeholder="name" @bind-Value="Name" Disabled="Readonly" />
+    <FluentTextField Placeholder="name" @bind-Value="@Name" Disabled="@Readonly" />
 </label>
 <label>
     Output type
-    <FluentSelect @bind-Value="OutputFormat" Disabled="Readonly">
-        @foreach (var item in Enum.GetValues<OutputFormat>())
-        {
-            <FluentOption Value="@item">@item</FluentOption>
-        }
-    </FluentSelect>
+    <FluentSelect Items="@(Enum.GetValues<OutputFormat>())" @bind-SelectedOption="@OutputFormat" Disabled="@Readonly" />
 </label>
 <label>
     Format method
-    <FluentSelect @bind-Value="Method" Disabled="Readonly">
-        @foreach (var item in Enum.GetValues<FormatMethod>())
-        {
-            <FluentOption Value="@item">@item</FluentOption>
-        }
-    </FluentSelect>
+    <FluentSelect Items="@(Enum.GetValues<FormatMethod>())" @bind-SelectedOption="@Method" Disabled="@Readonly" />
 </label>
-<FluentTextArea @bind-Value="Template" Resize="TextAreaResize.Vertical" Rows="50" Disabled="Readonly" />
+<FluentTextArea @bind-Value="@Template" Resize="@TextAreaResize.Vertical" Rows="50" Disabled="@Readonly" />
 
-    @code {
+@code {
     [Parameter]
     public RosterFormat Format { get; set; } = new();
 

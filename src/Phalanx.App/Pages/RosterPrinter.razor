@@ -7,7 +7,6 @@
 
 @inject Printing.RosterFormatsProvider formatter
 
-
 <h1>Format roster</h1>
 
 <div class="card-container">
@@ -38,17 +37,13 @@
                 <legend>Formatter</legend>
                 <label>
                     Select preset
-                    <FluentSelect @bind-Value="@SelectedFormatIndex">
-                        @foreach (var (format, index) in formatter.Formats.Select((x, i) => (x, i)))
-                            {
-                                <FluentOption Value="@index">@format.Name</FluentOption>
-                            }
-                        </FluentSelect>
-                    </label>
-                    <FluentCheckbox @bind-Value="isCustomFormat">
-                        Edit
-                    </FluentCheckbox>
-                    @if (selectedFormat is not null)
+                    <FluentSelect Items=@formatter.Formats TOption="RosterFormat" OptionText="@(x => x.Name)"
+                        OptionValue="@(x => x.ToString())" @bind-SelectedOption=@selectedFormat />
+                </label>
+                <FluentCheckbox @bind-Value="isCustomFormat">
+                    Edit
+                </FluentCheckbox>
+                @if (selectedFormat is not null)
                 {
                     <RosterFormatEditor @bind-Format=selectedFormat Readonly="!isCustomFormat" />
                 }

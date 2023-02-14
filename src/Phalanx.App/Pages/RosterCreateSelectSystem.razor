@@ -12,7 +12,7 @@
 
 <h1>Select System for Roster</h1>
 
-<FluentSelect TValue=string Value="_selectedGalleryName" ValueChanged="(x => onSelectedGalleryChanged(x))">
+<FluentSelect TOption=string Value="_selectedGalleryName" ValueChanged="(x => onSelectedGalleryChanged(x))">
     <FluentOption>Phalanx Playground</FluentOption>
     @foreach (var galleryRef in state.Cache.GalleryReferences)
     {
