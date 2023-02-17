@@ -82,7 +82,7 @@ internal class Binder
         BindSimple<IResourceEntrySymbol, ErrorSymbols.ErrorResourceEntrySymbol>(
             node,
             diagnostics, node.TargetId,
-            LookupOptions.ResourceEntryOnly | LookupOptions.SharedOnly | node.Type switch
+            LookupOptions.ResourceEntryOnly | CompilationOptionReferencedEntry() | node.Type switch
             {
                 InfoLinkKind.InfoGroup => LookupOptions.ResourceGroupEntryOnly,
                 InfoLinkKind.Profile => LookupOptions.ProfileEntryOnly,
@@ -90,16 +90,19 @@ internal class Binder
                 _ => LookupOptions.Default,
             });
 
-    internal ISelectionEntryContainerSymbol BindSharedSelectionEntrySymbol(EntryLinkNode node, BindingDiagnosticBag diagnostics) =>
+    internal ISelectionEntryContainerSymbol BindSelectionEntrySymbol(EntryLinkNode node, BindingDiagnosticBag diagnostics) =>
         BindSimple<ISelectionEntryContainerSymbol, ErrorSymbols.ErrorSelectionEntryContainerSymbol>(
             node,
             diagnostics, node.TargetId,
-            LookupOptions.ContainerEntryOnly | LookupOptions.SharedOnly | node.Type switch
+            LookupOptions.ContainerEntryOnly | CompilationOptionReferencedEntry() | node.Type switch
             {
                 EntryLinkKind.SelectionEntry => LookupOptions.SelectionEntryOnly,
                 EntryLinkKind.SelectionEntryGroup => LookupOptions.SelectionGroupEntryOnly,
                 _ => LookupOptions.Default,
             });
+
+    internal LookupOptions CompilationOptionReferencedEntry() =>
+        Compilation.Options.BindEntryReferencesToNestedEntries ? LookupOptions.Default : LookupOptions.SharedOnly;
 
     internal ICategoryEntrySymbol BindCategoryEntrySymbol(CategoryLinkNode node, BindingDiagnosticBag diagnostics) =>
         BindSimple<ICategoryEntrySymbol, ErrorSymbols.ErrorCategoryEntrySymbol>(
@@ -362,6 +365,29 @@ internal class Binder
                 originalBinder.CheckViability(result, catalogue.SharedResourceEntries, symbolId, options, diagnose);
             }
         }
+        if (result.IsMultiViable)
+        {
+            return;
+        }
+        if (options.CanConsiderNestedEntries())
+        {
+            foreach (var symbol in catalogue.RootContainerEntries)
+            {
+                LookupSymbolInDescendantEntries(result, symbol, symbolId, options, originalBinder, diagnose);
+            }
+            foreach (var symbol in catalogue.RootResourceEntries)
+            {
+                LookupSymbolInDescendantEntries(result, symbol, symbolId, options, originalBinder, diagnose);
+            }
+            foreach (var symbol in catalogue.SharedSelectionEntryContainers)
+            {
+                LookupSymbolInDescendantEntries(result, symbol, symbolId, options, originalBinder, diagnose);
+            }
+            foreach (var symbol in catalogue.SharedResourceEntries)
+            {
+                LookupSymbolInDescendantEntries(result, symbol, symbolId, options, originalBinder, diagnose);
+            }
+        }
     }
 
     internal static void LookupSymbolInQualifyingEntry(
@@ -373,42 +399,40 @@ internal class Binder
         bool diagnose,
         ImmutableArray<ICatalogueSymbol> rootClosure)
     {
+        Debug.Assert(qualifier is not null);
         var unreferenced = qualifier.ContainingModule is not ICatalogueSymbol containingCatalogue || !rootClosure.Contains(containingCatalogue);
         if (unreferenced)
         {
             // TODO when diagnose=true, find candidates and mark as LookupResultKind.Unreferenced
             return;
         }
-        LookupSymbolInDescendantEntries(qualifier, qualifier, result, symbolId, options, originalBinder, diagnose);
+        result.MergeEqual(originalBinder.CheckViability(qualifier, symbolId, options, diagnose));
+        LookupSymbolInDescendantEntries(result, qualifier, symbolId, options, originalBinder, diagnose);
+    }
 
-        static void LookupSymbolInDescendantEntries(
-            IEntrySymbol qualifier,
-            IEntrySymbol symbol,
-            LookupResult result,
-            string symbolId,
-            LookupOptions options,
-            Binder originalBinder,
-            bool diagnose)
+    internal static void LookupSymbolInDescendantEntries(
+        LookupResult result,
+        IEntrySymbol symbol,
+        string symbolId,
+        LookupOptions options,
+        Binder originalBinder,
+        bool diagnose)
+    {
+        // we consider all descendant selection entry containers and resource entries
+        if (options.CanConsiderResourceEntries())
         {
-            Debug.Assert(qualifier is not null);
-            result.MergeEqual(originalBinder.CheckViability(symbol, symbolId, options, diagnose));
-            if (result.IsMultiViable)
-                return;
-
-            // we consider all descendant selection entry containers and resource entries
-            if (symbol is IEntrySymbol entry)
+            originalBinder.CheckViability(result, symbol.Resources, symbolId, options, diagnose);
+            foreach (var child in symbol.Resources)
             {
-                foreach (var child in entry.Resources)
-                {
-                    LookupSymbolInDescendantEntries(qualifier, child, result, symbolId, options, originalBinder, diagnose);
-                }
+                LookupSymbolInDescendantEntries(result, child, symbolId, options, originalBinder, diagnose);
             }
-            if (symbol is ISelectionEntryContainerSymbol selectionEntryContainer)
+        }
+        if (symbol is ISelectionEntryContainerSymbol container)
+        {
+            originalBinder.CheckViability(result, container.ChildSelectionEntries, symbolId, options, diagnose);
+            foreach (var child in container.ChildSelectionEntries)
             {
-                foreach (var child in selectionEntryContainer.ChildSelectionEntries)
-                {
-                    LookupSymbolInDescendantEntries(qualifier, child, result, symbolId, options, originalBinder, diagnose);
-                }
+                LookupSymbolInDescendantEntries(result, child, symbolId, options, originalBinder, diagnose);
             }
         }
     }

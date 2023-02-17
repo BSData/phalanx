@@ -41,6 +41,44 @@ public class SimpleIntegrationTests
     }
 
     [Fact]
+    public void Compilation_connects_nested_entry_links_to_nested_entries()
+    {
+        // arrange
+        var gst = NodeFactory.Gamesystem("foo");
+        var cat = NodeFactory.Catalogue(gst, "bar")
+            .AddSelectionEntries(
+                NodeFactory.SelectionEntry("rootEntry").Tee(out var rootEntry)
+                    .AddSelectionEntries(
+                        NodeFactory.SelectionEntry("nested-entry").Tee(out var nestedEntry))
+                    .AddRules(
+                        NodeFactory.Rule("nested-rule").Tee(out var nestedRule)))
+            .AddSharedSelectionEntryGroups(
+                NodeFactory.SelectionEntryGroup("x1")
+                    .AddSelectionEntries(
+                        NodeFactory.SelectionEntry("x2")
+                            .AddEntryLinks(
+                                NodeFactory.EntryLink(nestedEntry).Tee(out var nestedEntryLink))
+                            .AddInfoLinks(
+                                NodeFactory.InfoLink(nestedRule).Tee(out var nestedRuleLink))));
+        var compilation = WhamCompilation.Create();
+        // act
+        var result = compilation.AddSourceTrees(SourceTree.CreateForRoot(gst), SourceTree.CreateForRoot(cat));
+        // assert
+        result.GetDiagnostics().Should().BeEmpty();
+        var catalogue = result.GlobalNamespace.Catalogues.Single(x => !x.IsGamesystem);
+        var rootEntrySymbol = catalogue.RootContainerEntries.OfType<ISelectionEntryContainerSymbol>().Single();
+        var sharedGroupSymbol = catalogue.SharedSelectionEntryContainers.Single().ChildSelectionEntries.Single();
+        var expectedEntry = rootEntrySymbol.ChildSelectionEntries.Single();
+        var expectedRule = rootEntrySymbol.Resources.Single();
+
+        sharedGroupSymbol.ChildSelectionEntries.Single().ReferencedEntry
+            .Should().Be(expectedEntry);
+
+        sharedGroupSymbol.Resources.Single().ReferencedEntry
+            .Should().Be(expectedRule);
+    }
+
+    [Fact]
     public void Compilation_connects_group_default_entry_id_to_entry_link()
     {
         // arrange
