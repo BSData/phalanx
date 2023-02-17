@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.Json;
 using Phalanx.SampleDataset;
 using WarHub.ArmouryModel;
@@ -10,7 +11,7 @@ namespace Phalanx.PlaygroundTool;
 
 class Program
 {
-    static void Main()
+    static void PlayWithSample()
     {
         Console.WriteLine("Loading sample dataset:");
         var ws = SampleDataResources.CreateXmlWorkspace();
@@ -19,12 +20,26 @@ class Program
             Console.WriteLine($"{doc.Filepath} ({doc.Kind})");
         }
         Console.WriteLine("Compiling sample dataset:");
-        var sampleCompilation = RosterState.CreateFromNodes(ws.Documents.Select(x => x.GetRootAsync().Result!)).Compilation;
-        foreach (var diagnostic in sampleCompilation.GetDiagnostics())
+        var watch = Stopwatch.StartNew();
+        var compilation = RosterState.CreateFromNodes(ws.Documents.Select(x => x.GetRootAsync().Result!)).Compilation;
+        var compiledTime = watch.Elapsed;
+        Console.WriteLine("Compiled in " + compiledTime);
+        watch.Restart();
+        var diagnostics = compilation.GetDiagnostics();
+        watch.Stop();
+        var diagTime = watch.Elapsed;
+        Console.WriteLine("Diagnosed in " + diagTime);
+        foreach (var diagnostic in diagnostics)
         {
             Console.WriteLine(diagnostic.ToString());
         }
+        Console.WriteLine($"Diagnostic count: {diagnostics.Length}");
         Console.WriteLine("Finished processing sample dataset.");
+    }
+
+    static void Main()
+    {
+        PlayWithSample();
         Console.WriteLine("-----------------------------------");
         Console.WriteLine();
 

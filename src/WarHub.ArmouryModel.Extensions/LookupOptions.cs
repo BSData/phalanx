@@ -69,4 +69,7 @@ internal static class LookupOptionsExtensions
 
     internal static bool CanConsiderRootEntries(this LookupOptions options) =>
         (options & (LookupOptions.CatalogueOnly | LookupOptions.ResoureDefinitionOnly | LookupOptions.SharedOnly)) == 0;
+
+    internal static bool CanConsiderNestedEntries(this LookupOptions options) =>
+        (options & (LookupOptions.CatalogueOnly | LookupOptions.ResoureDefinitionOnly | LookupOptions.RootOnly | LookupOptions.SharedOnly)) == 0;
 }

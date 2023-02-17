@@ -38,6 +38,6 @@ internal class SelectionEntryLinkSymbol : SelectionEntryBaseSymbol, INodeDeclare
     {
         base.BindReferencesCore(binder, diagnostics);
 
-        lazyReference = binder.BindSharedSelectionEntrySymbol(Declaration, diagnostics);
+        lazyReference = binder.BindSelectionEntrySymbol(Declaration, diagnostics);
     }
 }
