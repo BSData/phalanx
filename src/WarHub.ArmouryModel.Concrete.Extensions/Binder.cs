@@ -169,7 +169,12 @@ internal class Binder
         {
             return ImmutableArray.Create<IEntrySymbol>(new ErrorSymbols.ErrorSelectionEntrySymbol()
             {
-                ErrorInfo = diagnostics.Add(ErrorCode.ERR_NoBindingCandidates, node.GetLocation(), "Node's entry ID was empty."),
+                ErrorInfo = diagnostics.Add(
+                    ErrorCode.ERR_NoBindingCandidates,
+                    node.GetLocation(),
+                    entryId,
+                    node,
+                    "Node's entry ID was empty."),
             });
         }
         if (ids.Any(string.IsNullOrWhiteSpace))
@@ -214,7 +219,12 @@ internal class Binder
         {
             return new TErrorSymbol()
             {
-                ErrorInfo = diagnostics.Add(ErrorCode.ERR_NoBindingCandidates, node.GetLocation(), "Symbol ID was null."),
+                ErrorInfo = diagnostics.Add(
+                    ErrorCode.ERR_NoBindingCandidates,
+                    node.GetLocation(),
+                    symbolId!,
+                    node,
+                    "Symbol ID was null."),
             };
         }
         var result = LookupResult.GetInstance();
@@ -442,7 +452,12 @@ internal class Binder
                 // TODO multi-result analysis
                 // TODO report possible warnings or errors
                 // TODO candidate-containing result
-                var diag = diagnostics.Add(ErrorCode.ERR_MultipleViableBindingCandidates, where.GetLocation(), result.Symbols.ToImmutableArray(), symbolId);
+                var diag = diagnostics.Add(
+                    ErrorCode.ERR_MultipleViableBindingCandidates,
+                    where.GetLocation(),
+                    result.Symbols.ToImmutableArray(),
+                    symbolId,
+                    where);
                 return new ErrorSymbols.ErrorSymbolBase()
                 {
                     ErrorInfo = diag,
@@ -453,7 +468,12 @@ internal class Binder
         if (result.Kind is LookupResultKind.Empty)
         {
             // TODO diagnostics, specific type?
-            var diag = diagnostics.Add(ErrorCode.ERR_NoBindingCandidates, where.GetLocation(), symbolId);
+            var diag = diagnostics.Add(
+                ErrorCode.ERR_NoBindingCandidates,
+                where.GetLocation(),
+                symbolId,
+                where,
+                "No node with such id was found.");
             return new ErrorSymbols.ErrorSymbolBase()
             {
                 ErrorInfo = diag,
@@ -470,7 +490,12 @@ internal class Binder
         }
         else
         {
-            errorDiag = diagnostics.Add(ErrorCode.ERR_UnviableBindingCandidates, where.GetLocation(), result.Symbols.ToImmutableArray(), symbolId);
+            errorDiag = diagnostics.Add(
+                ErrorCode.ERR_UnviableBindingCandidates,
+                where.GetLocation(),
+                result.Symbols.ToImmutableArray(),
+                symbolId,
+                where);
         }
 
         if (result.SingleSymbolOrDefault is { } singleUnviable)

@@ -67,7 +67,7 @@ internal abstract class QueryBaseSymbol : LogicBaseSymbol, IQuerySymbol
             diagnostics.Add(
                 ErrorCode.ERR_UnknownEnumerationValue,
                 declaration.GetLocation(),
-                 (declaration as QueryFilteredBaseNode)?.ChildId ?? "childId");
+                (declaration as QueryFilteredBaseNode)?.ChildId ?? "childId");
         }
         Options = CreateOptions();
         // TODO more diagnostics
@@ -184,7 +184,10 @@ internal abstract class QueryBaseSymbol : LogicBaseSymbol, IQuerySymbol
                 _ => QueryComparisonType.None
             };
             if (Comparison is QueryComparisonType.None)
-                diagnostics.Add(ErrorCode.ERR_UnknownEnumerationValue, Declaration);
+                diagnostics.Add(
+                    ErrorCode.ERR_UnknownEnumerationValue,
+                    declaration.GetLocation(),
+                    declaration.Type);
         }
 
         public override QueryComparisonType Comparison { get; }
@@ -205,7 +208,10 @@ internal abstract class QueryBaseSymbol : LogicBaseSymbol, IQuerySymbol
                 _ => QueryComparisonType.None
             };
             if (Comparison is QueryComparisonType.None)
-                diagnostics.Add(ErrorCode.ERR_UnknownEnumerationValue, Declaration);
+                diagnostics.Add(
+                    ErrorCode.ERR_UnknownEnumerationValue,
+                    declaration.GetLocation(),
+                    declaration.Type);
         }
 
         public override QueryComparisonType Comparison { get; }

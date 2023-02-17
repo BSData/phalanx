@@ -43,7 +43,33 @@ internal static partial class ErrorFacts
     {
         // string message = ResourceManager.GetString(code.ToString(), culture);
         // return message;
-        return code.ToString();
+
+        // FIXME in far future, replace with localizable resources
+
+        return code switch
+        {
+            ErrorCode.ERR_GenericError =>
+                "There was an uncategorized error. {0}",
+            ErrorCode.ERR_SyntaxSupportNotYetImplemented =>
+                "Support for this syntax was not yet implemented.",
+            ErrorCode.ERR_UnknownEnumerationValue =>
+                "Unknown enumeration value '{0}'.",
+            ErrorCode.ERR_MissingGamesystem =>
+                "Gamesystem is required for compilation, but was not found.",
+            ErrorCode.ERR_MultipleGamesystems =>
+                "Multiple gamesystems discovered, expected exactly one. Gamesystem '{0}' will be not used. Defaulting to first one provided, '{1}'.",
+            ErrorCode.ERR_UnknownModuleType =>
+                "This module was not recognized and will not be processed: '{0}'.",
+            ErrorCode.ERR_NoBindingCandidates =>
+                "No candidates for binding this reference were found (ref='{0}' in {1}). {2}",
+            ErrorCode.ERR_MultipleViableBindingCandidates =>
+                "Multiple candidates for binding this reference were found (ref='{0}' in {1}).",
+            ErrorCode.ERR_UnviableBindingCandidates =>
+                "There were candidates for binding this reference (ref='{0}' in {1}), but were disallowed due to some rules (visibility, scope).",
+            _ => code.ToString(),
+        };
+
+        // return code.ToString();
     }
 
     public static LocalizableString GetMessageFormat(ErrorCode code)

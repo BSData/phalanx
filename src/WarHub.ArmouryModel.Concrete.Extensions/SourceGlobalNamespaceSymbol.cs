@@ -25,8 +25,12 @@ internal class SourceGlobalNamespaceSymbol : Symbol, IGamesystemNamespaceSymbol
             var rootCandidates = Catalogues.Where(x => x.IsGamesystem).ToImmutableArray();
             if (rootCandidates.Length > 1)
             {
-                foreach (var candidate in rootCandidates)
-                    DeclarationDiagnostics.Add(ErrorCode.ERR_MultipleGamesystems, candidate.Declaration);
+                foreach (var candidate in rootCandidates.Skip(1))
+                    DeclarationDiagnostics.Add(
+                        ErrorCode.ERR_MultipleGamesystems,
+                        candidate.Declaration.GetLocation(),
+                        candidate,
+                        rootCandidates[0]);
             }
             return rootCandidates.FirstOrDefault()
                 ?? DeclaringCompilation.CreateMissingGamesystemSymbol(DeclarationDiagnostics);
@@ -48,7 +52,10 @@ internal class SourceGlobalNamespaceSymbol : Symbol, IGamesystemNamespaceSymbol
             }
             else
             {
-                DeclarationDiagnostics.Add(ErrorCode.ERR_UnknownCatalogueType, node);
+                DeclarationDiagnostics.Add(
+                    ErrorCode.ERR_UnknownModuleType,
+                    node.GetLocation(),
+                    node);
                 return null;
             }
         }

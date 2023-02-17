@@ -13,7 +13,7 @@ internal class SelectionEntryLinkSymbol : SelectionEntryBaseSymbol, INodeDeclare
         : base(containingSymbol, declaration, diagnostics)
     {
         Declaration = declaration;
-        ContainerKind = Declaration.Type switch
+        ContainerKind = declaration.Type switch
         {
             EntryLinkKind.SelectionEntry => ContainerKind.Selection,
             EntryLinkKind.SelectionEntryGroup => ContainerKind.SelectionGroup,
@@ -21,7 +21,10 @@ internal class SelectionEntryLinkSymbol : SelectionEntryBaseSymbol, INodeDeclare
         };
         if (ContainerKind is ContainerKind.Error)
         {
-            diagnostics.Add(ErrorCode.ERR_UnknownEnumerationValue, Declaration);
+            diagnostics.Add(
+                ErrorCode.ERR_UnknownEnumerationValue,
+                declaration.GetLocation(),
+                declaration.Type);
         }
     }
 

@@ -39,7 +39,10 @@ internal abstract class ConditionGroupingBaseSymbol : ConditionBaseSymbol, ICond
             };
             if (ChildrenOperator is LogicalOperator.Unknown)
             {
-                diagnostics.Add(ErrorCode.ERR_UnknownEnumerationValue, declaration);
+                diagnostics.Add(
+                    ErrorCode.ERR_UnknownEnumerationValue,
+                    declaration.GetLocation(),
+                    declaration.Type);
             }
             Children = GetChildSymbols().ToImmutableArray();
 

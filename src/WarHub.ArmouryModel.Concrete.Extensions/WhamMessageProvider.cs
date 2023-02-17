@@ -83,6 +83,21 @@ internal sealed class WhamMessageProvider : CommonMessageProvider
         // return SymbolDisplay.ToDisplayString(symbol, SymbolDisplayFormat.CSharpShortErrorMessageFormat);
     }
 
+    public override string GetErrorDisplayString(SourceNode node)
+    {
+        return node switch
+        {
+            null => "null",
+            INameableNode { Name: { } name } and IIdentifiableNode { Id: { } id } =>
+                $"{node.Kind} \"{name}\" [{id}]",
+            INameableNode { Name: { } name } =>
+                $"{node.Kind} \"{name}\"",
+            IIdentifiableNode { Id: { } id } =>
+                $"{node.Kind} [{id}]",
+            _ => $"{node.Kind}"
+        };
+    }
+
     public override ReportDiagnostic GetDiagnosticReport(DiagnosticInfo diagnosticInfo, CompilationOptions options)
     {
         return diagnosticInfo.Severity switch

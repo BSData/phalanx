@@ -112,7 +112,7 @@ public class SimpleIntegrationTests
         result.GetDiagnostics().Should().ContainSingle()
             .Which.Should().Match<Diagnostic>(x =>
                 x.Id == "WHAM0006"
-                && x.GetMessage(null) == "ERR_NoBindingCandidates"
+                && x.GetMessage(null).Contains("No candidates for binding this reference were found")
                 && x.Severity == DiagnosticSeverity.Error);
         var catalogue = result.GlobalNamespace.Catalogues.Single(x => !x.IsGamesystem);
         catalogue.RootContainerEntries.Single().ReferencedEntry

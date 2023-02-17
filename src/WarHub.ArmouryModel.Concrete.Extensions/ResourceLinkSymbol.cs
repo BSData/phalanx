@@ -13,7 +13,7 @@ internal class ResourceLinkSymbol : ResourceEntryBaseSymbol, IResourceEntrySymbo
         : base(containingSymbol, declaration, diagnostics)
     {
         Declaration = declaration;
-        ResourceKind = Declaration.Type switch
+        ResourceKind = declaration.Type switch
         {
             InfoLinkKind.InfoGroup => ResourceKind.Group,
             InfoLinkKind.Profile => ResourceKind.Profile,
@@ -22,7 +22,10 @@ internal class ResourceLinkSymbol : ResourceEntryBaseSymbol, IResourceEntrySymbo
         };
         if (ResourceKind is ResourceKind.Error)
         {
-            diagnostics.Add(ErrorCode.ERR_UnknownEnumerationValue, Declaration);
+            diagnostics.Add(
+                ErrorCode.ERR_UnknownEnumerationValue,
+                declaration.GetLocation(),
+                declaration.Type);
         }
     }
 

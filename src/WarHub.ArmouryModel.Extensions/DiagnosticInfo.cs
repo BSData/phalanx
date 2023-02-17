@@ -188,17 +188,17 @@ internal class DiagnosticInfo : IFormattable
         object[]? argumentsToUse = null;
         for (var i = 0; i < Arguments.Length; i++)
         {
-            if (Arguments[i] is DiagnosticInfo embedded)
+            object? toUse = Arguments[i] switch
+            {
+                DiagnosticInfo embedded => embedded.GetMessage(formatProvider),
+                SourceNode node => MessageProvider.GetErrorDisplayString(node),
+                ISymbol symbol => MessageProvider.GetErrorDisplayString(symbol),
+                _ => null
+            };
+            if (toUse is not null)
             {
                 argumentsToUse = InitializeArgumentListIfNeeded(argumentsToUse);
-                argumentsToUse[i] = embedded.GetMessage(formatProvider);
-                continue;
-            }
-
-            if (Arguments[i] is ISymbol symbol)
-            {
-                argumentsToUse = InitializeArgumentListIfNeeded(argumentsToUse);
-                argumentsToUse[i] = MessageProvider.GetErrorDisplayString(symbol);
+                argumentsToUse[i] = toUse;
             }
         }
 
