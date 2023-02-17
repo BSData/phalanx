@@ -98,6 +98,11 @@ internal abstract class CommonMessageProvider
     public abstract string GetErrorDisplayString(ISymbol symbol);
 
     /// <summary>
+    /// Convert given node to string representation.
+    /// </summary>
+    public abstract string GetErrorDisplayString(SourceNode node);
+
+    /// <summary>
     /// Given an error code (like 1234) return the identifier (CS1234 or BC1234).
     /// </summary>
     public string GetIdForErrorCode(int errorCode)
