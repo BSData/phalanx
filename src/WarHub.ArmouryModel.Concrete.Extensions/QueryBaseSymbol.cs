@@ -146,7 +146,7 @@ internal abstract class QueryBaseSymbol : LogicBaseSymbol, IQuerySymbol
         base.BindReferencesCore(binder, diagnostics);
         if (ValueKind is QueryValueKind.MemberValue)
         {
-            lazyValueType = binder.BindEntryMemberSymbol(Declaration, Declaration.Field, diagnostics);
+            lazyValueType = binder.BindCostTypeSymbol(Declaration, Declaration.Field, diagnostics);
         }
         else if (ValueKind is QueryValueKind.MemberValueLimit)
         {
@@ -159,7 +159,7 @@ internal abstract class QueryBaseSymbol : LogicBaseSymbol, IQuerySymbol
         }
         if (ValueFilterKind is QueryFilterKind.SpecifiedEntry)
         {
-            lazyFilter = binder.BindFilterEntrySymbol(Declaration, Declaration.Scope, diagnostics);
+            lazyFilter = binder.BindFilterEntrySymbol(Declaration, ((QueryFilteredBaseNode)Declaration).ChildId, ScopeKind, diagnostics);
         }
     }
 

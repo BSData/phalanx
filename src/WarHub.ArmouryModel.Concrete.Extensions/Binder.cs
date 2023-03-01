@@ -62,6 +62,10 @@ internal class Binder
         BindSimple<ICatalogueSymbol, ErrorSymbols.ErrorCatalogueSymbol>(
             node, diagnostics, node.CatalogueId, LookupOptions.CatalogueOnly);
 
+    internal ICatalogueSymbol BindCatalogueSymbol(SourceNode node, string? symboldId, BindingDiagnosticBag diagnostics) =>
+        BindSimple<ICatalogueSymbol, ErrorSymbols.ErrorCatalogueSymbol>(
+            node, diagnostics, symboldId, LookupOptions.CatalogueOnly);
+
     internal ICatalogueSymbol BindGamesystemSymbol(CatalogueNode node, BindingDiagnosticBag diagnostics) =>
         BindSimple<ICatalogueSymbol, ErrorSymbols.ErrorGamesystemSymbol>(
             node, diagnostics, node.GamesystemId, LookupOptions.CatalogueOnly);
@@ -112,30 +116,27 @@ internal class Binder
         BindSimple<ICategoryEntrySymbol, ErrorSymbols.ErrorCategoryEntrySymbol>(
             node, diagnostics, node.EntryId, LookupOptions.CategoryEntryOnly);
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Method is WIP")]
-    internal ISymbol? BindEntryMemberSymbol(SourceNode declaration, string? field, BindingDiagnosticBag diagnostics)
-    {
-        // TODO implement query/modifier field binding (constraint, cost, characteristic etc)
-        return null;
-    }
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Method is WIP")]
-    internal ISymbol? BindFilterEntrySymbol(SourceNode node, string? symbolId, BindingDiagnosticBag diagnostics)
-    {
-        // TODO implement query filter binding
-        return null;
-    }
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Method is WIP")]
-    internal ISymbol? BindScopeEntrySymbol(SourceNode node, string? symbolId, BindingDiagnosticBag diagnostics)
-    {
-        // TODO implement query scope binding
-        return null;
-    }
-
     internal ICategoryEntrySymbol BindCategoryEntrySymbol(SourceNode node, string? symbolId, BindingDiagnosticBag diagnostics) =>
         BindSimple<ICategoryEntrySymbol, ErrorSymbols.ErrorCategoryEntrySymbol>(
             node, diagnostics, symbolId, LookupOptions.CategoryEntryOnly);
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Method is WIP")]
+    internal ISymbol BindEffectTargetMemberSymbol(SourceNode node, string? symbolId, BindingDiagnosticBag diagnostics)
+    {
+        // TODO implement modifier field binding (constraint, cost, characteristic etc)
+        return null!;
+    }
+
+    internal ISymbol BindFilterEntrySymbol(SourceNode node, string? symbolId, QueryScopeKind scopeKind, BindingDiagnosticBag diagnostics)
+        => scopeKind switch
+        {
+            QueryScopeKind.PrimaryCatalogue => BindCatalogueSymbol(node, symbolId, diagnostics),
+            QueryScopeKind.PrimaryCategory => BindCategoryEntrySymbol(node, symbolId, diagnostics),
+            _ => BindSimple<IContainerEntrySymbol, ErrorSymbols.ErrorContainerEntrySymbol>(node, diagnostics, symbolId, LookupOptions.ContainerEntryOnly)
+        };
+
+    internal ISymbol BindScopeEntrySymbol(SourceNode node, string? symbolId, BindingDiagnosticBag diagnostics) =>
+        BindSimple<IContainerEntrySymbol, ErrorSymbols.ErrorContainerEntrySymbol>(node, diagnostics, symbolId, LookupOptions.ContainerEntryOnly);
 
     internal ISelectionEntryContainerSymbol BindSelectionEntryGroupDefaultEntrySymbol(
         SelectionEntryGroupNode node,
