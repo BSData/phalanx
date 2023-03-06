@@ -39,9 +39,7 @@ internal class BinderFactory
 
         public override Binder DefaultVisit(SourceNode node)
         {
-            // no support for detached nodes (e.g. withoug root like roster or catalogue node)
-            // can we add such support?
-            return node.Parent is { } parent ? VisitCore(parent) : Compilation.GlobalNamespaceBinder;
+            return GetParentBinder(node);
         }
 
         public override Binder Visit(SourceNode? node)
@@ -55,27 +53,90 @@ internal class BinderFactory
             return node!.Accept(this)!;
         }
 
+        private Binder GetParentBinder(SourceNode node)
+        {
+            // no support for detached nodes (e.g. withoug root like roster or catalogue node)
+            // can we add such support?
+            return node.Parent is { } parent ? VisitCore(parent) : Compilation.GlobalNamespaceBinder;
+        }
+
         public override Binder VisitRoster(RosterNode node)
         {
-            var next = DefaultVisit(node);
+            var next = GetParentBinder(node);
             return new RosterBinder(next, GetRosterSymbol(node));
         }
 
         public override Binder VisitCatalogue(CatalogueNode node)
         {
-            var next = DefaultVisit(node);
+            var next = GetParentBinder(node);
             return new CatalogueBaseBinder(next, GetCatalogueSymbol(node));
         }
 
         public override Binder VisitGamesystem(GamesystemNode node)
         {
-            var next = DefaultVisit(node);
+            var next = GetParentBinder(node);
             return new CatalogueBaseBinder(next, GetCatalogueSymbol(node));
+        }
+
+        public override Binder VisitCategoryEntry(CategoryEntryNode node)
+        {
+            return VisitEntryCore(node);
+        }
+
+        public override Binder VisitEntryLink(EntryLinkNode node)
+        {
+            return VisitEntryCore(node);
+        }
+
+        public override Binder VisitForceEntry(ForceEntryNode node)
+        {
+            return VisitEntryCore(node);
+        }
+
+        public override Binder VisitInfoGroup(InfoGroupNode node)
+        {
+            return VisitEntryCore(node);
+        }
+
+        public override Binder VisitInfoLink(InfoLinkNode node)
+        {
+            return VisitEntryCore(node);
+        }
+
+        public override Binder VisitProfile(ProfileNode node)
+        {
+            return VisitEntryCore(node);
+        }
+
+        public override Binder VisitRule(RuleNode node)
+        {
+            return VisitEntryCore(node);
+        }
+
+        public override Binder VisitSelectionEntry(SelectionEntryNode node)
+        {
+            return VisitEntryCore(node);
+        }
+
+        public override Binder VisitSelectionEntryGroup(SelectionEntryGroupNode node)
+        {
+            return VisitEntryCore(node);
+        }
+
+        private Binder VisitEntryCore(EntryBaseNode node)
+        {
+            var next = GetParentBinder(node);
+            var containingEntry = GetContainingEntry(next, node);
+            if (containingEntry is not null)
+            {
+                next = new EntryBinder(containingEntry, next);
+            }
+            return next;
         }
 
         public override Binder VisitCharacteristic(CharacteristicNode node)
         {
-            var next = DefaultVisit(node);
+            var next = GetParentBinder(node);
             if (GetAncestorSymbol<ProfileSymbol>(node) is { } profile)
             {
                 return new CharacteristicBinder(next, profile, profile.Type);
@@ -89,14 +150,14 @@ internal class BinderFactory
 
         public override Binder VisitForce(ForceNode node)
         {
-            var next = DefaultVisit(node);
+            var next = GetParentBinder(node);
             var symbol = GetAncestorSymbol<ForceSymbol>(node);
             return symbol is null ? next : new ForceBinder(next, symbol);
         }
 
         public override Binder VisitSelection(SelectionNode node)
         {
-            var next = DefaultVisit(node);
+            var next = GetParentBinder(node);
             var symbol = GetAncestorSymbol<SelectionSymbol>(node);
             return symbol is null ? next : new SelectionBinder(next, symbol);
         }
@@ -106,6 +167,18 @@ internal class BinderFactory
 
         private RosterSymbol GetRosterSymbol(RosterNode node) =>
             GetAncestorModule<RosterSymbol>(node);
+
+        private static EntrySymbol? GetContainingEntry(Binder outerBinder, SourceNode node)
+        {
+            foreach (var item in outerBinder.ContainingSymbol!.GetMembers())
+            {
+                if (item is EntrySymbol entry && ReferenceEquals(entry.Declaration, node))
+                {
+                    return entry;
+                }
+            }
+            return null;
+        }
 
         private T? GetAncestorSymbol<T>(SourceNode node) where T : Symbol
         {

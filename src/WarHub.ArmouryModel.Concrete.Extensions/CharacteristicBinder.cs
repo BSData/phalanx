@@ -18,7 +18,7 @@ internal class CharacteristicBinder : Binder
         LookupOptions options,
         Binder originalBinder,
         bool diagnose,
-        ISymbol? qualifier)
+        Symbol? qualifier)
     {
         if (options.CanConsiderResourceDefinitions())
         {

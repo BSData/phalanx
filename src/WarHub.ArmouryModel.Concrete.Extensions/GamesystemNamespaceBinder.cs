@@ -10,6 +10,14 @@ internal class GamesystemNamespaceBinder : Binder
 
     internal override Symbol? ContainingSymbol => NamespaceSymbol;
 
+    internal override ContainerEntryBaseSymbol? ContainingContainerSymbol => null;
+
+    internal override EntrySymbol? ContainingEntrySymbol => null;
+
+    internal override ForceSymbol? ContainingForceSymbol => null;
+
+    internal override SelectionSymbol? ContainingSelectionSymbol => null;
+
     public SourceGlobalNamespaceSymbol NamespaceSymbol { get; }
 
     internal override void LookupSymbolsInSingleBinder(
@@ -18,7 +26,7 @@ internal class GamesystemNamespaceBinder : Binder
         LookupOptions options,
         Binder originalBinder,
         bool diagnose,
-        ISymbol? qualifier)
+        Symbol? qualifier)
     {
         if (options.CanConsiderCatalogues())
         {

@@ -39,24 +39,30 @@ internal enum LookupOptions
     RuleEntryOnly = 1 << 10 | ResourceEntryOnly,
     ProfileEntryOnly = 1 << 11 | ResourceEntryOnly,
     CharacteristicEntryOnly = 1 << 12 | ResourceEntryOnly,
-    ContainerOnly = 1 << 13,
+    ResourceGroupEntryOnly = 1 << 13 | ResourceEntryOnly,
+    ContainerOnly = 1 << 14,
     ContainerEntryOnly = ContainerOnly | EntryOnly,
-    ForceEntryOnly = 1 << 14 | ContainerEntryOnly,
-    CategoryEntryOnly = 1 << 15 | ContainerEntryOnly,
-    SelectionEntryOnly = 1 << 16 | ContainerEntryOnly,
-    SelectionGroupEntryOnly = 1 << 17 | ContainerEntryOnly,
-    SharedOnly = 1 << 18,
-    RootOnly = 1 << 19,
-    ResourceGroupEntryOnly = 1 << 20 | ResourceEntryOnly,
+    ForceEntryOnly = 1 << 15 | ContainerEntryOnly,
+    CategoryEntryOnly = 1 << 16 | ContainerEntryOnly,
+    SelectionEntryOnly = 1 << 17 | ContainerEntryOnly,
+    SelectionGroupEntryOnly = 1 << 18 | ContainerEntryOnly,
+    SingleLevel = 1 << 19,
+    SharedOnly = 1 << 20,
+    RootOnly = 1 << 21,
+    EntryMembersOnly = 1 << 22,
+    /// <summary>
+    /// Bind to resources when their definition's ID matches the looked-up symbol ID.
+    /// </summary>
+    ResourceByDefinitionId = 1 << 23,
 }
 
 internal static class LookupOptionsExtensions
 {
     internal static bool CanConsiderCatalogues(this LookupOptions options) =>
-        (options & (LookupOptions.ResoureDefinitionOnly | LookupOptions.EntryOnly)) == 0;
+        (options & (LookupOptions.ResoureDefinitionOnly | LookupOptions.EntryOnly | LookupOptions.EntryMembersOnly)) == 0;
 
     internal static bool CanConsiderResourceDefinitions(this LookupOptions options) =>
-        (options & (LookupOptions.CatalogueOnly | LookupOptions.EntryOnly)) == 0;
+        (options & (LookupOptions.CatalogueOnly | LookupOptions.EntryOnly | LookupOptions.EntryMembersOnly)) == 0;
 
     internal static bool CanConsiderResourceEntries(this LookupOptions options) =>
         (options & (LookupOptions.CatalogueOnly | LookupOptions.ResoureDefinitionOnly | LookupOptions.ContainerOnly)) == 0;
@@ -70,6 +76,9 @@ internal static class LookupOptionsExtensions
     internal static bool CanConsiderRootEntries(this LookupOptions options) =>
         (options & (LookupOptions.CatalogueOnly | LookupOptions.ResoureDefinitionOnly | LookupOptions.SharedOnly)) == 0;
 
+    internal static bool CanConsiderConstraints(this LookupOptions options) =>
+        (options & (LookupOptions.CatalogueOnly | LookupOptions.ResoureDefinitionOnly | LookupOptions.EntryOnly)) == 0;
+
     internal static bool CanConsiderNestedEntries(this LookupOptions options) =>
-        (options & (LookupOptions.CatalogueOnly | LookupOptions.ResoureDefinitionOnly | LookupOptions.RootOnly | LookupOptions.SharedOnly)) == 0;
+        (options & (LookupOptions.CatalogueOnly | LookupOptions.ResoureDefinitionOnly | LookupOptions.RootOnly | LookupOptions.SharedOnly | LookupOptions.SingleLevel)) == 0;
 }

@@ -46,8 +46,7 @@ public class SampleDatasetIntegrationTests
 
         // force's modifier condition is fully bound
         var convoySetMax100Modifier = convoyForceEntry.Effects.Single(x => x.OperandValue == "100.0");
-        // TODO when Binder.BindEffectTargetMemberSymbol is implemented
-        //convoySetMax100Modifier.TargetMember.Should().Be(convoyMaxPoints);
+        convoySetMax100Modifier.TargetMember.Should().Be(convoyMaxPoints);
         var convoyMaxCondition = convoySetMax100Modifier.Condition!.Children.Single();
         convoyMaxCondition.Query.Should().NotBeNull();
         convoyMaxCondition.Query!.ScopeSymbol.Should().Be(gamesystem.RootContainerEntries.First(x => x.Name == "Game Options"));
