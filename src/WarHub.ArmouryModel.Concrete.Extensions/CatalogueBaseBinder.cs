@@ -36,6 +36,11 @@ internal class CatalogueBaseBinder : Binder
             // no catalogues to bind here
             return;
         }
+        if (options.HasFlag(LookupOptions.EntryMembersOnly))
+        {
+            // we're too deep, should've bound in entry binders
+            return;
+        }
         if (qualifier is EntrySymbol entrySymbol)
         {
             LookupSymbolInQualifyingEntry(entrySymbol, result, symbolId, options, originalBinder, diagnose, RootClosure);

@@ -125,7 +125,7 @@ internal class Binder
         Debug.Assert(ContainingEntrySymbol is not null);
         var firstPassDiags = BindingDiagnosticBag.GetInstance();
         var initialResult = BindSimple<ISymbol, ErrorSymbols.ErrorSymbolBase>(
-            node, firstPassDiags, symbolId, LookupOptions.EntryMembersOnly | LookupOptions.SingleLevel, ContainingEntrySymbol);
+            node, firstPassDiags, symbolId, LookupOptions.EntryMembersOnly | LookupOptions.SingleLevel | LookupOptions.ResourceByDefinitionId, ContainingEntrySymbol);
         if (!initialResult.IsKind(SymbolKind.Error))
         {
             diagnostics.AddRangeAndFree(firstPassDiags);
@@ -419,6 +419,18 @@ internal class Binder
             // TODO when diagnose=true, find candidates and mark as LookupResultKind.Unreferenced
             return;
         }
+        LookupSymbolInQualifyingEntry(qualifier, result, symbolId, options, originalBinder, diagnose);
+    }
+
+    internal static void LookupSymbolInQualifyingEntry(
+        EntrySymbol qualifier,
+        LookupResult result,
+        string symbolId,
+        LookupOptions options,
+        Binder originalBinder,
+        bool diagnose)
+    {
+        Debug.Assert(qualifier is not null);
         result.MergeEqual(originalBinder.CheckViability(qualifier, symbolId, options, diagnose));
         LookupSymbolInDescendantEntries(result, qualifier, symbolId, options, originalBinder, diagnose);
     }
@@ -487,9 +499,9 @@ internal class Binder
                 var diag = diagnostics.Add(
                     ErrorCode.ERR_MultipleViableBindingCandidates,
                     where.GetLocation(),
-                    result.Symbols.ToImmutableArray(),
                     symbolId,
-                    where);
+                    where,
+                    result.Symbols.ToImmutableArray());
                 return new ErrorSymbols.ErrorSymbolBase()
                 {
                     ErrorInfo = diag,
