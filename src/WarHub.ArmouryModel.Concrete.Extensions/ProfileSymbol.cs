@@ -32,6 +32,12 @@ internal class ProfileSymbol : ResourceEntryBaseSymbol, IProfileSymbol, INodeDec
 
     public ImmutableArray<CharacteristicSymbol> Characteristics { get; }
 
+    public override ImmutableArray<ResourceEntryBaseSymbol> Resources =>
+        Characteristics.Cast<CharacteristicSymbol, ResourceEntryBaseSymbol>();
+
+    ImmutableArray<IResourceEntrySymbol> IEntrySymbol.Resources =>
+        Characteristics.Cast<CharacteristicSymbol, IResourceEntrySymbol>();
+
     ImmutableArray<ICharacteristicSymbol> IProfileSymbol.Characteristics =>
         Characteristics.Cast<CharacteristicSymbol, ICharacteristicSymbol>();
 
