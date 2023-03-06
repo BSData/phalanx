@@ -47,7 +47,4 @@ internal class ProfileSymbol : ResourceEntryBaseSymbol, IProfileSymbol, INodeDec
 
         lazyType = binder.BindProfileTypeSymbol(Declaration, diagnostics);
     }
-
-    protected override ImmutableArray<Symbol> MakeAllMembers(BindingDiagnosticBag diagnostics) =>
-        base.MakeAllMembers(diagnostics).AddRange(Characteristics);
 }
