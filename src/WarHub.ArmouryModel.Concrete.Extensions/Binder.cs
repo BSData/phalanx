@@ -444,6 +444,10 @@ internal class Binder
         bool diagnose)
     {
         originalBinder.CheckViability(result, symbol.GetMembers(), symbolId, options, diagnose);
+        if (result.IsMultiViable)
+        {
+            return;
+        }
         // we consider all descendant selection entry containers and resource entries
         if (options.CanConsiderNestedEntries())
         {
@@ -455,6 +459,11 @@ internal class Binder
                 }
             }
         }
+        //.TODO this goes into loop
+        // if (symbol.IsReference && symbol.ReferencedEntry is EntrySymbol referencedEntry)
+        // {
+        //     LookupSymbolInDescendantEntries(result, referencedEntry, symbolId, options, originalBinder, diagnose);
+        // }
     }
 
     private static bool IsRootEntry(ISymbol symbol) => symbol.ContainingModule is ICatalogueSymbol { } catalogue && symbol.Kind switch
