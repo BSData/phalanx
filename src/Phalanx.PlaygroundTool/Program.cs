@@ -39,9 +39,9 @@ class Program
         watch.Stop();
         var diagTime = watch.Elapsed;
         Console.WriteLine("Diagnosed in " + diagTime);
-        foreach (var diagnostic in diagnostics)
+        foreach (var diagnosticBin in diagnostics.GroupBy(x => x.ToString()))
         {
-            Console.WriteLine(diagnostic.ToString());
+            Console.WriteLine($"{diagnosticBin.Count()}x {diagnosticBin.Key}");
         }
         Console.WriteLine($"Diagnostic count: {diagnostics.Length}");
         Console.WriteLine("Finished processing sample dataset.");
