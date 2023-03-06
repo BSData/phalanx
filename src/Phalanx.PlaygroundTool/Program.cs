@@ -11,7 +11,17 @@ namespace Phalanx.PlaygroundTool;
 
 class Program
 {
-    static void PlayWithSample()
+    static void Main()
+    {
+        Console.WriteLine("📌 SampleDataset");
+        PlayWithSampleDataset();
+        Console.WriteLine("-----------------------------------");
+        Console.WriteLine();
+        Console.WriteLine("📌 Playground inline dataset");
+        PlayWithRosterChanging();
+    }
+
+    static void PlayWithSampleDataset()
     {
         Console.WriteLine("Loading sample dataset:");
         var ws = SampleDataResources.CreateXmlWorkspace();
@@ -37,12 +47,8 @@ class Program
         Console.WriteLine("Finished processing sample dataset.");
     }
 
-    static void Main()
+    static void PlayWithRosterChanging()
     {
-        PlayWithSample();
-        Console.WriteLine("-----------------------------------");
-        Console.WriteLine();
-
         Console.WriteLine(">>> Building dataset.");
         // create
         var rosterState = RosterState.CreateFromNodes(GetDataset());
