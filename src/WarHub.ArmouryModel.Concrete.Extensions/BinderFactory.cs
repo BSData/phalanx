@@ -83,6 +83,11 @@ internal class BinderFactory
             return VisitEntryCore(node);
         }
 
+        public override Binder VisitCategoryLink(CategoryLinkNode node)
+        {
+            return VisitEntryCore(node);
+        }
+
         public override Binder VisitEntryLink(EntryLinkNode node)
         {
             return VisitEntryCore(node);
