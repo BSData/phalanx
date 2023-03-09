@@ -443,38 +443,39 @@ internal class Binder
     {
         foreach (var symbol in symbols)
         {
-            if (symbol.Kind is SymbolKind.ContainerEntry or SymbolKind.ResourceEntry && symbol is EntrySymbol entry)
-            {
-                LookupSymbolsInDescendantEntries(result, entry, symbolId, options, originalBinder, diagnose);
-            }
+            LookupSymbolsInDescendantEntries(result, symbol, symbolId, options, originalBinder, diagnose);
         }
     }
 
     internal static void LookupSymbolsInDescendantEntries(
         LookupResult result,
-        EntrySymbol symbol,
+        ISymbol symbol,
         string symbolId,
         LookupOptions options,
         Binder originalBinder,
         bool diagnose)
     {
-        originalBinder.CheckViability(result, symbol.GetMembers(), symbolId, options, diagnose);
-        if (result.IsMultiViable)
-        {
+        Debug.Assert(!options.HasFlag(LookupOptions.CatalogueOnly | LookupOptions.ResoureDefinitionOnly | LookupOptions.RootOnly | LookupOptions.SharedOnly));
+        var kind = symbol.Kind;
+        if (kind is not SymbolKind.ContainerEntry and not SymbolKind.ResourceEntry)
             return;
-        }
+        if (symbol is not EntrySymbol entry)
+            return;
+        // skip looking for a container in a resource
+        if (options.HasFlag(LookupOptions.ContainerEntryOnly) && kind != SymbolKind.ContainerEntry)
+            return;
+        var members = entry.GetMembers();
+        originalBinder.CheckViability(result, members, symbolId, options, diagnose);
+        if (result.IsMultiViable)
+            return;
         // we consider all descendant selection entry containers and resource entries
         if (options.CanConsiderNestedEntries())
         {
-            LookupSymbolsInDescendantEntries(result, symbol.GetMembers(), symbolId, options, originalBinder, diagnose);
+            LookupSymbolsInDescendantEntries(result, members, symbolId, options, originalBinder, diagnose);
         }
-        if (options.HasFlag(LookupOptions.LookupInReferencedEntryMembers) && symbol.IsReference
-            && symbol.ReferencedEntry?.Kind is SymbolKind.ContainerEntry or SymbolKind.ResourceEntry)
+        if (options.HasFlag(LookupOptions.LookupInReferencedEntryMembers) && entry.IsReference && entry.ReferencedEntry is { } refEntry)
         {
-            if (symbol.ReferencedEntry is EntrySymbol referencedEntry)
-            {
-                LookupSymbolsInDescendantEntries(result, referencedEntry, symbolId, options, originalBinder, diagnose);
-            }
+            LookupSymbolsInDescendantEntries(result, refEntry, symbolId, options, originalBinder, diagnose);
         }
     }
 
