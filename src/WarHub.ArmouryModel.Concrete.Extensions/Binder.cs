@@ -109,16 +109,14 @@ internal class Binder
         Compilation.Options.BindEntryReferencesToNestedEntries ? LookupOptions.Default : LookupOptions.SharedOnly;
 
     internal ICategoryEntrySymbol BindCategoryEntrySymbol(CategoryLinkNode node, BindingDiagnosticBag diagnostics) =>
-        BindSimple<ICategoryEntrySymbol, ErrorSymbols.ErrorCategoryEntrySymbol>(
-            node, diagnostics, node.TargetId, LookupOptions.CategoryEntryOnly);
+        BindCategoryEntrySymbol(node, node.TargetId, diagnostics);
 
     internal ICategoryEntrySymbol BindCategoryEntrySymbol(CategoryNode node, BindingDiagnosticBag diagnostics) =>
-        BindSimple<ICategoryEntrySymbol, ErrorSymbols.ErrorCategoryEntrySymbol>(
-            node, diagnostics, node.EntryId, LookupOptions.CategoryEntryOnly);
+        BindCategoryEntrySymbol(node, node.EntryId, diagnostics);
 
     internal ICategoryEntrySymbol BindCategoryEntrySymbol(SourceNode node, string? symbolId, BindingDiagnosticBag diagnostics) =>
         BindSimple<ICategoryEntrySymbol, ErrorSymbols.ErrorCategoryEntrySymbol>(
-            node, diagnostics, symbolId, LookupOptions.CategoryEntryOnly);
+            node, diagnostics, symbolId, LookupOptions.CategoryEntryOnly | LookupOptions.RootOnly);
 
     internal ISymbol BindEffectTargetMemberSymbol(SourceNode node, string? symbolId, BindingDiagnosticBag diagnostics)
     {
@@ -269,14 +267,6 @@ internal class Binder
         {
             return LookupResult.Empty();
         }
-        if (options.HasFlag(LookupOptions.RootOnly) && !IsRootEntry(symbol))
-        {
-            return LookupResult.Empty();
-        }
-        if (options.HasFlag(LookupOptions.SharedOnly) && !IsSharedEntry(symbol))
-        {
-            return LookupResult.Empty();
-        }
         if (options.HasFlag(LookupOptions.CatalogueOnly) && symbol.Kind != SymbolKind.Catalogue)
         {
             return LookupResult.Empty();
@@ -310,6 +300,14 @@ internal class Binder
             return LookupResult.Empty();
         }
         if (options.HasFlag(LookupOptions.ContainerEntryOnly) && symbol.Kind != SymbolKind.ContainerEntry)
+        {
+            return LookupResult.Empty();
+        }
+        if (options.HasFlag(LookupOptions.RootOnly) && !IsRootEntry(symbol))
+        {
+            return LookupResult.Empty();
+        }
+        if (options.HasFlag(LookupOptions.SharedOnly) && !IsSharedEntry(symbol))
         {
             return LookupResult.Empty();
         }
@@ -390,22 +388,14 @@ internal class Binder
             }
         }
         if (result.IsMultiViable)
-        {
             return;
-        }
         if (options.CanConsiderNestedEntries())
         {
-            foreach (var symbol in catalogue.AllItems)
-            {
-                if (symbol is EntrySymbol entry)
-                {
-                    LookupSymbolInDescendantEntries(result, entry, symbolId, options, originalBinder, diagnose);
-                }
-            }
+            LookupSymbolsInDescendantEntries(result, catalogue.AllItems, symbolId, options, originalBinder, diagnose);
         }
     }
 
-    internal static void LookupSymbolInQualifyingEntry(
+    internal static void LookupSymbolsInQualifyingEntry(
         EntrySymbol qualifier,
         LookupResult result,
         string symbolId,
@@ -421,10 +411,10 @@ internal class Binder
             // TODO when diagnose=true, find candidates and mark as LookupResultKind.Unreferenced
             return;
         }
-        LookupSymbolInQualifyingEntry(qualifier, result, symbolId, options, originalBinder, diagnose);
+        LookupSymbolsInQualifyingEntry(qualifier, result, symbolId, options, originalBinder, diagnose);
     }
 
-    internal static void LookupSymbolInQualifyingEntry(
+    internal static void LookupSymbolsInQualifyingEntry(
         EntrySymbol qualifier,
         LookupResult result,
         string symbolId,
@@ -434,10 +424,28 @@ internal class Binder
     {
         Debug.Assert(qualifier is not null);
         result.MergeEqual(originalBinder.CheckViability(qualifier, symbolId, options, diagnose));
-        LookupSymbolInDescendantEntries(result, qualifier, symbolId, options, originalBinder, diagnose);
+        LookupSymbolsInDescendantEntries(result, qualifier, symbolId, options, originalBinder, diagnose);
     }
 
-    internal static void LookupSymbolInDescendantEntries(
+    internal static void LookupSymbolsInDescendantEntries<T>(
+        LookupResult result,
+        ImmutableArray<T> symbols,
+        string symbolId,
+        LookupOptions options,
+        Binder originalBinder,
+        bool diagnose)
+        where T : ISymbol
+    {
+        foreach (var symbol in symbols)
+        {
+            if (symbol is EntrySymbol entry)
+            {
+                LookupSymbolsInDescendantEntries(result, entry, symbolId, options, originalBinder, diagnose);
+            }
+        }
+    }
+
+    internal static void LookupSymbolsInDescendantEntries(
         LookupResult result,
         EntrySymbol symbol,
         string symbolId,
@@ -453,17 +461,11 @@ internal class Binder
         // we consider all descendant selection entry containers and resource entries
         if (options.CanConsiderNestedEntries())
         {
-            foreach (var child in symbol.GetMembers())
-            {
-                if (child is EntrySymbol childEntry)
-                {
-                    LookupSymbolInDescendantEntries(result, childEntry, symbolId, options, originalBinder, diagnose);
-                }
-            }
+            LookupSymbolsInDescendantEntries(result, symbol.GetMembers(), symbolId, options, originalBinder, diagnose);
         }
         if (options.HasFlag(LookupOptions.LookupInReferencedEntryMembers) && symbol.IsReference && symbol.ReferencedEntry is EntrySymbol referencedEntry)
         {
-            LookupSymbolInDescendantEntries(result, referencedEntry, symbolId, options, originalBinder, diagnose);
+            LookupSymbolsInDescendantEntries(result, referencedEntry, symbolId, options, originalBinder, diagnose);
         }
     }
 

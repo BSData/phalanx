@@ -81,7 +81,7 @@ internal static class LookupOptionsExtensions
         (options & (LookupOptions.CatalogueOnly | LookupOptions.ResoureDefinitionOnly | LookupOptions.EntryMembersOnly | LookupOptions.SharedOnly)) == 0;
 
     internal static bool CanConsiderConstraints(this LookupOptions options) =>
-        (options & (LookupOptions.CatalogueOnly | LookupOptions.ResoureDefinitionOnly | LookupOptions.EntryOnly)) == 0;
+        (options & (LookupOptions.CatalogueOnly | LookupOptions.ResoureDefinitionOnly | LookupOptions.RootOnly | LookupOptions.SharedOnly | LookupOptions.EntryOnly)) == 0;
 
     internal static bool CanConsiderNestedEntries(this LookupOptions options) =>
         (options & (LookupOptions.CatalogueOnly | LookupOptions.ResoureDefinitionOnly | LookupOptions.RootOnly | LookupOptions.SharedOnly | LookupOptions.SingleLevel)) == 0;

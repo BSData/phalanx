@@ -17,7 +17,7 @@ internal class EntryBinder : Binder
     {
         if (qualifier is EntrySymbol entrySymbol && ReferenceEquals(entrySymbol, EntrySymbol))
         {
-            LookupSymbolInQualifyingEntry(entrySymbol, result, symbolId, options, originalBinder, diagnose);
+            LookupSymbolsInQualifyingEntry(entrySymbol, result, symbolId, options, originalBinder, diagnose);
         }
     }
 }

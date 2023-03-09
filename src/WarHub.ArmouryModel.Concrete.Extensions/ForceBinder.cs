@@ -42,7 +42,7 @@ internal class ForceBinder : Binder
         }
         if (qualifier is EntrySymbol entrySymbol)
         {
-            LookupSymbolInQualifyingEntry(entrySymbol, result, symbolId, options, originalBinder, diagnose, RootClosure);
+            LookupSymbolsInQualifyingEntry(entrySymbol, result, symbolId, options, originalBinder, diagnose, RootClosure);
             if (result.IsMultiViable)
                 return;
         }
