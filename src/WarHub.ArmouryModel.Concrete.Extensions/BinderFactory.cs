@@ -177,7 +177,8 @@ internal class BinderFactory
         {
             foreach (var item in outerBinder.ContainingSymbol!.GetMembers())
             {
-                if (item is EntrySymbol entry && ReferenceEquals(entry.Declaration, node))
+                if (item.Kind is SymbolKind.ResourceEntry or SymbolKind.ContainerEntry
+                    && item is EntrySymbol entry && ReferenceEquals(entry.Declaration, node))
                 {
                     return entry;
                 }

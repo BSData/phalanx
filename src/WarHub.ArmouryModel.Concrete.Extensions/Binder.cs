@@ -263,9 +263,16 @@ internal class Binder
         LookupOptions options,
         bool diagnose)
     {
-        if (symbol.Id != symbolId && !MatchesResourceDefinitionId(symbol, symbolId, options))
+        if (symbol.Id != symbolId)
         {
-            return LookupResult.Empty();
+            if (options.HasFlag(LookupOptions.ResourceByDefinitionId) && symbol.Kind == SymbolKind.ResourceEntry && MatchesResourceDefinitionId(symbol, symbolId))
+            {
+                // the symbolId matched resource.Type.Id
+            }
+            else
+            {
+                return LookupResult.Empty();
+            }
         }
         if (options.HasFlag(LookupOptions.CatalogueOnly) && symbol.Kind != SymbolKind.Catalogue)
         {
@@ -313,11 +320,9 @@ internal class Binder
         }
         return LookupResult.Good(symbol);
 
-        static bool MatchesResourceDefinitionId(ISymbol symbol, string symbolId, LookupOptions options)
+        static bool MatchesResourceDefinitionId(ISymbol symbol, string symbolId)
         {
-            return options.HasFlag(LookupOptions.ResourceByDefinitionId)
-                            && symbol.Kind == SymbolKind.ResourceEntry
-                            && ((IResourceEntrySymbol)symbol).Type?.Id == symbolId;
+            return ((IResourceEntrySymbol)symbol).Type?.Id == symbolId;
         }
     }
 
@@ -438,7 +443,7 @@ internal class Binder
     {
         foreach (var symbol in symbols)
         {
-            if (symbol is EntrySymbol entry)
+            if (symbol.Kind is SymbolKind.ContainerEntry or SymbolKind.ResourceEntry && symbol is EntrySymbol entry)
             {
                 LookupSymbolsInDescendantEntries(result, entry, symbolId, options, originalBinder, diagnose);
             }
@@ -463,9 +468,13 @@ internal class Binder
         {
             LookupSymbolsInDescendantEntries(result, symbol.GetMembers(), symbolId, options, originalBinder, diagnose);
         }
-        if (options.HasFlag(LookupOptions.LookupInReferencedEntryMembers) && symbol.IsReference && symbol.ReferencedEntry is EntrySymbol referencedEntry)
+        if (options.HasFlag(LookupOptions.LookupInReferencedEntryMembers) && symbol.IsReference
+            && symbol.ReferencedEntry?.Kind is SymbolKind.ContainerEntry or SymbolKind.ResourceEntry)
         {
-            LookupSymbolsInDescendantEntries(result, referencedEntry, symbolId, options, originalBinder, diagnose);
+            if (symbol.ReferencedEntry is EntrySymbol referencedEntry)
+            {
+                LookupSymbolsInDescendantEntries(result, referencedEntry, symbolId, options, originalBinder, diagnose);
+            }
         }
     }
 
