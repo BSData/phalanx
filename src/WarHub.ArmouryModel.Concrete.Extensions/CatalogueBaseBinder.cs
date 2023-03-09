@@ -13,6 +13,14 @@ internal class CatalogueBaseBinder : Binder
 
     internal override Symbol? ContainingSymbol => Catalogue;
 
+    internal override ContainerEntryBaseSymbol? ContainingContainerSymbol => null;
+
+    internal override EntrySymbol? ContainingEntrySymbol => null;
+
+    internal override ForceSymbol? ContainingForceSymbol => null;
+
+    internal override SelectionSymbol? ContainingSelectionSymbol => null;
+
     public ImmutableArray<ICatalogueSymbol> RootClosure => lazyRootClosure ??= CalculateRootClosure(Catalogue);
 
     internal override void LookupSymbolsInSingleBinder(
@@ -21,16 +29,21 @@ internal class CatalogueBaseBinder : Binder
         LookupOptions options,
         Binder originalBinder,
         bool diagnose,
-        ISymbol? qualifier)
+        Symbol? qualifier)
     {
         if (options.HasFlag(LookupOptions.CatalogueOnly))
         {
             // no catalogues to bind here
             return;
         }
-        if (qualifier is IEntrySymbol entrySymbol)
+        if (options.HasFlag(LookupOptions.EntryMembersOnly))
         {
-            LookupSymbolInQualifyingEntry(entrySymbol, result, symbolId, options, originalBinder, diagnose, RootClosure);
+            // we're too deep, should've bound in entry binders
+            return;
+        }
+        if (qualifier is EntrySymbol entrySymbol)
+        {
+            LookupSymbolsInQualifyingEntry(entrySymbol, result, symbolId, options, originalBinder, diagnose, RootClosure);
             if (result.IsMultiViable)
                 return;
         }

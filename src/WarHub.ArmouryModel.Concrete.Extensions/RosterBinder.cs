@@ -19,7 +19,7 @@ internal class RosterBinder : Binder
 
     internal override SelectionSymbol? ContainingSelectionSymbol => null;
 
-    internal override void LookupSymbolsInSingleBinder(LookupResult result, string symbolId, LookupOptions options, Binder originalBinder, bool diagnose, ISymbol? qualifier)
+    internal override void LookupSymbolsInSingleBinder(LookupResult result, string symbolId, LookupOptions options, Binder originalBinder, bool diagnose, Symbol? qualifier)
     {
         if (options.HasFlag(LookupOptions.CatalogueOnly))
         {

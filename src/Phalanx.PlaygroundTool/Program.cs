@@ -11,7 +11,17 @@ namespace Phalanx.PlaygroundTool;
 
 class Program
 {
-    static void PlayWithSample()
+    static void Main()
+    {
+        Console.WriteLine("📌 SampleDataset");
+        PlayWithSampleDataset();
+        Console.WriteLine("-----------------------------------");
+        Console.WriteLine();
+        Console.WriteLine("📌 Playground inline dataset");
+        PlayWithRosterChanging();
+    }
+
+    static void PlayWithSampleDataset()
     {
         Console.WriteLine("Loading sample dataset:");
         var ws = SampleDataResources.CreateXmlWorkspace();
@@ -29,20 +39,16 @@ class Program
         watch.Stop();
         var diagTime = watch.Elapsed;
         Console.WriteLine("Diagnosed in " + diagTime);
-        foreach (var diagnostic in diagnostics)
+        foreach (var diagnosticBin in diagnostics.GroupBy(x => x.ToString()))
         {
-            Console.WriteLine(diagnostic.ToString());
+            Console.WriteLine($"{diagnosticBin.Count()}x {diagnosticBin.Key}");
         }
         Console.WriteLine($"Diagnostic count: {diagnostics.Length}");
         Console.WriteLine("Finished processing sample dataset.");
     }
 
-    static void Main()
+    static void PlayWithRosterChanging()
     {
-        PlayWithSample();
-        Console.WriteLine("-----------------------------------");
-        Console.WriteLine();
-
         Console.WriteLine(">>> Building dataset.");
         // create
         var rosterState = RosterState.CreateFromNodes(GetDataset());

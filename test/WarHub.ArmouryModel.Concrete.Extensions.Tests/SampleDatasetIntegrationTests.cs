@@ -40,6 +40,18 @@ public class SampleDatasetIntegrationTests
         var convoyForceEntry = gamesystem.RootContainerEntries.First(x => x.Name == "Convoy");
         convoyForce.SourceEntry.Should().Be(convoyForceEntry);
 
+        // force's constraint field (Cost) is bound
+        var convoyMaxPoints = convoyForceEntry.Constraints.First(x => x.Query.ValueKind == QueryValueKind.MemberValue);
+        convoyMaxPoints.Query.ValueTypeSymbol.Should().Be(gamesystem.ResourceDefinitions.First(x => x.Name == "Points"));
+
+        // force's modifier condition is fully bound
+        var convoySetMax100Modifier = convoyForceEntry.Effects.Single(x => x.OperandValue == "100.0");
+        convoySetMax100Modifier.TargetMember.Should().Be(convoyMaxPoints);
+        var convoyMaxCondition = convoySetMax100Modifier.Condition!.Children.Single();
+        convoyMaxCondition.Query.Should().NotBeNull();
+        convoyMaxCondition.Query!.ScopeSymbol.Should().Be(gamesystem.RootContainerEntries.First(x => x.Name == "Game Options"));
+        convoyMaxCondition.Query!.FilterSymbol.Should().Be(gameSizeGroup.ChildSelectionEntries.First(x => x.Name == "100 Points"));
+
         // force's rule is bound
         convoyForce.Resources.First(x => x.Name.Contains("Gold")).SourceEntry
             .Should().Be(grannies.RootResourceEntries.First(x => x.Name.Contains("Gold")));

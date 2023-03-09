@@ -10,29 +10,6 @@ internal abstract class ResourceEntryBaseSymbol : EntrySymbol, IResourceEntrySym
         DiagnosticBag diagnostics)
         : base(containingSymbol, declaration, diagnostics)
     {
-        Resources = CreateResourceEntries().ToImmutableArray();
-
-        IEnumerable<ResourceEntryBaseSymbol> CreateResourceEntries()
-        {
-            if (declaration is not InfoGroupNode groupNode)
-                yield break;
-            foreach (var item in groupNode.InfoGroups)
-            {
-                yield return CreateEntry(containingSymbol, item, diagnostics);
-            }
-            foreach (var item in groupNode.InfoLinks)
-            {
-                yield return CreateEntry(containingSymbol, item, diagnostics);
-            }
-            foreach (var item in groupNode.Profiles)
-            {
-                yield return CreateEntry(containingSymbol, item, diagnostics);
-            }
-            foreach (var item in groupNode.Rules)
-            {
-                yield return CreateEntry(containingSymbol, item, diagnostics);
-            }
-        }
     }
 
     public sealed override SymbolKind Kind => SymbolKind.ResourceEntry;
@@ -43,7 +20,8 @@ internal abstract class ResourceEntryBaseSymbol : EntrySymbol, IResourceEntrySym
 
     public override IResourceEntrySymbol? ReferencedEntry => null;
 
-    public sealed override ImmutableArray<ResourceEntryBaseSymbol> Resources { get; }
+    public override ImmutableArray<ResourceEntryBaseSymbol> Resources =>
+        ImmutableArray<ResourceEntryBaseSymbol>.Empty;
 
     public override void Accept(SymbolVisitor visitor) =>
         visitor.VisitResourceEntry(this);

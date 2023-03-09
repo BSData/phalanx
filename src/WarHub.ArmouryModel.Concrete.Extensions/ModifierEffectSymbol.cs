@@ -69,7 +69,7 @@ internal class ModifierEffectSymbol : ModifierEffectBaseSymbol, IEffectSymbol, I
         }
         else if (TargetKind is EffectTargetKind.Member)
         {
-            lazyTargetMember = binder.BindEntryMemberSymbol(Declaration, Declaration.Field, diagnostics);
+            lazyTargetMember = binder.BindEffectTargetMemberSymbol(Declaration, Declaration.Field, diagnostics);
         }
     }
 }

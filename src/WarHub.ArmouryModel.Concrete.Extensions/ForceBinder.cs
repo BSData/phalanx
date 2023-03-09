@@ -28,7 +28,7 @@ internal class ForceBinder : Binder
         LookupOptions options,
         Binder originalBinder,
         bool diagnose,
-        ISymbol? qualifier)
+        Symbol? qualifier)
     {
         if (options.HasFlag(LookupOptions.CatalogueOnly))
         {
@@ -40,9 +40,9 @@ internal class ForceBinder : Binder
             result.MergeEqual(LookupResult.Good(Compilation.NoCategoryEntrySymbol));
             return;
         }
-        if (qualifier is IEntrySymbol entrySymbol)
+        if (qualifier is EntrySymbol entrySymbol)
         {
-            LookupSymbolInQualifyingEntry(entrySymbol, result, symbolId, options, originalBinder, diagnose, RootClosure);
+            LookupSymbolsInQualifyingEntry(entrySymbol, result, symbolId, options, originalBinder, diagnose, RootClosure);
             if (result.IsMultiViable)
                 return;
         }
