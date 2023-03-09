@@ -124,8 +124,10 @@ internal class Binder
     {
         Debug.Assert(ContainingEntrySymbol is not null);
         var firstPassDiags = BindingDiagnosticBag.GetInstance();
+        const LookupOptions Options = LookupOptions.SingleLevel | LookupOptions.ResourceByDefinitionId
+            | LookupOptions.EntryMembersOnly | LookupOptions.LookupInReferencedEntryMembers;
         var initialResult = BindSimple<ISymbol, ErrorSymbols.ErrorSymbolBase>(
-            node, firstPassDiags, symbolId, LookupOptions.EntryMembersOnly | LookupOptions.SingleLevel | LookupOptions.ResourceByDefinitionId, ContainingEntrySymbol);
+            node, firstPassDiags, symbolId, Options, ContainingEntrySymbol);
         if (!initialResult.IsKind(SymbolKind.Error))
         {
             diagnostics.AddRangeAndFree(firstPassDiags);
@@ -158,7 +160,7 @@ internal class Binder
         BindingDiagnosticBag diagnostics)
     {
         return BindSimple<ISelectionEntryContainerSymbol, ErrorSymbols.ErrorSelectionEntrySymbol>(
-            node, diagnostics, node.DefaultSelectionEntryId, LookupOptions.SelectionEntryOnly, entryGroupSymbol);
+            node, diagnostics, node.DefaultSelectionEntryId, LookupOptions.SelectionEntryOnly | LookupOptions.EntryMembersOnly, entryGroupSymbol);
     }
 
     internal ImmutableArray<IEntrySymbol> BindSelectionSourcePathSymbol(SelectionNode node, BindingDiagnosticBag diagnostics) =>
@@ -459,26 +461,11 @@ internal class Binder
                 }
             }
         }
-        //.TODO this goes into loop
-        // if (symbol.IsReference && symbol.ReferencedEntry is EntrySymbol referencedEntry)
-        // {
-        //     LookupSymbolInDescendantEntries(result, referencedEntry, symbolId, options, originalBinder, diagnose);
-        // }
+        if (options.HasFlag(LookupOptions.LookupInReferencedEntryMembers) && symbol.IsReference && symbol.ReferencedEntry is EntrySymbol referencedEntry)
+        {
+            LookupSymbolInDescendantEntries(result, referencedEntry, symbolId, options, originalBinder, diagnose);
+        }
     }
-
-    private static bool IsRootEntry(ISymbol symbol) => symbol.ContainingModule is ICatalogueSymbol { } catalogue && symbol.Kind switch
-    {
-        SymbolKind.ContainerEntry => catalogue.RootContainerEntries.Contains(symbol),
-        SymbolKind.ResourceEntry => catalogue.RootResourceEntries.Contains(symbol),
-        _ => false,
-    };
-
-    private static bool IsSharedEntry(ISymbol symbol) => symbol.ContainingModule is ICatalogueSymbol { } catalogue && symbol.Kind switch
-    {
-        SymbolKind.ContainerEntry => catalogue.SharedSelectionEntryContainers.Contains(symbol),
-        SymbolKind.ResourceEntry => catalogue.SharedResourceEntries.Contains(symbol),
-        _ => false,
-    };
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Method is WIP")]
     internal ISymbol ResultSymbol(
@@ -631,4 +618,22 @@ internal class Binder
         }
         return binder;
     }
+
+    private static bool IsRootEntry(ISymbol symbol) =>
+        symbol.ContainingModule is { Kind: SymbolKind.Catalogue } module
+        && module is ICatalogueSymbol { } catalogue && symbol.Kind switch
+        {
+            SymbolKind.ContainerEntry => catalogue.RootContainerEntries.Contains(symbol),
+            SymbolKind.ResourceEntry => catalogue.RootResourceEntries.Contains(symbol),
+            _ => false,
+        };
+
+    private static bool IsSharedEntry(ISymbol symbol) =>
+        symbol.ContainingModule is { Kind: SymbolKind.Catalogue } module
+        && module is ICatalogueSymbol { } catalogue && symbol.Kind switch
+        {
+            SymbolKind.ContainerEntry => catalogue.SharedSelectionEntryContainers.Contains(symbol),
+            SymbolKind.ResourceEntry => catalogue.SharedResourceEntries.Contains(symbol),
+            _ => false,
+        };
 }

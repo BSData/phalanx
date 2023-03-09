@@ -46,14 +46,18 @@ internal enum LookupOptions
     CategoryEntryOnly = 1 << 16 | ContainerEntryOnly,
     SelectionEntryOnly = 1 << 17 | ContainerEntryOnly,
     SelectionGroupEntryOnly = 1 << 18 | ContainerEntryOnly,
+    /// <summary>Consider only direct children of a qualifying symbol (no deeper descendants).</summary>
     SingleLevel = 1 << 19,
+    /// <summary>Only consider direct children of a catalogue, that are in a Shared* list.</summary>
     SharedOnly = 1 << 20,
+    /// <summary>Only consider direct children of a catalogue, that are in a Root* list.</summary>
     RootOnly = 1 << 21,
+    /// <summary>Only consider children of an entry (not direct children of a catalogue etc.).</summary>
     EntryMembersOnly = 1 << 22,
-    /// <summary>
-    /// Bind to resources when their definition's ID matches the looked-up symbol ID.
-    /// </summary>
+    /// <summary>Bind to resources when their definition's ID matches the looked-up symbol ID.</summary>
     ResourceByDefinitionId = 1 << 23,
+    /// <summary>Treat referenced entry's members as descendant entry's.</summary>
+    LookupInReferencedEntryMembers = 1 << 24,
 }
 
 internal static class LookupOptionsExtensions
@@ -71,10 +75,10 @@ internal static class LookupOptionsExtensions
         (options & (LookupOptions.CatalogueOnly | LookupOptions.ResoureDefinitionOnly | LookupOptions.ResourceOnly)) == 0;
 
     internal static bool CanConsiderSharedEntries(this LookupOptions options) =>
-        (options & (LookupOptions.CatalogueOnly | LookupOptions.ResoureDefinitionOnly | LookupOptions.RootOnly)) == 0;
+        (options & (LookupOptions.CatalogueOnly | LookupOptions.ResoureDefinitionOnly | LookupOptions.EntryMembersOnly | LookupOptions.RootOnly)) == 0;
 
     internal static bool CanConsiderRootEntries(this LookupOptions options) =>
-        (options & (LookupOptions.CatalogueOnly | LookupOptions.ResoureDefinitionOnly | LookupOptions.SharedOnly)) == 0;
+        (options & (LookupOptions.CatalogueOnly | LookupOptions.ResoureDefinitionOnly | LookupOptions.EntryMembersOnly | LookupOptions.SharedOnly)) == 0;
 
     internal static bool CanConsiderConstraints(this LookupOptions options) =>
         (options & (LookupOptions.CatalogueOnly | LookupOptions.ResoureDefinitionOnly | LookupOptions.EntryOnly)) == 0;
