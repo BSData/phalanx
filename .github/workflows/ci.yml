@@ -25,6 +25,7 @@ jobs:
       - run: dotnet build --no-restore
       - run: dotnet test --no-build
       - run: dotnet format --no-restore --verify-no-changes --verbosity normal
+        continue-on-error: true # this is temporary until https://github.com/dotnet/sdk/issues/32598
 
   deploy_main:
     if: github.ref == 'refs/heads/main'
