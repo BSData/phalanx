@@ -21,8 +21,10 @@
             *@
             if (CostLimitInputs.ContainsKey(cost.TypeId))
             {
+                var limit = CostLimitInputs[cost.TypeId];
+                var setLimit = (decimal x) => { CostLimitInputs[cost.TypeId] = x; };
                 <div style="display: flex; gap: 1em;">
-                    <FluentNumberField TValue="decimal" @bind-Value="CostLimitInputs[cost.TypeId]" Min="-1" Size="4">
+                    <FluentNumberField TValue="decimal" @bind-Value:get="limit" @bind-Value:set="setLimit" Min="-1" Size="4">
                     </FluentNumberField>
                     <span>@cost.Name</span>
                 </div>
@@ -31,7 +33,7 @@
 
         <br />
         <div>Notes:</div>
-        <FluentTextArea></FluentTextArea>
+        <FluentTextArea @bind-Value="notes"></FluentTextArea>
 
         @* TODO make this fire on tab change, rather than this update button
             for now, get code committed and cycle back to best practices w Fluent
@@ -59,6 +61,7 @@ else
     private Dictionary<string, decimal> CostLimitInputs = new Dictionary<string, decimal>();
 
     private string rosterName = default!;
+    private string notes = default!;
 
     protected override void OnParametersSet()
     {
