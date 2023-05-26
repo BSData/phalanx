@@ -3,7 +3,13 @@
   <PropertyGroup>
     <TargetFramework>$(CommonTargetFramework)</TargetFramework>
     <!-- <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest> -->
-  </PropertyGroup>
+    <PublishFluentIconAssets>true</PublishFluentIconAssets>
+    <FluentIconSizes>16</FluentIconSizes>
+    <FluentIconVariants>Regular</FluentIconVariants>
+    <PublishFluentEmojiAssets>false</PublishFluentEmojiAssets>
+    <FluentEmojiGroups>Activities,Animals_Nature,Flags,Food_Drink,Objects,People_Body,Smileys_Emotion,Symbols,Travel_Places</FluentEmojiGroups>
+    <FluentEmojiStyles>Color,Flat,HighContrast</FluentEmojiStyles>
+</PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />

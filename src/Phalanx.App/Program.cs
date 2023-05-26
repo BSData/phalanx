@@ -17,6 +17,7 @@ builder.Services.AddOptions<GalleryBrowserOptions>().BindConfiguration("GalleryB
 builder.Services.AddSingleton<GalleryBrowserState>();
 
 builder.Services.AddScoped<GalleryHttpClient>();
-builder.Services.AddFluentUIComponents();
+LibraryConfiguration config = new(ConfigurationGenerator.GetIconConfiguration(), ConfigurationGenerator.GetEmojiConfiguration());
+builder.Services.AddFluentUIComponents(config);
 
 await builder.Build().RunAsync();
