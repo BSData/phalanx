@@ -13,10 +13,10 @@
         <EnableDefaultCssItems>false</EnableDefaultCssItems>
 
         <!-- Display name -->
-        <ApplicationTitle>Phalanx.GodMode.NativeApp</ApplicationTitle>
+        <ApplicationTitle>GodMode</ApplicationTitle>
 
         <!-- App Identifier -->
-        <ApplicationId>com.companyname.phalanx.godmode.nativeapp</ApplicationId>
+        <ApplicationId>com.projectphalanx.godmode.nativeapp</ApplicationId>
         <ApplicationIdGuid>8C358ADE-78C3-4C22-8923-2EDC3F7D796C</ApplicationIdGuid>
 
         <!-- Versions -->
@@ -33,7 +33,8 @@
 
     <ItemGroup>
         <!-- App Icon -->
-        <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+        <MauiIcon Include="Resources\AppIcon\appicon.svg" />
+        <!--<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />-->
 
         <!-- Splash Screen -->
         <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
@@ -51,6 +52,20 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" />
+        <PackageReference Include="Microsoft.Extensions.Options" />
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+        <PackageReference Include="Microsoft.Fast.Components.FluentUI" />
+        <PackageReference Include="Newtonsoft.Json" />
+        <PackageReference Include="NuGet.Versioning" />
+        <PackageReference Include="WarHub.ArmouryModel.Workspaces.BattleScribe" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Phalanx.SampleDataset\Phalanx.SampleDataset.csproj" />
+        <ProjectReference Include="..\WarHub.ArmouryModel.Concrete.Extensions\WarHub.ArmouryModel.Concrete.Extensions.csproj" />
+        <ProjectReference Include="..\WarHub.ArmouryModel.DataProviders\WarHub.ArmouryModel.DataProviders.csproj" />
+        <ProjectReference Include="..\WarHub.ArmouryModel.EditorServices\WarHub.ArmouryModel.EditorServices.csproj" />
+        <ProjectReference Include="..\WarHub.ArmouryModel.Extensions\WarHub.ArmouryModel.Extensions.csproj" />
     </ItemGroup>
 
 </Project>
