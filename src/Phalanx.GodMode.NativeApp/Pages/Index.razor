@@ -2,6 +2,23 @@
 
 <h1>Hello, world!</h1>
 
-Welcome to your new app.
+Welcome to your new app. Selected @selectedFolder 
 
-<FluentButton Appearance="Appearance.Accent">Fluent accent button!</FluentButton>
+<div>
+    <FluentButton Appearance="Appearance.Accent" @onclick="OpenFolder">Select a folder!</FluentButton>
+</div>
+
+@if (compilation is not null)
+{
+    @foreach (var root in compilation.GlobalNamespace.Catalogues)
+    {
+        <FluentCard>
+            <div>
+                <h4>
+                    Name: @root.Name
+                </h4>
+                Id: @root.Id
+            </div>
+        </FluentCard>
+    }
+}

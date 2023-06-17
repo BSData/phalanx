@@ -51,12 +51,14 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="CommunityToolkit.Maui" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" />
         <PackageReference Include="Microsoft.Extensions.Options" />
         <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
         <PackageReference Include="Microsoft.Fast.Components.FluentUI" />
         <PackageReference Include="Newtonsoft.Json" />
         <PackageReference Include="NuGet.Versioning" />
+        <PackageReference Include="System.Linq.Async" />
         <PackageReference Include="WarHub.ArmouryModel.Workspaces.BattleScribe" />
     </ItemGroup>
 
