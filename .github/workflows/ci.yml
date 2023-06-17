@@ -1,11 +1,6 @@
 name: CI
 on:
   push:
-    paths-ignore:
-      - "**/*.md"
-      - "**/*.gitignore"
-      - "**/*.gitattributes"
-      - "**/*.yml"
 env:
   DOTNET_NOLOGO: 1
   Configuration: Release
