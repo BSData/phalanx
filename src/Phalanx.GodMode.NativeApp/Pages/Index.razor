@@ -2,21 +2,31 @@
 
 <h1>Hello, world!</h1>
 
-Welcome to your new app. Selected @selectedFolder 
+Welcome to GodMode, the data editor by Project Phalanx. The one with blackjack and hookers.
 
 <div>
     <FluentButton Appearance="Appearance.Accent" @onclick="OpenFolder">Select a folder!</FluentButton>
+    <br />
+    Selected @selectedFolder
 </div>
+
+@if (loadingStatus is not null)
+{
+    <p>
+        Status: @loadingStatus
+    </p>
+}
 
 @if (compilation is not null)
 {
     @foreach (var root in compilation.GlobalNamespace.Catalogues)
     {
-        <FluentCard>
+        <FluentCard Style="padding: 8px; margin: 6px;">
             <div>
                 <h4>
-                    Name: @root.Name
+                    @root.Name
                 </h4>
+                @root.Kind
                 Id: @root.Id
             </div>
         </FluentCard>
