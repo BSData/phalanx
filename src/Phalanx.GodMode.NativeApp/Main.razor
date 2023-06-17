@@ -1,11 +1,37 @@
-﻿<Router AppAssembly="@typeof(Main).Assembly">
+﻿<FluentDesignSystemProvider AccentBaseColor="#37b7c8" BaseLayerLuminance="luminance">
+  <Router AppAssembly="@typeof(Main).Assembly">
     <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+      <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+      <FocusOnNavigate RouteData="@routeData" Selector="h1" />
     </Found>
     <NotFound>
-        <LayoutView Layout="@typeof(MainLayout)">
-            <p role="alert">Sorry, there's nothing at this address.</p>
-        </LayoutView>
+      <LayoutView Layout="@typeof(MainLayout)">
+        <p role="alert">Sorry, there's nothing at this address.</p>
+      </LayoutView>
     </NotFound>
-</Router>
+  </Router>
+</FluentDesignSystemProvider>
+
+@code {
+    float luminance;
+    
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Application.Current!.RequestedThemeChanged += (s, e) =>
+        {
+            UpdateLuminanceFromTheme(); 
+        };
+        UpdateLuminanceFromTheme();
+    }
+
+    void UpdateLuminanceFromTheme()
+    {
+        if (Application.Current is { } app)
+        {
+            var theme = app.RequestedTheme == AppTheme.Dark ? StandardLuminance.DarkMode : StandardLuminance.LightMode;
+            luminance = theme.GetLuminanceValue();
+            StateHasChanged();
+        }
+    }
+} 

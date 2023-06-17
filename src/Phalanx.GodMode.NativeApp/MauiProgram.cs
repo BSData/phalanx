@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
-using Phalanx.GodMode.NativeApp.Data;
+using Microsoft.Fast.Components.FluentUI;
+using Microsoft.Fast.Components.FluentUI.Infrastructure;
 
 namespace Phalanx.GodMode.NativeApp;
 public static class MauiProgram
@@ -17,11 +18,15 @@ public static class MauiProgram
         builder.Services.AddMauiBlazorWebView();
 
 #if DEBUG
-		builder.Services.AddBlazorWebViewDeveloperTools();
-		builder.Logging.AddDebug();
+        builder.Services.AddBlazorWebViewDeveloperTools();
+        builder.Logging.AddDebug();
 #endif
-
-        builder.Services.AddSingleton<WeatherForecastService>();
+        builder.Services.AddFluentUIComponents(options =>
+        {
+            options.HostingModel = BlazorHostingModel.Hybrid;
+        });
+        builder.Services.AddScoped<IStaticAssetService, FileBasedStaticAssetService>();
+        builder.Services.AddSingleton<StaticAssetCache>();
 
         return builder.Build();
     }

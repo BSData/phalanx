@@ -35,7 +35,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WarHub.ArmouryModel.Concret
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WarHub.ArmouryModel.DataProviders", "src\WarHub.ArmouryModel.DataProviders\WarHub.ArmouryModel.DataProviders.csproj", "{471CC761-6982-48D4-88F7-969C31999A78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phalanx.GodMode.NativeApp", "src\Phalanx.GodMode.NativeApp\Phalanx.GodMode.NativeApp.csproj", "{E894AFBF-1ADB-4A69-9AD5-BF37F02AFC15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Phalanx.GodMode.NativeApp", "src\Phalanx.GodMode.NativeApp\Phalanx.GodMode.NativeApp.csproj", "{E894AFBF-1ADB-4A69-9AD5-BF37F02AFC15}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
