@@ -16,7 +16,7 @@ jobs:
     permissions:
       deployments: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Download webapp from workflow artifacts
         uses: dawidd6/action-download-artifact@v2
@@ -47,7 +47,7 @@ jobs:
             core.setOutput('url', data.html_url);
 
       - name: Checkout PR for Azure SWA action
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ env.pr_ref }}
           clean: false
