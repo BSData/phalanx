@@ -12,7 +12,9 @@ public class SampleDatasetIntegrationTests
     {
         var xmlWorkspace = SampleDataResources.CreateXmlWorkspace();
         var compilation = WhamCompilation.Create(
+#pragma warning disable xUnit1031 // Test methods should not use blocking task operations, as they can cause deadlocks. Use an async test method and await instead.
             xmlWorkspace.Documents.Select(x => SourceTree.CreateForRoot(x.GetRootAsync().Result!)).ToImmutableArray());
+#pragma warning restore xUnit1031
         var gamesystem = compilation.GlobalNamespace.RootCatalogue;
         var grannies = compilation.GlobalNamespace.Catalogues.First(x => x.Name.Contains("Grannies"));
         var roster1 = compilation.GlobalNamespace.Rosters.First(x => x.Name.Contains("Roster 1"));
