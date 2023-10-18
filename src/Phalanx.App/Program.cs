@@ -17,6 +17,6 @@ builder.Services.AddOptions<GalleryBrowserOptions>().BindConfiguration("GalleryB
 builder.Services.AddSingleton<GalleryBrowserState>();
 
 builder.Services.AddScoped<GalleryHttpClient>();
-builder.Services.AddFluentUIComponents();
+builder.Services.AddFluentUIComponents(options => options.HostingModel = BlazorHostingModel.WebAssembly);
 
 await builder.Build().RunAsync();
