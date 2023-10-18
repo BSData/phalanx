@@ -14,20 +14,17 @@
     <TitlePart>@roster.Name</TitlePart>
     <CascadingValue Value="@Editor">
         <FluentTabs>
-            <FluentTab>Edit</FluentTab>
-            <FluentTabPanel>
+            <FluentTab Label="Edit">
                 <RootRosterEdit />
-            </FluentTabPanel>
-            <FluentTab>Options</FluentTab>
-            <FluentTabPanel>
+            </FluentTab>
+            <FluentTab Label="Options">
                 <RosterOptions />
-            </FluentTabPanel>
-            <FluentTab>Preview</FluentTab>
-            <FluentTabPanel>
+            </FluentTab>
+            <FluentTab Label="Preview">
                 <FluentSelect Items=formatter.Formats @bind-SelectedOption=@Format OptionText="@(x => x.Name)" />
 
                 <Phalanx.App.Pages.Printing.RosterPreviewer RosterNode=roster Format=Format />
-            </FluentTabPanel>
+            </FluentTab>
         </FluentTabs>
     </CascadingValue>
 }

@@ -29,15 +29,15 @@
                     span.local-version only shows if the repo is loaded into memory
                 *@
                 <FluentButton class="mx-1 mb-1" @onclick="HydrateCat" Disabled="HasFiles">
-                    <FluentIcon Name="@FluentIcons.Save" Slot="start" Filled="true" Size="@IconSize.Size16" />
+                    <FluentIcon Icon="@(Icons.Filled.Size16.Save)" Slot="start" />
                     Pull
                 </FluentButton>
                 <FluentButton class="mx-1 mb-1" Disabled="true">
-                    <FluentIcon Name="@FluentIcons.ArrowUp" Slot="start" Size="IconSize.Size16" Filled=true />
+                    <FluentIcon Icon="@(Icons.Filled.Size16.ArrowUp)" Slot="start" />
                     Update
                 </FluentButton>
                 <FluentButton class="mx-1 mb-1" Disabled="!HasFiles">
-                    <FluentIcon Name="@FluentIcons.Delete" Slot="start" Filled="true" Size="@IconSize.Size16" />
+                    <FluentIcon Icon="@(Icons.Filled.Size16.Delete)" Slot="start" />
                     Remove
                 </FluentButton>
             </div>

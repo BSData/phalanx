@@ -57,14 +57,12 @@
         {
             var formattedOutput = RosterFormatter.Format(RosterNode, selectedFormat);
             <FluentTabs class="output-tabs">
-                <FluentTab>Preview</FluentTab>
-                <FluentTabPanel slot="tabpanel">
+                <FluentTab Label="Preview">
                     <RosterPreviewer RosterNode="RosterNode" Format="selectedFormat" />
-                </FluentTabPanel>
-                <FluentTab>Raw text</FluentTab>
-                <FluentTabPanel slot="tabpanel">
+                </FluentTab>
+                <FluentTab Label="Raw text">
                     <pre>@formattedOutput</pre>
-                </FluentTabPanel>
+                </FluentTab>
             </FluentTabs>
         }
     </FluentCard>
