@@ -24,7 +24,7 @@
     {
         if (GetFromAttribute() is { } version)
         {
-            return version.HasMetadata ? version.ToNormalizedString() + "+" + version.Metadata.Substring(0, Math.Min(version.Metadata.Length, 6)) : version.ToFullString();
+            return version.Metadata is { Length: > 0 } meta ? version.ToNormalizedString() + "+" + meta.Substring(0, Math.Min(meta.Length, 6)) : version.ToFullString();
         }
         return "(n/a)";
 
