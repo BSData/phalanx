@@ -12,7 +12,7 @@
     <PackageVersion Include="PublishSPAforGitHubPages.Build" Version="2.1.0" />
     <PackageVersion Include="WarHub.ArmouryModel.Source" Version="0.13.0" />
     <PackageVersion Include="WarHub.ArmouryModel.Workspaces.BattleScribe" Version="0.13.0" />
-    <GlobalPackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
+    <GlobalPackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup Label="Tests">
