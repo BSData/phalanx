@@ -19,7 +19,9 @@ jobs:
       - run: dotnet restore
       - run: dotnet build --no-restore
       - run: dotnet test --no-build
-      - run: dotnet format --no-restore --verify-no-changes --verbosity normal
+      # IL2026 Using member T.M which has 'RequiresUnreferencedCodeAttribute' can break functionality when trimming application code. T's dependent types may have their members trimmed. Ensure all required members are preserved.
+      # IL2026 is triggered because dotnet format probably doesn't support interceptors
+      - run: dotnet format --no-restore --verify-no-changes --verbosity normal --exclude-diagnostics IL2026
 
   deploy_main:
     if: github.ref == 'refs/heads/main'
