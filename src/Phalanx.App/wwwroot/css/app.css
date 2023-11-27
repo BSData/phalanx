@@ -4,6 +4,9 @@ body,
 #app > *:first-child {
   min-height: 100vh;
 }
+#app > svg:first-child {
+  min-height: unset;
+}
 
 html,
 body {
