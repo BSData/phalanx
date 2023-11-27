@@ -142,10 +142,7 @@ public abstract partial class Diagnostic
 
         internal override Diagnostic WithLocation(Location location)
         {
-            if (location is null)
-            {
-                throw new ArgumentNullException(nameof(location));
-            }
+            ArgumentNullException.ThrowIfNull(location);
 
             if (Location != location)
             {

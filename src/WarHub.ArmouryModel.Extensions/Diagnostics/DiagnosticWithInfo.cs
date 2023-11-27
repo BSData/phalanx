@@ -85,10 +85,7 @@ internal class DiagnosticWithInfo : Diagnostic
 
     internal override Diagnostic WithLocation(Location location)
     {
-        if (location == null)
-        {
-            throw new ArgumentNullException(nameof(location));
-        }
+        ArgumentNullException.ThrowIfNull(location);
 
         if (location != this.location)
         {

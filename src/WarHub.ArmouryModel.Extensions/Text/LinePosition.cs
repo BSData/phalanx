@@ -22,15 +22,8 @@ public readonly struct LinePosition : IEquatable<LinePosition>, IComparable<Line
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="line"/> or <paramref name="character"/> is less than zero. </exception>
     public LinePosition(int line, int character)
     {
-        if (line < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(line));
-        }
-
-        if (character < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(character));
-        }
+        ArgumentOutOfRangeException.ThrowIfNegative(line);
+        ArgumentOutOfRangeException.ThrowIfNegative(character);
 
         Line = line;
         Character = character;

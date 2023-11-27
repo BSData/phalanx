@@ -16,10 +16,7 @@ public class DiagnosticFormatter
     /// <returns>The formatted message.</returns>
     public virtual string Format(Diagnostic diagnostic, IFormatProvider? formatter = null)
     {
-        if (diagnostic == null)
-        {
-            throw new ArgumentNullException(nameof(diagnostic));
-        }
+        ArgumentNullException.ThrowIfNull(diagnostic);
 
         var culture = formatter as CultureInfo;
 

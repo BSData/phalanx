@@ -30,11 +30,11 @@ jobs:
       - run: dotnet format --no-restore --verify-no-changes --verbosity normal
 
       - name: Publish
-        run: dotnet publish src/Phalanx.App --output ./.build/pub --version-suffix "beta.pr.${{ github.run_number }}"
+        run: dotnet publish src/Phalanx.App --output ./artifacts/publish-content --version-suffix "beta.pr.${{ github.run_number }}"
 
       - name: Prepare artifacts
         run: |
-          Compress-Archive ./.build/pub/wwwroot/* webapp.zip
+          Compress-Archive ./artifacts/publish-content/wwwroot/* webapp.zip
           Copy-Item $env:GITHUB_EVENT_PATH event.json
 
       - name: Upload published artifact

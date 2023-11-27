@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Phalanx.SampleDataset;
 using WarHub.ArmouryModel;
 using WarHub.ArmouryModel.EditorServices;
@@ -20,6 +21,13 @@ class Program
         Console.WriteLine("📌 Playground inline dataset");
         PlayWithRosterChanging();
     }
+
+    private static readonly JsonSerializerOptions prettyJsonOptions = new()
+    {
+        WriteIndented = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
+    };
 
     static void PlayWithSampleDataset()
     {
@@ -108,11 +116,7 @@ class Program
             Console.WriteLine(">>> XML roster:");
             Console.WriteLine(stringWriter.ToString());
             Console.WriteLine(">>> JSON roster:");
-            Console.WriteLine(JsonSerializer.Serialize(rosterToPrint.Core, new JsonSerializerOptions
-            {
-                WriteIndented = true,
-                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault,
-            }));
+            Console.WriteLine(JsonSerializer.Serialize(rosterToPrint.Core, prettyJsonOptions));
         }
         // remove marine force
         ChangeAndPrint("System force removed:",

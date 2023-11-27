@@ -7,6 +7,12 @@ internal static class FormatManifestResources
 {
     private const string FormatJsonSuffix = ".format.json";
 
+    private static readonly JsonSerializerOptions jsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true,
+        Converters = { new JsonStringEnumConverter() }
+    };
+
     public static IEnumerable<string> GetAllTemplatesResourceNames() =>
         typeof(FormatManifestResources).Assembly.GetManifestResourceNames()
         .Where(x => x.StartsWith("Templates.", StringComparison.Ordinal));
@@ -33,14 +39,7 @@ internal static class FormatManifestResources
     {
         using var stream = OpenDataResource(name)
             ?? throw new InvalidOperationException("Resource not found: " + name);
-        return JsonSerializer.Deserialize<T>(stream, new JsonSerializerOptions()
-        {
-            PropertyNameCaseInsensitive = true,
-            Converters =
-            {
-                new JsonStringEnumConverter()
-            }
-        });
+        return JsonSerializer.Deserialize<T>(stream, jsonOptions);
     }
 
     public static RosterFormat LoadFormatDefinition(string formatJsonName)

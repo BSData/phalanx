@@ -7,6 +7,14 @@ namespace WarHub.ArmouryModel.EditorServices.Formatting;
 
 public static class RosterFormatter
 {
+    private static readonly JsonSerializerOptions jsonOptions = new()
+    {
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        WriteIndented = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
+    };
+
     public static ImmutableArray<RosterFormat> BuiltinFormatters { get; } =
         FormatManifestResources.GetFormatJsonResourceNames()
         .Select(name => FormatManifestResources.LoadFormatDefinition(name))
@@ -44,13 +52,7 @@ public static class RosterFormatter
         }
         string GetJson()
         {
-            return JsonSerializer.Serialize(roster.Core, new JsonSerializerOptions
-            {
-                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-                WriteIndented = true,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
-            });
+            return JsonSerializer.Serialize(roster.Core, jsonOptions);
         }
     }
 }

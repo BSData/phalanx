@@ -106,10 +106,7 @@ public abstract partial class Location
     /// </summary>
     public static Location Create(SourceTree syntaxTree, TextSpan textSpan)
     {
-        if (syntaxTree == null)
-        {
-            throw new ArgumentNullException(nameof(syntaxTree));
-        }
+        ArgumentNullException.ThrowIfNull(syntaxTree);
 
         return new SourceLocation(syntaxTree, textSpan);
     }

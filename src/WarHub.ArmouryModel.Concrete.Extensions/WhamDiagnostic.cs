@@ -17,10 +17,7 @@ internal sealed class WhamDiagnostic : DiagnosticWithInfo
 
     internal override Diagnostic WithLocation(Location location)
     {
-        if (location == null)
-        {
-            throw new ArgumentNullException(nameof(location));
-        }
+        ArgumentNullException.ThrowIfNull(location, nameof(location));
 
         if (location != Location)
         {
@@ -29,6 +26,8 @@ internal sealed class WhamDiagnostic : DiagnosticWithInfo
 
         return this;
     }
+
+
 
     internal override Diagnostic WithSeverity(DiagnosticSeverity severity)
     {
