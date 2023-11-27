@@ -32,12 +32,12 @@ jobs:
       - run: dotnet tool restore
 
       - name: Publish
-        run: dotnet publish src/Phalanx.App --output ./.build/pub -p:GHPages=true -p:GHPagesBase=https://${{ env.PagesCname }}
+        run: dotnet publish src/Phalanx.App --output ./artifacts/publish-content -p:GHPages=true -p:GHPagesBase=https://${{ env.PagesCname }}
 
       - name: Push gh-pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./.build/pub/wwwroot
+          publish_dir: ./artifacts/publish-content/wwwroot
           cname: ${{ env.PagesCname }}
           force_orphan: true
