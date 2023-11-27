@@ -2,6 +2,7 @@ using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
 using Microsoft.Fast.Components.FluentUI;
 using Microsoft.Fast.Components.FluentUI.Infrastructure;
+using Phalanx.GodMode.NativeApp.Infrastructure;
 
 namespace Phalanx.GodMode.NativeApp;
 public static class MauiProgram
@@ -29,6 +30,7 @@ public static class MauiProgram
         });
         builder.Services.AddScoped<IStaticAssetService, FileBasedStaticAssetService>();
         builder.Services.AddSingleton<StaticAssetCache>();
+        builder.Services.AddSingleton<WorkspaceManager>();
 
         return builder.Build();
     }

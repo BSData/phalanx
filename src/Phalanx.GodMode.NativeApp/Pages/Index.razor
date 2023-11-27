@@ -17,11 +17,11 @@ Welcome to GodMode, the data editor by Project Phalanx. The one with blackjack a
     </p>
 }
 
-@if (compilation is not null)
+@if (Manager.CurrentCompilation is { } compilation)
 {
     @foreach (var root in compilation.GlobalNamespace.Catalogues)
     {
-        <FluentCard Style="padding: 8px; margin: 6px;">
+        <FluentCard Style="padding: 8px; margin: 6px;" @onclick="() => Edit(root)">
             <div>
                 <h4>
                     @root.Name

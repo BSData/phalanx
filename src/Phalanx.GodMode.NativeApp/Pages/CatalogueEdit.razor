@@ -1,0 +1,57 @@
+﻿@page "/editor"
+
+@using Phalanx.GodMode.NativeApp.Infrastructure;
+@using WarHub.ArmouryModel;
+@using WarHub.ArmouryModel.Source;
+
+@inject WorkspaceManager Manager
+
+@if (CatalogueId is null)
+{
+    <h3>no catalogue selected</h3>
+}
+else
+{
+    var node = (CatalogueBaseNode) catalogue!.GetDeclaration()!;
+    <h3>Catalogue Edit</h3>
+
+    <h4>name: @catalogue!.Name</h4>
+    <h5>id: @catalogue!.Id</h5>
+
+    <div>
+        <label>
+            Name:
+            <FluentTextField @bind-Value:get=catalogue.Name @bind-Value:set="x => Update(node, node.WithName(x))"></FluentTextField>
+        </label>
+    </div>
+}
+
+@code {
+
+    [Parameter, SupplyParameterFromQuery(Name = "id")]
+    public string? CatalogueId { get; set; }
+
+    ICatalogueSymbol? catalogue;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (CatalogueId is { } id && Manager.CurrentCompilation is { } compilation)
+        {
+            catalogue = compilation.GlobalNamespace.Catalogues.Single(x => x.Id == id);
+        }
+    }
+
+    void Update(CatalogueBaseNode oldNode, CatalogueBaseNode newNode)
+    {
+        var compilation = Manager.CurrentCompilation!;
+        var oldTree = compilation.SourceTrees.Single(x => x.GetRoot() == oldNode);
+        var newCompilation = compilation.ReplaceSourceTree(oldTree, oldTree.WithRoot(newNode));
+        Manager.CurrentCompilation = newCompilation;
+    }
+
+    class CatalogueVm
+    {
+        
+    }
+}

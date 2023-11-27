@@ -3,17 +3,25 @@ using WarHub.ArmouryModel.Concrete;
 using WarHub.ArmouryModel;
 using WarHub.ArmouryModel.Workspaces.BattleScribe;
 using WarHub.ArmouryModel.Source;
-using WarHub.ArmouryModel.ProjectModel;
-using System;
+using Microsoft.AspNetCore.Components;
+using Phalanx.GodMode.NativeApp.Infrastructure;
 
 namespace Phalanx.GodMode.NativeApp.Pages;
 
 public partial class Index
 {
+    [Inject]
+    NavigationManager Nav { get; set; } = null!;
+    [Inject]
+    WorkspaceManager Manager { get; set; } = null!;
+
     string? selectedFolder;
-    private XmlWorkspace? xmlws;
-    private WhamCompilation? compilation;
     private string? loadingStatus;
+
+    void Edit(ICatalogueSymbol root)
+    {
+        Nav.NavigateTo(Nav.GetUriWithQueryParameters("/editor", new Dictionary<string, object?> { ["id"] = root.Id }));
+    }
 
     public async Task OpenFolder()
     {
@@ -36,11 +44,13 @@ public partial class Index
             progress.Report("listing files");
             await Task.Run(async () =>
             {
-                xmlws = XmlWorkspace.CreateFromDirectory(selectedFolder);
+                var xmlws = XmlWorkspace.CreateFromDirectory(selectedFolder);
+                Manager.CurrentXmlWorkspace = xmlws;
                 progress.Report("loading files");
                 var roots = await LoadFiles(xmlws.GetDocuments(SourceKind.Catalogue, SourceKind.Gamesystem)).ToListAsync();
                 progress.Report("compiling data");
-                compilation = WhamCompilation.Create(roots.ToImmutableArray());
+                var compilation = WhamCompilation.Create(roots.ToImmutableArray());
+                Manager.CurrentCompilation = compilation;
                 progress.Report("generating data diagnostics");
                 var diags = compilation.GetDiagnostics();
                 progress.Report($"Found {diags.Length} diagnostics (issues).");
