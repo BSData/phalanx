@@ -13,7 +13,7 @@
     <PackageVersion Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.0.0" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageVersion Include="NuGet.Versioning" Version="6.8.0" />
-    <PackageVersion Include="PublishSPAforGitHubPages.Build" Version="2.1.0" />
+    <PackageVersion Include="PublishSPAforGitHubPages.Build" Version="2.1.1" />
     <PackageVersion Include="WarHub.ArmouryModel.Source" Version="0.13.0" />
     <PackageVersion Include="WarHub.ArmouryModel.Workspaces.BattleScribe" Version="0.13.0" />
   </ItemGroup>
