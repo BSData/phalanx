@@ -21,7 +21,7 @@
     <PackageVersion Include="coverlet.collector" Version="6.0.0" PrivateAssets="all" />
     <PackageVersion Include="FluentAssertions" Version="6.12.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-    <PackageVersion Include="xunit" Version="2.6.2" />
+    <PackageVersion Include="xunit" Version="2.6.4" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.4" PrivateAssets="all" />
   </ItemGroup>
 </Project>
