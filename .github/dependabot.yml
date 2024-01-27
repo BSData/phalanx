@@ -8,3 +8,23 @@ updates:
     directory: "/"
     schedule:
       interval: daily
+    groups:
+      aspnet:
+        patterns:
+          - "^Microsoft.AspNetCore.*"
+      dotnet:
+        patterns:
+          - "^Microsoft.Extensions.*"
+          - "^System.*"
+      test:
+        patterns:
+          - "^xunit.*"
+          - "^Moq.*"
+          - "^FluentAssertions.*"
+          - "^Microsoft.NET.Test.Sdk.*"
+      fluentui:
+        patterns:
+          - "^Microsoft.FluentUI.*"
+      wham:
+        patterns:
+          - "^WarHub.ArmouryModel.*"
