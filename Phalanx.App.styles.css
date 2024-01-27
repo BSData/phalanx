@@ -1,0 +1,202 @@
+@import '_content/Microsoft.FluentUI.AspNetCore.Components/Microsoft.FluentUI.AspNetCore.Components.bundle.scp.css';
+
+/* /Pages/DataManagement.razor.rz.scp.css */
+h1[b-5yyf4qktoz] {
+  display: block;
+}
+
+.control-container[b-5yyf4qktoz] {
+  margin-top: 2em;
+  margin-bottom: 1em;
+}
+
+.data-gallery[b-5yyf4qktoz] {
+  margin-top: 1em;
+}
+/* /Pages/Home/WelcomeView.razor.rz.scp.css */
+h1[b-l1hrwtab49] {
+    text-align: center;
+}
+/* /Pages/Management/GalleryItem.razor.rz.scp.css */
+.gallery-item[b-6569xl1p2b] {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 120px;
+  padding: 0.2em 0.4em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.game-system-title[b-6569xl1p2b] {
+   font-size: 1.2em;
+   display: block;
+   margin: 0;
+   padding: 0;
+}
+
+.remote-version[b-6569xl1p2b] {
+  font-size: 1em;
+  display: block;
+  margin-top: 0.4em;
+}
+
+.remote-version-release-date[b-6569xl1p2b], .local-version[b-6569xl1p2b] {
+  font-style: italic;
+  font-size: 0.8em;
+  display: block;
+}
+
+.game-system-info-container[b-6569xl1p2b], .gallery-item-button-container[b-6569xl1p2b] {
+  margin-top: 0.6em;
+  margin-bottom: 0.6em;
+}
+
+.gallery-item-button-container[b-6569xl1p2b] {
+  display: flex;
+  flex-wrap: wrap;
+}
+/* /Pages/Printing/RosterPreviewer.razor.rz.scp.css */
+.html-renderer[b-5121wdtpgw] {
+    /* TODO white background until we can adjust styling */
+    background-color: white;
+    min-height: 50vh;
+    width: 100%;
+}
+/* /Pages/RosterPrinter.razor.rz.scp.css */
+.output-tabs[b-lytpo4k6s3] {
+    flex: auto;
+}
+
+.output-tabs fluent-tab-panel[b-lytpo4k6s3] {
+    height: 100%;
+}
+
+.output-tabs fluent-tab-panel>*[b-lytpo4k6s3] {
+    height: 100%;
+    width: 100%;
+}
+
+.card-container[b-lytpo4k6s3] {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+@media only screen and (min-width: 1024px) {
+    .card-container[b-lytpo4k6s3] {
+        flex-direction: row;
+    }
+}
+/* /Shared/MainLayout.razor.rz.scp.css */
+.page[b-p2hy1cp0r6] {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main[b-p2hy1cp0r6] {
+    flex: 1;
+}
+
+article[b-p2hy1cp0r6] {
+    padding: 0 1.5rem;
+}
+
+footer[b-p2hy1cp0r6] {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 2rem;
+    gap: 1rem;
+}
+
+@media only screen and (min-width: 640px) {
+    footer[b-p2hy1cp0r6] {
+        flex-direction: row;
+    }
+}
+
+.sidebar[b-p2hy1cp0r6] {
+    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+}
+
+.top-row[b-p2hy1cp0r6] {
+    justify-content: flex-end;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+}
+
+@media (min-width: 641px) {
+    .top-row[b-p2hy1cp0r6] {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+}
+/* /Shared/NavMenu.razor.rz.scp.css */
+.navbar-toggler[b-0ro0dfnwef] {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.top-row[b-0ro0dfnwef] {
+    height: 3.5rem;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.navbar-brand[b-0ro0dfnwef] {
+    font-size: 1.1rem;
+}
+
+.oi[b-0ro0dfnwef] {
+    width: 2rem;
+    font-size: 1.1rem;
+    vertical-align: text-top;
+    top: -2px;
+}
+
+.nav-item[b-0ro0dfnwef] {
+    font-size: 0.9rem;
+    padding-bottom: 0.5rem;
+}
+
+    .nav-item:first-of-type[b-0ro0dfnwef] {
+        padding-top: 1rem;
+    }
+
+    .nav-item:last-of-type[b-0ro0dfnwef] {
+        padding-bottom: 1rem;
+    }
+
+    .nav-item[b-0ro0dfnwef]  a {
+        color: #d7d7d7;
+        border-radius: 4px;
+        height: 3rem;
+        display: flex;
+        align-items: center;
+        line-height: 3rem;
+    }
+
+.nav-item[b-0ro0dfnwef]  a.active {
+    background-color: rgba(255,255,255,0.25);
+    color: white;
+}
+
+.nav-item[b-0ro0dfnwef]  a:hover {
+    background-color: rgba(255,255,255,0.1);
+    color: white;
+}
+
+@media (min-width: 641px) {
+    .navbar-toggler[b-0ro0dfnwef] {
+        display: none;
+    }
+
+    .collapse[b-0ro0dfnwef] {
+        /* Never collapse the sidebar for wide screens */
+        display: block;
+    }
+}
